@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="margin_start_15_info_page">15dp</dimen>
+    <dimen name="image_gender_size">187dp</dimen>
+    <dimen name="text_size_24_title_info_page">24sp</dimen>
 </resources>

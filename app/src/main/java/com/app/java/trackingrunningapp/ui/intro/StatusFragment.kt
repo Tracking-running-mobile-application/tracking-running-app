@@ -38,25 +38,39 @@ class StatusFragment : Fragment() {
         val imageFemale: ImageView = binding.imageFemale
         val btnInch = binding.btnInch
         val btnCm = binding.btnCm
+        val btnKg = binding.btnKg
+        val btnLbs = binding.btnLbs
 
-        binding.imageMale.setOnClickListener {
+        // male
+        imageMale.setOnClickListener {
             binding.textGender.text = getString(R.string.gender, "Male")
             imageMale.setImageResource(R.drawable.img_select_male)
             imageFemale.setImageResource(R.drawable.img_female)
         }
-        binding.imageFemale.setOnClickListener {
+        // female
+        imageFemale.setOnClickListener {
             binding.textGender.text = getString(R.string.gender, "Female")
             imageFemale.setImageResource(R.drawable.img_select_female)
             imageMale.setImageResource(R.drawable.img_male)
         }
 
-        binding.btnInch.setOnClickListener {
-            btnInch.setBackgroundColor(requireContext().getColor(R.color.black))
-            btnCm.setBackgroundColor(requireContext().getColor(R.color.purple))
+        //inch
+        btnInch.setOnClickListener {
+            btnInch.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
+            btnCm.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
-        binding.btnCm.setOnClickListener {
-            btnInch.setBackgroundColor(requireContext().getColor(R.color.purple))
-            btnCm.setBackgroundColor(requireContext().getColor(R.color.black))
+        //cm
+        btnCm.setOnClickListener {
+            btnInch.setBackgroundColor(requireContext().getColor(R.color.main_gray))
+            btnCm.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
+        }
+        btnKg.setOnClickListener {
+            btnKg.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
+            btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_gray))
+        }
+        btnLbs.setOnClickListener {
+            btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
+            btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
     }
 }

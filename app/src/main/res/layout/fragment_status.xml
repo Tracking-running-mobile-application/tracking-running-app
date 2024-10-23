@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="62dp"
+        android:layout_marginTop="32dp"
         android:text="@string/text_your_details"
         android:textColor="@color/black"
         android:textSize="20sp"
@@ -25,22 +25,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start_15_info_page"
-        android:layout_marginTop="119dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/gender"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_24_title_info_page"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toTopOf="@+id/image_male"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/image_female"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:stateListAnimator="@xml/anim_scale"
         android:clickable="true"
         android:contentDescription="@string/image_male"
         android:focusable="true"
+        android:stateListAnimator="@xml/anim_scale"
         app:layout_constraintBottom_toBottomOf="@+id/image_male"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
@@ -83,40 +83,69 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.4006734" />
+        app:layout_constraintGuide_begin="322dp" />
 
 
     <ImageView
         android:id="@+id/image_male"
         android:layout_width="@dimen/image_gender_size"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:contentDescription="@string/image_male"
         android:stateListAnimator="@xml/anim_scale"
+        app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_gender"
         app:srcCompat="@drawable/img_male" />
 
     <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/materialButtonToggleGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_female">
+        app:layout_constraintTop_toBottomOf="@+id/textView3">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="cm" />
+            android:backgroundTint="@color/main_yellow"
+            android:text="cm"
+            android:textColor="@color/black" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_inch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="inch" />
+            android:backgroundTint="@color/main_gray"
+            android:text="inch"
+            android:textColor="@color/black" />
+
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/materialButtonToggleGroup2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_kg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/main_yellow"
+            android:text="kg"
+            android:textColor="@color/black" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_lbs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/main_gray"
+            android:text="lbs"
+            android:textColor="@color/black" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -127,26 +156,102 @@
         android:layout_marginStart="@dimen/margin_start_15_info_page"
         android:layout_marginTop="16dp"
         android:text="Age"
-        android:textStyle="bold"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_24_title_info_page"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
-    <com.google.android.material.textfield.TextInputLayout
+    <EditText
+        android:id="@+id/editTextText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_start_15_info_page"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:autofillHints=""
+        android:background="@drawable/background_edit_text"
+        android:drawableStart="@drawable/icon_age"
+        android:drawablePadding="8dp"
+        android:ems="10"
+        android:hint="Age"
+        android:inputType="text"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2">
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/backgound_edit_text"
-            android:hint="Age" />
-    </com.google.android.material.textfield.TextInputLayout>
+    <EditText
+        android:id="@+id/editTextText2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:autofillHints=""
+        android:background="@drawable/background_edit_text"
+        android:drawableStart="@drawable/ic_height"
+        android:drawablePadding="8dp"
+        android:ems="10"
+        android:hint="Height"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/editTextText"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="@+id/editTextText"
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup" />
+
+    <EditText
+        android:id="@+id/editTextText3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:autofillHints=""
+        android:background="@drawable/background_edit_text"
+        android:drawableStart="@drawable/ic_weight"
+        android:drawablePadding="8dp"
+        android:ems="10"
+        android:hint="Weight"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="@+id/editTextText2"
+        app:layout_constraintStart_toStartOf="@+id/editTextText2"
+        app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup2" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Height"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_24_title_info_page"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/editTextText"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Weight"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_24_title_info_page"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@+id/editTextText2"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+
+    <Button
+
+        android:id="@+id/button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/background_confirm_btn"
+        android:text="Confirm"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:theme="@style/DefaultButton"
+        app:layout_constraintEnd_toEndOf="@+id/editTextText3"
+        app:layout_constraintStart_toStartOf="@+id/editTextText3"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
