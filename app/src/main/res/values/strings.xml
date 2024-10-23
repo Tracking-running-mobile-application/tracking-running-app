@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Tracking Running App</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="intro_title">Running\nApplication</string>
+    <string name="text_get_started">GET STARTED\t</string>
+    <string name="text_your_details">YOUR DETAILS</string>
+    <string name="image_male">image_male</string>
+    <string name="gender">Gender: %s</string>
 </resources>

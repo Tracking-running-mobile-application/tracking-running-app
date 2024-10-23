@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/intro_fragment">
+    <fragment
+        android:id="@+id/intro_fragment"
+        tools:layout="@layout/fragment_intro"
+        android:name="com.app.java.trackingrunningapp.ui.intro.IntroFragment"
+        android:label="IntroFragment" >
+        <action
+            android:id="@+id/action_intro_fragment_to_statusFragment"
+            app:destination="@id/status_fragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/status_fragment"
+        tools:layout="@layout/fragment_status"
+        android:name="com.app.java.trackingrunningapp.ui.intro.StatusFragment"
+        android:label="StatusFragment" />
+</navigation>
