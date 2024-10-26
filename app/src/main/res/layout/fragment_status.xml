@@ -152,7 +152,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/edt_age"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -172,7 +172,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/edt_height"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -184,13 +184,13 @@
         android:hint="Height"
         android:inputType="text"
         android:paddingStart="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/editTextText"
+        app:layout_constraintEnd_toEndOf="@+id/edt_age"
         app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="@+id/editTextText"
+        app:layout_constraintStart_toStartOf="@+id/edt_age"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <EditText
-        android:id="@+id/editTextText3"
+        android:id="@+id/edt_weight"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -202,8 +202,8 @@
         android:hint="Weight"
         android:inputType="text"
         android:paddingStart="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/editTextText2"
-        app:layout_constraintStart_toStartOf="@+id/editTextText2"
+        app:layout_constraintEnd_toEndOf="@+id/edt_height"
+        app:layout_constraintStart_toStartOf="@+id/edt_height"
         app:layout_constraintTop_toBottomOf="@+id/materialButtonToggleGroup2" />
 
     <TextView
@@ -215,8 +215,8 @@
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_24_title_info_page"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/editTextText"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+        app:layout_constraintStart_toStartOf="@+id/edt_age"
+        app:layout_constraintTop_toBottomOf="@+id/edt_age" />
 
     <TextView
         android:id="@+id/textView5"
@@ -227,14 +227,13 @@
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_24_title_info_page"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="@+id/editTextText2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        app:layout_constraintStart_toStartOf="@+id/edt_height"
+        app:layout_constraintTop_toBottomOf="@+id/edt_height" />
 
     <Button
         android:id="@+id/button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:background="@drawable/background_confirm_btn"
         android:stateListAnimator="@xml/anim_scale"
         android:text="Confirm"
@@ -242,9 +241,10 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:theme="@style/DefaultButton"
-        app:layout_constraintEnd_toEndOf="@+id/editTextText3"
-        app:layout_constraintStart_toStartOf="@+id/editTextText3"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText3" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/edt_weight"
+        app:layout_constraintStart_toStartOf="@+id/edt_weight"
+        app:layout_constraintTop_toBottomOf="@+id/edt_weight" />
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/materialToolbar"
