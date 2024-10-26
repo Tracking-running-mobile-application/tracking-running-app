@@ -6,6 +6,7 @@
     android:background="@drawable/intro_background">
 
     <ImageButton
+        android:stateListAnimator="@xml/anim_scale"
         android:id="@+id/btn_get_started"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

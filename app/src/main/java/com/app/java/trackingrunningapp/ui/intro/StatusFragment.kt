@@ -43,13 +43,13 @@ class StatusFragment : Fragment() {
 
         // male
         imageMale.setOnClickListener {
-            binding.textGender.text = getString(R.string.gender, "Male")
+            binding.textGender.text = getString(R.string.text_gender, "Male")
             imageMale.setImageResource(R.drawable.img_select_male)
             imageFemale.setImageResource(R.drawable.img_female)
         }
         // female
         imageFemale.setOnClickListener {
-            binding.textGender.text = getString(R.string.gender, "Female")
+            binding.textGender.text = getString(R.string.text_gender, "Female")
             imageFemale.setImageResource(R.drawable.img_select_female)
             imageMale.setImageResource(R.drawable.img_male)
         }

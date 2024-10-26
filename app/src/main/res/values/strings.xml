@@ -6,5 +6,6 @@
     <string name="text_get_started">GET STARTED\t</string>
     <string name="text_your_details">YOUR DETAILS</string>
     <string name="image_male">image_male</string>
-    <string name="gender">Gender: %s</string>
+    <string name="gender">Gender</string>
+    <string name="text_gender">Gender: %s</string>
 </resources>
