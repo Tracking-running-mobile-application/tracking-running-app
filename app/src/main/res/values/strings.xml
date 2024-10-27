@@ -8,4 +8,8 @@
     <string name="image_male">image_male</string>
     <string name="gender">Gender</string>
     <string name="text_gender">Gender: %s</string>
+    <string name="text_cm">cm</string>
+    <string name="text_image">inch</string>
+    <string name="text_kg">kg</string>
+    <string name="text_lbs">lbs</string>
 </resources>
