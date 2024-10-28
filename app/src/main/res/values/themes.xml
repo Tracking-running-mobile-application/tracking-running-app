@@ -4,7 +4,7 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
-
+  
     <style name="Theme.TrackingRunningApp" parent="Base.Theme.TrackingRunningApp" />
 
     <style name="DefaultButton" parent="Theme.TrackingRunningApp">
@@ -14,5 +14,4 @@
     <style name="StartButton" parent="Theme.TrackingRunningApp">
         <item name="colorPrimary">#FFFFFF</item>
     </style>
-
 </resources>
