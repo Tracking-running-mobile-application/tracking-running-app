@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId = "com.app.java.trackingrunningapp"
-        minSdk = 34
+        minSdk = 31
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -33,10 +33,19 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures{
+        viewBinding = true
+    }
 }
 
 dependencies {
+    implementation(libs.navigation.ui)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.runtime)
+}
 
+dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
