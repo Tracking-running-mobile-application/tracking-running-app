@@ -9,4 +9,5 @@
     <include app:graph="@navigation/nav_run"/>
     <include app:graph="@navigation/nav_statistics"/>
     <include app:graph="@navigation/nav_history"/>
+
 </navigation>

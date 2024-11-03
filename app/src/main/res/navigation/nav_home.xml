@@ -15,7 +15,7 @@
     <fragment
         android:id="@+id/intro_fragment"
         tools:layout="@layout/fragment_intro"
-        android:name="com.app.java.trackingrunningapp.ui.intro.IntroFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.IntroFragment"
         android:label="IntroFragment" >
         <action
             android:id="@+id/action_intro_fragment_to_statusFragment"
@@ -24,7 +24,7 @@
     <fragment
         android:id="@+id/status_fragment"
         tools:layout="@layout/fragment_status"
-        android:name="com.app.java.trackingrunningapp.ui.intro.StatusFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.StatusFragment"
         android:label="StatusFragment" >
         <action
             android:id="@+id/action_status_fragment_to_homeFragment"
