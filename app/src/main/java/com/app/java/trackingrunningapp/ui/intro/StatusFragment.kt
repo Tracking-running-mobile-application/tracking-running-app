@@ -1,21 +1,10 @@
 package com.app.java.trackingrunningapp.ui.intro
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
-import android.graphics.Point
-import android.graphics.Rect
-import android.graphics.RectF
-import android.graphics.drawable.AnimationDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.ScaleAnimation
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentStatusBinding

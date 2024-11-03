@@ -10,4 +10,6 @@
     <string name="text_image">inch</string>
     <string name="text_kg">kg</string>
     <string name="text_lbs">lbs</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
