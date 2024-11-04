@@ -10,4 +10,6 @@
     <string name="text_image">inch</string>
     <string name="text_kg">kg</string>
     <string name="text_lbs">lbs</string>
+    <string name="toggle_overlay">Toggle Overlay</string>
+    <string name="run">Run</string>
 </resources>
