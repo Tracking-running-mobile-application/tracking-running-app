@@ -3,23 +3,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/nav_home"
         android:icon="@drawable/ic_home"
-        android:title="Item"
-        app:showAsAction="always" />
+        android:title="@string/text_home"
+        android:contentDescription="@string/text_home"
+        />
     <item
+        android:id="@+id/nav_profile"
         android:icon="@drawable/ic_user"
-        android:title="Item"
-        app:showAsAction="always" />
+        android:title="@string/text_profile"
+        />
     <item
+        android:id="@+id/nav_run"
         android:icon="@drawable/ic_run"
-        android:title="Item"
-        app:showAsAction="always" />
+        android:title="@string/text_run"
+         />
     <item
+        android:id="@+id/nav_statistics"
         android:icon="@drawable/ic_statistics"
-        android:title="Item"
-        app:showAsAction="always" />
+        android:title="@string/text_statistics"
+         />
     <item
+        android:id="@+id/nav_history"
         android:icon="@drawable/ic_history"
-        android:title="Item"
-        app:showAsAction="always" />
+        android:title="@string/text_history"
+         />
 </menu>

@@ -11,7 +11,9 @@
         <item name="colorPrimary">#EEFF01</item>
     </style>
 
-    <style name="StartButton" parent="Theme.TrackingRunningApp">
-        <item name="colorPrimary">#FFFFFF</item>
+    <style name="ToolBarStyle" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">@color/toolbar_color</item>
     </style>
+
+
 </resources>

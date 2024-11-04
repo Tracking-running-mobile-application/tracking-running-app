@@ -1,5 +1,6 @@
-package com.app.java.trackingrunningapp.ui.home
+package com.app.java.trackingrunningapp.ui.intro
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentStatusBinding
+import com.app.java.trackingrunningapp.ui.MainActivity
 
 class StatusFragment : Fragment() {
     private lateinit var binding: FragmentStatusBinding
@@ -27,7 +29,8 @@ class StatusFragment : Fragment() {
         setUpToggle()
         setGenderSelected()
         binding.btnConfirm.setOnClickListener {
-            it.findNavController().navigate(R.id.action_status_fragment_to_homeFragment)
+            val intent = Intent(requireContext(),MainActivity::class.java)
+            startActivity(intent)
         }
     }
 

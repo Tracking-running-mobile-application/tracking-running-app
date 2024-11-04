@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.home
+package com.app.java.trackingrunningapp.ui.intro
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -24,7 +24,7 @@ class IntroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnGetStarted.setOnClickListener {
-            it.findNavController().navigate(R.id.action_intro_fragment_to_statusFragment)
+            it.findNavController().navigate(R.id.action_introFragment_to_statusFragment)
         }
     }
 }
