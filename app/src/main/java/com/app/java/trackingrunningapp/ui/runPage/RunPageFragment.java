@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.intro;
+package com.app.java.trackingrunningapp.ui.runPage;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,8 +19,6 @@ import java.util.List;
 import com.app.java.trackingrunningapp.R;
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.DefaultLocationClient;
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService;
-import com.app.java.trackingrunningapp.ui.runPage.MetricItem;
-import com.app.java.trackingrunningapp.ui.runPage.MetricItemAdapter;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
