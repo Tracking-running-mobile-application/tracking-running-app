@@ -10,8 +10,8 @@
     <string name="text_image">inch</string>
     <string name="text_kg">kg</string>
     <string name="text_lbs">lbs</string>
-
-<!--    Training Plan Strings-->
+    <string name="toggle_overlay">Toggle Overlay</string>
+    <string name="run">Run</string>
     <string name="back_button">backButton</string>
     <string name="training_plans">Training Plan</string>
     <string name="beginner_guide">Beginner\'s Guide</string>
