@@ -17,11 +17,11 @@
         android:id="@+id/status_fragment"
         tools:layout="@layout/fragment_status"
         android:name="com.app.java.trackingrunningapp.ui.intro.StatusFragment"
-        android:label="StatusFragment" />
+        android:label="StatusFragment" >
+    </fragment>
     <fragment
         android:id="@+id/run_page"
         android:name="com.app.java.trackingrunningapp.ui.runPage.RunPageFragment"
         tools:layout="@layout/fragment_run_page"
         android:label="RunFragment"/>
-
 </navigation>
