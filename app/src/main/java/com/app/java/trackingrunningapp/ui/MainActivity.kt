@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.ui
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -18,11 +19,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initNavHost()
-
-        binding.myPageButton.setOnClickListener {
-            // Navigate to MyPageActivity when the button is clicked
-            navController.navigate(R.id.run_page)
-        }
     }
 
     private fun initNavHost() {
