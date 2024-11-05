@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,6 +14,9 @@ import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.DefaultLocationClient
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService
 import com.google.android.gms.location.LocationServices
+import android.Manifest
+import android.os.Build
+import android.util.Log
 
 class RunPageFragment : Fragment(R.layout.fragment_run_page) {
     private var locationClient: DefaultLocationClient? = null
@@ -22,24 +26,26 @@ class RunPageFragment : Fragment(R.layout.fragment_run_page) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val context = requireContext()
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
-        locationClient = DefaultLocationClient(context, fusedLocationProviderClient)
+        ActivityCompat.requestPermissions(
+            requireActivity(),
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.POST_NOTIFICATIONS
+            ),
+            0
+        )
 
-        val toggleTrackingButton = view.findViewById<Button>(R.id.toggleTrackingButton)
-        toggleTrackingButton.text = "Start Running Session"
+        val toggleTrackingButton: Button = view.findViewById(R.id.toggleTrackingButton)
+        toggleTrackingButton.text = "Start Tracking" // Initial text
 
-        toggleTrackingButton.setOnClickListener { v: View? ->
+        toggleTrackingButton.setOnClickListener {
             if (isTracking) {
                 stopTracking()
-                toggleTrackingButton.text = "Start Running Session"
+                toggleTrackingButton.text = "Start Tracking"
             } else {
-                if (locationClient!!.hasLocationPermission()) {
-                    startTracking()
-                    toggleTrackingButton.text = "Pause Running Session"
-                } else {
-                    locationClient!!.requestLocationPermissions(requireActivity())
-                }
+                startTracking()
+                toggleTrackingButton.text = "Stop Tracking"
             }
             isTracking = !isTracking
         }
@@ -69,41 +75,21 @@ class RunPageFragment : Fragment(R.layout.fragment_run_page) {
         val adapter = MetricItemAdapter(metricItems)
         metricsRecyclerView.adapter = adapter
 
-        if (!locationClient!!.hasLocationPermission()) {
-            locationClient!!.requestLocationPermissions(requireActivity())
-        }
     }
 
     private fun startTracking() {
         val context = requireContext()
-        val intent = Intent(context, LocationService::class.java)
-        intent.setAction(LocationService.ACTION_START)
+        val intent = Intent(context, LocationService::class.java).apply {
+            action = LocationService.ACTION_START
+        }
         context.startService(intent)
     }
 
     private fun stopTracking() {
         val context = requireContext()
-        val intent = Intent(context, LocationService::class.java)
-        intent.setAction(LocationService.ACTION_STOP)
-        context.startService(intent)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == DefaultLocationClient.LOCATION_PERMISSION_REQUEST_CODE) {
-            if (locationClient!!.hasLocationPermission()) {
-                startTracking()
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Location permission is required to track location",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+        val intent = Intent(context, LocationService::class.java).apply {
+            action = LocationService.ACTION_STOP
         }
+        context.startService(intent)
     }
 }
