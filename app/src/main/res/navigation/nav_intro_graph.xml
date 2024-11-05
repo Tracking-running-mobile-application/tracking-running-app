@@ -2,19 +2,20 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph"
-    app:startDestination="@id/intro_fragment">
+    android:id="@+id/nav_intro_graph"
+    app:startDestination="@id/introFragment">
+
     <fragment
-        android:id="@+id/intro_fragment"
-        tools:layout="@layout/fragment_intro"
+        android:id="@+id/introFragment"
         android:name="com.app.java.trackingrunningapp.ui.intro.IntroFragment"
+        tools:layout="@layout/fragment_intro"
         android:label="IntroFragment" >
         <action
-            android:id="@+id/action_intro_fragment_to_statusFragment"
-            app:destination="@id/status_fragment" />
+            android:id="@+id/action_introFragment_to_statusFragment"
+            app:destination="@id/statusFragment" />
     </fragment>
     <fragment
-        android:id="@+id/status_fragment"
+        android:id="@+id/statusFragment"
         tools:layout="@layout/fragment_status"
         android:name="com.app.java.trackingrunningapp.ui.intro.StatusFragment"
         android:label="StatusFragment" >
