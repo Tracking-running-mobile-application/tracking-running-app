@@ -1,14 +1,15 @@
 package com.app.java.trackingrunningapp.ui.profile
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentEditProfileBinding
-import com.app.java.trackingrunningapp.databinding.FragmentProfileBinding
 
 class EditProfileFragment:Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
@@ -22,9 +23,11 @@ class EditProfileFragment:Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupAffect()
+        requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = "Edit Profile"
         binding.btnSave.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
