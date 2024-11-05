@@ -18,25 +18,15 @@ class DailyTask : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_daily_task, container, false)
-
-        // Find the Spinner in the layout
         val spinner: Spinner = view.findViewById(R.id.spinner)
-
-        // Create a list of items to display in the Spinner
         val items = listOf("Every Monday", "Every Tuesday", "Every Wednesday", "Every Thursday","Every Friday","Every Saturday","Every Sunday")
+        val adapter = ArrayAdapter(requireContext(),R.layout.spinner_item, items)
 
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, items)
+        adapter.setDropDownViewResource(R.layout.spinner_item)
 
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-        // Apply the adapter to the spinner
         spinner.adapter = adapter
 
-        // Set a listener to handle item selection
         spinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 // Get the selected item
@@ -46,12 +36,8 @@ class DailyTask : Fragment() {
             }
 
             override fun onNothingSelected(parent: AdapterView<*>) {
-                // Handle case when nothing is selected (optional)
             }
         })
-
-
         return view
-
     }
 }

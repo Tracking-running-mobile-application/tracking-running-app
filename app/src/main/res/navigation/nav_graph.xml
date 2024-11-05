@@ -17,5 +17,14 @@
         android:id="@+id/status_fragment"
         tools:layout="@layout/fragment_status"
         android:name="com.app.java.trackingrunningapp.ui.intro.StatusFragment"
-        android:label="StatusFragment" />
+        android:label="StatusFragment" >
+        <action
+            android:id="@+id/action_status_fragment_to_dailyTaskFragment"
+            app:destination="@id/dailyTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/dailyTaskFragment"
+        android:name="com.app.java.trackingrunningapp.ui.feature_dailyTask.DailyTask"
+        android:label="Daily Task"
+        tools:layout="@layout/fragment_daily_task" />
 </navigation>
