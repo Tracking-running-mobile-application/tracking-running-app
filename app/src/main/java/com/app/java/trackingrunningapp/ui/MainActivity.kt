@@ -52,6 +52,7 @@ class MainActivity : AppCompatActivity() {
             if(destination.id == R.id.homeFragment){
                 tvTitle.text = getString(R.string.text_home)
                 binding.imgIcSettings.visibility = View.VISIBLE
+                // TODO: set action for settings
                 binding.toolbarMain.setNavigationIcon(R.drawable.ic_notification)
                 // TODO: set action for notification
             }else{
