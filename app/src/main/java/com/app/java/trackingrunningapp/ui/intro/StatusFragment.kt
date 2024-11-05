@@ -74,8 +74,5 @@ class StatusFragment : Fragment() {
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
 
-        binding.btnLbs.setOnClickListener {
-            it.findNavController().navigate(R.id.action_status_fragment_to_dailyTaskFragment)
-        }
     }
 }
