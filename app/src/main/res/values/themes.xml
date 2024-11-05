@@ -11,9 +11,4 @@
         <item name="colorPrimary">#EEFF01</item>
     </style>
 
-    <style name="ToolBarStyle" parent="Widget.AppCompat.Toolbar">
-        <item name="android:background">@color/toolbar_color</item>
-    </style>
-
-
 </resources>

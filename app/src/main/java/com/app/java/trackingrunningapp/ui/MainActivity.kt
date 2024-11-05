@@ -1,6 +1,8 @@
 package com.app.java.trackingrunningapp.ui
 
 import android.os.Bundle
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.MenuHost
 import androidx.navigation.NavController
@@ -39,15 +41,42 @@ class MainActivity : AppCompatActivity() {
         bottomNav.setupWithNavController(navController)
 
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.homeFragment,R.id.profileFragment,R.id.statisticFragment)
+            setOf(R.id.homeFragment, R.id.profileFragment, R.id.statisticFragment)
         )
 
 //        setSupportActionBar(binding.toolbar)
 //        binding.toolbar.setupWithNavController(navController,appBarConfiguration)
 //
-        binding.toolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val tvTitle: TextView = binding.tvToolbarTitle
+            if(destination.id == R.id.homeFragment){
+                tvTitle.text = getString(R.string.text_home)
+                binding.imgIcSettings.visibility = View.VISIBLE
+                binding.toolbarMain.setNavigationIcon(R.drawable.ic_notification)
+                // TODO: set action for notification
+            }else{
+                binding.imgIcSettings.visibility = View.GONE
+                binding.toolbarMain.setNavigationIcon(R.drawable.ic_arrow_back_24)
+                binding.toolbarMain.setNavigationOnClickListener {
+                    onBackPressedDispatcher.onBackPressed()
+                }
+                when (destination.id) {
+                    R.id.profileFragment ->{
+                        tvTitle.text = getString(R.string.text_profile)
+                    }
+                    R.id.runFragment ->{
+                        tvTitle.text = getString(R.string.text_run)
+                    }
+                    R.id.statisticFragment -> {
+                        tvTitle.text = getString(R.string.text_statistics)
+                    }
+                    R.id.historyFragment ->{
+                        tvTitle.text = getString(R.string.text_history)
+                    }
+                }
+            }
         }
+
     }
 
     override fun onSupportNavigateUp(): Boolean {
