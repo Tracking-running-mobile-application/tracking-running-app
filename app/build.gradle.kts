@@ -38,19 +38,16 @@ android {
         viewBinding = true
     }
 }
-
 dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.runtime)
-}
-
-dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation("com.google.android.gms:play-services-location:21.0.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

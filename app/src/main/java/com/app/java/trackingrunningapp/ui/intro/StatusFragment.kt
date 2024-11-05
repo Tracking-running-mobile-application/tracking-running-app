@@ -76,5 +76,6 @@ class StatusFragment : Fragment() {
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
+
     }
 }
