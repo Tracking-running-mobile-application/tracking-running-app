@@ -27,7 +27,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/nav_graph" />
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_main"
@@ -60,5 +61,4 @@
         app:layout_constraintEnd_toEndOf="@+id/toolbar_main"
         app:layout_constraintTop_toTopOf="@+id/toolbar_main"
         app:srcCompat="@drawable/ic_settings" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.app.java.trackingrunningapp.R
 import com.google.android.gms.location.LocationServices
@@ -33,10 +34,23 @@ class LocationService : Service() {
         )
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+    /*override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             ACTION_START -> start()
             ACTION_STOP -> stop()
+        }
+        return START_NOT_STICKY
+    }*/
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        when (intent?.action) {
+            ACTION_START -> {
+                start()
+            }
+            ACTION_STOP -> {
+                stop()
+            }
+            else -> Log.w("LocationService", "Unknown action received: ${intent?.action}")
         }
         return START_NOT_STICKY
     }
@@ -46,9 +60,17 @@ class LocationService : Service() {
             .setContentTitle("Tracking location...")
             .setContentText("Location: null")
             .setSmallIcon(R.drawable.ic_launcher_background)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
             .setOngoing(true)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val initialNoti = notification.build()
+        try {
+            startForeground(1, initialNoti)
+            Log.d("LocationService", "Foreground service started successfully.")
+        } catch (e: Exception) {
+            Log.e("LocationService", "Error starting foreground service: ${e.message}")
+        }
 
         locationClient.getLocationUpdates(10000L)
             .catch { e -> e.printStackTrace() }
@@ -77,4 +99,6 @@ class LocationService : Service() {
         const val ACTION_START = "ACTION_START"
         const val ACTION_STOP = "ACTION_STOP"
     }
+
+
 }

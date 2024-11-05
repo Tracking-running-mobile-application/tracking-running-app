@@ -27,7 +27,7 @@ class DefaultLocationClient(
     @SuppressLint("MissingPermission")
     override fun getLocationUpdates(interval: Long): Flow<Location> {
         return callbackFlow {
-            if (!hasLocationPermission()) {
+            if (!context.hasLocationPermission()) {
                 throw LocationClient.LocationException("Missing permission")
             }
 
@@ -62,33 +62,5 @@ class DefaultLocationClient(
                 client.removeLocationUpdates(locationCallback)
             }
         }
-    }
-
-    fun hasLocationPermission(): Boolean {
-        return ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(
-                    context,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    fun requestLocationPermissions(activity: Activity) {
-        if (!hasLocationPermission()) {
-            ActivityCompat.requestPermissions(
-                activity,
-                arrayOf(
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                ),
-                LOCATION_PERMISSION_REQUEST_CODE
-            )
-        }
-    }
-
-    companion object {
-        const val LOCATION_PERMISSION_REQUEST_CODE = 0
     }
 }
