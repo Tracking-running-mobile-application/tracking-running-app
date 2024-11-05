@@ -17,6 +17,7 @@ import android.view.animation.ScaleAnimation
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentStatusBinding
 
@@ -72,5 +73,6 @@ class StatusFragment : Fragment() {
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
+
     }
 }
