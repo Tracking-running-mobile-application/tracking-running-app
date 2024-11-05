@@ -6,4 +6,6 @@
     <color name="main_yellow">#EEFF01</color>
     <color name="main_gray">#D9D9D9</color>
     <color name="transparent">#00FFFFFF </color>
+    <color name="toolbar_color">#484848 </color>
+    <color name="main_background">#353331</color>
 </resources>

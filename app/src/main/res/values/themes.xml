@@ -11,7 +11,4 @@
         <item name="colorPrimary">#EEFF01</item>
     </style>
 
-    <style name="StartButton" parent="Theme.TrackingRunningApp">
-        <item name="colorPrimary">#FFFFFF</item>
-    </style>
 </resources>

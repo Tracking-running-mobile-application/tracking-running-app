@@ -24,7 +24,7 @@ class IntroFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btnGetStarted.setOnClickListener {
-            it.findNavController().navigate(R.id.action_introFragment_to_statusFragment)
+            it.findNavController().navigate(R.id.action_intro_fragment_to_statusFragment)
         }
     }
 }
