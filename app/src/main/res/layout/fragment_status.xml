@@ -11,17 +11,16 @@
         android:id="@+id/text_gender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:text="@string/gender"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_title"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/image_male"
-        app:layout_constraintStart_toStartOf="@+id/image_male" />
+        app:layout_constraintStart_toStartOf="@+id/image_male"
+        app:layout_constraintTop_toBottomOf="@+id/materialToolbar" />
 
     <ImageView
         android:id="@+id/image_female"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/image_gender_size"
         android:layout_height="wrap_content"
         android:clickable="true"
         android:contentDescription="@string/image_male"
@@ -46,18 +45,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="322dp" />
+        app:layout_constraintGuide_percent="0.31" />
 
 
     <ImageView
         android:id="@+id/image_male"
         android:layout_width="@dimen/image_gender_size"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/image_gender_size"
+        android:layout_marginTop="16dp"
         android:contentDescription="@string/image_male"
         android:stateListAnimator="@xml/anim_scale"
-        app:layout_constraintBottom_toTopOf="@+id/guideline3"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_gender"
         app:srcCompat="@drawable/img_male" />
 
     <com.google.android.material.button.MaterialButtonToggleGroup
@@ -116,13 +116,13 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:text="Age"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_title"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/text_gender"
-        app:layout_constraintTop_toTopOf="@+id/guideline3" />
+        app:layout_constraintTop_toBottomOf="@+id/image_male" />
 
     <EditText
         android:id="@+id/edt_age"
@@ -208,6 +208,8 @@
         android:id="@+id/btn_confirm"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/background_confirm_btn"
         android:stateListAnimator="@xml/anim_scale"
         android:text="Confirm"
