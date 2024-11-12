@@ -1,16 +1,16 @@
 package com.app.java.trackingrunningapp.ui.home
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.model.DailyTask
+import com.app.java.trackingrunningapp.data.model.TrainingPlan
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
-import com.app.java.trackingrunningapp.databinding.FragmentIntroBinding
-
 
 
 class HomeFragment : Fragment() {
@@ -51,5 +51,9 @@ class HomeFragment : Fragment() {
         val dailyTasksLayoutManager = LinearLayoutManager(requireContext())
         binding.recyclerViewDailyTasks.layoutManager = dailyTasksLayoutManager
         binding.recyclerViewDailyTasks.adapter = DailyTasksAdapter(dailyTasks)
+        // test onclick
+        binding.planName.setOnClickListener {
+            it.findNavController().navigate(R.id.action_homeFragment_to_trainingPlans)
+        }
     }
 }
