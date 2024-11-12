@@ -10,7 +10,7 @@ import com.app.java.trackingrunningapp.R
 
 data class RunItem(val title: String, val distance: String, val date: String)
 
-class FavouriteRunAdapter(private val runList: List<RunItem>) : RecyclerView.Adapter<FavouriteRunAdapter.RunViewHolder>() {
+class FavouriteRunAdapter(private val runList: MutableList<RunItem>) : RecyclerView.Adapter<FavouriteRunAdapter.RunViewHolder>() {
     inner class RunViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val titleText: TextView = itemView.findViewById(R.id.titleText)
         val distanceText: TextView = itemView.findViewById(R.id.distanceText)
@@ -28,6 +28,11 @@ class FavouriteRunAdapter(private val runList: List<RunItem>) : RecyclerView.Ada
         holder.titleText.text = runItem.title
         holder.distanceText.text = runItem.distance
         holder.dateText.text = runItem.date
+
+        holder.starIcon.setOnClickListener{
+            runList.removeAt(position)
+            notifyItemRemoved(position)
+        }
     }
 
     override fun getItemCount() = runList.size

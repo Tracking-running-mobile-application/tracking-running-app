@@ -21,12 +21,11 @@ class FavouriteRuns : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val runList = listOf(
+        val runList = mutableListOf(
             RunItem("Normal Run", "12KM", "22/10/2024"),
             RunItem("Normal Run", "12KM", "2/9/2024"),
         )
 
-        // Khởi tạo RecyclerView
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = FavouriteRunAdapter(runList)
