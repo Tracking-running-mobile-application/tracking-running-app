@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#333333"
     android:id="@+id/run_page"
     android:padding="4dp">
@@ -24,6 +24,9 @@
         android:id="@+id/metricsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        tools:listitem="@layout/item_run_metric"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:background="@color/white"
         app:layout_constraintTop_toBottomOf="@id/titleText"
         app:layout_constraintBottom_toTopOf="@id/recyclerViewBarrier"
@@ -41,13 +44,12 @@
         android:id="@+id/toggleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_arrow_up"
-        android:paddingTop="5dp"
         android:contentDescription="@string/toggle_overlay"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewBarrier"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingTop="5dp"
+        android:src="@drawable/ic_arrow_up"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewBarrier" />
 
     <Button
         android:id="@+id/toggleTrackingButton"

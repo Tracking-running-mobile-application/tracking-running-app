@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="margin_start">16dp</dimen>
-    <dimen name="image_gender_size">187dp</dimen>
+    <dimen name="image_gender_size">155dp</dimen>
     <dimen name="text_size_title">24sp</dimen>
     <dimen name="margin_top_16">16dp</dimen>
     <dimen name="drawable_padding">8dp</dimen>
     <dimen name="margin_end">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
+    <dimen name="margin_top_8">8dp</dimen>
 </resources>

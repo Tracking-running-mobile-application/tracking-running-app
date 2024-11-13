@@ -25,10 +25,9 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:navGraph="@navigation/nav_main_graph" />
+        app:menu="@menu/bottom_nav"/>
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar_main"

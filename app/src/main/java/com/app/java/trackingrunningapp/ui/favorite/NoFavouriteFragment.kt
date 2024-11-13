@@ -13,6 +13,6 @@ class NoFavouriteFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_nofavourite, container, false)
+        return inflater.inflate(R.layout.fragment_no_favourite, container, false)
     }
 }
