@@ -7,10 +7,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.model.TrainingPlan
 
-data class TrainingPlan(val name: String, val imageResId: Int)
 
-class TrainingPlansAdapter(private val itemList: List<TrainingPlan>) : RecyclerView.Adapter<TrainingPlansAdapter.TrainingPlansViewHolder>() {
+class TrainingPlansAdapter(
+    private val itemList: List<TrainingPlan>
+) : RecyclerView.Adapter<TrainingPlansAdapter.TrainingPlansViewHolder>() {
 
     class TrainingPlansViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val planName: TextView = itemView.findViewById(R.id.planName)
@@ -18,7 +20,7 @@ class TrainingPlansAdapter(private val itemList: List<TrainingPlan>) : RecyclerV
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrainingPlansViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.training_plan, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_training_plan, parent, false)
         return TrainingPlansViewHolder(view)
     }
 

@@ -1,11 +1,11 @@
 package com.app.java.trackingrunningapp.ui.runPage
 
+import android.Manifest
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -13,10 +13,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.DefaultLocationClient
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService
-import com.google.android.gms.location.LocationServices
-import android.Manifest
-import android.os.Build
-import android.util.Log
 
 class RunPageFragment : Fragment(R.layout.fragment_run_page) {
     private var locationClient: DefaultLocationClient? = null

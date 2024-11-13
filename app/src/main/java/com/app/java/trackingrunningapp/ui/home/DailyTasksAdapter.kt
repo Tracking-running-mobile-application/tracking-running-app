@@ -7,14 +7,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.model.DailyTask
 
-data class DailyTask(
-    val title: String,
-    val duration: String,
-    val frequency: String,
-    val imageResId: Int,  // Resource ID for the task image
-    val isChecked: Boolean  // Whether the task is completed
-)
 
 class DailyTasksAdapter(
     private val taskList: List<DailyTask>
@@ -30,7 +24,7 @@ class DailyTasksAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyTasksViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.daily_task, parent, false)
+            .inflate(R.layout.item_daily_task, parent, false)
         return DailyTasksViewHolder(view)
     }
 

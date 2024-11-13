@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     android:background="@color/main_background">
 
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+        </LinearLayout>
+    </ScrollView>
+
     <LinearLayout
         android:id="@+id/avatar"
         android:layout_width="wrap_content"
@@ -84,7 +98,7 @@
         app:layout_constraintEnd_toEndOf="@+id/homeImage"
         app:layout_constraintStart_toStartOf="@+id/homeImage"
         app:layout_constraintTop_toBottomOf="@id/trainingPlansTextView"
-        tools:listitem="@layout/training_plan" />
+        tools:listitem="@layout/item_training_plan" />
 
     <TextView
         android:id="@+id/dailyTasksTextView"
@@ -122,6 +136,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dailyTasksTextView"
-        tools:listitem="@layout/training_plan" />
+        tools:listitem="@layout/item_training_plan" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
