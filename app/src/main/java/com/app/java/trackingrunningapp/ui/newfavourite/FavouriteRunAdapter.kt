@@ -29,10 +29,14 @@ class FavouriteRunAdapter(private val runList: MutableList<RunItem>) : RecyclerV
         holder.distanceText.text = runItem.distance
         holder.dateText.text = runItem.date
 
-        holder.starIcon.setOnClickListener{
-            runList.removeAt(position)
-            notifyItemRemoved(position)
+        holder.starIcon.setOnClickListener {
+            if (position != RecyclerView.NO_POSITION) {
+                runList.removeAt(position)
+                notifyItemRemoved(position)
+                notifyItemRangeChanged(position, runList.size)
+            }
         }
+
     }
 
     override fun getItemCount() = runList.size
