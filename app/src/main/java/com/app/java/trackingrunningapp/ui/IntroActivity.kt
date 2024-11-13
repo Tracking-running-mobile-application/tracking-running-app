@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.intro
+package com.app.java.trackingrunningapp.ui
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

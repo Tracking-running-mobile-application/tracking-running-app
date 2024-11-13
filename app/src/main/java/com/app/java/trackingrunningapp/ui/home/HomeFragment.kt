@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -54,6 +55,17 @@ class HomeFragment : Fragment() {
         // test onclick
         binding.planName.setOnClickListener {
             it.findNavController().navigate(R.id.action_homeFragment_to_trainingPlans)
+            requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = getString(R.string.training_plans)
         }
+        // test onclick
+        binding.addDailyTaskIcon.setOnClickListener{
+            it.findNavController().navigate(R.id.action_homeFragment_to_dailyTask)
+            requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = getString(R.string.daily_tasks)
+        }
+
+        //
+//        binding.avatarImage.setOnClickListener {
+//            it.findNavController().navigate(R.id.action_homeFragment_to_homeFragmentScroll)
+//        }
     }
 }
