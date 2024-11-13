@@ -23,7 +23,7 @@
         android:theme="@style/Theme.TrackingRunningApp"
         tools:targetApi="31">
         <activity
-            android:name=".ui.intro.IntroActivity"
+            android:name=".ui.IntroActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

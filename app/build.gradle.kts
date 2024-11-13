@@ -39,6 +39,7 @@ android {
     }
 }
 dependencies {
+    implementation(libs.barchart)
     implementation(libs.navigation.ui)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.runtime)

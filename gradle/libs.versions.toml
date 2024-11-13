@@ -11,6 +11,7 @@ activity = "1.9.2"
 constraintlayout = "2.1.4"
 
 navigation = "2.6.0"
+barchart = "3.10.1"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -24,6 +25,8 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 navigation-fragment = {group = "androidx.navigation",name = "navigation-fragment-ktx",version.ref = "navigation"}
 navigation-ui = {group = "androidx.navigation",name = "navigation-ui-ktx",version.ref = "navigation"}
 navigation-runtime = {group = "androidx.navigation",name = "navigation-runtime-ktx",version.ref = "navigation"}
+#barchart
+barchart = {group = "com.diogobernardino",name = "williamchart",version.ref = "barchart"}
 
 
 [plugins]
