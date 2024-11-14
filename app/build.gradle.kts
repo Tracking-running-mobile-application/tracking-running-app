@@ -67,6 +67,7 @@ dependencies {
 
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$room_version")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
     implementation(libs.navigation.ui)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.runtime)
