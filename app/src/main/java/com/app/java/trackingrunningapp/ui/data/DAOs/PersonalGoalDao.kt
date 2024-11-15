@@ -1,9 +1,12 @@
 package com.app.java.trackingrunningapp.ui.data.DAOs
 
+import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Update
 import com.app.java.trackingrunningapp.ui.data.entities.PersonalGoal
 import kotlinx.coroutines.flow.Flow
 
+@Dao
 interface PersonalGoalDao {
     @Query("SELECT * FROM PersonalGoal")
     fun getPersonalGoal(): Flow<List<PersonalGoal>>
@@ -20,5 +23,14 @@ interface PersonalGoalDao {
     @Query ("UPDATE PersonalGoal SET isAchieved = :isAchieved WHERE goalId = :goalId")
     suspend fun markGoalAchieved(goalId: Int, isAchieved: Boolean)
 
-
+    @Query (""" 
+        UPDATE PersonalGoal
+        SET 
+            targetDuration = :targetDuration,
+            targetDistance = :targetDistance,
+            frequency = :frequency
+        WHERE
+            goalId = :goalId
+            """)
+    suspend fun personalGoalPartialUpdate(goalId: Int, targetDistance: Float?, targetDuration: Float?, frequency: String?)
 }

@@ -3,22 +3,26 @@ package com.app.java.trackingrunningapp.ui.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.app.java.trackingrunningapp.ui.data.DAOs.DailyTaskDao
 import com.app.java.trackingrunningapp.ui.data.converters.LocalTimeConverter
 import com.app.java.trackingrunningapp.ui.data.entities.MonthlyStats
 import com.app.java.trackingrunningapp.ui.data.DAOs.MonthlyStatsDao
 import com.app.java.trackingrunningapp.ui.data.entities.PersonalGoal
 import com.app.java.trackingrunningapp.ui.data.DAOs.PersonalGoalDao
 import com.app.java.trackingrunningapp.ui.data.DAOs.RunSessionDao
+import com.app.java.trackingrunningapp.ui.data.DAOs.TrainingPlanDao
 import com.app.java.trackingrunningapp.ui.data.entities.User
 import com.app.java.trackingrunningapp.ui.data.DAOs.UserDao
 import com.app.java.trackingrunningapp.ui.data.entities.WeeklyStats
 import com.app.java.trackingrunningapp.ui.data.DAOs.WeeklyStatsDao
 import com.app.java.trackingrunningapp.ui.data.entities.YearlyStats
 import com.app.java.trackingrunningapp.ui.data.DAOs.YearlyStatsDao
+import com.app.java.trackingrunningapp.ui.data.entities.DailyTask
 import com.app.java.trackingrunningapp.ui.data.entities.RunSession
+import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
 
 @Database (
-    entities = [User::class, PersonalGoal::class, WeeklyStats::class, MonthlyStats::class, YearlyStats::class, RunSession::class],
+    entities = [User::class, PersonalGoal::class, WeeklyStats::class, MonthlyStats::class, YearlyStats::class, RunSession::class, TrainingPlan::class, DailyTask::class],
     version = 1
 )
 @TypeConverters(LocalTimeConverter::class)
@@ -29,4 +33,6 @@ abstract class RunningDatabase: RoomDatabase() {
     abstract val monthlyStatsDao: MonthlyStatsDao
     abstract val yearlyStatsDao: YearlyStatsDao
     abstract val runSessionDao: RunSessionDao
+    abstract val trainingPlanDao: TrainingPlanDao
+    abstract val dailyTaskDao: DailyTaskDao
 }

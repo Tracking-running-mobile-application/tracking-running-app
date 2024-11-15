@@ -9,14 +9,12 @@ import kotlinx.datetime.LocalTime
 data class RunSession(
     @PrimaryKey(autoGenerate = true)
     val sessionId: Int,
-    var runDate: LocalDate,
+    var runDate: String,
     var startTime: LocalTime,
     var endTime: LocalTime,
-    var speed: Float,
     var distance: Float,
     var duration: Float,
     var pace: Float,
     var caloriesBurned: Float,
-    var isPaused: Boolean,
     var isActive: Boolean
 )

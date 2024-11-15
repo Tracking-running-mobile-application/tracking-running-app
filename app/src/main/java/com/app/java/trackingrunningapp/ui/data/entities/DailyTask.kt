@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import java.time.LocalDate
 
 @Entity
-data class DailyTasks(
+data class DailyTask(
     @PrimaryKey(autoGenerate = true)
     val taskId: Int = 0,
     var title: String,

@@ -1,9 +1,11 @@
 package com.app.java.trackingrunningapp.ui.data.DAOs
 
+import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.app.java.trackingrunningapp.ui.data.entities.YearlyStats
 
+@Dao
 interface YearlyStatsDao {
     @Query("SELECT * FROM YearlyStats WHERE yearlyStats = :year")
     suspend fun getYearlyStats(year: Int): YearlyStats?
