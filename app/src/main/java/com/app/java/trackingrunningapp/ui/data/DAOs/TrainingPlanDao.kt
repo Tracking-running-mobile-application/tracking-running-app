@@ -11,13 +11,22 @@ interface TrainingPlanDao {
     suspend fun deleteTrainingPlan(trainingPlan: TrainingPlan)
 
     @Query("UPDATE TrainingPlan SET isShown = TRUE WHERE planId = :planId")
-    suspend fun showTrainingPlan(planId: Int, isShown: Boolean)
+    suspend fun showTrainingPlan(planId: Int)
 
     @Query("UPDATE TrainingPlan SET isFinished = TRUE WHERE planId = :planId")
-    suspend fun finishTrainingPlan(isFinished: Boolean, planId: Int)
+    suspend fun finishTrainingPlan(planId: Int)
 
     @Query("UPDATE TrainingPlan SET isShown = FALSE WHERE planId = :planId")
-    suspend fun hideTrainingPlan(isShown: Boolean, planId: Int)
+    suspend fun hideTrainingPlan(planId: Int)
+
+    @Query("UPDATE TrainingPlan SET isActive = TRUE WHERE planId = :planId")
+    suspend fun activeTrainingPlan(planId: Int)
+
+    @Query("UPDATE TrainingPlan SET isActive = FALSE WHERE planId = :planId")
+    suspend fun unactiveTrainingPlan(planId: Int)
+
+    @Query("SELECT * FROM TrainingPlan WHERE isActive = TRUE LIMIT 1")
+    suspend fun getCurrentTrainingPlan() : TrainingPlan?
 
     @Query(
         """

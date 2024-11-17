@@ -14,7 +14,7 @@ import com.app.java.trackingrunningapp.ui.data.entities.GPSTrack
 @Dao
 interface RunSessionDao {
     @Delete
-    suspend fun deleteRunSession(runSession: RunSession)
+    suspend fun deleteRunSession(sessionId: Int)
 
     @Query("SELECT * FROM RunSession ORDER BY runDate DESC")
     suspend fun getAllRunSessions(): Flow<List<RunSession>>
@@ -22,8 +22,8 @@ interface RunSessionDao {
     @Query("SELECT distance FROM RunSession WHERE sessionId = :sessionId")
     suspend fun getRunSessionDistanceById(sessionId: Int): Float
 
-    @Query("SELECT sessionId FROM RunSession WHERE isActive = TRUE LIMIT 1")
-    suspend fun getCurrentRunSession(isActive: Boolean): RunSession?
+    @Query("SELECT * FROM RunSession WHERE isActive = TRUE LIMIT 1")
+    suspend fun getCurrentRunSession(): RunSession?
 
     @Query("UPDATE RunSession SET runDate = :runDate WHERE sessionId = :sessionId ")
     suspend fun setRunDate(sessionId: Int, runDate: String)

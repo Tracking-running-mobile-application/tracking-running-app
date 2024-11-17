@@ -5,27 +5,36 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.app.java.trackingrunningapp.ui.data.entities.Notification
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
 @Dao
 interface NotificationDao {
+    @Query("SELECT * FROM Notification WHERE notificationId = :notificationId")
+    suspend fun getNotificationByNotificationId(notificationId: Int): Notification?
+
     @Query("SELECT * FROM Notification WHERE sessionId = :sessionId")
-    suspend fun getNotificationBySessionId(sessionId: Int): Notification
+    suspend fun getNotificationBySessionId(sessionId: Int): Notification?
 
     @Query("""
         UPDATE Notification
         SET 
+            sessionId = :sessionId,
             title = :title,
             message = :message,
-            notificationType = :notificationType
+            notificationType = :notificationType,
+            timeTriggred = :timeTriggered
         WHERE 
             notificationId = :notificationId
     """)
-    suspend fun partialUpdateNotification(notificationId: Int, title: String, message: String, notificationType: String)
+    suspend fun partialUpdateNotification(notificationId: Int, sessionId: Int?, title: String, message: String, notificationType: String, timeTriggered: LocalDateTime)
 
     @Delete
-    suspend fun deleteNotification(notification: Notification)
+    suspend fun deleteNotification(notificationId: Int)
 
-    @Query("UPDATE Notification SET timeTriggred = :timeTriggered WHERE notificationId = :notificationId")
-    suspend fun setTriggeredTimeByNotificationId(notificationId: Int, timeTriggered: LocalTime)
+    @Upsert
+    suspend fun upsertNotification(notification: Notification)
+
+    @Query("SELECT * FROM Notification WHERE notificationType = :notificationType")
+    suspend fun getNotificationByType(notificationType: String): Notification?
 }

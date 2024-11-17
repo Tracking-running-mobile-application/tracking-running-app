@@ -8,4 +8,5 @@ class RunSessionRepository(private val runSessionDao: RunSessionDao) {
     suspend fun filterRunningSessionByDay(startDate: String, endDate: String): Flow<List<RunSession>> {
         return runSessionDao.filterRunningSessionByDay(startDate, endDate)
     }
+
 }

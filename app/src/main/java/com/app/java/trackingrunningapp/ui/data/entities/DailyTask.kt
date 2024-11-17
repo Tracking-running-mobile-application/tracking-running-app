@@ -11,10 +11,12 @@ data class DailyTask(
     var title: String,
     var description: String,
     var estimatedTime: Float,
+    var targetDistance: Float,
     var distanceProgress: Float,
     var exerciseType: String,
     var difficulty: String,
     var lastRecommendedDate: LocalDate,
     var isShown: Boolean,
+    var isActive: Boolean,
     var isFinished: Boolean
 )

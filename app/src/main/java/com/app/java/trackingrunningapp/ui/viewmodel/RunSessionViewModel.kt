@@ -7,8 +7,14 @@ import com.app.java.trackingrunningapp.ui.data.entities.RunSession
 import com.app.java.trackingrunningapp.ui.data.repository.RunSessionRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
-class RunSessionViewModel(private val repository: RunSessionRepository): ViewModel() {
+class RunSessionViewModel(
+    private val repository: RunSessionRepository
+): ViewModel() {
     val startDate = MutableLiveData<String>()
     val endDate = MutableLiveData<String>()
     val filteredSessions = MutableLiveData<Flow<List<RunSession>>>()
@@ -21,6 +27,15 @@ class RunSessionViewModel(private val repository: RunSessionRepository): ViewMod
                 val sessions = repository.filterRunningSessionByDay(start, end)
                 filteredSessions.value = sessions
             }
+        } else {
+            println("Either or both parameters are missing!")
         }
     }
+
+    fun getCurrentDate(): LocalDate {
+        val currentMoment = Clock.System.now()
+        return currentMoment.toLocalDateTime(TimeZone.currentSystemDefault()).date
+    }
+
+    fun startRunSession()
 }
