@@ -35,53 +35,12 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tv24"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Distance"
-                android:textColor="@color/text_shadow_white"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="@+id/img2"
-                app:layout_constraintStart_toStartOf="@+id/img2"
-                app:layout_constraintTop_toBottomOf="@+id/img2" />
-
-            <TextView
-                android:id="@+id/tv_total_distance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="24dp"
-                android:text="13,49"
-                android:textColor="@color/main_yellow"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@+id/tv24"
-                app:layout_constraintStart_toStartOf="@+id/tv24"
-                app:layout_constraintTop_toBottomOf="@+id/tv24" />
-
-            <TextView
-                android:id="@+id/tev26"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginBottom="2dp"
-                android:text="km"
-                android:textColor="@color/main_gray"
-                android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/tv_total_distance"
-                app:layout_constraintStart_toEndOf="@+id/tv_total_distance" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <include
-        android:id="@+id/include"
-        layout="@layout/item_profile_layout"
-        android:layout_width="0dp"
+    <Button
+        android:id="@+id/btn_setting"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_profile"
-        android:textAppearance="@style/TextAppearance.AppCompat.Display3"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="193dp"
+        android:text="Button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
