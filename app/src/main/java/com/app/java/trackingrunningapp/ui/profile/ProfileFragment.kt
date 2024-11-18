@@ -30,7 +30,6 @@ class ProfileFragment : Fragment() {
             requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         }
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
-
     }
 
 
