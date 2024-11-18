@@ -5,56 +5,68 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.Toast
 import com.app.java.trackingrunningapp.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [SettingFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
+@Suppress("UNREACHABLE_CODE")
 class SettingFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var spinner1: Spinner
+    private lateinit var spinner2: Spinner
+    private lateinit var spinner3: Spinner
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_setting, container, false)
-    }
+        val view = inflater.inflate(R.layout.fragment_setting, container, false)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SettingFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SettingFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        spinner1 = view.findViewById(R.id.theme)
+        var themeItems = listOf("Light Theme", "Dark Theme", "Custom Theme", "High Contrast Theme", "Material Design Theme", "Flat Design Theme", "Syntax Highlighting Themes", "IDE Themes", "Debugger Themes", "Feature-Based Themes", "Module-Specific Themes", "Mobile vs. Desktop Themes", "E-commerce Theme", "Gaming Theme", "Health and Fitness Theme", "Educational Theme")
+        var themeAdapter = ArrayAdapter(requireContext(),R.layout.item_setting_theme,themeItems)
+        themeAdapter.setDropDownViewResource(R.layout.item_setting_theme)
+        spinner1.adapter = themeAdapter
+        spinner1.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position) as String
+                Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
             }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        })
+
+        spinner2 = view.findViewById(R.id.unit)
+        val unitItems = listOf("Millimeter (mm)", "Centimeter (cm)", "Meter (m)", "Kilometer (km)", "Inch (in)", "Foot (ft)", "Yard (yd)", "Mile (mi)", "Nautical Mile (nmi)")
+        var unitAdapter = ArrayAdapter(requireContext(),R.layout.item_setting_unit,unitItems)
+        unitAdapter.setDropDownViewResource(R.layout.item_setting_unit)
+        spinner2.adapter = unitAdapter
+        spinner2.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position) as String
+                Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        })
+
+        spinner3 = view.findViewById(R.id.language)
+        var languageItems = listOf("English", "German", "French", "Spanish", "Italian", "Japanese", "Chinese", "Korean", "Portuguese", "Russian")
+        var languageAdapter = ArrayAdapter(requireContext(),R.layout.item_setting_language,languageItems)
+        languageAdapter.setDropDownViewResource(R.layout.item_setting_language)
+        spinner3.adapter = languageAdapter
+        spinner3.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
+                val selectedItem = parent.getItemAtPosition(position) as String
+                Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+            }
+        })
+    return view
     }
 }

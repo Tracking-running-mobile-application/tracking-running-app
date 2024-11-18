@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentProfileBinding
-import com.db.williamchart.view.BarChartView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 
