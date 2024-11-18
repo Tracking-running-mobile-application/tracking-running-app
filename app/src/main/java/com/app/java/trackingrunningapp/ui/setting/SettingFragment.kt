@@ -32,13 +32,12 @@ class SettingFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val selectedItem = parent.getItemAtPosition(position) as String
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         })
 
         spinner2 = view.findViewById(R.id.unit)
-        val unitItems = listOf("Minutes per mile","Minutes per kilometer (Pace)")
+        val unitItems = listOf("Minutes per mile","Minutes per kilometer")
         var unitAdapter = ArrayAdapter(requireContext(),R.layout.item_setting_unit,unitItems)
         unitAdapter.setDropDownViewResource(R.layout.item_setting_unit)
         spinner2.adapter = unitAdapter
@@ -46,7 +45,6 @@ class SettingFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val selectedItem = parent.getItemAtPosition(position) as String
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         })
@@ -60,7 +58,6 @@ class SettingFragment : Fragment() {
             override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val selectedItem = parent.getItemAtPosition(position) as String
             }
-
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         })
