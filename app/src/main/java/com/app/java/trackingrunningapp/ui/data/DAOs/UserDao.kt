@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM user")
-    fun getUserInfo(): Flow<List<User>>
+    @Query("SELECT * FROM User LIMIT 1")
+    fun getUserInfo(): User?
 
     @Upsert
     suspend fun upsertUserInfo(user: User)

@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter
 
 class LocalTimeConverter {
     private val timeFormatter = DateTimeFormatter.ISO_LOCAL_TIME
-    private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
 
     @TypeConverter
     fun fromLocalTime(time: LocalTime): String {
@@ -28,6 +28,7 @@ class LocalTimeConverter {
         return date.toJavaLocalDate().format(dateFormatter)
     }
 
+    @TypeConverter
     fun toLocalDate(dateString: String): LocalDate {
         return java.time.LocalDate.parse(dateString, dateFormatter).toKotlinLocalDate()
     }

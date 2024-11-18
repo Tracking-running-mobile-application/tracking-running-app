@@ -2,46 +2,63 @@ package com.app.java.trackingrunningapp.ui.data.repository
 
 import com.app.java.trackingrunningapp.ui.data.DAOs.RunSessionDao
 import com.app.java.trackingrunningapp.ui.data.DAOs.TrainingPlanDao
+import com.app.java.trackingrunningapp.ui.data.converters.LocalTimeConverter
+import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
+import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.minus
 
 class TrainingPlanRepository(
     private val trainingPlanDao: TrainingPlanDao,
     private val runSessionDao: RunSessionDao
 ) {
-    suspend fun calcDistanceProgress(planId: Int): Float {
-        val currentRunSession = runSessionDao.getCurrentRunSession()
-        val currentTrainingPlan = trainingPlanDao.getCurrentTrainingPlan()
-        val distanceCovered = currentRunSession?.distance ?: 0f
-        val targetDistance = currentTrainingPlan?.targetDistance ?: 0f
-        var distanceProgress = currentTrainingPlan?.distanceProgress ?: 0f
+    private var lastFetchDate = DateTimeUtils.getCurrentDate()
 
-        if (distanceCovered > 0f) {
-            distanceProgress = (distanceCovered / targetDistance) * 100
-        } else {
-            println("Warning: This run is not being attached to any run session yet!")
+    suspend fun updateTrainingPlanRecommendation(limit: Int = 4): List<TrainingPlan> {
+        val today = DateTimeUtils.getCurrentDate()
+
+        if (today.minus(1, DateTimeUnit.DAY) == lastFetchDate) {
+           lastFetchDate = today
+           return trainingPlanDao.getTrainingPlansNotShownSince(today.minus(7, DateTimeUnit.DAY), limit)
         }
 
-        trainingPlanDao.updateDistanceProgress(planId, distanceProgress)
-
-        return distanceProgress
+        return emptyList()
     }
 
-    suspend fun finishTrainingPlan(planId: Int) {
-        trainingPlanDao.finishTrainingPlan(planId)
+    suspend fun createTrainingPlan(
+        title: String,
+        description: String,
+        estimatedTime: Float,
+        targetDistance: Float,
+        targetDuration: Float,
+        targetCaloriesBurned: Float,
+        exerciseType: String,
+        difficulty: String
+    ) {
+        val currentRunSession = runSessionDao.getCurrentRunSession()
+
+        if (currentRunSession != null) {
+            trainingPlanDao.updatePartialTrainingPlan(
+                planId = 0,
+                sessionId = currentRunSession.sessionId,
+                title = title,
+                description = description,
+                estimatedTime = estimatedTime,
+                targetDistance = targetDistance,
+                targetDuration = targetDuration,
+                targetCaloriesBurned = targetCaloriesBurned,
+                exerciseType = exerciseType,
+                difficulty = difficulty
+            )
+        } else {
+            println("No run session found to be connected to this goal yet!");
+        }
     }
 
-    suspend fun showTrainingPlan(planId: Int) {
-        trainingPlanDao.showTrainingPlan(planId)
-    }
+    /*add func to calc progress*/
 
-    suspend fun hideTrainingPlan(planId: Int) {
-        trainingPlanDao.hideTrainingPlan(planId)
-    }
-
-    suspend fun startTrainingPlan(planId: Int) {
-        trainingPlanDao.activeTrainingPlan(planId)
-    }
-
-    suspend fun stopTrainingPlan(planId: Int) {
-        trainingPlanDao.unactiveTrainingPlan(planId)
+    suspend fun deleteTrainingPlan(planId: Int) {
+        trainingPlanDao.deleteTrainingPlan(planId)
     }
 }

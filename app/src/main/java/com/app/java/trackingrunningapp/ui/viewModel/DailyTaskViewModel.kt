@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.viewmodel
+package com.app.java.trackingrunningapp.ui.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

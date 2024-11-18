@@ -19,14 +19,11 @@ interface RunSessionDao {
     @Query("SELECT * FROM RunSession ORDER BY runDate DESC")
     suspend fun getAllRunSessions(): Flow<List<RunSession>>
 
-    @Query("SELECT distance FROM RunSession WHERE sessionId = :sessionId")
-    suspend fun getRunSessionDistanceById(sessionId: Int): Float
-
     @Query("SELECT * FROM RunSession WHERE isActive = TRUE LIMIT 1")
     suspend fun getCurrentRunSession(): RunSession?
 
-    @Query("UPDATE RunSession SET runDate = :runDate WHERE sessionId = :sessionId ")
-    suspend fun setRunDate(sessionId: Int, runDate: String)
+    @Query("SELECT * FROM RUNSESSION WHERE sessionId = :sessionId")
+    suspend fun getRunSessionById(sessionId: Int): RunSession?
 
     @Query(
         """
@@ -48,7 +45,10 @@ interface RunSessionDao {
         pace: Float
     )
 
-    @Query("UPDATE RunSession SET isActive = TRUE, endTime = :endTime WHERE sessionId = :sessionId")
+    @Query("UPDATE RunSession SET isActive = TRUE, startTime = :startTime, runDate = :runDate WHERE sessionId = :sessionId")
+    suspend fun startRunSession(sessionId: Int, startTime: LocalTime, runDate: String)
+
+    @Query("UPDATE RunSession SET isActive = FALSE, endTime = :endTime WHERE sessionId = :sessionId")
     suspend fun finishRunSession(sessionId: Int, endTime: LocalTime)
 
     @Query(

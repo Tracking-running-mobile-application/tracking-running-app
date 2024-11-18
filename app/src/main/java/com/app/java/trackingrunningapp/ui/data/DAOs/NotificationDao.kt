@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Upsert
 import com.app.java.trackingrunningapp.ui.data.entities.Notification
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 
@@ -35,6 +36,6 @@ interface NotificationDao {
     @Upsert
     suspend fun upsertNotification(notification: Notification)
 
-    @Query("SELECT * FROM Notification WHERE notificationType = :notificationType")
-    suspend fun getNotificationByType(notificationType: String): Notification?
+    @Query("SELECT * FROM Notification ORDER BY notificationId DESC")
+    suspend fun getAllNotification(): Flow<List<Notification>>
 }

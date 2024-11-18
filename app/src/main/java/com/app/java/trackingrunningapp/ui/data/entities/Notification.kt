@@ -15,7 +15,7 @@ import kotlinx.datetime.LocalTime
             onDelete = ForeignKey.CASCADE
         )
     ]
-    /*currently not include sessionId as FK for the sake of simplicity*/
+    /*include fk of goalId in the future to send a noti when progress reach 100% */
 )
 data class Notification(
     @PrimaryKey(autoGenerate = true)

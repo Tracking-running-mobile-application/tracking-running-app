@@ -1,15 +1,27 @@
 package com.app.java.trackingrunningapp.ui.data.entities
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(
+    foreignKeys = [
+        ForeignKey(
+            entity = RunSession::class,
+            parentColumns = ["sessionId"],
+            childColumns = ["sessionId"]
+        )
+    ]
+)
 data class PersonalGoal(
     @PrimaryKey(autoGenerate = true)
     val goalId: Int = 0,
-    val targetDistance: Float,
-    val targetDuration: Float,
-    val goalProgress: Float,
-    val isAchieved: Boolean,
-    val frequency: String
+    val sessionId : Int,
+    var targetDistance: Float?,
+    var targetDuration: Float?,
+    var targetCaloriesBurned: Float?,
+    var goalProgress: Float = 0f,
+    var isAchieved: Boolean = false,
+    var frequency: String,
+    var dateCreated: String
 )
