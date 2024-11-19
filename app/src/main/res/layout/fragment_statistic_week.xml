@@ -3,36 +3,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
+    android:background="@color/main_background"
     android:layout_height="match_parent">
 
     <com.db.williamchart.view.BarChartView
         android:id="@+id/barchart"
         android:layout_width="0dp"
+        android:layout_height="@dimen/bar_chart_height"
+        android:layout_marginStart="@dimen/margin_8"
+        android:layout_marginTop="@dimen/margin_top_16"
+        android:layout_marginEnd="@dimen/margin_8"
         android:background="@drawable/barchart_background"
         android:padding="16dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         app:chart_barsColor="#353331"
         app:chart_barsRadius="8dp"
+        app:chart_labelsSize="14sp"
         app:chart_lineColor="@color/black"
-        app:chart_labelsSize= "14sp"
         app:chart_spacing="28dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/text_statistic_week" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/text_statistic_week"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Today, Nov 3"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@+id/barchart"
+        android:layout_marginTop="@dimen/margin_top_16"
+        android:fontFamily="sans-serif"
+        android:text="@string/text_statistic_week"
+        android:textColor="@color/white"
+        android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/barchart"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

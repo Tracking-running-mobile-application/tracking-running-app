@@ -8,4 +8,9 @@
     <dimen name="margin_end">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="margin_top_8">8dp</dimen>
+    <dimen name="margin_8">8dp</dimen>
+    <dimen name="bar_chart_height">200dp</dimen>
+    <dimen name="margin_16">16dp</dimen>
+    <dimen name="statistic_button_width">180dp</dimen>
+    <dimen name="statistic_button_height">100dp</dimen>
 </resources>

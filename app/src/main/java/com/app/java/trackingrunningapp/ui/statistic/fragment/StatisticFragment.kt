@@ -1,12 +1,14 @@
-package com.app.java.trackingrunningapp.ui.statistic
+package com.app.java.trackingrunningapp.ui.statistic.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentStatisticBinding
+import com.app.java.trackingrunningapp.ui.statistic.adapter.PagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 class StatisticFragment : Fragment() {
