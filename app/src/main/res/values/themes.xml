@@ -11,4 +11,8 @@
         <item name="colorPrimary">#EEFF01</item>
     </style>
 
+    <style name="MediumButton" parent="Theme.TrackingRunningApp">
+        <item name="colorPrimary">#131313</item>
+    </style>
+
 </resources>

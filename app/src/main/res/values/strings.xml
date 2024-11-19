@@ -33,4 +33,5 @@
     <string name="text_statistic_week">4th Week</string>
     <string name="text_statistic_today">Today, Nov 3</string>
     <string name="text_statistic_month">November</string>
+    <string name="icon_week">Icon Week</string>
 </resources>

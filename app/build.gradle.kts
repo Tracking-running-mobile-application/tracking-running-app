@@ -38,8 +38,10 @@ android {
         viewBinding = true
     }
 }
+
 dependencies {
     implementation(libs.barchart)
+    implementation(libs.image.slider)
     implementation(libs.navigation.ui)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.runtime)
