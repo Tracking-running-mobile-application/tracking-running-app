@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.runPage
+package com.app.java.trackingrunningapp.ui.run_page
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.ui.runPage.MetricItemAdapter.MetricViewHolder
+import com.app.java.trackingrunningapp.ui.run_page.MetricItemAdapter.MetricViewHolder
 
 class MetricItemAdapter(private val MetricItems: List<MetricItem>) :
     RecyclerView.Adapter<MetricViewHolder>() {

@@ -13,7 +13,7 @@
         android:layout_marginStart="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_top_16"
         android:layout_marginEnd="@dimen/margin_8"
-        android:background="@drawable/barchart_background"
+        android:background="@drawable/background_barchart"
         android:padding="16dp"
         app:chart_barsColor="#353331"
         app:chart_barsRadius="8dp"

@@ -1,21 +1,17 @@
 package com.app.java.trackingrunningapp.ui
 
 import android.os.Bundle
-import android.widget.Button
 import android.view.View
 import android.widget.TextView
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.MenuHost
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.ActivityMainBinding
-import com.app.java.trackingrunningapp.ui.runPage.RunPageFragment
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

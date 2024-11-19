@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.feature_dailyTask
+package com.app.java.trackingrunningapp.ui.home.daily_tasks
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,7 +11,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import com.app.java.trackingrunningapp.R
 
-class DailyTask : Fragment() {
+class DailyTaskFragment : Fragment() {
     private lateinit var spinner: Spinner
 
     override fun onCreateView(

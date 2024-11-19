@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.runPage
+package com.app.java.trackingrunningapp.ui.run_page
 
 import android.Manifest
 import android.content.Intent

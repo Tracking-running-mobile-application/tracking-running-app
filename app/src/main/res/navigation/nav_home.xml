@@ -21,11 +21,11 @@
     <fragment
         android:id="@+id/trainingPlans"
         tools:layout="@layout/fragment_training_plans"
-        android:name="com.app.java.trackingrunningapp.ui.training.TrainingPlans"
+        android:name="com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment"
         android:label="TrainingPlans" />
     <fragment
         android:id="@+id/dailyTask"
-        android:name="com.app.java.trackingrunningapp.ui.feature_dailyTask.DailyTask"
+        android:name="com.app.java.trackingrunningapp.ui.home.daily_tasks.DailyTaskFragment"
         android:label="fragment_daily_task"
         tools:layout="@layout/fragment_daily_task" />
 

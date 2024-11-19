@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_run" />
     <fragment
         android:id="@+id/runPageFragment"
-        android:name="com.app.java.trackingrunningapp.ui.runPage.RunPageFragment"
+        android:name="com.app.java.trackingrunningapp.ui.run_page.RunPageFragment"
         tools:layout="@layout/fragment_run_page"
         android:label="RunPageFragment" />
 </navigation>

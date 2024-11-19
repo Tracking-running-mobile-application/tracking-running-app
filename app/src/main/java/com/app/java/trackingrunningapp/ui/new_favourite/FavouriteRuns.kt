@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.newfavourite
+package com.app.java.trackingrunningapp.ui.new_favourite
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

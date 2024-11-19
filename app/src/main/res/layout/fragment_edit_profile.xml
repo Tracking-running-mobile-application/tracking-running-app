@@ -129,7 +129,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="@dimen/margin_end"
         android:autofillHints=""
-        android:background="@drawable/background_edit_text"
+        android:background="@drawable/background_edit_text_profile"
         android:drawableStart="@drawable/icon_age"
         android:drawablePadding="@dimen/drawable_padding"
         android:ems="10"
@@ -147,7 +147,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:autofillHints=""
-        android:background="@drawable/background_edit_text"
+        android:background="@drawable/background_edit_text_profile"
         android:drawableStart="@drawable/ic_height"
         android:drawablePadding="8dp"
         android:ems="10"
@@ -166,7 +166,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:autofillHints=""
-        android:background="@drawable/background_edit_text"
+        android:background="@drawable/background_edit_text_profile"
         android:drawableStart="@drawable/ic_weight"
         android:drawablePadding="@dimen/drawable_padding"
         android:ems="10"
@@ -216,6 +216,12 @@
         app:layout_constraintEnd_toEndOf="@+id/edt_weight"
         app:layout_constraintStart_toStartOf="@+id/edt_weight"
         app:layout_constraintTop_toBottomOf="@+id/edt_weight" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CENTER_CROP" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
