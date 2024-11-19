@@ -19,7 +19,7 @@ class FavouriteRunAdapter(private val runList: MutableList<RunItem>) : RecyclerV
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RunViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.fav_run_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_fav_run, parent, false)
         return RunViewHolder(view)
     }
 

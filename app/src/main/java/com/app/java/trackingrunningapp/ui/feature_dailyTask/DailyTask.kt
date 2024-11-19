@@ -21,9 +21,9 @@ class DailyTask : Fragment() {
         val view = inflater.inflate(R.layout.fragment_daily_task, container, false)
         val spinner: Spinner = view.findViewById(R.id.spinner)
         val items = listOf("Every Monday", "Every Tuesday", "Every Wednesday", "Every Thursday","Every Friday","Every Saturday","Every Sunday")
-        val adapter = ArrayAdapter(requireContext(),R.layout.spinner_item, items)
+        val adapter = ArrayAdapter(requireContext(),R.layout.item_spinner, items)
 
-        adapter.setDropDownViewResource(R.layout.spinner_item)
+        adapter.setDropDownViewResource(R.layout.item_spinner)
 
         spinner.adapter = adapter
 

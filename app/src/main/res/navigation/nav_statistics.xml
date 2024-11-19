@@ -7,7 +7,16 @@
 
     <fragment
         android:id="@+id/statisticFragment"
-        android:name="com.app.java.trackingrunningapp.ui.statistic.StatisticFragment"
+        android:name="com.app.java.trackingrunningapp.ui.statistic.fragment.StatisticFragment"
         android:label="fragment_statistic"
-        tools:layout="@layout/fragment_statistic" />
+        tools:layout="@layout/fragment_statistic" >
+        <action
+            android:id="@+id/action_statisticFragment_to_statisticButtonFragment"
+            app:destination="@id/statisticButtonFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/statisticButtonFragment"
+        android:name="com.app.java.trackingrunningapp.ui.statistic.fragment.statistic_button.StatisticButtonFragment"
+        android:label="fragment_statistic_button"
+        tools:layout="@layout/fragment_statistic_button" />
 </navigation>
