@@ -11,9 +11,6 @@ interface TrainingPlanDao {
     @Delete
     suspend fun deleteTrainingPlan(planId: Int)
 
-    @Query("UPDATE TrainingPlan SET lastRecommendedDate = :lastRecommendDate WHERE planId = :planId")
-    suspend fun showTrainingPlan(planId: Int, lastRecommendDate: LocalDate)
-
     @Query("UPDATE TrainingPlan SET isFinished = TRUE WHERE planId = :planId")
     suspend fun finishTrainingPlan(planId: Int)
 
@@ -46,8 +43,8 @@ interface TrainingPlanDao {
             planId = :planId
     """
     )
-    suspend fun updatePartialTrainingPlan(planId: Int, sessionId: Int, title: String, description: String, estimatedTime: Float, targetDistance: Float, targetDuration: Float, targetCaloriesBurned: Float, exerciseType: String, difficulty: String)
+    suspend fun updatePartialTrainingPlan(planId: Int, sessionId: Int, title: String, description: String, estimatedTime: Double, targetDistance: Double, targetDuration: Double, targetCaloriesBurned: Double, exerciseType: String, difficulty: String)
 
     @Query("UPDATE TrainingPlan SET goalProgress = :goalProgress WHERE planId = :planId")
-    suspend fun updateGoalProgress(planId: Int, goalProgress: Float)
+    suspend fun updateGoalProgress(planId: Int, goalProgress: Double)
 }

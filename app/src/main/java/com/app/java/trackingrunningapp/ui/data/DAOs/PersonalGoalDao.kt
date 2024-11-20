@@ -31,10 +31,10 @@ interface PersonalGoalDao {
         WHERE
             goalId = :goalId
             """)
-    suspend fun personalGoalPartialUpdate(goalId: Int, sessionId: Int, targetDistance: Float?, targetDuration: Float?, targetCaloriesBurned: Float?, frequency: String?, dateCreated: String)
+    suspend fun personalGoalPartialUpdate(goalId: Int, sessionId: Int, targetDistance: Double?, targetDuration: Double?, targetCaloriesBurned: Double?, frequency: String?, dateCreated: String)
 
     @Query("UPDATE PersonalGoal SET goalProgress = :goalProgress WHERE goalId = :goalId")
-    suspend fun updateGoalProgress(goalId: Int, goalProgress: Float)
+    suspend fun updateGoalProgress(goalId: Int, goalProgress: Double)
 
     @Query("SELECT * FROM PersonalGoal WHERE sessionId = :sessionId LIMIT 1")
     suspend fun getPersonalGoalBySessionId(sessionId: Int): PersonalGoal?

@@ -9,15 +9,15 @@ data class User(
     val userId: Int? = 0,
     val name: String?,
     val age: Int?,
-    val gender: String? = User.female,
     val height: Float?,
-    val weight: Float?,
-    var unit: String? = User.UNIT_MILE
+    val weight: Float = 50f,
+    var metricPreference: String? = User.kilogram,
+    var unit: String? = User.UNIT_KM
 ) {
     companion object {
         const val UNIT_KM = "km"
         const val UNIT_MILE = "mile"
-        const val male = "male"
-        const val female = "female"
+        const val kilogram = "kg"
+        const val pounds = "lbs"
     }
 }

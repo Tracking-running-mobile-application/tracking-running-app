@@ -14,9 +14,9 @@ class PersonalGoalRepository(
     val convert = LocalTimeConverter()
 
     suspend fun createPersonalGoal (
-        targetDistance: Float?,
-        targetDuration: Float?,
-        targetCaloriesBurned: Float?,
+        targetDistance: Double?,
+        targetDuration: Double?,
+        targetCaloriesBurned: Double?,
         frequency: String,
     ) {
         val currentDateString = convert.fromLocalDate(DateTimeUtils.getCurrentDate())
@@ -41,18 +41,18 @@ class PersonalGoalRepository(
         personalGoalDao.deletePersonalGoal(goalId)
     }
 
-    private fun calcGoalProgress(runSession: RunSession, goal: PersonalGoal): Float {
+    private fun calcGoalProgress(runSession: RunSession, goal: PersonalGoal): Double {
         return when {
             goal.targetDistance != null -> goal.targetDistance?.let {
                 (runSession.distance / it) * 100
-            } ?: 0f
+            } ?: 0.0
             goal.targetDuration != null -> goal.targetDuration?.let {
                 (runSession.duration / it) * 100
-            } ?: 0f
+            } ?: 0.0
             goal.targetCaloriesBurned != null -> goal.targetCaloriesBurned?.let {
                 (runSession.caloriesBurned / it) * 100
-            } ?: 0f
-            else -> 0f
+            } ?: 0.0
+            else -> 0.0
         }
     }
 
@@ -67,7 +67,7 @@ class PersonalGoalRepository(
 
                 personalGoalDao.updateGoalProgress(personalGoal.goalId, progress)
 
-                if (progress >= 100f) {
+                if (progress >= 100.0) {
                     personalGoalDao.markGoalAchieved(personalGoal.goalId)
                 }
             } else {
@@ -78,5 +78,8 @@ class PersonalGoalRepository(
         }
     }
 
+    /*real-time update list*/
+    suspend fun getAllPersonalGoals() {
 
+    }
 }

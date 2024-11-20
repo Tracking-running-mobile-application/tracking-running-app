@@ -10,11 +10,11 @@ data class RunSession(
     @PrimaryKey(autoGenerate = true)
     val sessionId: Int,
     var runDate: String,
-    var startTime: LocalTime,
-    var endTime: LocalTime,
-    var distance: Float,
-    var duration: Float,
-    var pace: Float,
-    var caloriesBurned: Float,
-    var isActive: Boolean
+    var distance: Double,
+    var duration: Long,
+    var pace: Double,
+    var caloriesBurned: Double,
+    var isActive: Boolean,
+    var dateAddInFavorite: String? = null,
+    var isFavorite: Boolean = false
 )

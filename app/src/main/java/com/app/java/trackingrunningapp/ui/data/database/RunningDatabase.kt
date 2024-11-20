@@ -3,7 +3,6 @@ package com.app.java.trackingrunningapp.ui.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.app.java.trackingrunningapp.ui.data.DAOs.DailyTaskDao
 import com.app.java.trackingrunningapp.ui.data.DAOs.GPSPointDao
 import com.app.java.trackingrunningapp.ui.data.DAOs.GPSTrackDao
 import com.app.java.trackingrunningapp.ui.data.converters.LocalTimeConverter
@@ -20,7 +19,6 @@ import com.app.java.trackingrunningapp.ui.data.entities.WeeklyStats
 import com.app.java.trackingrunningapp.ui.data.DAOs.WeeklyStatsDao
 import com.app.java.trackingrunningapp.ui.data.entities.YearlyStats
 import com.app.java.trackingrunningapp.ui.data.DAOs.YearlyStatsDao
-import com.app.java.trackingrunningapp.ui.data.entities.DailyTask
 import com.app.java.trackingrunningapp.ui.data.entities.GPSPoint
 import com.app.java.trackingrunningapp.ui.data.entities.GPSTrack
 import com.app.java.trackingrunningapp.ui.data.entities.Notification
@@ -37,7 +35,6 @@ import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
             YearlyStats::class,
             RunSession::class,
             TrainingPlan::class,
-            DailyTask::class,
             GPSPoint::class,
             GPSTrack::class,
             Notification::class,
@@ -53,7 +50,6 @@ abstract class RunningDatabase: RoomDatabase() {
     abstract val yearlyStatsDao: YearlyStatsDao
     abstract val runSessionDao: RunSessionDao
     abstract val trainingPlanDao: TrainingPlanDao
-    abstract val dailyTaskDao: DailyTaskDao
     abstract val GPSTrackDao: GPSTrackDao
     abstract val GPSPointDao: GPSPointDao
     abstract val notificationDao: NotificationDao

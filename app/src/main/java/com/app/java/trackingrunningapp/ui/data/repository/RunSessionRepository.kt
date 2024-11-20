@@ -6,81 +6,165 @@ import com.app.java.trackingrunningapp.ui.data.converters.LocalTimeConverter
 import com.app.java.trackingrunningapp.ui.data.entities.RunSession
 import com.app.java.trackingrunningapp.ui.data.entities.User
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
-import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.LocalDate
-import kotlinx.datetime.LocalTime
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlin.time.times
 
 class RunSessionRepository(
     private val runSessionDao: RunSessionDao,
-    private val userDao: UserDao
+    userDao: UserDao
 ) {
     val convert = LocalTimeConverter()
 
-    suspend fun filterRunningSessionByDay(startDate: String, endDate: String): Flow<List<RunSession>> {
+    val userInfo = userDao.getUserInfo()
+
+    private val _currentRunSession = MutableStateFlow<RunSession?>(null)
+    val currentRunSession: StateFlow<RunSession?> = _currentRunSession
+
+    private var offset: Int = 20
+    private var limit: Int = 0
+
+
+    private fun getCurrentSessionOrThrow(): RunSession {
+        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null!")
+    }
+
+    private suspend fun initializeCurrentRunSession() {
+        val currentRunSession = runSessionDao.getCurrentRunSession()
+        if (currentRunSession != null) {
+            _currentRunSession.emit(currentRunSession)
+        } else {
+            println("No run session to initialize with!")
+        }
+    }
+
+    suspend fun filterRunningSessionByDay(startDate: String, endDate: String): List<RunSession> {
         return runSessionDao.filterRunningSessionByDay(startDate, endDate)
     }
 
-    suspend fun getAllRunSessions(): Flow<List<RunSession>> {
-         return runSessionDao.getAllRunSessions()
+    suspend fun getAllRunSessions(fetchMore: Boolean = false): Pair<List<RunSession>, Boolean> {
+        if( !fetchMore ) {
+            offset = 0
+        }
+        val sessionList = runSessionDao.getAllRunSessions(limit, offset)
+        offset += sessionList.size
+
+        val hasMoreData = sessionList.size == limit
+
+        return Pair(runSessionDao.getAllRunSessions(limit, offset), hasMoreData)
+    }
+
+    suspend fun getFavoriteRunSessions(): List<RunSession> {
+        return runSessionDao.getAllFavoriteRunSessions()
+    }
+
+    suspend fun refreshRunSessionHistory(): List<RunSession> {
+        offset = 0
+        return runSessionDao.getAllRunSessions(limit, offset)
     }
 
     suspend fun deleteRunSession(sessionId: Int) {
          runSessionDao.deleteRunSession(sessionId)
     }
 
-    suspend fun startRunSession(sessionId: Int) {
-        val startTime = DateTimeUtils.getCurrentTime()
+    suspend fun startRunSession() {
         val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())
+        val currentSession = getCurrentSessionOrThrow()
+        runSessionDao.startRunSession(currentSession.sessionId, runDate)
 
-        runSessionDao.startRunSession(sessionId, startTime, runDate)
+        initializeCurrentRunSession()
     }
 
-    /*maybe merge pause with this?*/
-    suspend fun finishRunSession(sessionId: Int) {
-        val endTime = DateTimeUtils.getCurrentTime()
+    suspend fun finishRunSession() {
+        val currentSession = getCurrentSessionOrThrow()
+        runSessionDao.finishRunSession(currentSession.sessionId)
 
-         runSessionDao.finishRunSession(sessionId, endTime)
+        initializeCurrentRunSession()
     }
 
-    suspend fun updateRunSession(distance: Float, duration: Float, caloriesBurned: Float) {
-        /*very likely we gonna take the gps by every few seconds, thus the val*/
-        val durationInMinutes = duration / 60
+    suspend fun addFavoriteRunSession(sessionId: Int) {
+        val currentDayInString = DateTimeUtils.fromLocalDateTime(DateTimeUtils.getCurrentDateTime())
+        runSessionDao.addFavoriteRunSession(sessionId, currentDayInString)
+    }
 
-        val userInfo = userDao.getUserInfo()
+    suspend fun removeFavoriteRunSession(sessionId: Int) {
+        runSessionDao.removeFavoriteRunSession(sessionId)
+    }
+
+    suspend fun updatePaceRunSession(): Double {
+        val currentSession = getCurrentSessionOrThrow()
+
         val userUnitPreference = userInfo?.unit
 
-        val adjustedDistance = when (userUnitPreference) {
-            User.UNIT_MILE -> distance * 0.621371f
-            else -> distance
+        val durationInMinutes = currentSession.duration / 60
+
+        val adjustedDistance: Double = when (userUnitPreference) {
+            User.UNIT_MILE -> currentSession.distance * 0.621371f
+            else -> currentSession.distance
         }
 
-        val pace = if (adjustedDistance > 0) {
+        val pace: Double = if (adjustedDistance > 0) {
             durationInMinutes / adjustedDistance
         } else {
-            0f
+            0.0
         }
 
-        val currentRunSession = runSessionDao.getCurrentRunSession()
+        runSessionDao.updatePaceSession(
+            sessionId = currentSession.sessionId,
+            pace = pace
+        )
 
-        if (currentRunSession != null) {
-            runSessionDao.updateStatsSession(
-                sessionId = currentRunSession.sessionId,
-                distance = adjustedDistance,
-                duration = duration,
-                caloriesBurned = caloriesBurned,
-                pace = pace
-            )
-        } else {
-            println("No current run session found!");
-        }
-    }
-
-    suspend fun getCurrentRunSession(): RunSession? {
-        return runSessionDao.getCurrentRunSession()
+        return pace
     }
 
     /*add in the viewmodel in the future to see run session detail*/
     suspend fun getRunSessionById(sessionId: Int): RunSession? {
         return runSessionDao.getRunSessionById(sessionId)
     }
+
+    suspend fun updateCaloriesBurnedSession(): Double {
+        val userMetricPreference: String? = userInfo?.metricPreference
+        val unit: String? = userInfo?.unit
+
+        val currentSession = getCurrentSessionOrThrow()
+
+        val adjustedWeight = when (userMetricPreference) {
+            User.pounds -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
+            else -> userInfo?.weight ?: 50.0
+        }
+
+        val adjustedPace: Double = when (unit) {
+            User.UNIT_MILE -> currentSession.pace / 1.609344
+            else -> currentSession.pace
+        }
+
+        val speedMetersPerSec: Double = 1000.0 / (adjustedPace * 60.0)
+
+        val durationInHours = currentSession.duration / 3600.0
+
+        val MET = when {
+            speedMetersPerSec < 2.0 -> 0.5 + (speedMetersPerSec * 0.3)
+            speedMetersPerSec >= 2.0 -> 1.0 + (speedMetersPerSec * 0.9)
+            else -> 0.0
+        }
+
+        val caloriesBurnedPerHour = MET * adjustedWeight.toDouble()
+        val caloriesBurned = caloriesBurnedPerHour * durationInHours
+
+        runSessionDao.updateCaloriesBurnedSession(
+            sessionId = currentSession.sessionId,
+            caloriesBurned = caloriesBurned
+        )
+
+        return caloriesBurned
+    }
+
+    suspend fun updateDurationSession(duration: Long) {
+        val currentSession = getCurrentSessionOrThrow()
+        runSessionDao.updateDurationSession(currentSession.sessionId, duration)
+    }
+
+    suspend fun updateDistanceSession() {
+    }
+
 }

@@ -17,10 +17,10 @@ data class PersonalGoal(
     @PrimaryKey(autoGenerate = true)
     val goalId: Int = 0,
     val sessionId : Int,
-    var targetDistance: Float?,
-    var targetDuration: Float?,
-    var targetCaloriesBurned: Float?,
-    var goalProgress: Float = 0f,
+    var targetDistance: Double?,
+    var targetDuration: Double?,
+    var targetCaloriesBurned: Double?,
+    var goalProgress: Double = 0.0,
     var isAchieved: Boolean = false,
     var frequency: String,
     var dateCreated: String
