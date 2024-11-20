@@ -1,4 +1,5 @@
 <resources>
+    <string name="map_api_key">AIzaSyCsKpfGXkx5yiGBttWrlytOnZyfwDzd_SM</string>
     <string name="app_name">Tracking Running App</string>
     <string name="intro_title">Running\nApplication</string>
     <string name="text_get_started">GET STARTED\t</string>

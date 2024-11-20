@@ -9,5 +9,14 @@
         android:id="@+id/historyFragment"
         android:name="com.app.java.trackingrunningapp.ui.history.HistoryFragment"
         android:label="fragment_history"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history" >
+        <action
+            android:id="@+id/action_historyFragment_to_runFragment2"
+            app:destination="@id/runFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/runFragment2"
+        android:name="com.app.java.trackingrunningapp.ui.run.RunFragment"
+        android:label="fragment_run"
+        tools:layout="@layout/fragment_run" />
 </navigation>

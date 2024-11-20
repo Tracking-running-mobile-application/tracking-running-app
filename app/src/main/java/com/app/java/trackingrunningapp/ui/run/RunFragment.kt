@@ -6,55 +6,51 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.PolylineOptions
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RunFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class RunFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+class RunFragment : Fragment(),OnMapReadyCallback {
+    private lateinit var binding: FragmentRunBinding
+    private var mGoogleMap: GoogleMap? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_run, container, false)
+    ): View {
+        binding = FragmentRunBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RunFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RunFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val supportMapFragment = childFragmentManager.findFragmentById(R.id.fragment_map) as SupportMapFragment?
+//        mapFragment.getMapAsync(this)
+        supportMapFragment?.getMapAsync(this)
+    }
+
+    override fun onMapReady(p0: GoogleMap) {
+        mGoogleMap = p0
+        val sydney = LatLng(21.0481,105.8012)
+        val markerOptions = MarkerOptions().position(sydney).title("Marked in Sydney")
+        mGoogleMap?.addMarker(markerOptions)
+        mGoogleMap?.mapType = GoogleMap.MAP_TYPE_TERRAIN
+        mGoogleMap?.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney,15f))
+        mGoogleMap?.moveCamera(CameraUpdateFactory.zoomTo(15f))
+        mGoogleMap?.uiSettings?.isZoomControlsEnabled = true
+        mGoogleMap?.uiSettings?.isCompassEnabled = true
+        mGoogleMap?.uiSettings?.isZoomGesturesEnabled = true
+
+        val polylineOptions = PolylineOptions()
+            .add( LatLng(21.0481, 105.8012),
+                LatLng(21.0450, 105.7922))
+
+        val polyline = mGoogleMap?.addPolyline(polylineOptions)
+
     }
 }

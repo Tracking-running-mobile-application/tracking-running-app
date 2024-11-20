@@ -13,6 +13,7 @@ constraintlayout = "2.1.4"
 navigation = "2.6.0"
 barchart = "3.10.1"
 image-slider = "0.1.2"
+playServicesMaps = "19.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,6 +32,7 @@ navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime
 barchart = { group = "com.diogobernardino", name = "williamchart", version.ref = "barchart" }
 #image slider
 image-slider = { group = "com.github.denzcoskun", name = "ImageSlideshow", version.ref = "image-slider" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
