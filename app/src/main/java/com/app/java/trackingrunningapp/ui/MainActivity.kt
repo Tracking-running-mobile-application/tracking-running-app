@@ -3,6 +3,7 @@ package com.app.java.trackingrunningapp.ui
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -43,11 +44,14 @@ class MainActivity : AppCompatActivity() {
             val tvTitle: TextView = binding.tvToolbarTitle
             if(destination.id == R.id.homeFragment){
                 tvTitle.text = getString(R.string.text_home)
-//                binding.imgIcSettings.visibility = View.VISIBLE
+                icSettings.isVisible = true
+                icFilter.isVisible = false
                 binding.toolbarMain.setNavigationIcon(R.drawable.ic_notification)
+                binding.toolbarMain.setNavigationOnClickListener {
+                    // TODO: do something with notification
+                    Toast.makeText(this,"Notification",Toast.LENGTH_SHORT).show()
+                }
             }else{
-//                binding.imgIcSettings.visibility = View.GONE
-//                binding.imgIcFilter?.visibility = View.VISIBLE
                 icFilter.isVisible = false
                 icSettings.isVisible = false
                 binding.toolbarMain.setNavigationIcon(R.drawable.ic_arrow_back_24)
