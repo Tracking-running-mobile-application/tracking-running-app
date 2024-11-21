@@ -23,20 +23,12 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         initNavHost()
-
     }
 
     private fun initNavHost() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(binding.navHostFragment.id) as NavHostFragment
         navController = navHostFragment.navController
-
-//        appBarConfiguration = AppBarConfiguration(
-//            navController.graph
-//        )
-//        setupActionBarWithNavController(navController,appBarConfiguration)
-        // setup bottom navigation
-
         val bottomNav = binding.bottomNav
         bottomNav.setupWithNavController(navController)
 
@@ -44,19 +36,15 @@ class MainActivity : AppCompatActivity() {
             setOf(R.id.homeFragment, R.id.profileFragment, R.id.statisticFragment)
         )
 
-//        setSupportActionBar(binding.toolbar)
-//        binding.toolbar.setupWithNavController(navController,appBarConfiguration)
-//
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val tvTitle: TextView = binding.tvToolbarTitle
             if(destination.id == R.id.homeFragment){
                 tvTitle.text = getString(R.string.text_home)
-                binding.imgIcSettings.visibility = View.VISIBLE
-                // TODO: set action for settings
+//                binding.imgIcSettings.visibility = View.VISIBLE
                 binding.toolbarMain.setNavigationIcon(R.drawable.ic_notification)
-                // TODO: set action for notification
             }else{
-                binding.imgIcSettings.visibility = View.GONE
+//                binding.imgIcSettings.visibility = View.GONE
+//                binding.imgIcFilter?.visibility = View.VISIBLE
                 binding.toolbarMain.setNavigationIcon(R.drawable.ic_arrow_back_24)
                 binding.toolbarMain.setNavigationOnClickListener {
                     onBackPressedDispatcher.onBackPressed()
