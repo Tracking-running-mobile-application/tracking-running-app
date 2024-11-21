@@ -3,28 +3,19 @@ package com.app.java.trackingrunningapp.ui.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
-import com.app.java.trackingrunningapp.ui.data.repository.NotificationRepository
-import com.app.java.trackingrunningapp.ui.data.repository.RunSessionRepository
-import com.app.java.trackingrunningapp.ui.data.repository.TrainingPlanRepository
+import com.app.java.trackingrunningapp.ui.data.repositories.NotificationRepository
+import com.app.java.trackingrunningapp.ui.data.repositories.RunSessionRepository
+import com.app.java.trackingrunningapp.ui.data.repositories.TrainingPlanRepository
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 
 class TrainingPlanViewModel(
     private val trainingPlanRepository: TrainingPlanRepository,
     private val notificationRepository: NotificationRepository,
     private val runSessionRepository: RunSessionRepository
 ): ViewModel() {
-    var updateJob : Job? = null
-
     private val _recommendedPlans = MutableStateFlow<List<TrainingPlan>>(emptyList())
     val recommendedPlans : StateFlow<List<TrainingPlan>> = _recommendedPlans
 
@@ -86,7 +77,7 @@ class TrainingPlanViewModel(
                 if (session == null) {
                     trainingPlanRepository.stopTrainingPlan()
                 } else {
-                    trainingPlanRepository.startTrainingPlan(session.sessionId)
+                    trainingPlanRepository.startTrainingPlan()
                 }
             }
         }

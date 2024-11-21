@@ -4,9 +4,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.ui.data.entities.RunSession
-import com.app.java.trackingrunningapp.ui.data.repository.PersonalGoalRepository
-import com.app.java.trackingrunningapp.ui.data.repository.RunSessionRepository
-import com.app.java.trackingrunningapp.ui.data.repository.TrainingPlanRepository
+import com.app.java.trackingrunningapp.ui.data.repositories.PersonalGoalRepository
+import com.app.java.trackingrunningapp.ui.data.repositories.RunSessionRepository
+import com.app.java.trackingrunningapp.ui.data.repositories.TrainingPlanRepository
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 
 class RunSessionViewModel(

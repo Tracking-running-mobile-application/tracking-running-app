@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.data.repository
+package com.app.java.trackingrunningapp.ui.data.repositories
 
 import com.app.java.trackingrunningapp.ui.data.DAOs.MonthlyStatsDao
 import com.app.java.trackingrunningapp.ui.data.DAOs.WeeklyStatsDao

@@ -17,7 +17,7 @@ import java.time.LocalDate
 data class TrainingPlan(
     @PrimaryKey(autoGenerate = true)
     val planId: Int = 0,
-    val sessionId: Int,
+    val sessionId: Int?,
     var title: String,
     var description: String,
     var estimatedTime: Double,

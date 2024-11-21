@@ -3,7 +3,7 @@ package com.app.java.trackingrunningapp.ui.viewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.ui.data.entities.User
-import com.app.java.trackingrunningapp.ui.data.repository.UserRepository
+import com.app.java.trackingrunningapp.ui.data.repositories.UserRepository
 import kotlinx.coroutines.launch
 
 class UserViewModel(

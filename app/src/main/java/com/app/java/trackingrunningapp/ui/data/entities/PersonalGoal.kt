@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey
 data class PersonalGoal(
     @PrimaryKey(autoGenerate = true)
     val goalId: Int = 0,
-    val sessionId : Int,
+    val sessionId : Int? = null,
     var targetDistance: Double?,
     var targetDuration: Double?,
     var targetCaloriesBurned: Double?,

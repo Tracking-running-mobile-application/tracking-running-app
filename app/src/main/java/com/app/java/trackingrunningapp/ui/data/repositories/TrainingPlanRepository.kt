@@ -1,9 +1,6 @@
-package com.app.java.trackingrunningapp.ui.data.repository
+package com.app.java.trackingrunningapp.ui.data.repositories
 
-import com.app.java.trackingrunningapp.ui.data.DAOs.RunSessionDao
 import com.app.java.trackingrunningapp.ui.data.DAOs.TrainingPlanDao
-import com.app.java.trackingrunningapp.ui.data.converters.LocalTimeConverter
-import com.app.java.trackingrunningapp.ui.data.entities.PersonalGoal
 import com.app.java.trackingrunningapp.ui.data.entities.RunSession
 import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
@@ -14,7 +11,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 
 class TrainingPlanRepository(
@@ -34,8 +30,9 @@ class TrainingPlanRepository(
     suspend fun updateTrainingPlanRecommendation(limit: Int = 4): List<TrainingPlan> {
         val today = DateTimeUtils.getCurrentDate()
 
-        if (today.minus(1, DateTimeUnit.DAY) == lastFetchDate) {
+        if (lastFetchDate < today) {
            lastFetchDate = today
+
            return trainingPlanDao.getTrainingPlansNotShownSince(today.minus(7, DateTimeUnit.DAY), limit)
         }
 
@@ -52,8 +49,6 @@ class TrainingPlanRepository(
         exerciseType: String,
         difficulty: String
     ) {
-        val currentSession = getCurrentSessionOrThrow()
-
         trainingPlanDao.updatePartialTrainingPlan(
             planId = 0,
             sessionId = currentSession.sessionId,
@@ -87,7 +82,7 @@ class TrainingPlanRepository(
         }
     }
 
-    fun startTrainingPlan(sessionId: Int) {
+    fun startTrainingPlan() {
         updateJob?.cancel()
         updateJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
@@ -120,22 +115,18 @@ class TrainingPlanRepository(
 
         val currentTrainingPlan = trainingPlanDao.getTrainingPlanBySessionId(currentSession.sessionId)
 
-            if (currentTrainingPlan != null) {
-                val progress = calcGoalProgress(currentSession, currentTrainingPlan)
+        if (currentTrainingPlan != null) {
+            val progress = calcGoalProgress(currentSession, currentTrainingPlan)
 
-                trainingPlanDao.updateGoalProgress(currentTrainingPlan.planId, progress)
+            trainingPlanDao.updateGoalProgress(currentTrainingPlan.planId, progress)
 
-                if ( progress >= 100.0 ) {
-                    trainingPlanDao.finishTrainingPlan(currentTrainingPlan.planId)
-                }
-
-            } else {
-                println("No training plan linked to the current run session!")
+            if ( progress >= 100.0 ) {
+                trainingPlanDao.finishTrainingPlan(currentTrainingPlan.planId)
             }
-    }
 
-    suspend fun getTrainingPlanBySessionId(sessionId: Int): TrainingPlan? {
-        return trainingPlanDao.getTrainingPlanBySessionId(sessionId)
+        } else {
+            println("No training plan linked to the current run session!")
+        }
     }
 
 }

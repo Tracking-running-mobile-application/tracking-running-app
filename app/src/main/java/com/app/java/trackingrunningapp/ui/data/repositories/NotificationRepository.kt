@@ -1,13 +1,8 @@
-package com.app.java.trackingrunningapp.ui.data.repository
+package com.app.java.trackingrunningapp.ui.data.repositories
 
 import com.app.java.trackingrunningapp.ui.data.DAOs.NotificationDao
-import com.app.java.trackingrunningapp.ui.data.DAOs.RunSessionDao
 import com.app.java.trackingrunningapp.ui.data.entities.Notification
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.*
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.TimeZone.Companion.currentSystemDefault
 
 class NotificationRepository(
     private val notificationDao: NotificationDao,

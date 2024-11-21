@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.data.repository
+package com.app.java.trackingrunningapp.ui.data.repositories
 
 import com.app.java.trackingrunningapp.ui.data.DAOs.RunSessionDao
 import com.app.java.trackingrunningapp.ui.data.DAOs.UserDao
@@ -8,7 +8,6 @@ import com.app.java.trackingrunningapp.ui.data.entities.User
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlin.time.times
 
 class RunSessionRepository(
     private val runSessionDao: RunSessionDao,
