@@ -36,6 +36,9 @@ class MainActivity : AppCompatActivity() {
             setOf(R.id.homeFragment, R.id.profileFragment, R.id.statisticFragment)
         )
 
+        val icFilter = binding.toolbarMain.menu.findItem(R.id.toolbar_filter)
+        icFilter.isVisible = false
+        val icSettings = binding.toolbarMain.menu.findItem(R.id.toolbar_setting)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val tvTitle: TextView = binding.tvToolbarTitle
             if(destination.id == R.id.homeFragment){
@@ -45,6 +48,8 @@ class MainActivity : AppCompatActivity() {
             }else{
 //                binding.imgIcSettings.visibility = View.GONE
 //                binding.imgIcFilter?.visibility = View.VISIBLE
+                icFilter.isVisible = false
+                icSettings.isVisible = false
                 binding.toolbarMain.setNavigationIcon(R.drawable.ic_arrow_back_24)
                 binding.toolbarMain.setNavigationOnClickListener {
                     onBackPressedDispatcher.onBackPressed()
@@ -61,6 +66,8 @@ class MainActivity : AppCompatActivity() {
                     }
                     R.id.historyFragment ->{
                         tvTitle.text = getString(R.string.text_history)
+                        icFilter.isVisible = true
+                        icSettings.isVisible = false
                     }
                 }
             }
