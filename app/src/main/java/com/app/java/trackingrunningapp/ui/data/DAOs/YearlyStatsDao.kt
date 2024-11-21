@@ -7,8 +7,8 @@ import com.app.java.trackingrunningapp.ui.data.entities.YearlyStats
 
 @Dao
 interface YearlyStatsDao {
-    @Query("SELECT * FROM YearlyStats WHERE yearlyStats = :year")
-    suspend fun getYearlyStats(year: Int): YearlyStats?
+    @Query("SELECT * FROM YearlyStats WHERE yearlyStatsKey = :year")
+    suspend fun getYearlyStats(year: String): YearlyStats?
 
     @Upsert
     suspend fun upsertYearlyStats(yearlyStats: YearlyStats)

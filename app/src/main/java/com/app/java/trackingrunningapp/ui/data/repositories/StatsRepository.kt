@@ -6,55 +6,79 @@ import com.app.java.trackingrunningapp.ui.data.DAOs.YearlyStatsDao
 import com.app.java.trackingrunningapp.ui.data.entities.MonthlyStats
 import com.app.java.trackingrunningapp.ui.data.entities.WeeklyStats
 import com.app.java.trackingrunningapp.ui.data.entities.YearlyStats
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class StatsRepository(
     private val yearlyStatsDao: YearlyStatsDao,
     private val monthlyStatsDao: MonthlyStatsDao,
     private val weeklyStatsDao: WeeklyStatsDao
 ) {
-    private val weeklyStatsMap: MutableMap<Int, WeeklyStats> = mutableMapOf()
-    private val monthlyStatsMap: MutableMap<String, MonthlyStats> = mutableMapOf()
-    private val yearlyStatsMap: MutableMap<Int, YearlyStats> = mutableMapOf()
+    private val _weeklyStatsMap = MutableStateFlow<Map<String, WeeklyStats>>(emptyMap())
+    val weeklyStatsMap : StateFlow<Map<String, WeeklyStats>> = _weeklyStatsMap
 
-    suspend fun addStatsForWeek(weekStart: Int, distance: Float, duration: Float, caloriesBurned: Float) {
-        val weekStats = weeklyStatsMap.getOrPut(weekStart) {
-            weeklyStatsDao.getWeeklyStats(weekStart) ?: WeeklyStats(weekStart)
-        }
+    private val _monthlyStatsMap = MutableStateFlow<Map<String, MonthlyStats>>(emptyMap())
+    val monthlyStatsMap : StateFlow<Map<String, MonthlyStats>> = _monthlyStatsMap
 
-        weekStats.totalDistance += distance
-        weekStats.totalDuration += duration
-        weekStats.totalCaloriesBurned += caloriesBurned
-        weekStats.totalPace += weekStats.totalDuration / weekStats.totalDistance
+    private val _yearlyStatsMap = MutableStateFlow<Map<String, YearlyStats>>(emptyMap())
+    val yearlyStatsMap : StateFlow<Map<String, YearlyStats>> = _yearlyStatsMap
 
-        weeklyStatsDao.upsertWeeklyStats(weekStats)
-        weeklyStatsMap[weekStart] = weekStats
+    suspend fun addStatsMultipleWeeks(weeklyStats: List<WeeklyStats>) {
+
     }
 
-    suspend fun addStatsForMonth(monthKey: String, distance: Float, duration: Float, caloriesBurned: Float) {
-        val monthStats = monthlyStatsMap.getOrPut(monthKey) {
-            monthlyStatsDao.getMonthlyStats(monthKey) ?: MonthlyStats(monthKey)
-        }
+    suspend fun addStatsForMonth(
+        monthKey: String,
+        distance: Double,
+        duration: Long,
+        caloriesBurned: Double,
+        pace: Double,
+        sessionSize: Int
+    ) {
+        val monthStats = _monthlyStatsMap.value[monthKey]?.copy()
+            ?: monthlyStatsDao.getMonthlyStats(monthKey)
+            ?: MonthlyStats(monthKey)
 
-        monthStats.totalDistance += distance
-        monthStats.totalDuration += duration
-        monthStats.totalCaloriesBurned += caloriesBurned
-        monthStats.totalPace += monthStats.totalDuration / monthStats.totalDistance
+        var totalPace: Double = 0.0
+
+        monthStats.totalDistance = monthStats.totalDistance?.plus(distance)
+        monthStats.totalDuration = monthStats.totalDuration?.plus(duration)
+        monthStats.totalCaloriesBurned = monthStats.totalCaloriesBurned?.plus(caloriesBurned)
+        totalPace += pace
+        monthStats.totalAvgPace = totalPace / sessionSize
+
+
 
         monthlyStatsDao.upsertMonthlyStats(monthStats)
-        monthlyStatsMap[monthKey] = monthStats
+        _monthlyStatsMap.value = _monthlyStatsMap.value.toMutableMap().apply {
+            this[monthKey] = monthStats
+        }
     }
 
-    suspend fun addStatsForYear(year: Int, distance: Float, duration: Float, caloriesBurned: Float ) {
-        val yearStats = yearlyStatsMap.getOrPut(year) {
-            yearlyStatsDao.getYearlyStats(year) ?: YearlyStats(year)
-        }
+    suspend fun addStatsForYear(
+        yearKey: String,
+        distance: Double,
+        duration: Long,
+        caloriesBurned: Double,
+        pace: Double,
+        sessionSize: Int
+    ) {
+        val yearStats = _yearlyStatsMap.value[yearKey]?.copy()
+            ?: yearlyStatsDao.getYearlyStats(yearKey)
+            ?: YearlyStats(yearKey)
 
-        yearStats.totalDistance += distance
-        yearStats.totalDuration += duration
-        yearStats.totalCaloriesBurned += caloriesBurned
-        yearStats.totalPace = yearStats.totalDuration / yearStats.totalDistance
+        var totalPace : Double = 0.0
+
+        yearStats.totalDistance = yearStats.totalDistance?.plus(distance)
+        yearStats.totalDuration = yearStats.totalDuration?.plus(duration)
+        yearStats.totalCaloriesBurned = yearStats.totalCaloriesBurned?.plus(caloriesBurned)
+        totalPace += pace
+        yearStats.totalAvgPace = totalPace / sessionSize
 
         yearlyStatsDao.upsertYearlyStats(yearStats)
-        yearlyStatsMap[year] = yearStats
+        _yearlyStatsMap.value = _yearlyStatsMap.value.toMutableMap().apply {
+            this[yearKey] = yearStats
+        }
     }
+
 }

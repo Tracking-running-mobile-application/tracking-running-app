@@ -7,8 +7,8 @@ import com.app.java.trackingrunningapp.ui.data.entities.WeeklyStats
 
 @Dao
 interface WeeklyStatsDao {
-    @Query("SELECT * FROM WeeklyStats WHERE weeklyStats = :week")
-    suspend fun getWeeklyStats(week: Int): WeeklyStats?
+    @Query("SELECT * FROM WeeklyStats WHERE weeklyStatsKey = :week")
+    suspend fun getWeeklyStats(week: String): WeeklyStats?
 
     @Upsert
     suspend fun upsertWeeklyStats(weeklyStats: WeeklyStats)

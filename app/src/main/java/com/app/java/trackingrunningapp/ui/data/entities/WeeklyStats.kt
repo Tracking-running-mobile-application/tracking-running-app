@@ -5,9 +5,9 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class WeeklyStats(
-    @PrimaryKey val weeklyStats: Int,
-    var totalDistance: Float = 0f,
-    var totalDuration: Float = 0f,
-    var totalCaloriesBurned: Float = 0f,
-    var totalPace: Float = 0f
+    @PrimaryKey val weeklyStatsKey: String,
+    var totalDistance: Double? = 0.0,
+    var totalDuration: Long ? = 0L,
+    var totalCaloriesBurned: Double ? = 0.0,
+    var totalAvgPace: Double ? = 0.0
 )
