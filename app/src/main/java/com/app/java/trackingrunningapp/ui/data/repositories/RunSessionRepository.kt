@@ -82,8 +82,8 @@ class RunSessionRepository(
     }
 
     suspend fun addFavoriteRunSession(sessionId: Int) {
-        val currentDayInString = DateTimeUtils.fromLocalDateTime(DateTimeUtils.getCurrentDateTime())
-        runSessionDao.addFavoriteRunSession(sessionId, currentDayInString)
+        val today = DateTimeUtils.getCurrentDate().toString()
+        runSessionDao.addFavoriteRunSession(sessionId, today)
     }
 
     suspend fun removeFavoriteRunSession(sessionId: Int) {

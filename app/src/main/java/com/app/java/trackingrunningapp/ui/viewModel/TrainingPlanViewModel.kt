@@ -6,6 +6,7 @@ import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
 import com.app.java.trackingrunningapp.ui.data.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.ui.data.repositories.RunSessionRepository
 import com.app.java.trackingrunningapp.ui.data.repositories.TrainingPlanRepository
+import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,12 +20,10 @@ class TrainingPlanViewModel(
     private val _recommendedPlans = MutableStateFlow<List<TrainingPlan>>(emptyList())
     val recommendedPlans : StateFlow<List<TrainingPlan>> = _recommendedPlans
 
-    private val _goalProgress = MutableStateFlow(0.0)
-    val goalProgress: StateFlow<Double> = _goalProgress
+    val goalProgress: StateFlow<Double?> = trainingPlanRepository.goalProgress
 
     init {
         fetchRecommendedPlansDaily()
-        observeRunSession()
     }
 
     fun fetchRecommendedPlansDaily() {
@@ -33,26 +32,11 @@ class TrainingPlanViewModel(
             if (plans.isNotEmpty()) {
                 _recommendedPlans.value = plans
 
-                trainingPlanRepository.updateTrainingPlanRecommendation()
+                plans.forEach { plan ->
+                    val today = DateTimeUtils.getCurrentDate().toString()
+                    trainingPlanRepository.assignLastDateToTrainingPlan(plan.planId, today)
+                }
             }
-        }
-    }
-
-    fun createTrainingPlan(
-        title: String,
-        description: String,
-        estimatedTime: Double,
-        targetDistance: Double?,
-        targetDuration: Double?,
-        targetCaloriesBurned: Double?,
-        exerciseType: String,
-        difficulty: String
-    ) {
-        viewModelScope.launch {
-            trainingPlanRepository.createTrainingPlan(
-                title, description, estimatedTime, targetDistance,
-                targetDuration, targetCaloriesBurned, exerciseType, difficulty
-            )
         }
     }
 
@@ -62,14 +46,19 @@ class TrainingPlanViewModel(
         }
     }
 
-    fun initiateTrainingPlan() {
+    /*trigger runSession start before this!!*/
+    fun initiateTrainingPlan(planId: Int) {
         observeRunSession()
+        viewModelScope.launch {
+            val currentSession = runSessionRepository.currentRunSession.value
+            if (currentSession != null) {
+                trainingPlanRepository.assignSessionToTrainingPlan(planId, currentSession.sessionId)
+            }
+            else {
+               println("No active current session found!")
+            }
+        }
     }
-
-    fun stopActiveTrainingPlan() {
-        trainingPlanRepository.stopTrainingPlan()
-    }
-
 
     private fun observeRunSession() {
         viewModelScope.launch {

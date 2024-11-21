@@ -3,32 +3,25 @@ package com.app.java.trackingrunningapp.ui.utils
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Clock.*
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
 object DateTimeUtils {
-    fun getCurrentDate(): kotlinx.datetime.LocalDate {
+    fun getCurrentDate(): LocalDate {
         val currentInstant = System.now()
         val userTimeZone = TimeZone.currentSystemDefault()
         return currentInstant.toLocalDateTime(userTimeZone).date
     }
 
-    fun getCurrentDateTime(): kotlinx.datetime.LocalDateTime {
+    fun getCurrentDateTime(): LocalDateTime {
         return System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-    }
-
-    fun fromLocalDateTime(dateTime: LocalDateTime): String {
-        return dateTime.toString()
     }
 
     fun getCurrentInstant(): Instant {
         return Clock.System.now()
-    }
-
-    fun instantToString(dateInstant: Instant): String {
-        return dateInstant.toString()
     }
 
     fun durationToSeconds(formattedDuration: String): Long {

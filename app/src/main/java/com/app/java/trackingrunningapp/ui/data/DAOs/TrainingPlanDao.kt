@@ -3,6 +3,7 @@ package com.app.java.trackingrunningapp.ui.data.DAOs
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
+import androidx.room.Upsert
 import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
 import kotlinx.datetime.LocalDate
 
@@ -17,33 +18,21 @@ interface TrainingPlanDao {
     @Query("SELECT * FROM TrainingPlan WHERE sessionId = :sessionId LIMIT 1")
     suspend fun getTrainingPlanBySessionId(sessionId: Int) : TrainingPlan?
 
-    @Query(
-        """
-        SELECT * FROM TrainingPlan
-        WHERE lastRecommendedDate <= :dateLimit
-        ORDER BY lastRecommendedDate ASC
-        LIMIT :limit
-    """)
-    suspend fun getTrainingPlansNotShownSince(dateLimit: LocalDate, limit: Int): List<TrainingPlan>
+    @Query("SELECT * FROM TrainingPlan WHERE planId = :planId LIMIT 1")
+    suspend fun getTrainingPlanByPlanId(planId: Int) : TrainingPlan?
 
     @Query(
         """
-        UPDATE TrainingPlan
-        SET
-            title = :title,
-            sessionId = :sessionId,
-            description = :description,
-            estimatedTime = :estimatedTime,
-            targetDistance = :targetDistance,
-            targetDuration = :targetDuration,
-            targetCaloriesBurned = :targetCaloriesBurned,
-            exerciseType = :exerciseType,
-            difficulty = :difficulty
-        WHERE 
-            planId = :planId
-    """
-    )
-    suspend fun updatePartialTrainingPlan(planId: Int, sessionId: Int, title: String, description: String, estimatedTime: Double, targetDistance: Double, targetDuration: Double, targetCaloriesBurned: Double, exerciseType: String, difficulty: String)
+        SELECT * FROM TrainingPlan
+        WHERE lastRecommendedDate <= :dateLimit 
+        AND isFinished = False
+        ORDER BY lastRecommendedDate ASC
+        LIMIT :limit
+    """)
+    suspend fun getTrainingPlansNotShownSince(dateLimit: String, limit: Int): List<TrainingPlan>
+
+    @Upsert
+    suspend fun upsertTrainingPlan(trainingPlan: TrainingPlan)
 
     @Query("UPDATE TrainingPlan SET goalProgress = :goalProgress WHERE planId = :planId")
     suspend fun updateGoalProgress(planId: Int, goalProgress: Double)

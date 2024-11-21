@@ -8,6 +8,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
@@ -23,17 +25,21 @@ class TrainingPlanRepository(
 
     private val currentRunSession = runSessionRepository.currentRunSession
 
+    private val _goalProgress = MutableStateFlow<Double?>(null)
+    val goalProgress: StateFlow<Double?> = _goalProgress
+
     private fun getCurrentSessionOrThrow(): RunSession {
         return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null!")
     }
 
     suspend fun updateTrainingPlanRecommendation(limit: Int = 4): List<TrainingPlan> {
         val today = DateTimeUtils.getCurrentDate()
+        val dateLimit = today.minus(7, DateTimeUnit.DAY).toString()
 
         if (lastFetchDate < today) {
            lastFetchDate = today
 
-           return trainingPlanDao.getTrainingPlansNotShownSince(today.minus(7, DateTimeUnit.DAY), limit)
+           return trainingPlanDao.getTrainingPlansNotShownSince(dateLimit, limit)
         }
 
         return emptyList()
@@ -41,27 +47,58 @@ class TrainingPlanRepository(
 
     suspend fun createTrainingPlan(
         title: String,
+        sessionId: Int? = null,
         description: String,
         estimatedTime: Double,
         targetDistance: Double?,
         targetDuration: Double?,
         targetCaloriesBurned: Double?,
+        goalProgress: Double?,
         exerciseType: String,
-        difficulty: String
+        difficulty: String,
+        lastRecommendedDate: String? = null,
+        isFinished: Boolean = false
     ) {
-        trainingPlanDao.updatePartialTrainingPlan(
+        val newTrainingPlan = TrainingPlan(
             planId = 0,
-            sessionId = currentSession.sessionId,
+            sessionId = sessionId,
             title = title,
             description = description,
             estimatedTime = estimatedTime,
-            targetDistance = targetDistance ?: 0.0,
-            targetDuration = targetDuration ?: 0.0,
-            targetCaloriesBurned = targetCaloriesBurned ?: 0.0,
+            targetDistance = targetDistance,
+            targetDuration = targetDuration ,
+            targetCaloriesBurned = targetCaloriesBurned ,
+            goalProgress = goalProgress,
             exerciseType = exerciseType,
-            difficulty = difficulty
+            difficulty = difficulty,
+            lastRecommendedDate = lastRecommendedDate,
+            isFinished = isFinished
         )
+
+        trainingPlanDao.upsertTrainingPlan(newTrainingPlan)
+
     }
+
+    suspend fun assignSessionToTrainingPlan(planId: Int, sessionId: Int?) {
+        val existingPlan = trainingPlanDao.getTrainingPlanByPlanId(planId)
+        if (existingPlan != null) {
+            val updatedPlan = existingPlan.copy(sessionId = sessionId)
+            trainingPlanDao.upsertTrainingPlan(updatedPlan)
+        } else {
+            println("The plan with this id doesn't exist!")
+        }
+    }
+
+    suspend fun assignLastDateToTrainingPlan(planId: Int, lastRecommendedDate: String) {
+        val existingPlan = trainingPlanDao.getTrainingPlanByPlanId(planId)
+        if (existingPlan != null) {
+            val updatedPlan = existingPlan.copy(lastRecommendedDate = lastRecommendedDate)
+            trainingPlanDao.upsertTrainingPlan(updatedPlan)
+        } else {
+            println("The plan with this id doesn't exist!")
+        }
+    }
+
 
     suspend fun deleteTrainingPlan(planId: Int) {
         trainingPlanDao.deleteTrainingPlan(planId)
@@ -120,12 +157,16 @@ class TrainingPlanRepository(
 
             trainingPlanDao.updateGoalProgress(currentTrainingPlan.planId, progress)
 
+            _goalProgress.value = progress
+
             if ( progress >= 100.0 ) {
                 trainingPlanDao.finishTrainingPlan(currentTrainingPlan.planId)
+                /*noti after finish?*/
             }
 
         } else {
             println("No training plan linked to the current run session!")
+            _goalProgress.value = null
         }
     }
 

@@ -4,9 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.ui.data.entities.RunSession
-import com.app.java.trackingrunningapp.ui.data.repositories.PersonalGoalRepository
 import com.app.java.trackingrunningapp.ui.data.repositories.RunSessionRepository
-import com.app.java.trackingrunningapp.ui.data.repositories.TrainingPlanRepository
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,8 +16,6 @@ import kotlinx.datetime.Instant
 
 class RunSessionViewModel(
     private val runSessionRepository: RunSessionRepository,
-    private val trainingPlanRepository: TrainingPlanRepository,
-    private val personalGoalRepository: PersonalGoalRepository
 ): ViewModel() {
     val startDate = MutableLiveData<String>()
     val endDate = MutableLiveData<String>()
@@ -80,7 +76,7 @@ class RunSessionViewModel(
         }
     }
 
-    fun fetchRunSessions(fetchMore: Boolean = false) {
+    private fun fetchRunSessions(fetchMore: Boolean = false) {
         viewModelScope.launch {
             val (newSessions, hasMore) = runSessionRepository.getAllRunSessions(fetchMore)
 
@@ -91,6 +87,12 @@ class RunSessionViewModel(
             }
 
             _hasMoreData.value = hasMore
+        }
+    }
+
+    fun reloadRunSessionHistory() {
+        viewModelScope.launch {
+            _runSessions.value = runSessionRepository.refreshRunSessionHistory()
         }
     }
 
@@ -168,4 +170,9 @@ class RunSessionViewModel(
         runSessionRepository.updateDistanceSession()
     }
 
+    fun deleteRunSession(sessionId: Int) {
+        viewModelScope.launch {
+            runSessionRepository.deleteRunSession(sessionId)
+        }
+    }
 }

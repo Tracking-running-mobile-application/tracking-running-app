@@ -21,12 +21,12 @@ data class TrainingPlan(
     var title: String,
     var description: String,
     var estimatedTime: Double,
-    var targetDistance: Double?,
-    var targetDuration: Double?,
-    var targetCaloriesBurned: Double?,
-    var goalProgress: Double,
+    var targetDistance: Double? = 0.0,
+    var targetDuration: Double? = 0.0,
+    var targetCaloriesBurned: Double? = 0.0,
+    var goalProgress: Double? = 0.0,
     var exerciseType: String,
     var difficulty: String,
-    var lastRecommendedDate: LocalDate,
-    var isFinished: Boolean = false
+    var lastRecommendedDate: String? = null,
+    var isFinished: Boolean? = false
 )
