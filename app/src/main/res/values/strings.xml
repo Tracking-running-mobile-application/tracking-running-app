@@ -1,5 +1,4 @@
 <resources>
-    <string name="map_api_key">AIzaSyCsKpfGXkx5yiGBttWrlytOnZyfwDzd_SM</string>
     <string name="app_name">Tracking Running App</string>
     <string name="intro_title">Running\nApplication</string>
     <string name="text_get_started">GET STARTED\t</string>
@@ -24,8 +23,7 @@
     <string name="back_button">backButton</string>
     <string name="training_plans">Training Plan</string>
     <string name="daily_tasks">Daily Tasks</string>
-    <string name="beginner_guide">Beginner\'s Guide</string>
-    <string name="training_plans_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
+    <string name="beginner_guide">BEGINNER’S GUIDE</string>
     <string name="training_duration">1 week</string>
     <string name="training_diff">Beginner</string>
     <string name="training_button">GET STARTED</string>

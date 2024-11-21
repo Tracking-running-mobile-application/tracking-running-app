@@ -25,7 +25,7 @@
         android:label="TrainingPlans" />
     <fragment
         android:id="@+id/dailyTask"
-        android:name="com.app.java.trackingrunningapp.ui.home.daily_tasks.DailyTaskFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.daily_tasks.AddDailyTaskFragment"
         android:label="fragment_daily_task"
         tools:layout="@layout/fragment_daily_task" />
 

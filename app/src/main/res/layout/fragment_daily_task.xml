@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#353331"
-    tools:context=".ui.home.daily_tasks.DailyTaskFragment">
+    tools:context=".ui.home.daily_tasks.AddDailyTaskFragment">
 
     <TextView
         android:id="@+id/textView8"
