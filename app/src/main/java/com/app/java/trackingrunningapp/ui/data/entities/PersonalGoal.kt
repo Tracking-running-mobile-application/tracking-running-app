@@ -2,6 +2,7 @@ package com.app.java.trackingrunningapp.ui.data.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -9,14 +10,15 @@ import androidx.room.PrimaryKey
         ForeignKey(
             entity = RunSession::class,
             parentColumns = ["sessionId"],
-            childColumns = ["sessionId"]
+            childColumns = ["goalSessionId"]
         )
-    ]
+    ],
+    indices = [Index(value = ["goalSessionId"])]
 )
 data class PersonalGoal(
     @PrimaryKey(autoGenerate = true)
     val goalId: Int = 0,
-    val sessionId : Int? = null,
+    val goalSessionId : Int? = null,
     var targetDistance: Double?,
     var targetDuration: Double?,
     var targetCaloriesBurned: Double?,

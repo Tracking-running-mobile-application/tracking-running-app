@@ -14,7 +14,7 @@ class UserViewModel(
         age: Int?,
         height: Float?,
         weight: Float = 50f,
-        metricPreference: String? = User.kilogram,
+        metricPreference: String? = User.KILOGRAM,
         unit: String? = User.UNIT_KM
     ) {
         viewModelScope.launch {

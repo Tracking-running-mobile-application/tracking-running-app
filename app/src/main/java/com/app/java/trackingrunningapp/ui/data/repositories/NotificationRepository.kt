@@ -18,7 +18,7 @@ class NotificationRepository(
             val currentTime = DateTimeUtils.getCurrentDateTime()
             val newNotification = Notification(
                 notificationId = 0,
-                sessionId = sessionId,
+                notiRunSessionId = sessionId,
                 title = title,
                 message = message,
                 notificationType = notificationType,
@@ -29,7 +29,7 @@ class NotificationRepository(
             val currentTime = DateTimeUtils.getCurrentDateTime()
             notificationDao.partialUpdateNotification(
                 notificationId = 0,
-                sessionId = null,
+                notiRunSessionId = null,
                 title = title,
                 message = message,
                 notificationType = notificationType,

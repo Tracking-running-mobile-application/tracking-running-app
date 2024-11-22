@@ -17,7 +17,7 @@ interface GPSTrackDao {
     @Query("SELECT isPaused FROM GPSTrack WHERE gpsTrackId = :gpsTrackId")
     suspend fun pauseOrContinueGPSTrack(gpsTrackId: Int): Boolean
 
-    @Delete
+    @Query("DELETE FROM GPSTrack WHERE gpsTrackId = :gpsTrackId")
     suspend fun deleteGPSTrack(gpsTrackId: Int)
 
     @Upsert

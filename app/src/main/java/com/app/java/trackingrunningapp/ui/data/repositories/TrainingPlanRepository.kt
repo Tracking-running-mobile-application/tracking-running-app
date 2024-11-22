@@ -61,7 +61,7 @@ class TrainingPlanRepository(
     ) {
         val newTrainingPlan = TrainingPlan(
             planId = 0,
-            sessionId = sessionId,
+            planSessionId = sessionId,
             title = title,
             description = description,
             estimatedTime = estimatedTime,
@@ -82,7 +82,7 @@ class TrainingPlanRepository(
     suspend fun assignSessionToTrainingPlan(planId: Int, sessionId: Int?) {
         val existingPlan = trainingPlanDao.getTrainingPlanByPlanId(planId)
         if (existingPlan != null) {
-            val updatedPlan = existingPlan.copy(sessionId = sessionId)
+            val updatedPlan = existingPlan.copy(planSessionId = sessionId)
             trainingPlanDao.upsertTrainingPlan(updatedPlan)
         } else {
             println("The plan with this id doesn't exist!")
