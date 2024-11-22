@@ -6,78 +6,109 @@ import com.app.java.trackingrunningapp.ui.data.DAOs.YearlyStatsDao
 import com.app.java.trackingrunningapp.ui.data.entities.MonthlyStats
 import com.app.java.trackingrunningapp.ui.data.entities.WeeklyStats
 import com.app.java.trackingrunningapp.ui.data.entities.YearlyStats
+import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 
 class StatsRepository(
     private val yearlyStatsDao: YearlyStatsDao,
     private val monthlyStatsDao: MonthlyStatsDao,
-    private val weeklyStatsDao: WeeklyStatsDao
+    private val weeklyStatsDao: WeeklyStatsDao,
+    private val coroutineScope: CoroutineScope
 ) {
+    val weeklyKeys = mutableSetOf<String>()
+    val monthlyKeys = mutableSetOf<String>()
+    val yearlyKeys = mutableSetOf<String>()
+
     private val _weeklyStatsMap = MutableStateFlow<Map<String, WeeklyStats>>(emptyMap())
-    val weeklyStatsMap : StateFlow<Map<String, WeeklyStats>> = _weeklyStatsMap
+    val weeklyStatsMap: StateFlow<Map<String, WeeklyStats>> = _weeklyStatsMap
 
     private val _monthlyStatsMap = MutableStateFlow<Map<String, MonthlyStats>>(emptyMap())
-    val monthlyStatsMap : StateFlow<Map<String, MonthlyStats>> = _monthlyStatsMap
+    val monthlyStatsMap: StateFlow<Map<String, MonthlyStats>> = _monthlyStatsMap
 
     private val _yearlyStatsMap = MutableStateFlow<Map<String, YearlyStats>>(emptyMap())
-    val yearlyStatsMap : StateFlow<Map<String, YearlyStats>> = _yearlyStatsMap
+    val yearlyStatsMap: StateFlow<Map<String, YearlyStats>> = _yearlyStatsMap
 
     suspend fun addStatsMultipleWeeks(weeklyStats: List<WeeklyStats>) {
-
-    }
-
-    suspend fun addStatsForMonth(
-        monthKey: String,
-        distance: Double,
-        duration: Long,
-        caloriesBurned: Double,
-        pace: Double,
-        sessionSize: Int
-    ) {
-        val monthStats = _monthlyStatsMap.value[monthKey]?.copy()
-            ?: monthlyStatsDao.getMonthlyStats(monthKey)
-            ?: MonthlyStats(monthKey)
-
-        var totalPace: Double = 0.0
-
-        monthStats.totalDistance = monthStats.totalDistance?.plus(distance)
-        monthStats.totalDuration = monthStats.totalDuration?.plus(duration)
-        monthStats.totalCaloriesBurned = monthStats.totalCaloriesBurned?.plus(caloriesBurned)
-        totalPace += pace
-        monthStats.totalAvgPace = totalPace / sessionSize
-
-
-
-        monthlyStatsDao.upsertMonthlyStats(monthStats)
-        _monthlyStatsMap.value = _monthlyStatsMap.value.toMutableMap().apply {
-            this[monthKey] = monthStats
+        weeklyStats.forEach { stats ->
+            weeklyStatsDao.upsertWeeklyStats(stats)
+            _weeklyStatsMap.value = _weeklyStatsMap.value.toMutableMap().apply {
+                this[stats.weeklyStatsKey] = stats
+            }
         }
     }
 
-    suspend fun addStatsForYear(
-        yearKey: String,
-        distance: Double,
-        duration: Long,
-        caloriesBurned: Double,
-        pace: Double,
-        sessionSize: Int
-    ) {
-        val yearStats = _yearlyStatsMap.value[yearKey]?.copy()
-            ?: yearlyStatsDao.getYearlyStats(yearKey)
-            ?: YearlyStats(yearKey)
+    suspend fun addStatsMultipleMonths(monthlyStats: List<MonthlyStats>) {
+        monthlyStats.forEach { stats ->
+            monthlyStatsDao.upsertMonthlyStats(stats)
+            _monthlyStatsMap.value = _monthlyStatsMap.value.toMutableMap().apply {
+                this[stats.monthStatsKey] = stats
+            }
+        }
+    }
 
-        var totalPace : Double = 0.0
+    suspend fun addStatsMultipleYears(yearlyStats: List<YearlyStats>) {
+        yearlyStats.forEach { stats ->
+            yearlyStatsDao.upsertYearlyStats(stats)
+            _yearlyStatsMap.value = _yearlyStatsMap.value.toMutableMap().apply {
+                this[stats.yearlyStatsKey] = stats
+            }
+        }
+    }
 
-        yearStats.totalDistance = yearStats.totalDistance?.plus(distance)
-        yearStats.totalDuration = yearStats.totalDuration?.plus(duration)
-        yearStats.totalCaloriesBurned = yearStats.totalCaloriesBurned?.plus(caloriesBurned)
-        totalPace += pace
-        yearStats.totalAvgPace = totalPace / sessionSize
+    private fun updateWeekKey(currentWeekKey: MutableSet<String>): Set<String> {
+        val today = DateTimeUtils.getCurrentDate().toString()
+        if (!currentWeekKey.contains(today)) {
+            currentWeekKey.add(today)
+        }
+        return currentWeekKey
+    }
 
-        yearlyStatsDao.upsertYearlyStats(yearStats)
-        _yearlyStatsMap.value = _yearlyStatsMap.value.toMutableMap().apply {
-            this[yearKey] = yearStats
+    private fun updateMonthKey(currentMonthKey: MutableSet<String>): Set<String> {
+        val firstDayOfWeek = DateTimeUtils.getFirstDayOfCurrentWeek().toString()
+        if (!currentMonthKey.contains(firstDayOfWeek)) {
+            currentMonthKey.add(firstDayOfWeek)
+        }
+        return currentMonthKey
+    }
+
+    private fun updateYearKey(currentYearKey: MutableSet<String>): Set<String> {
+        val year = DateTimeUtils.getCurrentDate().year.toString()
+        if (!currentYearKey.contains(year)) {
+            currentYearKey.add(year)
+        }
+        return currentYearKey
+    }
+
+
+    private fun updateKeys() {
+        updateWeekKey(weeklyKeys)
+        updateMonthKey(monthlyKeys)
+        updateYearKey(yearlyKeys)
+    }
+
+    fun startUpdatingKeys() {
+        coroutineScope.launch {
+            while (isActive) {
+                val now = DateTimeUtils.getCurrentDateTime()
+                val nextMidnight = now.date.plus(1, DateTimeUnit.DAY)
+                    .atStartOfDayIn(TimeZone.currentSystemDefault())
+
+                val nowInstant = DateTimeUtils.getCurrentInstant()
+                val delayUntilMidnight = nextMidnight.toEpochMilliseconds() - nowInstant.toEpochMilliseconds()
+
+                delay(delayUntilMidnight)
+                updateKeys()
+            }
         }
     }
 

@@ -29,6 +29,10 @@ class PersonalGoalViewModel(
         }
     }
 
+    fun initiatePersonalGoal() {
+        observeRunSession()
+    }
+
     fun loadPersonalGoals() {
         viewModelScope.launch {
             val personalGoals = personalGoalRepository.getAllPersonalGoals()
@@ -75,11 +79,6 @@ class PersonalGoalViewModel(
                 if (it.goalId == personalGoal.goalId) personalGoal else it
             } + if (existingGoal == null) listOf(personalGoal) else emptyList()
         }
-    }
-
-
-    fun initiatePersonalGoal() {
-        observeRunSession()
     }
 
     private fun observeRunSession() {
