@@ -166,4 +166,7 @@ class RunSessionRepository(
     suspend fun updateDistanceSession() {
     }
 
+    suspend fun createMockData(runSession: RunSession) {
+        runSessionDao.createMockDataForRunSession(runSession)
+    }
 }

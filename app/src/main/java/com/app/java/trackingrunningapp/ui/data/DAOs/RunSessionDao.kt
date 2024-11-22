@@ -77,6 +77,9 @@ interface RunSessionDao {
         endDate: String
     ): List<RunSession>
 
+    @Upsert
+    suspend fun createMockDataForRunSession(runSession: RunSession)
+
     @Query("""
         SELECT * FROM RunSession AS rs    
         JOIN GPSTrack AS gt ON rs.sessionId = gt.sessionId

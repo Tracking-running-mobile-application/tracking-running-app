@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
+import kotlin.random.Random
 
 class RunSessionViewModel(
     private val runSessionRepository: RunSessionRepository,
@@ -175,4 +176,36 @@ class RunSessionViewModel(
             runSessionRepository.deleteRunSession(sessionId)
         }
     }
+
+    fun createMockRunSessions() {
+        viewModelScope.launch {
+            val random = java.util.Random()
+            val dateFormat = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            val startDate = java.time.LocalDate.of(2024, 11, 22)
+            val endDate = java.time.LocalDate.of(2024, 12, 31)
+
+            val mockSessions = (1..30).map {
+                val randomDays = random.nextInt(startDate.until(endDate).days + 1)
+                val runDate = startDate.plusDays(randomDays.toLong()).format(dateFormat)
+
+                RunSession(
+                    sessionId = 0,
+                    runDate = runDate,
+                    distance = Random.nextDouble(1.0, 20.0),
+                    duration = Random.nextLong(600, 7200),
+                    pace = Random.nextDouble(4.0, 12.0),
+                    caloriesBurned = Random.nextDouble(100.0, 1000.0),
+                    isActive = false,
+                    dateAddInFavorite = null,
+                    isFavorite = false
+                )
+            }
+
+            mockSessions.forEach { session ->
+                runSessionRepository.createMockData(session)
+            }
+
+        }
+    }
+
 }
