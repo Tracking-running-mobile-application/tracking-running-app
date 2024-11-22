@@ -1,0 +1,22 @@
+Index: app/src/main/java/com/app/java/trackingrunningapp/ui/MainActivity.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.java.trackingrunningapp.ui\n\nimport android.content.Intent\nimport android.os.Bundle\nimport android.widget.Button\nimport androidx.appcompat.app.AppCompatActivity\nimport androidx.navigation.NavController\nimport androidx.navigation.findNavController\nimport androidx.navigation.fragment.NavHostFragment\nimport androidx.navigation.ui.AppBarConfiguration\nimport com.app.java.trackingrunningapp.R\nimport com.app.java.trackingrunningapp.databinding.ActivityMainBinding\nimport com.app.java.trackingrunningapp.ui.runPage.RunPageFragment\n\nclass MainActivity : AppCompatActivity() {\n    private lateinit var binding: ActivityMainBinding\n    private lateinit var navController: NavController\n    private lateinit var appBarConfiguration: AppBarConfiguration\n\n    override fun onCreate(savedInstanceState: Bundle?) {\n        super.onCreate(savedInstanceState)\n        binding = ActivityMainBinding.inflate(layoutInflater)\n        setContentView(binding.root)\n        initNavHost()\n\n\n        val openRunPageButton: Button = findViewById(R.id.openRunPageFragmentButton)\n        openRunPageButton.setOnClickListener {\n            findNavController(R.id.nav_host_fragment).navigate(R.id.run_page)\n        }\n\n    }\n\n    private fun initNavHost() {\n        val navHostFragment = supportFragmentManager\n            .findFragmentById(binding.navHostFragment.id) as NavHostFragment\n        navController = navHostFragment.navController\n\n//        appBarConfiguration = AppBarConfiguration(\n//            navController.graph\n//        )\n//        setupActionBarWithNavController(navController,appBarConfiguration)\n    }\n\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/java/trackingrunningapp/ui/MainActivity.kt b/app/src/main/java/com/app/java/trackingrunningapp/ui/MainActivity.kt
+--- a/app/src/main/java/com/app/java/trackingrunningapp/ui/MainActivity.kt	(revision 6e2720befa25096fbd22c99e4ebf97d9bb12dc07)
++++ b/app/src/main/java/com/app/java/trackingrunningapp/ui/MainActivity.kt	(date 1732287640668)
+@@ -24,10 +24,7 @@
+         initNavHost()
+ 
+ 
+-        val openRunPageButton: Button = findViewById(R.id.openRunPageFragmentButton)
+-        openRunPageButton.setOnClickListener {
+-            findNavController(R.id.nav_host_fragment).navigate(R.id.run_page)
+-        }
++
+ 
+     }
+ 
