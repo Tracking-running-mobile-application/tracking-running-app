@@ -9,14 +9,14 @@ import kotlinx.datetime.LocalDate
 
 @Dao
 interface TrainingPlanDao {
-    @Delete
+    @Query("DELETE FROM TrainingPlan WHERE planId = :planId")
     suspend fun deleteTrainingPlan(planId: Int)
 
     @Query("UPDATE TrainingPlan SET isFinished = TRUE WHERE planId = :planId")
     suspend fun finishTrainingPlan(planId: Int)
 
-    @Query("SELECT * FROM TrainingPlan WHERE sessionId = :sessionId LIMIT 1")
-    suspend fun getTrainingPlanBySessionId(sessionId: Int) : TrainingPlan?
+    @Query("SELECT * FROM TrainingPlan WHERE planSessionId = :planSessionId LIMIT 1")
+    suspend fun getTrainingPlanBySessionId(planSessionId: Int) : TrainingPlan?
 
     @Query("SELECT * FROM TrainingPlan WHERE planId = :planId LIMIT 1")
     suspend fun getTrainingPlanByPlanId(planId: Int) : TrainingPlan?

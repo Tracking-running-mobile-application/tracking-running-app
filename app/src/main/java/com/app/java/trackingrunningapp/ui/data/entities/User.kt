@@ -11,13 +11,13 @@ data class User(
     val age: Int?,
     val height: Float?,
     val weight: Float = 50f,
-    var metricPreference: String? = User.kilogram,
+    var metricPreference: String? = User.KILOGRAM,
     var unit: String? = User.UNIT_KM
 ) {
     companion object {
         const val UNIT_KM = "km"
         const val UNIT_MILE = "mile"
-        const val kilogram = "kg"
-        const val pounds = "lbs"
+        const val KILOGRAM = "kg"
+        const val POUNDS = "lbs"
     }
 }

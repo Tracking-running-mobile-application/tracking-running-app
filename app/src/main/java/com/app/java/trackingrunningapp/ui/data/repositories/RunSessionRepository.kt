@@ -128,7 +128,7 @@ class RunSessionRepository(
         val currentSession = getCurrentSessionOrThrow()
 
         val adjustedWeight = when (userMetricPreference) {
-            User.pounds -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
+            User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
             else -> userInfo?.weight ?: 50.0
         }
 

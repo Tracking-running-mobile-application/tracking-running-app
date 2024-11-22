@@ -2,6 +2,7 @@ package com.app.java.trackingrunningapp.ui.data.entities
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.time.LocalDate
 
@@ -10,14 +11,15 @@ import java.time.LocalDate
         ForeignKey(
             entity = RunSession::class,
             parentColumns = ["sessionId"],
-            childColumns = ["sessionId"]
+            childColumns = ["planSessionId"]
         )
-    ]
+    ],
+    indices = [Index(value = ["planSessionId"])]
 )
 data class TrainingPlan(
     @PrimaryKey(autoGenerate = true)
     val planId: Int = 0,
-    val sessionId: Int?,
+    val planSessionId: Int?,
     var title: String,
     var description: String,
     var estimatedTime: Double,

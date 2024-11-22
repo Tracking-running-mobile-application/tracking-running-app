@@ -34,9 +34,9 @@ interface PersonalGoalDao {
     @Query("UPDATE PersonalGoal SET goalProgress = :goalProgress WHERE goalId = :goalId")
     suspend fun updateGoalProgress(goalId: Int, goalProgress: Double)
 
-    @Query("SELECT * FROM PersonalGoal WHERE sessionId = :sessionId LIMIT 1")
-    suspend fun getPersonalGoalBySessionId(sessionId: Int): PersonalGoal?
+    @Query("SELECT * FROM PersonalGoal WHERE goalSessionId = :goalSessionId LIMIT 1")
+    suspend fun getPersonalGoalBySessionId(goalSessionId: Int): PersonalGoal?
 
-    @Delete
+    @Query("DELETE FROM PersonalGoal WHERE goalId = :goalId")
     suspend fun deletePersonalGoal(goalId: Int)
 }

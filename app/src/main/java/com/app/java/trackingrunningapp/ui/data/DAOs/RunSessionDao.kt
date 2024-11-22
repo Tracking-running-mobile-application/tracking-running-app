@@ -14,7 +14,7 @@ import kotlinx.datetime.LocalDate
 
 @Dao
 interface RunSessionDao {
-    @Delete
+    @Query("DELETE FROM runsession WHERE sessionId = :sessionId")
     suspend fun deleteRunSession(sessionId: Int)
 
     @Query(
@@ -30,9 +30,11 @@ interface RunSessionDao {
         """
         SELECT * 
         FROM RunSession 
-        WHERE isFavorite = TRUE
+        WHERE isFavorite = 1
+        AND dateAddInFavorite IS NOT NULL
         ORDER BY dateAddInFavorite DESC
-        """)
+        """
+    )
     suspend fun getAllFavoriteRunSessions(): List<RunSession>
 
     @Query("SELECT * FROM RunSession WHERE isActive = TRUE LIMIT 1")
@@ -59,7 +61,7 @@ interface RunSessionDao {
     @Query("UPDATE RunSession SET isActive = FALSE WHERE sessionId = :sessionId")
     suspend fun finishRunSession(sessionId: Int)
 
-    @Query("UPDATE RunSession SET isFavorite = TRUE WHERE sessionId = :sessionId")
+    @Query("UPDATE RunSession SET isFavorite = TRUE, dateAddInFavorite = :dateAddInFavorite WHERE sessionId = :sessionId")
     suspend fun addFavoriteRunSession(sessionId: Int, dateAddInFavorite: String)
 
     @Query("UPDATE RunSession SET isFavorite = FALSE, dateAddInFavorite = null WHERE sessionId = :sessionId")
@@ -82,7 +84,7 @@ interface RunSessionDao {
 
     @Query("""
         SELECT * FROM RunSession AS rs    
-        JOIN GPSTrack AS gt ON rs.sessionId = gt.sessionId
+        JOIN GPSTrack AS gt ON rs.sessionId = gt.gpsSessionId
         JOIN GPSPoint AS gp ON gt.gpsTrackId = gp.gpsPointId
         WHERE rs.sessionId = :sessionId
     """)

@@ -56,7 +56,7 @@ class PersonalGoalViewModel(
             val currentDateString = DateTimeUtils.getCurrentDate().toString()
 
             val personalGoal = existingGoal?.copy (
-                sessionId = sessionId ?: existingGoal.sessionId,
+                goalSessionId = sessionId ?: existingGoal.goalSessionId,
                 targetDistance = targetDistance ?: existingGoal.targetDistance,
                 targetDuration = targetDuration ?: existingGoal.targetDuration,
                 targetCaloriesBurned = targetCaloriesBurned ?: existingGoal.targetCaloriesBurned,
@@ -65,7 +65,7 @@ class PersonalGoalViewModel(
             )
                 ?: PersonalGoal(
                     goalId = 0,
-                    sessionId = sessionId,
+                    goalSessionId = sessionId,
                     targetDistance = targetDistance,
                     targetDuration = targetDuration,
                     targetCaloriesBurned = targetCaloriesBurned,

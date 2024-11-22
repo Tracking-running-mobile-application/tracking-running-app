@@ -39,18 +39,19 @@ import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
             GPSTrack::class,
             Notification::class,
         ],
-    version = 1
+    version = 1,
+    exportSchema = true
 )
 @TypeConverters(LocalTimeConverter::class)
 abstract class RunningDatabase: RoomDatabase() {
-    abstract val userDao: UserDao
-    abstract val personalGoalDao: PersonalGoalDao
-    abstract val weeklyStatsDao: WeeklyStatsDao
-    abstract val monthlyStatsDao: MonthlyStatsDao
-    abstract val yearlyStatsDao: YearlyStatsDao
-    abstract val runSessionDao: RunSessionDao
-    abstract val trainingPlanDao: TrainingPlanDao
-    abstract val GPSTrackDao: GPSTrackDao
-    abstract val GPSPointDao: GPSPointDao
-    abstract val notificationDao: NotificationDao
+    abstract fun userDao(): UserDao
+    abstract fun personalGoalDao(): PersonalGoalDao
+    abstract fun weeklyStatsDao(): WeeklyStatsDao
+    abstract fun monthlyStatsDao(): MonthlyStatsDao
+    abstract fun yearlyStatsDao(): YearlyStatsDao
+    abstract fun runSessionDao(): RunSessionDao
+    abstract fun trainingPlanDao(): TrainingPlanDao
+    abstract fun GPSTrackDao(): GPSTrackDao
+    abstract fun GPSPointDao(): GPSPointDao
+    abstract fun notificationDao(): NotificationDao
 }
