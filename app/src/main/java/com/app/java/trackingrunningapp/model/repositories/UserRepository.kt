@@ -1,7 +1,7 @@
 package com.app.java.trackingrunningapp.model.repositories
 
-import com.app.java.trackingrunningapp.ui.data.DAOs.UserDao
-import com.app.java.trackingrunningapp.ui.data.entities.User
+import com.app.java.trackingrunningapp.model.DAOs.UserDao
+import com.app.java.trackingrunningapp.model.entities.User
 
 class UserRepository(
     private val userDao: UserDao

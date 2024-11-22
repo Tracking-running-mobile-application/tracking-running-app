@@ -4,9 +4,9 @@ import androidx.room.Dao
 import androidx.room.Embedded
 import androidx.room.Query
 import androidx.room.Upsert
-import com.app.java.trackingrunningapp.ui.data.entities.RunSession
-import com.app.java.trackingrunningapp.ui.data.entities.GPSPoint
-import com.app.java.trackingrunningapp.ui.data.entities.GPSTrack
+import com.app.java.trackingrunningapp.model.entities.GPSPoint
+import com.app.java.trackingrunningapp.model.entities.GPSTrack
+import com.app.java.trackingrunningapp.model.entities.RunSession
 
 @Dao
 interface RunSessionDao {

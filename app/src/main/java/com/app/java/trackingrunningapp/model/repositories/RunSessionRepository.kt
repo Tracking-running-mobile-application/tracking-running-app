@@ -1,10 +1,10 @@
 package com.app.java.trackingrunningapp.model.repositories
 
-import com.app.java.trackingrunningapp.ui.data.DAOs.RunSessionDao
-import com.app.java.trackingrunningapp.ui.data.DAOs.UserDao
-import com.app.java.trackingrunningapp.ui.data.converters.LocalTimeConverter
-import com.app.java.trackingrunningapp.ui.data.entities.RunSession
-import com.app.java.trackingrunningapp.ui.data.entities.User
+import com.app.java.trackingrunningapp.model.DAOs.RunSessionDao
+import com.app.java.trackingrunningapp.model.DAOs.UserDao
+import com.app.java.trackingrunningapp.model.converters.LocalTimeConverter
+import com.app.java.trackingrunningapp.model.entities.RunSession
+import com.app.java.trackingrunningapp.model.entities.User
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

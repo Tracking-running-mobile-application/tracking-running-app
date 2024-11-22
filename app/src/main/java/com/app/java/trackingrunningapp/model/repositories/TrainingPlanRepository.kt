@@ -1,8 +1,8 @@
 package com.app.java.trackingrunningapp.model.repositories
 
-import com.app.java.trackingrunningapp.ui.data.DAOs.TrainingPlanDao
-import com.app.java.trackingrunningapp.ui.data.entities.RunSession
-import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
+import com.app.java.trackingrunningapp.model.DAOs.TrainingPlanDao
+import com.app.java.trackingrunningapp.model.entities.RunSession
+import com.app.java.trackingrunningapp.model.entities.TrainingPlan
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -1,8 +1,8 @@
 package com.app.java.trackingrunningapp.model.repositories
 
-import com.app.java.trackingrunningapp.ui.data.DAOs.PersonalGoalDao
-import com.app.java.trackingrunningapp.ui.data.entities.PersonalGoal
-import com.app.java.trackingrunningapp.ui.data.entities.RunSession
+import com.app.java.trackingrunningapp.model.DAOs.PersonalGoalDao
+import com.app.java.trackingrunningapp.model.entities.PersonalGoal
+import com.app.java.trackingrunningapp.model.entities.RunSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

@@ -2,7 +2,7 @@ package com.app.java.trackingrunningapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.java.trackingrunningapp.ui.data.repositories.NotificationRepository
+import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import kotlinx.coroutines.launch
 
 class NotificationViewModel(

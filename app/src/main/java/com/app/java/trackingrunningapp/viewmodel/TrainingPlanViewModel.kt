@@ -2,10 +2,10 @@ package com.app.java.trackingrunningapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.java.trackingrunningapp.ui.data.entities.TrainingPlan
-import com.app.java.trackingrunningapp.ui.data.repositories.NotificationRepository
-import com.app.java.trackingrunningapp.ui.data.repositories.RunSessionRepository
-import com.app.java.trackingrunningapp.ui.data.repositories.TrainingPlanRepository
+import com.app.java.trackingrunningapp.model.entities.TrainingPlan
+import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
+import com.app.java.trackingrunningapp.model.repositories.RunSessionRepository
+import com.app.java.trackingrunningapp.model.repositories.TrainingPlanRepository
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

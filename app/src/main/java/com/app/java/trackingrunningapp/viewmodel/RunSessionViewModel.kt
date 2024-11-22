@@ -3,8 +3,8 @@ package com.app.java.trackingrunningapp.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.java.trackingrunningapp.ui.data.entities.RunSession
-import com.app.java.trackingrunningapp.ui.data.repositories.RunSessionRepository
+import com.app.java.trackingrunningapp.model.entities.RunSession
+import com.app.java.trackingrunningapp.model.repositories.RunSessionRepository
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

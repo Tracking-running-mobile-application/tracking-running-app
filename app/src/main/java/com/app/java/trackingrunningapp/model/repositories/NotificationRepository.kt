@@ -1,7 +1,7 @@
 package com.app.java.trackingrunningapp.model.repositories
 
-import com.app.java.trackingrunningapp.ui.data.DAOs.NotificationDao
-import com.app.java.trackingrunningapp.ui.data.entities.Notification
+import com.app.java.trackingrunningapp.model.DAOs.NotificationDao
+import com.app.java.trackingrunningapp.model.entities.Notification
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 
 class NotificationRepository(
