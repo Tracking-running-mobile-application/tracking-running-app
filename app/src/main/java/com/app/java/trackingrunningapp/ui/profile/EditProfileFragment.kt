@@ -34,25 +34,25 @@ class EditProfileFragment:Fragment() {
     }
 
     private fun setupAffect() {
-        val imageMale: ImageView = binding.imageMaleEdit
-        val imageFemale: ImageView = binding.imageFemaleEdit
+//        val imageMale: ImageView = binding.imageMaleEdit
+//        val imageFemale: ImageView = binding.imageFemaleEdit
         val btnInch = binding.btnInchEdit
         val btnCm = binding.btnCmEdit
         val btnKg = binding.btnKgEdit
         val btnLbs = binding.btnLbsEdit
 
         // male
-        imageMale.setOnClickListener {
-            binding.textGender.text = getString(R.string.text_gender, "Male")
-            imageMale.setImageResource(R.drawable.img_select_male)
-            imageFemale.setImageResource(R.drawable.img_female)
-        }
-        // female
-        imageFemale.setOnClickListener {
-            binding.textGender.text = getString(R.string.text_gender, "Female")
-            imageFemale.setImageResource(R.drawable.img_select_female)
-            imageMale.setImageResource(R.drawable.img_male)
-        }
+//        imageMale.setOnClickListener {
+//            binding.textGender.text = getString(R.string.text_gender, "Male")
+////            imageMale.setImageResource(R.drawable.img_select_male)
+////            imageFemale.setImageResource(R.drawable.img_female)
+//        }
+//        // female
+//        imageFemale.setOnClickListener {
+//            binding.textGender.text = getString(R.string.text_gender, "Female")
+//            imageFemale.setImageResource(R.drawable.img_select_female)
+//            imageMale.setImageResource(R.drawable.img_male)
+//        }
 
         //inch
         btnInch.setOnClickListener {

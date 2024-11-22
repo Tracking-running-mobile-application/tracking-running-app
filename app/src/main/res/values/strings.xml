@@ -4,10 +4,13 @@
     <string name="text_get_started">GET STARTED\t</string>
     <string name="text_your_details">YOUR DETAILS</string>
     <string name="image_male">image_male</string>
-    <string name="gender">Gender</string>
-    <string name="text_gender">Gender: %s</string>
+    <string name="gender">Select Gender</string>
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
     <string name="text_cm">cm</string>
-    <string name="text_image">inch</string>
+    <string name="text_ft">ft</string>
     <string name="text_kg">kg</string>
     <string name="text_lbs">lbs</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -33,4 +36,10 @@
     <string name="text_statistic_today">Today, Nov 3</string>
     <string name="text_statistic_month">November</string>
     <string name="icon_week">Icon Week</string>
+    <string name="hint_gender">Gender</string>
+    <string name="text_info_title">Information</string>
+    <string name="hint_age">Age</string>
+    <string name="hint_height">Height</string>
+    <string name="hint_weight">Weight</string>
+    <string name="text_confirm">Confirm</string>
 </resources>
