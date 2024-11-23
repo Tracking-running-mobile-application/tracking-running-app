@@ -1,12 +1,18 @@
 package com.app.java.trackingrunningapp.model.repositories
 
+import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.NotificationDao
 import com.app.java.trackingrunningapp.model.entities.Notification
+import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 
 class NotificationRepository(
-    private val notificationDao: NotificationDao,
+    context: Context
 ) {
+    val db = RunningDatabase.getInstance(context)
+
+    private val notificationDao: NotificationDao = db.notificationDao()
+
     suspend fun createNotification (
         sessionId: Int?,
         title: String,

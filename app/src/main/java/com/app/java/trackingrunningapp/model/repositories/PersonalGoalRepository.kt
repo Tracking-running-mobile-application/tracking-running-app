@@ -1,8 +1,10 @@
 package com.app.java.trackingrunningapp.model.repositories
 
+import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.PersonalGoalDao
 import com.app.java.trackingrunningapp.model.entities.PersonalGoal
 import com.app.java.trackingrunningapp.model.entities.RunSession
+import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -12,9 +14,12 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalStateException
 
 class PersonalGoalRepository(
-    private val personalGoalDao: PersonalGoalDao,
+    context: Context,
     private val runSessionRepository: RunSessionRepository
 ) {
+    val db = RunningDatabase.getInstance(context)
+
+    private val personalGoalDao: PersonalGoalDao = db.personalGoalDao()
     private val currentRunSession = runSessionRepository.currentRunSession
 
     private var updateJob: Job? = null

@@ -1,21 +1,26 @@
 package com.app.java.trackingrunningapp.model.repositories
 
+import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.RunSessionDao
 import com.app.java.trackingrunningapp.model.DAOs.UserDao
 import com.app.java.trackingrunningapp.model.converters.LocalTimeConverter
 import com.app.java.trackingrunningapp.model.entities.RunSession
 import com.app.java.trackingrunningapp.model.entities.User
+import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class RunSessionRepository(
-    private val runSessionDao: RunSessionDao,
-    userDao: UserDao
+    context: Context
 ) {
-    val convert = LocalTimeConverter()
+    val db = RunningDatabase.getInstance(context)
 
-    val userInfo = userDao.getUserInfo()
+    private val runSessionDao: RunSessionDao = db.runSessionDao()
+    private val userDao: UserDao = db.userDao()
+    private val convert = LocalTimeConverter()
+
+    private val userInfo = userDao.getUserInfo()
 
     private val _currentRunSession = MutableStateFlow<RunSession?>(null)
     val currentRunSession: StateFlow<RunSession?> = _currentRunSession
