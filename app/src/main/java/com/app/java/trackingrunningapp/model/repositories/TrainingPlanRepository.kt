@@ -1,8 +1,10 @@
 package com.app.java.trackingrunningapp.model.repositories
 
+import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.TrainingPlanDao
 import com.app.java.trackingrunningapp.model.entities.RunSession
 import com.app.java.trackingrunningapp.model.entities.TrainingPlan
+import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,9 +18,12 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
 
 class TrainingPlanRepository(
-    private val trainingPlanDao: TrainingPlanDao,
-    private val runSessionRepository: RunSessionRepository
+    private val runSessionRepository: RunSessionRepository,
+    context: Context
 ) {
+    val db = RunningDatabase.getInstance(context)
+
+    private val trainingPlanDao: TrainingPlanDao = db.trainingPlanDao()
     private var lastFetchDate = DateTimeUtils.getCurrentDate()
 
     private var updateJob: Job? = null

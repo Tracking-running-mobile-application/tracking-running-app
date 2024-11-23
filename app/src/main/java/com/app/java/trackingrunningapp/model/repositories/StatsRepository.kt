@@ -1,11 +1,13 @@
 package com.app.java.trackingrunningapp.model.repositories
 
+import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.MonthlyStatsDao
 import com.app.java.trackingrunningapp.model.DAOs.WeeklyStatsDao
 import com.app.java.trackingrunningapp.model.DAOs.YearlyStatsDao
 import com.app.java.trackingrunningapp.model.entities.MonthlyStats
 import com.app.java.trackingrunningapp.model.entities.WeeklyStats
 import com.app.java.trackingrunningapp.model.entities.YearlyStats
+import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -19,14 +21,19 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 
 class StatsRepository(
-    private val yearlyStatsDao: YearlyStatsDao,
-    private val monthlyStatsDao: MonthlyStatsDao,
-    private val weeklyStatsDao: WeeklyStatsDao,
+    context: Context,
     private val coroutineScope: CoroutineScope
+
 ) {
-    val weeklyKeys = mutableSetOf<String>()
-    val monthlyKeys = mutableSetOf<String>()
-    val yearlyKeys = mutableSetOf<String>()
+    val db = RunningDatabase.getInstance(context)
+
+    private val yearlyStatsDao: YearlyStatsDao = db.yearlyStatsDao()
+    private val monthlyStatsDao: MonthlyStatsDao = db.monthlyStatsDao()
+    private val weeklyStatsDao: WeeklyStatsDao = db.weeklyStatsDao()
+
+    private val weeklyKeys = mutableSetOf<String>()
+    private val monthlyKeys = mutableSetOf<String>()
+    private val yearlyKeys = mutableSetOf<String>()
 
     private val _weeklyStatsMap = MutableStateFlow<Map<String, WeeklyStats>>(emptyMap())
     val weeklyStatsMap: StateFlow<Map<String, WeeklyStats>> = _weeklyStatsMap
