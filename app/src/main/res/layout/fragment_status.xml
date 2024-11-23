@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="16dp"
         android:text="@string/gender"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_title"
@@ -25,7 +25,7 @@
         android:id="@+id/materialButtonToggleGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="@+id/edt_age"
         app:layout_constraintTop_toTopOf="@+id/textView3">
@@ -33,7 +33,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_cm"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/size_toggle_button"
             android:backgroundTint="@color/main_yellow"
             android:text="@string/text_cm"
             android:textColor="@color/black" />
@@ -41,7 +41,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_ft"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/size_toggle_button"
             android:backgroundTint="@color/main_gray"
             android:text="@string/text_ft"
             android:textColor="@color/black" />
@@ -52,7 +52,7 @@
         android:id="@+id/materialButtonToggleGroup2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         app:layout_constraintBottom_toBottomOf="@+id/textView5"
         app:layout_constraintEnd_toEndOf="@+id/edt_height"
         app:layout_constraintTop_toTopOf="@+id/textView5">
@@ -60,7 +60,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_kg"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/size_toggle_button"
             android:backgroundTint="@color/main_yellow"
             android:text="@string/text_kg"
             android:textColor="@color/black" />
@@ -68,7 +68,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_lbs"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/size_toggle_button"
             android:backgroundTint="@color/main_gray"
             android:text="@string/text_lbs"
             android:textColor="@color/black" />
@@ -93,8 +93,8 @@
         android:layout_width="0dp"
         android:layout_height="@dimen/height_edit_text"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:background="@drawable/background_edit_text_profile"
         android:drawableStart="@drawable/icon_age"
         android:drawablePadding="@dimen/drawable_padding"
@@ -113,7 +113,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="@dimen/height_edit_text"
-        android:layout_marginTop="@dimen/margin_top_16"
+        android:layout_marginTop="8dp"
         android:background="@drawable/background_edit_text_profile"
         android:drawableStart="@drawable/ic_height"
         android:drawablePadding="8dp"
@@ -132,7 +132,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="@dimen/height_edit_text"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/background_edit_text_profile"
         android:drawableStart="@drawable/ic_weight"
         android:drawablePadding="@dimen/drawable_padding"
@@ -173,18 +173,20 @@
     <Button
         android:id="@+id/btn_confirm"
         android:layout_width="0dp"
+        android:foreground="?attr/selectableItemBackground"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="@dimen/margin_16"
         android:background="@drawable/background_confirm_btn"
-        android:stateListAnimator="@xml/anim_scale"
         android:text="@string/text_confirm"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         android:theme="@style/DefaultButton"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/edt_weight"
-        app:layout_constraintStart_toStartOf="@+id/edt_weight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:ignore="VisualLintButtonSize" />
 
     <com.google.android.material.appbar.MaterialToolbar
@@ -212,8 +214,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         app:hintEnabled="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -230,7 +232,7 @@
             android:inputType="none"
             android:textColor="@color/color_edit_text"
             android:textColorHint="@color/color_hint_edit_text"
-            android:textSize="20sp"
+            android:textSize="@dimen/size_edit_text"
             app:simpleItems="@array/gender_options"
             tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck,VisualLintTextFieldSize" />
 
@@ -259,5 +261,17 @@
         app:layout_constraintBottom_toBottomOf="@+id/edt_weight"
         app:layout_constraintEnd_toEndOf="@+id/edt_weight"
         app:layout_constraintTop_toTopOf="@+id/edt_weight" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_confirm"
+        app:layout_constraintEnd_toEndOf="@+id/edt_weight"
+        app:layout_constraintStart_toStartOf="@+id/edt_weight"
+        app:layout_constraintTop_toBottomOf="@+id/edt_weight"
+        app:srcCompat="@drawable/img_running_info" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

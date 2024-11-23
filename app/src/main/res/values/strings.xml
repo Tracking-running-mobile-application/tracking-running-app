@@ -42,4 +42,5 @@
     <string name="hint_height">Height</string>
     <string name="hint_weight">Weight</string>
     <string name="text_confirm">Confirm</string>
+    <string name="text_btn_save">Save</string>
 </resources>
