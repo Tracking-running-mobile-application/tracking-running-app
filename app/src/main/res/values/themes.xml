@@ -12,7 +12,7 @@
     </style>
 
     <style name="MediumButton" parent="Theme.TrackingRunningApp">
-        <item name="colorPrimary">#131313</item>
+        <item name="colorPrimary">@color/primary_gray</item>
     </style>
 
 </resources>

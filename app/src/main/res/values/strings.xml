@@ -4,10 +4,13 @@
     <string name="text_get_started">GET STARTED\t</string>
     <string name="text_your_details">YOUR DETAILS</string>
     <string name="image_male">image_male</string>
-    <string name="gender">Gender</string>
-    <string name="text_gender">Gender: %s</string>
+    <string name="gender">Select Gender</string>
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
     <string name="text_cm">cm</string>
-    <string name="text_image">inch</string>
+    <string name="text_ft">ft</string>
     <string name="text_kg">kg</string>
     <string name="text_lbs">lbs</string>
     <!-- TODO: Remove or change this placeholder text -->
@@ -23,8 +26,7 @@
     <string name="back_button">backButton</string>
     <string name="training_plans">Training Plan</string>
     <string name="daily_tasks">Daily Tasks</string>
-    <string name="beginner_guide">Beginner\'s Guide</string>
-    <string name="training_plans_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</string>
+    <string name="beginner_guide">BEGINNER’S GUIDE</string>
     <string name="training_duration">1 week</string>
     <string name="training_diff">Beginner</string>
     <string name="training_button">GET STARTED</string>
@@ -34,4 +36,12 @@
     <string name="text_statistic_today">Today, Nov 3</string>
     <string name="text_statistic_month">November</string>
     <string name="icon_week">Icon Week</string>
+    <string name="hint_gender">Gender</string>
+    <string name="text_info_title">Information</string>
+    <string name="hint_age">Age</string>
+    <string name="hint_height">Height</string>
+    <string name="hint_weight">Weight</string>
+    <string name="text_confirm">Confirm</string>
+    <string name="text_btn_save">Save</string>
+    <string name="text_live_stats">Live Stats\nHere</string>
 </resources>

@@ -8,6 +8,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:backgroundTint="@color/primary_gray"
         android:layout_marginEnd="16dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="4dp"
@@ -44,6 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="50dp"
+                android:textColor="@color/white"
                 android:text="Beginner Run"
                 android:textSize="16sp" />
         </LinearLayout>

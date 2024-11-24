@@ -5,28 +5,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.databinding.FragmentHistoryBinding
 
 class HistoryFragment : Fragment() {
+    private lateinit var binding: FragmentHistoryBinding
 
     private lateinit var runDateAdapter: RunDateAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_history, container, false)
+    ): View {
+        binding = FragmentHistoryBinding.inflate(inflater,container,false)
+        return binding.root
+    }
 
-        val runRecyclerView: RecyclerView = view.findViewById(R.id.runRecyclerView)
-        runRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val runDates = generateSampleData() // Replace with your data source
         runDateAdapter = RunDateAdapter(runDates)
-        runRecyclerView.adapter = runDateAdapter
-
-        return view
+        binding.rvHistoryDate.adapter = runDateAdapter
     }
 
     private fun generateSampleData(): List<RunDate> {

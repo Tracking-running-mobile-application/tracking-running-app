@@ -11,7 +11,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import com.app.java.trackingrunningapp.R
 
-class DailyTaskFragment : Fragment() {
+class AddDailyTaskFragment : Fragment() {
     private lateinit var spinner: Spinner
 
     override fun onCreateView(
