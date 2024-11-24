@@ -22,7 +22,7 @@
     </fragment>
     <fragment
         android:id="@+id/run_page"
-        android:name="com.app.java.trackingrunningapp.ui.run_page.RunPageFragment"
-        tools:layout="@layout/fragment_run_page"
+        android:name="com.app.java.trackingrunningapp.ui.run.RunFragment"
+        tools:layout="@layout/fragment_run"
         android:label="RunFragment"/>
 </navigation>

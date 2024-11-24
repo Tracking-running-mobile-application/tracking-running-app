@@ -1,60 +1,136 @@
 package com.app.java.trackingrunningapp.ui.run
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.ui.FusedLocationAPI.DefaultLocationClient
+import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapView
+import com.mapbox.maps.Style
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
+import com.mapbox.maps.plugin.locationcomponent.location
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [RunFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class RunFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class RunFragment : Fragment(R.layout.fragment_run) {
+    private var locationClient: DefaultLocationClient? = null
+    private var isOverlayVisible = true
+    private var isTracking = false
+    private lateinit var mapView: MapView
+    private val requestPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val allGranted = permissions.all { it.value }
+            if (allGranted) {
+                initializeMapAndLocation()
+            } else {
+                Toast.makeText(requireContext(), "Permissions are required to proceed.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        mapView = view.findViewById(R.id.mapView)
+
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+
+        // Check if all permissions are granted
+        if (permissions.all {
+                ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+            }) {
+            initializeMapAndLocation()
+        } else {
+            // Request missing permissions
+            requestPermissionsLauncher.launch(permissions)
+        }
+
+
+        val toggleTrackingButton: Button = view.findViewById(R.id.toggleTrackingButton)
+        toggleTrackingButton.text = "Start Tracking" // Initial text
+
+        toggleTrackingButton.setOnClickListener {
+            if (isTracking) {
+                stopTracking()
+                toggleTrackingButton.text = "Start Tracking"
+            } else {
+                startTracking()
+                toggleTrackingButton.text = "Stop Tracking"
+            }
+            isTracking = !isTracking
+        }
+
+        val toggleButton = view.findViewById<ImageView>(R.id.toggleButton)
+        val metricsRecyclerView = view.findViewById<RecyclerView>(R.id.metricsRecyclerView)
+        metricsRecyclerView.visibility = View.VISIBLE
+
+        toggleButton.setOnClickListener { v: View? ->
+            if (isOverlayVisible) {
+                metricsRecyclerView.visibility = View.GONE
+                toggleButton.rotation = 180f
+            } else {
+                metricsRecyclerView.visibility = View.VISIBLE
+                toggleButton.rotation = 0f
+            }
+            isOverlayVisible = !isOverlayVisible
+        }
+
+        val metricItems: MutableList<MetricItem> = ArrayList()
+        metricItems.add(MetricItem("Duration", "01:25:40"))
+        metricItems.add(MetricItem("Distance", "10.02 km"))
+        metricItems.add(MetricItem("Pace", "9:12 / km"))
+        metricItems.add(MetricItem("Calories", "220 kcal"))
+
+        metricsRecyclerView.layoutManager = GridLayoutManager(getContext(), 2)
+        val adapter = MetricItemAdapter(metricItems)
+        metricsRecyclerView.adapter = adapter
+
+    }
+
+    private fun initializeMapAndLocation() {
+        mapView.mapboxMap.loadStyle(Style.STANDARD) { style ->
+            mapView.location.updateSettings {
+                enabled = true
+            }
+
+            val positionChangedListener = OnIndicatorPositionChangedListener { point ->
+                val cameraOptions = CameraOptions.Builder()
+                    .center(point)
+                    .zoom(15.0)
+                    .build()
+                mapView.mapboxMap.setCamera(cameraOptions)
+            }
+
+            mapView.location.addOnIndicatorPositionChangedListener(positionChangedListener)
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_run, container, false)
+    private fun startTracking() {
+        val context = requireContext()
+        val intent = Intent(context, LocationService::class.java).apply {
+            action = LocationService.ACTION_START
+        }
+        context.startService(intent)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RunFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RunFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun stopTracking() {
+        val context = requireContext()
+        val intent = Intent(context, LocationService::class.java).apply {
+            action = LocationService.ACTION_STOP
+        }
+        context.startService(intent)
     }
 }
