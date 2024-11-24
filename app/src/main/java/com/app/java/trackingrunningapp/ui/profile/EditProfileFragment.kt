@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentEditProfileBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class EditProfileFragment:Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
@@ -28,6 +29,7 @@ class EditProfileFragment:Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpToggle()
         requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = "Edit Profile"
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         binding.btnSave.setOnClickListener {
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }
@@ -68,4 +70,8 @@ class EditProfileFragment:Fragment() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
+    }
 }
