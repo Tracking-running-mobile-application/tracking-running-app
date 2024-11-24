@@ -22,15 +22,4 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        binding.textView6.setOnClickListener{
-//            it.findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
-//            // hide bottom nav
-//            requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
-//        }
-//        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
-    }
-
-
 }

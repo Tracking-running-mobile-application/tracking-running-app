@@ -41,6 +41,7 @@ android {
 
 dependencies {
     implementation(libs.barchart)
+    implementation(libs.circle.image)
     implementation(libs.image.slider)
     implementation(libs.navigation.ui)
     implementation(libs.navigation.fragment)
