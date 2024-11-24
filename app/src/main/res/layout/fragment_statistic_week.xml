@@ -3,13 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:background="@color/main_background"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/main_background">
 
     <com.db.williamchart.view.BarChartView
         android:id="@+id/barchart"
         android:layout_width="0dp"
-        android:layout_height="@dimen/bar_chart_height"
+        android:layout_height="0dp"
         android:layout_marginStart="@dimen/margin_8"
         android:layout_marginTop="@dimen/margin_top_16"
         android:layout_marginEnd="@dimen/margin_8"
@@ -20,6 +20,7 @@
         app:chart_labelsSize="14sp"
         app:chart_lineColor="@color/black"
         app:chart_spacing="28dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_statistic_week" />

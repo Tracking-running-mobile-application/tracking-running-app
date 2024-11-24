@@ -245,7 +245,6 @@
         app:layout_constraintTop_toTopOf="@+id/edt_weight" />
 
     <ImageView
-        android:id="@+id/imageView3"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="32dp"
@@ -254,6 +253,7 @@
         app:layout_constraintEnd_toEndOf="@+id/edt_weight"
         app:layout_constraintStart_toStartOf="@+id/edt_weight"
         app:layout_constraintTop_toBottomOf="@+id/edt_weight"
-        app:srcCompat="@drawable/img_running_info" />
+        app:srcCompat="@drawable/img_running_info"
+        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

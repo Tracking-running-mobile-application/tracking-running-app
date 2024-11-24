@@ -14,7 +14,6 @@
         android:backgroundTint="@android:color/transparent"
         android:contentDescription="@string/text_get_started"
         android:src="@drawable/img_btn_get_started"
-        android:stateListAnimator="@xml/anim_scale"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
