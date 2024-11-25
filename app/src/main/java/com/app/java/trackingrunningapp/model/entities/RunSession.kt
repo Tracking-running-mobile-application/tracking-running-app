@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.model.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -12,7 +13,7 @@ data class RunSession(
     var duration: Long,
     var pace: Double,
     var caloriesBurned: Double,
-    var isActive: Boolean,
-    var dateAddInFavorite: String? = null,
+    @ColumnInfo(name = "isActive", defaultValue = "0") var isActive: Boolean? = false,
+    @ColumnInfo(name = "dateAddInFavorite", defaultValue = "NULL") var dateAddInFavorite: String? = null,
     var isFavorite: Boolean = false
 )

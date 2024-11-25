@@ -2,6 +2,7 @@ package com.app.java.trackingrunningapp.model.repositories
 
 import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.PersonalGoalDao
+import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.PersonalGoal
 import com.app.java.trackingrunningapp.model.entities.RunSession
 import com.app.java.trackingrunningapp.modelbase.RunningDatabase
@@ -17,7 +18,7 @@ class PersonalGoalRepository(
     context: Context,
     private val runSessionRepository: RunSessionRepository
 ) {
-    val db = RunningDatabase.getInstance(context)
+    val db = InitDatabase.runningDatabase
 
     private val personalGoalDao: PersonalGoalDao = db.personalGoalDao()
     private val currentRunSession = runSessionRepository.currentRunSession

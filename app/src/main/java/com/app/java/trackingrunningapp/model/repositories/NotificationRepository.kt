@@ -2,6 +2,7 @@ package com.app.java.trackingrunningapp.model.repositories
 
 import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.NotificationDao
+import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.Notification
 import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
@@ -9,7 +10,7 @@ import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 class NotificationRepository(
     context: Context
 ) {
-    val db = RunningDatabase.getInstance(context)
+    val db = InitDatabase.runningDatabase
 
     private val notificationDao: NotificationDao = db.notificationDao()
 

@@ -2,6 +2,7 @@ package com.app.java.trackingrunningapp.model.repositories
 
 import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.TrainingPlanDao
+import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.RunSession
 import com.app.java.trackingrunningapp.model.entities.TrainingPlan
 import com.app.java.trackingrunningapp.modelbase.RunningDatabase
@@ -21,7 +22,7 @@ class TrainingPlanRepository(
     private val runSessionRepository: RunSessionRepository,
     context: Context
 ) {
-    val db = RunningDatabase.getInstance(context)
+    val db = InitDatabase.runningDatabase
 
     private val trainingPlanDao: TrainingPlanDao = db.trainingPlanDao()
     private var lastFetchDate = DateTimeUtils.getCurrentDate()

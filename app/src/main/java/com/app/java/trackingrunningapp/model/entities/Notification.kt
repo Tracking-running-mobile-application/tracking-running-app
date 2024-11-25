@@ -21,7 +21,7 @@ import kotlinx.datetime.LocalDateTime
 data class Notification(
     @PrimaryKey(autoGenerate = true)
     val notificationId : Int = 0,
-    val notiRunSessionId: Int?,
+    val notiRunSessionId: Int? = null,
     var title: String,
     var message: String,
     var timeTriggred: LocalDateTime,

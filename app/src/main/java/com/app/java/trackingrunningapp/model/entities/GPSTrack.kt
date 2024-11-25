@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.model.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -20,5 +21,5 @@ data class GPSTrack(
     @PrimaryKey(autoGenerate = true)
     val gpsTrackId: Int,
     val gpsSessionId: Int,
-    var isPaused: Boolean = false,
+    @ColumnInfo(defaultValue = "false") var isPaused: Boolean = false,
 )

@@ -4,6 +4,7 @@ import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.RunSessionDao
 import com.app.java.trackingrunningapp.model.DAOs.UserDao
 import com.app.java.trackingrunningapp.model.converters.LocalTimeConverter
+import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.RunSession
 import com.app.java.trackingrunningapp.model.entities.User
 import com.app.java.trackingrunningapp.modelbase.RunningDatabase
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 class RunSessionRepository(
     context: Context
 ) {
-    val db = RunningDatabase.getInstance(context)
+    val db = InitDatabase.runningDatabase
 
     private val runSessionDao: RunSessionDao = db.runSessionDao()
     private val userDao: UserDao = db.userDao()

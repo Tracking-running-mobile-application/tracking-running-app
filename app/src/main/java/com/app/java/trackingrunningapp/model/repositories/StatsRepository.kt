@@ -4,6 +4,7 @@ import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.MonthlyStatsDao
 import com.app.java.trackingrunningapp.model.DAOs.WeeklyStatsDao
 import com.app.java.trackingrunningapp.model.DAOs.YearlyStatsDao
+import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.MonthlyStats
 import com.app.java.trackingrunningapp.model.entities.WeeklyStats
 import com.app.java.trackingrunningapp.model.entities.YearlyStats
@@ -25,7 +26,7 @@ class StatsRepository(
     private val coroutineScope: CoroutineScope
 
 ) {
-    val db = RunningDatabase.getInstance(context)
+    val db = InitDatabase.runningDatabase
 
     private val yearlyStatsDao: YearlyStatsDao = db.yearlyStatsDao()
     private val monthlyStatsDao: MonthlyStatsDao = db.monthlyStatsDao()
