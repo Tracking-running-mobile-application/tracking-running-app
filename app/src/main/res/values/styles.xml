@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Custom text color for calendar days -->
+    <style name="CustomCalendarTextStyle">
+        <item name="android:textColor">@color/white</item>  <!-- Change this to the desired color -->
+    </style>
+
+    <!-- Custom text color for weekdays -->
+    <style name="CustomCalendarWeekDayStyle">
+        <item name="android:textColor">@color/white</item>  <!-- Change this to the desired color -->
+    </style>
+</resources>
