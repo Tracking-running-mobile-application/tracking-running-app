@@ -24,9 +24,14 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val runDates = generateSampleData() // Replace with your data source
-        runDateAdapter = RunDateAdapter(runDates)
+        val runDates = generateSampleData()
+        val limitedRunDates = limitToMaxItems(runDates, 20)
+
+        runDateAdapter = RunDateAdapter(limitedRunDates)
         binding.rvHistoryDate.adapter = runDateAdapter
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            refreshData()
+        }
     }
 
     private fun generateSampleData(): List<RunDate> {
@@ -40,7 +45,30 @@ class HistoryFragment : Fragment() {
         )
         val augustRuns = listOf(
             Run("Long Run", "20KM", "Last Month"),
-            Run("Short Run", "5KM", "Last Month")
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Ultra Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+            Run("Long Run", "20KM", "Last Month"),
+            Run("Short Run", "5KM", "Last Month"),
+
         )
 
         return listOf(
@@ -50,4 +78,26 @@ class HistoryFragment : Fragment() {
         )
     }
 
+    private fun refreshData() {
+        val newRunDates = generateSampleData() // Replace with API or database fetch logic
+        val limitedRunDates = limitToMaxItems(newRunDates, 20)
+
+        runDateAdapter = RunDateAdapter(limitedRunDates)
+        binding.rvHistoryDate.adapter = runDateAdapter
+
+        // Stop the refresh indicator
+        binding.swipeRefreshLayout.isRefreshing = false
+    }
+
+    private fun limitToMaxItems(runDates: List<RunDate>, maxItems: Int): List<RunDate> {
+        val flattenedRuns = runDates.flatMap { runDate ->
+            runDate.runs.map { run -> runDate.date to run }
+        }
+        val limitedRuns = flattenedRuns.take(maxItems)
+        val groupedRuns = limitedRuns.groupBy { it.first }.map { (date, runs) ->
+            RunDate(date, runs.map { it.second })
+        }
+
+        return groupedRuns
+    }
 }
