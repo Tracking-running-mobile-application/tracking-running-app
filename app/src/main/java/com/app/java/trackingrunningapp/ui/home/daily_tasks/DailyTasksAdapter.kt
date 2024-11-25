@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.DailyTask
+import com.app.java.trackingrunningapp.model.model.DailyTask
 
 
 class DailyTasksAdapter(
