@@ -17,7 +17,8 @@ class RunAdapter(private val runs: List<Run>) : RecyclerView.Adapter<RunAdapter.
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RunViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_history_run, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_history_run, parent, false)
         return RunViewHolder(view)
     }
 

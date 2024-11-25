@@ -3,33 +3,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"
-    android:background="#353331"
+    android:background="@color/main_background"
     tools:context=".ui.history.HistoryFragment">
 
     <TextView
-        android:id="@+id/runMonth"
+        android:id="@+id/tv_run_month"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:text="OCTOBER 2024"
-        android:textColor="#EEFF01"
+        android:textColor="@color/main_yellow"
         android:textSize="24sp"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" >
-    </TextView>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/runRecyclerView"
+        android:id="@+id/rv_history_run"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        tools:listitem="@layout/item_history_run"
-        app:layout_constraintTop_toBottomOf="@+id/runMonth"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        tools:listitem="@layout/item_history_run"
+        app:layout_constraintStart_toStartOf="@+id/tv_run_month"
+        app:layout_constraintTop_toBottomOf="@+id/tv_run_month" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

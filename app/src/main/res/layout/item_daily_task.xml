@@ -8,6 +8,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
+        android:backgroundTint="@color/primary_gray"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_16"
@@ -56,6 +57,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="Task Title"
+                    android:textColor="@color/white"
                     android:textSize="16sp" />
 
                 <TextView
@@ -65,6 +67,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="Duration"
+                    android:textColor="@color/white"
                     android:textSize="16sp" />
 
                 <TextView
@@ -74,6 +77,7 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="Frequency"
+                    android:textColor="@color/white"
                     android:textSize="16sp" />
             </LinearLayout>
 
