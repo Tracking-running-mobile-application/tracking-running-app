@@ -15,5 +15,5 @@ data class RunSession(
     var caloriesBurned: Double,
     @ColumnInfo(name = "isActive", defaultValue = "0") var isActive: Boolean? = false,
     @ColumnInfo(name = "dateAddInFavorite", defaultValue = "NULL") var dateAddInFavorite: String? = null,
-    var isFavorite: Boolean = false
+    @ColumnInfo(name = "isFavorite", defaultValue = "0") var isFavorite: Boolean = false
 )

@@ -20,7 +20,6 @@ class InitDatabase : Application() {
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // Query data
                 val records = runningDatabase.runSessionDao().getAllRunSessions(20, 20)
                 if (records.isEmpty()) {
                     Log.d("DatabaseRecord", "No records found in RunSession table.")

@@ -13,7 +13,7 @@ class UserViewModel(
         name: String?,
         age: Int?,
         height: Float?,
-        weight: Float = 50f,
+        weight: Double = 50.0,
         metricPreference: String? = User.KILOGRAM,
         unit: String? = User.UNIT_KM
     ) {

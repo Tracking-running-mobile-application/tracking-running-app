@@ -21,5 +21,5 @@ data class GPSTrack(
     @PrimaryKey(autoGenerate = true)
     val gpsTrackId: Int,
     val gpsSessionId: Int,
-    @ColumnInfo(defaultValue = "false") var isPaused: Boolean = false,
+    @ColumnInfo(name = "isPaused", defaultValue = "0") var isPaused: Boolean = false,
 )

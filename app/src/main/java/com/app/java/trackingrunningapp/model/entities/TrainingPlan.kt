@@ -23,12 +23,12 @@ data class TrainingPlan(
     var title: String,
     var description: String,
     var estimatedTime: Double,
-    @ColumnInfo(name = "totalDistance", defaultValue = "0.0") var targetDistance: Double? = 0.0,
-    @ColumnInfo(name = "totalDuration", defaultValue = "0.0") var targetDuration: Double? = 0.0,
-    @ColumnInfo(name = "totalCaloriesBurned", defaultValue = "0.0") var targetCaloriesBurned: Double? = 0.0,
+    @ColumnInfo(name = "targetDistance", defaultValue = "0.0") var targetDistance: Double? = 0.0,
+    @ColumnInfo(name = "targetDuration", defaultValue = "0.0") var targetDuration: Double? = 0.0,
+    @ColumnInfo(name = "targetCaloriesBurned", defaultValue = "0.0") var targetCaloriesBurned: Double? = 0.0,
     @ColumnInfo(name = "goalProgress", defaultValue = "0.0") var goalProgress: Double? = 0.0,
     var exerciseType: String,
     var difficulty: String,
-    @ColumnInfo(name = "lastRecommendedDate", defaultValue = "null") var lastRecommendedDate: String? = null,
+    @ColumnInfo(name = "lastRecommendedDate", defaultValue = "NULL") var lastRecommendedDate: String? = null,
     @ColumnInfo(name = "isFinished", defaultValue = "0") var isFinished: Boolean = false
 )
