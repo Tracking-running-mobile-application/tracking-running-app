@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="28dp"
-        android:text="@string/preferences"
+        android:text="Themes"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_title"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,31 +22,94 @@
     <Spinner
         android:id="@+id/theme"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="@dimen/margin_start"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="@dimen/margin_end"
+        android:background="#353331"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8"
-        android:background="#484848"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <Spinner
         android:id="@+id/unit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="@dimen/margin_start"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="@dimen/margin_end"
+        android:background="#353331"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/theme"
-        android:background="#484848"/>
+        app:layout_constraintTop_toBottomOf="@+id/theme" />
 
     <Spinner
         android:id="@+id/language"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="@dimen/margin_start"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="@dimen/margin_end"
+        android:background="#353331"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/unit"
-        android:background="#484848"/>
+        app:layout_constraintTop_toBottomOf="@+id/textView25" />
+
+    <TextView
+        android:id="@+id/textView23"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="Unit of Measurements"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/theme" />
+
+    <TextView
+        android:id="@+id/textView25"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="Language"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/unit" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/ic_dropdown_tick"
+        app:layout_constraintBottom_toBottomOf="@+id/theme"
+        app:layout_constraintEnd_toEndOf="@+id/theme"
+        app:layout_constraintTop_toTopOf="@+id/theme" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/ic_dropdown_tick"
+        app:layout_constraintBottom_toBottomOf="@+id/unit"
+        app:layout_constraintEnd_toEndOf="@+id/unit"
+        app:layout_constraintTop_toTopOf="@+id/unit" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/ic_dropdown_tick"
+        app:layout_constraintBottom_toBottomOf="@+id/language"
+        app:layout_constraintEnd_toEndOf="@+id/language"
+        app:layout_constraintTop_toTopOf="@+id/language"
+        app:layout_constraintVertical_bias="0.538" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

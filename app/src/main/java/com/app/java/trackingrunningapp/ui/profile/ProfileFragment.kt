@@ -13,32 +13,29 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.tabs.TabLayout
 
 class ProfileFragment : Fragment() {
-    private lateinit var binding: FragmentProfileBinding
+    private lateinit var binding:FragmentProfileBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+        binding = FragmentProfileBinding.inflate(inflater,container,false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val barSet = listOf(
-            "Week 1" to 4F,
-            "Week 2" to 2F,
-            "Week 3" to 4.5F,
-            "Week 4" to 3F,
-            "Week 5" to 9F,
-            "Week 6" to 13F,
-        )
-        val barChart = view.findViewById<BarChartView>(R.id.barchart)
-        barChart.animate(barSet)
-        barChart.apply {
-            animation.duration = 1000L
-            labelsFormatter = { it.toInt().toString() }
+        binding.textView6.setOnClickListener{
+            it.findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
+            // hide bottom nav
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+        }
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
+
+        binding.btnSetting.setOnClickListener{
+            it.findNavController().navigate(R.id.action_profileFragment_to_settingFragment)
         }
     }
-}
 
+
+}

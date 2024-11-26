@@ -24,7 +24,7 @@ class SettingFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_setting, container, false)
 
         spinner1 = view.findViewById(R.id.theme)
-        var themeItems = listOf("Light mode", "Dark mode")
+        var themeItems = listOf("Light Theme", "Dark Theme")
         var themeAdapter = ArrayAdapter(requireContext(),R.layout.item_setting_theme,themeItems)
         themeAdapter.setDropDownViewResource(R.layout.item_setting_theme)
         spinner1.adapter = themeAdapter
@@ -37,7 +37,7 @@ class SettingFragment : Fragment() {
         })
 
         spinner2 = view.findViewById(R.id.unit)
-        val unitItems = listOf("Minutes per mile","Minutes per kilometer")
+        val unitItems = listOf("Kilometers (km)","Miles (ml)")
         var unitAdapter = ArrayAdapter(requireContext(),R.layout.item_setting_unit,unitItems)
         unitAdapter.setDropDownViewResource(R.layout.item_setting_unit)
         spinner2.adapter = unitAdapter
@@ -61,6 +61,6 @@ class SettingFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>) {
             }
         })
-    return view
+        return view
     }
 }
