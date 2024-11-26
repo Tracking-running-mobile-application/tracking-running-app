@@ -9,4 +9,5 @@
     <style name="CustomCalendarWeekDayStyle">
         <item name="android:textColor">@color/white</item>  <!-- Change this to the desired color -->
     </style>
+
 </resources>
