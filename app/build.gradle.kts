@@ -79,6 +79,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.mapbox.maps:android:11.8.0")
     implementation(libs.play.services.maps)
     implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)

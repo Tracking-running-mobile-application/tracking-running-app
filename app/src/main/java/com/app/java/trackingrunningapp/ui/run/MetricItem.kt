@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.run_page
+package com.app.java.trackingrunningapp.ui.run
 
 data class MetricItem(
     var label: String,

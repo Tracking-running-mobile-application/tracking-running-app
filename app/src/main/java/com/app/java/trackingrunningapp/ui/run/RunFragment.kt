@@ -1,36 +1,63 @@
-package com.app.java.trackingrunningapp.ui.run_page
+package com.app.java.trackingrunningapp.ui.run
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import androidx.core.app.ActivityCompat
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.DefaultLocationClient
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.MapView
+import com.mapbox.maps.Style
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
+import com.mapbox.maps.plugin.locationcomponent.location
 
-class RunPageFragment : Fragment(R.layout.fragment_run_page) {
+
+class RunFragment : Fragment(R.layout.fragment_run) {
     private var locationClient: DefaultLocationClient? = null
     private var isOverlayVisible = true
     private var isTracking = false
+    private lateinit var mapView: MapView
+    private val requestPermissionsLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+            val allGranted = permissions.all { it.value }
+            if (allGranted) {
+                initializeMapAndLocation()
+            } else {
+                Toast.makeText(requireContext(), "Permissions are required to proceed.", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        mapView = view.findViewById(R.id.mapView)
 
-        ActivityCompat.requestPermissions(
-            requireActivity(),
-            arrayOf(
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.POST_NOTIFICATIONS
-            ),
-            0
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
         )
+
+        // Check if all permissions are granted
+        if (permissions.all {
+                ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+            }) {
+            initializeMapAndLocation()
+        } else {
+            // Request missing permissions
+            requestPermissionsLauncher.launch(permissions)
+        }
+
 
         val toggleTrackingButton: Button = view.findViewById(R.id.toggleTrackingButton)
         toggleTrackingButton.text = "Start Tracking" // Initial text
@@ -71,6 +98,24 @@ class RunPageFragment : Fragment(R.layout.fragment_run_page) {
         val adapter = MetricItemAdapter(metricItems)
         metricsRecyclerView.adapter = adapter
 
+    }
+
+    private fun initializeMapAndLocation() {
+        mapView.mapboxMap.loadStyle(Style.STANDARD) { style ->
+            mapView.location.updateSettings {
+                enabled = true
+            }
+
+            val positionChangedListener = OnIndicatorPositionChangedListener { point ->
+                val cameraOptions = CameraOptions.Builder()
+                    .center(point)
+                    .zoom(15.0)
+                    .build()
+                mapView.mapboxMap.setCamera(cameraOptions)
+            }
+
+            mapView.location.addOnIndicatorPositionChangedListener(positionChangedListener)
+        }
     }
 
     private fun startTracking() {
