@@ -7,6 +7,7 @@ import androidx.room.Upsert
 import com.app.java.trackingrunningapp.model.entities.GPSPoint
 import com.app.java.trackingrunningapp.model.entities.GPSTrack
 import com.app.java.trackingrunningapp.model.entities.RunSession
+import com.app.java.trackingrunningapp.model.models.StatsSession
 
 @Dao
 interface RunSessionDao {
@@ -75,8 +76,12 @@ interface RunSessionDao {
         endDate: String
     ): List<RunSession>
 
-    @Upsert
-    suspend fun createMockDataForRunSession(runSession: RunSession)
+    @Query("""
+        SELECT duration, distance, pace, caloriesBurned
+        FROM runsession
+        WHERE sessionId = :sessionId
+    """)
+    suspend fun fetchStatsSession(sessionId: Int): StatsSession
 
     @Query("""
         SELECT * FROM RunSession AS rs    

@@ -1,6 +1,5 @@
 package com.app.java.trackingrunningapp.model.repositories
 
-import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.MonthlyStatsDao
 import com.app.java.trackingrunningapp.model.DAOs.WeeklyStatsDao
 import com.app.java.trackingrunningapp.model.DAOs.YearlyStatsDao
@@ -22,7 +21,6 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 
 class StatsRepository(
-    context: Context,
     private val coroutineScope: CoroutineScope
 
 ) {

@@ -4,8 +4,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.model.entities.RunSession
+import com.app.java.trackingrunningapp.model.models.StatsSession
+import com.app.java.trackingrunningapp.model.repositories.GPSPointRepository
+import com.app.java.trackingrunningapp.model.repositories.GPSTrackRepository
 import com.app.java.trackingrunningapp.model.repositories.RunSessionRepository
+import com.app.java.trackingrunningapp.model.utils.StatsUtils
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,6 +22,7 @@ import kotlin.random.Random
 
 class RunSessionViewModel(
     private val runSessionRepository: RunSessionRepository,
+    private val gpsPointRepository: GPSPointRepository
 ): ViewModel() {
     val startDate = MutableLiveData<String>()
     val endDate = MutableLiveData<String>()
@@ -30,8 +36,7 @@ class RunSessionViewModel(
     private val _duration = MutableStateFlow("00:00")
     val duration: StateFlow<String> = _duration
 
-    private val _distance = MutableStateFlow(0.0)
-    val distance: StateFlow<Double> = _distance
+    val distance = gpsPointRepository.currentDistance
 
     private val _pace = MutableStateFlow(0.0)
     val pace: StateFlow<Double> = _pace
@@ -45,19 +50,15 @@ class RunSessionViewModel(
     private val _favoriteRunSessions = MutableStateFlow<List<RunSession?>>(emptyList())
     val favoriteRunSessions : StateFlow<List<RunSession?>> = _favoriteRunSessions
 
-    private val currentRunSession: StateFlow<RunSession?> = runSessionRepository.currentRunSession
-
     private var runSessionStartTime: Instant = Instant.DISTANT_PAST
 
     private var trackingJob: Job? = null
 
+    val currentSession = runSessionRepository.currentRunSession
+
     init {
         fetchRunSessions()
         loadFavoriteSessions()
-    }
-
-    private fun getCurrentSessionOrThrow(): RunSession {
-        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null!")
     }
 
     fun filterSessionsByDateRange() {
@@ -100,19 +101,21 @@ class RunSessionViewModel(
     fun startRunSession() {
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 runSessionRepository.startRunSession()
+                /*Is it optimal to place it here?*/
+                gpsPointRepository.calculateDistance()
             } catch(e: Exception) {
                 println("Error starting session: ${e.message}")
             }
         }
 
         trackingJob?.cancel()
-        trackingJob = viewModelScope.launch {
+        trackingJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
                 val currentTime = DateTimeUtils.getCurrentInstant()
-                val formattedDuration = DateTimeUtils.calculateDuration(runSessionStartTime, currentTime)
+                val formattedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
                 _duration.value = formattedDuration
 
                 if (currentTime.epochSeconds % 4 == 0L) {
@@ -132,10 +135,11 @@ class RunSessionViewModel(
         viewModelScope.launch {
             updateCaloriesAndPace()
 
-            val durationInSeconds = DateTimeUtils.durationToSeconds(_duration.value)
+            val durationInSeconds = StatsUtils.durationToSeconds(_duration.value)
 
             runSessionRepository.updateDurationSession(durationInSeconds)
             runSessionRepository.updatePaceRunSession()
+            runSessionRepository.updateDistanceSession(distance.value)
 
             runSessionRepository.finishRunSession()
         }
@@ -161,6 +165,10 @@ class RunSessionViewModel(
         }
     }
 
+    suspend fun fetchStatsCurrentSession(): StatsSession {
+        return runSessionRepository.fetchStatsSession()
+    }
+
     private suspend fun updateCaloriesAndPace() {
         val newPace = runSessionRepository.updatePaceRunSession()
         _pace.value = newPace
@@ -168,43 +176,11 @@ class RunSessionViewModel(
         val newCaloriesBurned = runSessionRepository.updateCaloriesBurnedSession()
         _caloriesBurned.value = newCaloriesBurned
 
-        runSessionRepository.updateDistanceSession()
     }
 
     fun deleteRunSession(sessionId: Int) {
         viewModelScope.launch {
             runSessionRepository.deleteRunSession(sessionId)
-        }
-    }
-
-    fun createMockRunSessions() {
-        viewModelScope.launch {
-            val random = java.util.Random()
-            val dateFormat = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            val startDate = java.time.LocalDate.of(2024, 11, 22)
-            val endDate = java.time.LocalDate.of(2024, 12, 31)
-
-            val mockSessions = (1..30).map {
-                val randomDays = random.nextInt(startDate.until(endDate).days + 1)
-                val runDate = startDate.plusDays(randomDays.toLong()).format(dateFormat)
-
-                RunSession(
-                    sessionId = 0,
-                    runDate = runDate,
-                    distance = Random.nextDouble(1.0, 20.0),
-                    duration = Random.nextLong(600, 7200),
-                    pace = Random.nextDouble(4.0, 12.0),
-                    caloriesBurned = Random.nextDouble(100.0, 1000.0),
-                    isActive = false,
-                    dateAddInFavorite = null,
-                    isFavorite = false
-                )
-            }
-
-            mockSessions.forEach { session ->
-                runSessionRepository.createMockData(session)
-            }
-
         }
     }
 

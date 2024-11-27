@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalStateException
 
 class PersonalGoalRepository(
-    context: Context,
     private val runSessionRepository: RunSessionRepository
 ) {
     val db = InitDatabase.runningDatabase

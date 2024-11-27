@@ -20,7 +20,6 @@ import kotlinx.datetime.minus
 
 class TrainingPlanRepository(
     private val runSessionRepository: RunSessionRepository,
-    context: Context
 ) {
     val db = InitDatabase.runningDatabase
 

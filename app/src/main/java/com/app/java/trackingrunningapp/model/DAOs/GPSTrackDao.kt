@@ -19,6 +19,9 @@ interface GPSTrackDao {
     @Query("DELETE FROM GPSTrack WHERE gpsTrackId = :gpsTrackId")
     suspend fun deleteGPSTrack(gpsTrackId: Int)
 
-    @Upsert
-    suspend fun upsertGPSTrack(gpsTrack: GPSTrack)
+    @Query("UPDATE GPSTrack SET gpsSessionId = :gpsSessionId WHERE gpsTrackId = :gpsTrackId")
+    suspend fun insertGPSTrack(gpsTrackId: Int, gpsSessionId: Int)
+
+    @Query("SELECT gpsTrackId FROM GPSTrack WHERE gpsSessionId = :sessionId")
+    suspend fun getGPSTrackIdBySessionId(sessionId: Int): Int?
 }

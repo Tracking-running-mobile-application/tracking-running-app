@@ -7,14 +7,13 @@ import com.app.java.trackingrunningapp.model.converters.LocalTimeConverter
 import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.RunSession
 import com.app.java.trackingrunningapp.model.entities.User
+import com.app.java.trackingrunningapp.model.models.StatsSession
 import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class RunSessionRepository(
-    context: Context
-) {
+class RunSessionRepository {
     val db = InitDatabase.runningDatabase
 
     private val runSessionDao: RunSessionDao = db.runSessionDao()
@@ -96,6 +95,11 @@ class RunSessionRepository(
         runSessionDao.removeFavoriteRunSession(sessionId)
     }
 
+    suspend fun fetchStatsSession(): StatsSession {
+        val currentSession = getCurrentSessionOrThrow()
+        return runSessionDao.fetchStatsSession(currentSession.sessionId)
+    }
+
     suspend fun updatePaceRunSession(): Double {
         val currentSession = getCurrentSessionOrThrow()
 
@@ -169,10 +173,9 @@ class RunSessionRepository(
         runSessionDao.updateDurationSession(currentSession.sessionId, duration)
     }
 
-    suspend fun updateDistanceSession() {
+    suspend fun updateDistanceSession(distance: Double) {
+        val currentSession = getCurrentSessionOrThrow()
+        runSessionDao.updateDistanceSession(currentSession.sessionId, distance)
     }
 
-    suspend fun createMockData(runSession: RunSession) {
-        runSessionDao.createMockDataForRunSession(runSession)
-    }
 }
