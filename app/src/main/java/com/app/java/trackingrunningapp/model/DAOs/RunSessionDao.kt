@@ -3,7 +3,6 @@ package com.app.java.trackingrunningapp.model.DAOs
 import androidx.room.Dao
 import androidx.room.Embedded
 import androidx.room.Query
-import androidx.room.Upsert
 import com.app.java.trackingrunningapp.model.entities.GPSPoint
 import com.app.java.trackingrunningapp.model.entities.GPSTrack
 import com.app.java.trackingrunningapp.model.entities.RunSession
@@ -40,6 +39,9 @@ interface RunSessionDao {
     @Query("SELECT * FROM RUNSESSION WHERE sessionId = :sessionId")
     suspend fun getRunSessionById(sessionId: Int): RunSession?
 
+    /***
+     * TODO: Change this to update stats!
+     * ***/
     @Query("UPDATE RunSession SET caloriesBurned = :caloriesBurned WHERE sessionId =:sessionId")
     suspend fun updateCaloriesBurnedSession(sessionId: Int, caloriesBurned: Double)
 
@@ -52,11 +54,14 @@ interface RunSessionDao {
     @Query("UPDATE RunSession SET distance = :distance WHERE sessionId =:sessionId")
     suspend fun updateDistanceSession(sessionId: Int, distance: Double)
 
+    @Query("UPDATE RunSession SET distance = :distance, duration = :duration, caloriesBurned = :caloriesBurned, pace = :pace WHERE sessionId = :sessionId")
+    suspend fun updateStatsSession(sessionId: Int, distance: Double, duration: Long, caloriesBurned: Double, pace: Double)
+
     @Query("UPDATE RunSession SET isActive = TRUE, runDate = :runDate WHERE sessionId = :sessionId")
-    suspend fun startRunSession(sessionId: Int, runDate: String)
+    suspend fun initiateRunSession(sessionId: Int, runDate: String)
 
     @Query("UPDATE RunSession SET isActive = FALSE WHERE sessionId = :sessionId")
-    suspend fun finishRunSession(sessionId: Int)
+    suspend fun setRunSessionInactive(sessionId: Int)
 
     @Query("UPDATE RunSession SET isFavorite = TRUE, dateAddInFavorite = :dateAddInFavorite WHERE sessionId = :sessionId")
     suspend fun addFavoriteRunSession(sessionId: Int, dateAddInFavorite: String)

@@ -5,9 +5,7 @@ import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.User
 import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 
-class UserRepository(
-
-) {
+class UserRepository {
     val db = InitDatabase.runningDatabase
 
     private val userDao: UserDao = db.userDao()

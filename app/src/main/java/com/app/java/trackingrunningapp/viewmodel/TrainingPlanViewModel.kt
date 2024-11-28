@@ -39,7 +39,13 @@ class TrainingPlanViewModel(
         }
     }
 
-    fun deleteTrainingPlan(planId: Int) {
+    fun fetchGoalProgress() {
+        viewModelScope.launch {
+            trainingPlanRepository.getGoalProgress()
+        }
+    }
+
+        fun deleteTrainingPlan(planId: Int) {
         viewModelScope.launch {
             trainingPlanRepository.deleteTrainingPlan(planId)
         }
@@ -63,9 +69,9 @@ class TrainingPlanViewModel(
         viewModelScope.launch {
             runSessionRepository.currentRunSession.collect { session ->
                 if (session == null) {
-                    trainingPlanRepository.stopTrainingPlan()
+                    trainingPlanRepository.stopUpdatingGoalProgress()
                 } else {
-                    trainingPlanRepository.startTrainingPlan()
+                    trainingPlanRepository.startUpdatingGoalProgress()
                 }
             }
         }

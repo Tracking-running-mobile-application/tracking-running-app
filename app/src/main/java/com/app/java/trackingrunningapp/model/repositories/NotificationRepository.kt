@@ -12,6 +12,7 @@ class NotificationRepository(
 
     private val notificationDao: NotificationDao = db.notificationDao()
 
+    /*Change this to upsert*/
     suspend fun createNotification (
         sessionId: Int?,
         title: String,
@@ -63,11 +64,5 @@ class NotificationRepository(
     }
      */
 
-    suspend fun deleteNotification(notificationId: Int) {
-        notificationDao.deleteNotification(notificationId)
-    }
 
-    suspend fun getAllNotification() {
-        notificationDao.getAllNotification()
-    }
 }

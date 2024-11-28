@@ -1,3 +1,5 @@
+
+/***TODO: Remove! Find how to trigger noti
 package com.app.java.trackingrunningapp.viewmodel
 
 import androidx.lifecycle.ViewModel
@@ -25,12 +27,6 @@ class NotificationViewModel(
         }
     }
 
-    fun deleteNotification(sessionId: Int) {
-        viewModelScope.launch {
-            notificationRepository.deleteNotification(sessionId)
-        }
-    }
-
     fun getAllNotification() {
         viewModelScope.launch {
             notificationRepository.getAllNotification()
@@ -38,3 +34,4 @@ class NotificationViewModel(
     }
 
 }
+ ***/

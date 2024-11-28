@@ -40,6 +40,14 @@ class PersonalGoalViewModel(
         }
     }
 
+    fun fetchGoalProgress() {
+        viewModelScope.launch {
+            personalGoalRepository.getGoalProgress()
+        }
+    }
+
+
+    /***TODO: Move this to repo!***/
     fun upsertPersonalGoal(
         goalId: Int? = null,
         sessionId : Int? = null,
@@ -85,9 +93,9 @@ class PersonalGoalViewModel(
         viewModelScope.launch {
             runSessionRepository.currentRunSession.collect { session ->
                 if (session == null) {
-                    personalGoalRepository.stopPersonalGoal()
+                    personalGoalRepository.stopUpdatingGoalProgress()
                 } else {
-                    personalGoalRepository.startPersonalGoal()
+                    personalGoalRepository.startUpdatingGoalProgress()
                 }
             }
         }

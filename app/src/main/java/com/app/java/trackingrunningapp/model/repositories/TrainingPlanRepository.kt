@@ -1,11 +1,10 @@
 package com.app.java.trackingrunningapp.model.repositories
 
-import android.content.Context
+import com.app.java.trackingrunningapp.model.DAOs.RunSessionDao
 import com.app.java.trackingrunningapp.model.DAOs.TrainingPlanDao
 import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.RunSession
 import com.app.java.trackingrunningapp.model.entities.TrainingPlan
-import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -18,23 +17,34 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.minus
 
-class TrainingPlanRepository(
-    private val runSessionRepository: RunSessionRepository,
-) {
+class TrainingPlanRepository {
     val db = InitDatabase.runningDatabase
 
     private val trainingPlanDao: TrainingPlanDao = db.trainingPlanDao()
+    private val runSessionDao: RunSessionDao = db.runSessionDao()
+
     private var lastFetchDate = DateTimeUtils.getCurrentDate()
 
     private var updateJob: Job? = null
 
-    private val currentRunSession = runSessionRepository.currentRunSession
 
     private val _goalProgress = MutableStateFlow<Double?>(null)
     val goalProgress: StateFlow<Double?> = _goalProgress
 
-    private fun getCurrentSessionOrThrow(): RunSession {
-        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null!")
+    private suspend fun getCurrentSessionOrThrow(): RunSession {
+        val currentRunSession = runSessionDao.getCurrentRunSession()
+        return currentRunSession ?: throw IllegalStateException("There is not any current run session ! (Training Plan Repository)")
+    }
+
+    private suspend fun getCurrentTrainingPlanOrThrow(): TrainingPlan {
+        val currentRunSession = getCurrentSessionOrThrow()
+        return trainingPlanDao.getTrainingPlanBySessionId(currentRunSession.sessionId)
+            ?: throw IllegalStateException("There is not any training plan attached with this run session ID! (Training Plan Repository)")
+    }
+
+    suspend fun activeTrainingPlan(): Boolean {
+        val currentRunSession = getCurrentSessionOrThrow()
+        return trainingPlanDao.getTrainingPlanBySessionId(currentRunSession.sessionId) != null
     }
 
     suspend fun updateTrainingPlanRecommendation(limit: Int = 4): List<TrainingPlan> {
@@ -48,6 +58,11 @@ class TrainingPlanRepository(
         }
 
         return emptyList()
+    }
+
+    suspend fun getGoalProgress(): Double {
+        val currentTrainingPlan = getCurrentTrainingPlanOrThrow()
+        return trainingPlanDao.getGoalProgress(currentTrainingPlan.planId)
     }
 
     suspend fun createTrainingPlan(
@@ -124,19 +139,12 @@ class TrainingPlanRepository(
         }
     }
 
-    fun startTrainingPlan() {
+    fun startUpdatingGoalProgress() {
         updateJob?.cancel()
         updateJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 try {
-                    val currentRunSession = runSessionRepository.currentRunSession.value
-                    if (currentRunSession != null) {
-                        updateGoalProgress()
-                    } else {
-                        println("No active session found, stopping goal updates.")
-                        stopTrainingPlan()
-                        break
-                    }
+                    updateGoalProgress()
                     delay(5000)
                 } catch (e: Exception) {
                     println("Error updating goal progress: ${e.message}")
@@ -145,34 +153,25 @@ class TrainingPlanRepository(
         }
     }
 
-    fun stopTrainingPlan() {
+    fun stopUpdatingGoalProgress() {
         if (updateJob?.isActive == true) {
             updateJob?.cancel()
             updateJob = null
         }
     }
 
-    suspend fun updateGoalProgress() {
+    private suspend fun updateGoalProgress() {
         val currentSession = getCurrentSessionOrThrow()
+        val currentTrainingPlan = getCurrentTrainingPlanOrThrow()
+        val progress = calcGoalProgress(currentSession, currentTrainingPlan)
 
-        val currentTrainingPlan = trainingPlanDao.getTrainingPlanBySessionId(currentSession.sessionId)
+        trainingPlanDao.updateGoalProgress(currentTrainingPlan.planId, progress)
 
-        if (currentTrainingPlan != null) {
-            val progress = calcGoalProgress(currentSession, currentTrainingPlan)
+        _goalProgress.value = progress
 
-            trainingPlanDao.updateGoalProgress(currentTrainingPlan.planId, progress)
-
-            _goalProgress.value = progress
-
-            if ( progress >= 100.0 ) {
-                trainingPlanDao.finishTrainingPlan(currentTrainingPlan.planId)
-                /*noti after finish?*/
-            }
-
-        } else {
-            println("No training plan linked to the current run session!")
-            _goalProgress.value = null
+        if ( progress >= 100.0 ) {
+            trainingPlanDao.finishTrainingPlan(currentTrainingPlan.planId)
+            /*noti after finish?*/
         }
     }
-
 }

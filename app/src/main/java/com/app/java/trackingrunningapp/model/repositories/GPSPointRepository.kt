@@ -1,37 +1,40 @@
 package com.app.java.trackingrunningapp.model.repositories
 
-import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.GPSPointDao
 import com.app.java.trackingrunningapp.model.DAOs.GPSTrackDao
 import com.app.java.trackingrunningapp.model.DAOs.RunSessionDao
 import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.GPSPoint
 import com.app.java.trackingrunningapp.model.entities.RunSession
+import com.app.java.trackingrunningapp.model.models.Location
 import com.app.java.trackingrunningapp.model.utils.StatsUtils
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onStart
 import java.lang.IllegalStateException
 
-class GPSPointRepository(
-    runSessionRepository: RunSessionRepository
-) {
+class GPSPointRepository {
     val db = InitDatabase.runningDatabase
 
-    private val currentRunSession = runSessionRepository.currentRunSession
+    private var fetchingJob: Job? = null
 
     private val gpsPointDao: GPSPointDao = db.GPSPointDao()
     private val gpsTrackDao: GPSTrackDao = db.GPSTrackDao()
+    private val runSessionDao: RunSessionDao = db.runSessionDao()
 
-    private val _currentDistance = MutableStateFlow<Double>(0.0)
-    val currentDistance: StateFlow<Double> = _currentDistance
-
-    private fun getCurrentSessionOrThrow(): RunSession {
-        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null! (GPS Point)")
+    private suspend fun getCurrentSessionOrThrow(): RunSession {
+        val currentRunSession = runSessionDao.getCurrentRunSession()
+        return currentRunSession ?: throw IllegalStateException("Value of current run session is null! (GPS Point)")
     }
 
     private suspend fun getCurrentGPSTrackIDOrThrow(): Int {
@@ -57,32 +60,20 @@ class GPSPointRepository(
         gpsPointDao.insertGPSPoint(newGPSPoint)
     }
 
-    private suspend fun fetchTwoLatestLocation() = flow {
-        while (true) {
-            val currentGPSTrackId = getCurrentGPSTrackIDOrThrow()
+    suspend fun fetchTwoLatestLocation(): Flow<List<Location>> = flow {
+        val gpsTrackID = getCurrentGPSTrackIDOrThrow()
 
-            val latestLocations = gpsPointDao.getTwoLatestLocation(currentGPSTrackId)
-            emit(latestLocations)
+        while (gpsTrackDao.pauseOrContinueGPSTrack(gpsTrackID)) {
+            try {
+                val latestLocations = gpsPointDao.getTwoLatestLocation(gpsTrackID)
+                emit(latestLocations)
+            } catch (e: Exception) {
+                println("Error fetching location ${e.message}")
+            }
             delay(3000)
         }
-    }
 
-    suspend fun calculateDistance() = coroutineScope{
-        val currentGPSTrackId = getCurrentGPSTrackIDOrThrow()
-        val latestLocationsFlow = fetchTwoLatestLocation()
+    }.flowOn(Dispatchers.IO)
 
-        latestLocationsFlow.collect { latestLocations ->
-            if (latestLocations.size == 2) {
-                val (location1, location2) = latestLocations
 
-                val distance = StatsUtils.haversineFormula(location1, location2)
-
-                _currentDistance.value = distance
-            }
-
-            if (!gpsTrackDao.pauseOrContinueGPSTrack(currentGPSTrackId)) {
-                this.cancel()
-            }
-        }
-    }
 }

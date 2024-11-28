@@ -1,11 +1,11 @@
 package com.app.java.trackingrunningapp.model.repositories
 
-import android.content.Context
 import com.app.java.trackingrunningapp.model.DAOs.PersonalGoalDao
+import com.app.java.trackingrunningapp.model.DAOs.RunSessionDao
 import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.PersonalGoal
 import com.app.java.trackingrunningapp.model.entities.RunSession
-import com.app.java.trackingrunningapp.modelbase.RunningDatabase
+import com.app.java.trackingrunningapp.model.entities.TrainingPlan
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,18 +14,28 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.lang.IllegalStateException
 
-class PersonalGoalRepository(
-    private val runSessionRepository: RunSessionRepository
-) {
+class PersonalGoalRepository {
     val db = InitDatabase.runningDatabase
 
     private val personalGoalDao: PersonalGoalDao = db.personalGoalDao()
-    private val currentRunSession = runSessionRepository.currentRunSession
+    private val runSessionDao: RunSessionDao = db.runSessionDao()
 
     private var updateJob: Job? = null
 
-    private fun getCurrentSessionOrThrow(): RunSession {
-        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null!")
+    private suspend fun getCurrentSessionOrThrow(): RunSession {
+        val currentRunSession = runSessionDao.getCurrentRunSession()
+        return currentRunSession ?: throw IllegalStateException("Value of current run session is null! (Personal Goal Repository)")
+    }
+
+    private suspend fun getCurrentPersonalGoalOrThrow(): PersonalGoal {
+        val currentRunSession = getCurrentSessionOrThrow()
+        return personalGoalDao.getPersonalGoalBySessionId(currentRunSession.sessionId)
+            ?: throw IllegalStateException("There is not any personal goal attached with this run session ID! (Personal Goal Repository)")
+    }
+
+    suspend fun activePersonalGoal(): Boolean {
+        val currentRunSession = getCurrentSessionOrThrow()
+        return personalGoalDao.getPersonalGoalBySessionId(currentRunSession.sessionId) != null
     }
 
     suspend fun upsertPersonalGoal(personalGoal: PersonalGoal) {
@@ -36,19 +46,17 @@ class PersonalGoalRepository(
         personalGoalDao.deletePersonalGoal(goalId)
     }
 
-    suspend fun startPersonalGoal() {
+    suspend fun getGoalProgress(): Double {
+        val currentPersonalGoal = getCurrentPersonalGoalOrThrow()
+        return personalGoalDao.getGoalProgress(currentPersonalGoal.goalId)
+    }
+
+    suspend fun startUpdatingGoalProgress() {
         updateJob?.cancel()
         updateJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                try {
-                   val currentRunSession = runSessionRepository.currentRunSession.value
-                   if (currentRunSession != null) {
-                       updateGoalProgress()
-                   } else {
-                       println("No active session found, stopping goal updates.")
-                       stopPersonalGoal()
-                       break
-                   }
+                   updateGoalProgress()
                    delay(5000)
                } catch (e: Exception) {
                    println("Error updating goal progress: ${e.message}")
@@ -57,7 +65,12 @@ class PersonalGoalRepository(
         }
     }
 
-    fun stopPersonalGoal() {
+    /***
+     * TODO:
+     * make a fun to assign sessionID to the respective goal
+     * **/
+
+    fun stopUpdatingGoalProgress() {
         if (updateJob?.isActive == true) {
             updateJob?.cancel()
             updateJob = null
@@ -79,21 +92,17 @@ class PersonalGoalRepository(
         }
     }
 
-    suspend fun updateGoalProgress() {
+    private suspend fun updateGoalProgress() {
         val currentSession = getCurrentSessionOrThrow()
 
-        val personalGoal = personalGoalDao.getPersonalGoalBySessionId(currentSession.sessionId)
+        val personalGoal = getCurrentPersonalGoalOrThrow()
 
-        if (personalGoal != null) {
-            val progress = calcGoalProgress(currentSession, personalGoal)
+        val progress = calcGoalProgress(currentSession, personalGoal)
 
-            personalGoalDao.updateGoalProgress(personalGoal.goalId, progress)
+        personalGoalDao.updateGoalProgress(personalGoal.goalId, progress)
 
-            if (progress >= 100.0) {
-                personalGoalDao.markGoalAchieved(personalGoal.goalId)
-            }
-        } else {
-            println("No personal goal linked to the current run session!")
+        if (progress >= 100.0) {
+            personalGoalDao.markGoalAchieved(personalGoal.goalId)
         }
     }
 

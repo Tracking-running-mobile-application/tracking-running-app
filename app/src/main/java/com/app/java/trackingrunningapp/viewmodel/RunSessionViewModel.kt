@@ -1,15 +1,11 @@
 package com.app.java.trackingrunningapp.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.model.entities.RunSession
 import com.app.java.trackingrunningapp.model.models.StatsSession
-import com.app.java.trackingrunningapp.model.repositories.GPSPointRepository
-import com.app.java.trackingrunningapp.model.repositories.GPSTrackRepository
 import com.app.java.trackingrunningapp.model.repositories.RunSessionRepository
 import com.app.java.trackingrunningapp.model.utils.StatsUtils
-import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -17,32 +13,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
-import kotlin.random.Random
 
 class RunSessionViewModel(
     private val runSessionRepository: RunSessionRepository,
-    private val gpsPointRepository: GPSPointRepository
 ): ViewModel() {
-    val startDate = MutableLiveData<String>()
-    val endDate = MutableLiveData<String>()
-
     private val _filteredSessions = MutableStateFlow<List<RunSession>>(emptyList())
     val filteredSession: StateFlow<List<RunSession>> = _filteredSessions
 
     private val _runSessions = MutableStateFlow<List<RunSession>>(emptyList())
     val runSessions: StateFlow<List<RunSession>> = _runSessions
-
-    private val _duration = MutableStateFlow("00:00")
-    val duration: StateFlow<String> = _duration
-
-    val distance = gpsPointRepository.currentDistance
-
-    private val _pace = MutableStateFlow(0.0)
-    val pace: StateFlow<Double> = _pace
-
-    private val _caloriesBurned = MutableStateFlow(0.0)
-    val caloriesBurned: StateFlow<Double> = _caloriesBurned
 
     private val _hasMoreData = MutableStateFlow(true)
     val hasMoreData: StateFlow<Boolean> = _hasMoreData
@@ -50,31 +29,26 @@ class RunSessionViewModel(
     private val _favoriteRunSessions = MutableStateFlow<List<RunSession?>>(emptyList())
     val favoriteRunSessions : StateFlow<List<RunSession?>> = _favoriteRunSessions
 
-    private var runSessionStartTime: Instant = Instant.DISTANT_PAST
-
-    private var trackingJob: Job? = null
-
     val currentSession = runSessionRepository.currentRunSession
+
+    private val _statsFlow = MutableStateFlow<StatsSession?>(null)
+    val statsFlow: StateFlow<StatsSession?> = _statsFlow
+
+    private var statsUpdateJob: Job? = null
 
     init {
         fetchRunSessions()
         loadFavoriteSessions()
     }
 
-    fun filterSessionsByDateRange() {
-        val start = startDate.value
-        val end = endDate.value
-        if (start != null && end != null) {
-            viewModelScope.launch {
-                try {
-                    val sessions = runSessionRepository.filterRunningSessionByDay(start, end)
-                    _filteredSessions.value = sessions
-                } catch(e: Exception) {
-                    println("Error filtering sessions: ${e.message}")
-                }
+    fun filterSessionsByDateRange(startDate: String, endDate: String) {
+        viewModelScope.launch {
+            try {
+                val sessions = runSessionRepository.filterRunningSessionByDay(startDate, endDate)
+                _filteredSessions.value = sessions
+            } catch(e: Exception) {
+                println("Error filtering sessions: ${e.message}")
             }
-        } else {
-            println("Either or both the start date and end date are missing!")
         }
     }
 
@@ -98,50 +72,45 @@ class RunSessionViewModel(
         }
     }
 
-    fun startRunSession() {
-        runSessionStartTime = DateTimeUtils.getCurrentInstant()
-
+    fun initiateRunSession() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 runSessionRepository.startRunSession()
-                /*Is it optimal to place it here?*/
-                gpsPointRepository.calculateDistance()
             } catch(e: Exception) {
                 println("Error starting session: ${e.message}")
             }
         }
+    }
 
-        trackingJob?.cancel()
-        trackingJob = viewModelScope.launch(Dispatchers.IO) {
+    fun startStatsUpdate() {
+        statsUpdateJob?.cancel()
+        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
-                val currentTime = DateTimeUtils.getCurrentInstant()
-                val formattedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
-                _duration.value = formattedDuration
-
-                if (currentTime.epochSeconds % 4 == 0L) {
-                    updateCaloriesAndPace()
+                try {
+                    updateStats()
+                    delay(5000)
+                } catch (e: Exception) {
+                    println("Error updating stats: ${e.message}")
                 }
-
-                delay(1000)
             }
         }
+    }
 
+    fun pauseRunSession() {
+        statsUpdateJob?.cancel()
+    }
+
+    suspend fun resumeRunSession() {
+        startStatsUpdate()
+        fetchStatsCurrentSession()
     }
 
     fun finishRunSession() {
-        trackingJob?.cancel()
-        trackingJob = null
-
-        viewModelScope.launch {
-            updateCaloriesAndPace()
-
-            val durationInSeconds = StatsUtils.durationToSeconds(_duration.value)
-
-            runSessionRepository.updateDurationSession(durationInSeconds)
-            runSessionRepository.updatePaceRunSession()
-            runSessionRepository.updateDistanceSession(distance.value)
-
-            runSessionRepository.finishRunSession()
+        viewModelScope.launch(Dispatchers.IO) {
+            updateStats()
+            fetchStatsCurrentSession()
+            statsUpdateJob?.cancel()
+            runSessionRepository.setRunSessionInactive()
         }
     }
 
@@ -165,17 +134,44 @@ class RunSessionViewModel(
         }
     }
 
-    suspend fun fetchStatsCurrentSession(): StatsSession {
-        return runSessionRepository.fetchStatsSession()
+    suspend fun fetchStatsCurrentSession() {
+        statsUpdateJob?.cancel()
+        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                try {
+                    val stats = runSessionRepository.fetchStatsSession()
+                    _statsFlow.emit(stats)
+                    delay(5000)
+                } catch (e: Exception) {
+                    println("Error updating stats: ${e.message}")
+                }
+            }
+        }
     }
 
-    private suspend fun updateCaloriesAndPace() {
-        val newPace = runSessionRepository.updatePaceRunSession()
-        _pace.value = newPace
+    private suspend fun updateStats() {
+        statsUpdateJob?.cancel()
+        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                runSessionRepository.calcDuration()
+                runSessionRepository.calcPace()
+                runSessionRepository.calcCaloriesBurned()
+                runSessionRepository.calcDistance()
+                val newPace = runSessionRepository.pace.value
 
-        val newCaloriesBurned = runSessionRepository.updateCaloriesBurnedSession()
-        _caloriesBurned.value = newCaloriesBurned
+                val newCaloriesBurned = runSessionRepository.caloriesBurned.value
 
+                val newDistance = runSessionRepository.distance.value
+                val newDuration = StatsUtils.durationToSeconds(runSessionRepository.duration.value)
+
+                runSessionRepository.updateStatsSession(
+                    newDistance,
+                    newDuration,
+                    newCaloriesBurned,
+                    newPace
+                )
+            }
+        }
     }
 
     fun deleteRunSession(sessionId: Int) {

@@ -13,6 +13,9 @@ interface TrainingPlanDao {
     @Query("UPDATE TrainingPlan SET isFinished = TRUE WHERE planId = :planId")
     suspend fun finishTrainingPlan(planId: Int)
 
+    @Query("SELECT goalProgress FROM TrainingPlan WHERE planId = :planId")
+    suspend fun getGoalProgress(planId: Int): Double
+
     @Query("SELECT * FROM TrainingPlan WHERE planSessionId = :planSessionId LIMIT 1")
     suspend fun getTrainingPlanBySessionId(planSessionId: Int) : TrainingPlan?
 

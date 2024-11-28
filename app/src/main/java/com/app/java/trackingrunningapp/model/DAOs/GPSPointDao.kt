@@ -9,9 +9,6 @@ import com.app.java.trackingrunningapp.model.models.Location
 
 @Dao
 interface GPSPointDao {
-    @Query("DELETE FROM GPSPoint WHERE gpsPointId = :gpsPointId")
-    suspend fun deleteGPSPoint(gpsPointId: Int)
-
     @Insert
     suspend fun insertGPSPoint(gpsPoint: GPSPoint)
 
