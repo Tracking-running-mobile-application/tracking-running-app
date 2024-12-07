@@ -3,7 +3,9 @@ package com.app.java.trackingrunningapp.ui.run
 import android.Manifest
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.core.app.ActivityCompat
@@ -11,14 +13,24 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.databinding.FragmentRunPageBinding
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.DefaultLocationClient
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService
 
-class RunPageFragment : Fragment(R.layout.fragment_run_page) {
+class RunPageFragment : Fragment() {
+    private lateinit var binding: FragmentRunPageBinding
     private var locationClient: DefaultLocationClient? = null
     private var isOverlayVisible = true
     private var isTracking = false
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRunPageBinding.inflate(inflater,container,false)
+        return binding.root
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -45,32 +57,18 @@ class RunPageFragment : Fragment(R.layout.fragment_run_page) {
             }
             isTracking = !isTracking
         }
-
-        val toggleButton = view.findViewById<ImageView>(R.id.toggleButton)
-        val metricsRecyclerView = view.findViewById<RecyclerView>(R.id.metricsRecyclerView)
-        metricsRecyclerView.visibility = View.VISIBLE
-
-        toggleButton.setOnClickListener { v: View? ->
-            if (isOverlayVisible) {
-                metricsRecyclerView.visibility = View.GONE
-                toggleButton.rotation = 180f
-            } else {
-                metricsRecyclerView.visibility = View.VISIBLE
-                toggleButton.rotation = 0f
-            }
-            isOverlayVisible = !isOverlayVisible
+        binding.layoutMetric.root.visibility = View.VISIBLE
+        // set action arrow
+        binding.icArrowUp.setOnClickListener {
+            binding.layoutMetric.root.visibility = View.GONE
+            binding.icArrowUp.visibility = View.GONE
+            binding.icArrowDown.visibility = View.VISIBLE
         }
-
-        val metricItems: MutableList<MetricItem> = ArrayList()
-        metricItems.add(MetricItem("Duration", "01:25:40"))
-        metricItems.add(MetricItem("Distance", "10.02 km"))
-        metricItems.add(MetricItem("Pace", "9:12 / km"))
-        metricItems.add(MetricItem("Calories", "220 kcal"))
-
-        metricsRecyclerView.layoutManager = GridLayoutManager(getContext(), 2)
-        val adapter = MetricItemAdapter(metricItems)
-        metricsRecyclerView.adapter = adapter
-
+        binding.icArrowDown.setOnClickListener {
+            binding.icArrowUp.visibility = View.VISIBLE
+            binding.layoutMetric.root.visibility = View.VISIBLE
+            binding.icArrowDown.visibility = View.GONE
+        }
     }
 
     private fun startTracking() {
@@ -87,5 +85,10 @@ class RunPageFragment : Fragment(R.layout.fragment_run_page) {
             action = LocationService.ACTION_STOP
         }
         context.startService(intent)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        binding.layoutMetric.root.visibility = View.VISIBLE
     }
 }
