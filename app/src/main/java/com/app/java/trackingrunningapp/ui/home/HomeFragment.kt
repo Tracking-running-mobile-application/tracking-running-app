@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.DailyTask
-import com.app.java.trackingrunningapp.data.model.TrainingPlan
+import com.app.java.trackingrunningapp.model.model.DailyTask
+import com.app.java.trackingrunningapp.model.model.TrainingPlan
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
 import com.app.java.trackingrunningapp.ui.home.daily_tasks.DailyTasksAdapter
 import com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment

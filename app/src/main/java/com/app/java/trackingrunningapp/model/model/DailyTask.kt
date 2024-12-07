@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.data.model
+package com.app.java.trackingrunningapp.model.model
 
 data class DailyTask(
     val title: String,
