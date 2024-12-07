@@ -18,37 +18,38 @@
         app:mapbox_locationComponentEnabled="true"
         app:mapbox_locationComponentPuckBearing="heading" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/metricsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/item_run_metric"
-        android:orientation="horizontal"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:background="@color/white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/recyclerViewBarrier"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+<!--    <androidx.recyclerview.widget.RecyclerView-->
+<!--        android:id="@+id/metricsRecyclerView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        tools:listitem="@layout/item_run_metric"-->
+<!--        android:orientation="horizontal"-->
+<!--        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"-->
+<!--        android:background="@color/white"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintBottom_toTopOf="@id/recyclerViewBarrier"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"/>-->
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/recyclerViewBarrier"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:barrierDirection="bottom"
-        app:constraint_referenced_ids="metricsRecyclerView" />
+<!--    <androidx.constraintlayout.widget.Barrier-->
+<!--        android:id="@+id/recyclerViewBarrier"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="0dp"-->
+<!--        app:barrierDirection="bottom"-->
+<!--        />-->
 
-    <ImageView
-        android:id="@+id/toggleButton"
-        android:background="@color/black"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/toggle_overlay"
-        android:paddingTop="5dp"
-        android:src="@drawable/ic_arrow_up"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewBarrier" />
+<!--    <ImageView-->
+<!--        android:id="@+id/toggleButton"-->
+<!--        android:background="@color/black"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:contentDescription="@string/toggle_overlay"-->
+<!--        android:paddingTop="5dp"-->
+<!--        android:src="@drawable/ic_arrow_up"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/recyclerViewBarrier" />-->
+
 
     <Button
         android:id="@+id/toggleTrackingButton"

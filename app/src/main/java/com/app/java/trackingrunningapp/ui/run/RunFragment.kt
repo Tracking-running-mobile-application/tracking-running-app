@@ -4,7 +4,9 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
@@ -14,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.DefaultLocationClient
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService
 import com.mapbox.geojson.Point
@@ -29,7 +32,8 @@ import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 
 
-class RunFragment : Fragment(R.layout.fragment_run) {
+class RunFragment : Fragment() {
+    private lateinit var binding: FragmentRunBinding
     private var locationClient: DefaultLocationClient? = null
     private var isOverlayVisible = true
     private var isTracking = false
@@ -44,10 +48,22 @@ class RunFragment : Fragment(R.layout.fragment_run) {
             if (allGranted) {
                 initializeMapAndLocation()
             } else {
-                Toast.makeText(requireContext(), "Permissions are required to proceed.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Permissions are required to proceed.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRunBinding.inflate(inflater,container,false)
+        return binding.root
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mapView = view.findViewById(R.id.mapView)
@@ -60,7 +76,10 @@ class RunFragment : Fragment(R.layout.fragment_run) {
 
         // Check if all permissions are granted
         if (permissions.all {
-                ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+                ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    it
+                ) == PackageManager.PERMISSION_GRANTED
             }) {
             initializeMapAndLocation()
         } else {
@@ -78,6 +97,7 @@ class RunFragment : Fragment(R.layout.fragment_run) {
                 toggleTrackingButton.text = "Start Tracking"
             } else {
                 startTracking()
+
                 toggleTrackingButton.text = "Stop Tracking"
             }
             isTracking = !isTracking

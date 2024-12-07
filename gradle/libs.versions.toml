@@ -13,6 +13,8 @@ constraintlayout = "2.1.4"
 navigation = "2.6.0"
 barchart = "3.10.1"
 image-slider = "0.1.2"
+service-location = "21.3.0"
+mapbox = "11.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -31,7 +33,9 @@ navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime
 barchart = { group = "com.diogobernardino", name = "williamchart", version.ref = "barchart" }
 #image slider
 image-slider = { group = "com.github.denzcoskun", name = "ImageSlideshow", version.ref = "image-slider" }
-
+# location
+service-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "service-location" }
+mapbox = { group = "com.mapbox.maps", name = "android", version.ref = "mapbox" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
