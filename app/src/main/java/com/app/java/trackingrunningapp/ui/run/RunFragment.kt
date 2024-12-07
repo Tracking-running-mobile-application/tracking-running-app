@@ -7,18 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.databinding.FragmentRunPageBinding
+import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.DefaultLocationClient
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService
 
-class RunPageFragment : Fragment() {
-    private lateinit var binding: FragmentRunPageBinding
+class RunFragment : Fragment() {
+    private lateinit var binding: FragmentRunBinding
     private var locationClient: DefaultLocationClient? = null
     private var isOverlayVisible = true
     private var isTracking = false
@@ -28,7 +25,7 @@ class RunPageFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentRunPageBinding.inflate(inflater,container,false)
+        binding = FragmentRunBinding.inflate(inflater,container,false)
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
