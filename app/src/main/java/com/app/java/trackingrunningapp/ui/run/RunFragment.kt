@@ -16,18 +16,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.DefaultLocationClient
 import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService
+import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.plugin.annotation.AnnotationPlugin
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 
 
 class RunFragment : Fragment(R.layout.fragment_run) {
     private var locationClient: DefaultLocationClient? = null
     private var isOverlayVisible = true
     private var isTracking = false
+    private val routeCoordinates = mutableListOf<Point>()
     private lateinit var mapView: MapView
+    private lateinit var annotationApi: AnnotationPlugin
+    private lateinit var polylineAnnotationManager: PolylineAnnotationManager
+
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val allGranted = permissions.all { it.value }
@@ -101,21 +111,52 @@ class RunFragment : Fragment(R.layout.fragment_run) {
     }
 
     private fun initializeMapAndLocation() {
-        mapView.mapboxMap.loadStyle(Style.STANDARD) { style ->
-            mapView.location.updateSettings {
-                enabled = true
-            }
-
-            val positionChangedListener = OnIndicatorPositionChangedListener { point ->
-                val cameraOptions = CameraOptions.Builder()
-                    .center(point)
-                    .zoom(15.0)
-                    .build()
-                mapView.mapboxMap.setCamera(cameraOptions)
-            }
-
-            mapView.location.addOnIndicatorPositionChangedListener(positionChangedListener)
+//        mapView.mapboxMap.loadStyle(Style.STANDARD) { style ->
+//            mapView.location.updateSettings {
+//                enabled = true
+//            }
+//
+//            val positionChangedListener = OnIndicatorPositionChangedListener { point ->
+//                val cameraOptions = CameraOptions.Builder()
+//                    .center(point)
+//                    .zoom(15.0)
+//                    .build()
+//                mapView.mapboxMap.setCamera(cameraOptions)
+//            }
+//
+//            mapView.location.addOnIndicatorPositionChangedListener(positionChangedListener)
+//        }
+        mapView.mapboxMap.loadStyle(Style.STANDARD) {
+            initLocationComponent()
+            setupRouteDrawing()
         }
+
+    }
+
+    private fun initLocationComponent() {
+        val locationComponentPlugin = mapView.location
+        locationComponentPlugin.updateSettings {
+            this.enabled = true
+        }
+        locationComponentPlugin.addOnIndicatorPositionChangedListener { point ->
+            routeCoordinates.add(point)
+            drawRoute()
+            mapView.mapboxMap.setCamera(CameraOptions.Builder().center(point).zoom(15.0).build())
+        }
+    }
+
+    private fun setupRouteDrawing() {
+        annotationApi = mapView.annotations
+        polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
+    }
+
+    private fun drawRoute() {
+        polylineAnnotationManager.deleteAll()
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(routeCoordinates)
+            .withLineColor("#FF0000")
+            .withLineWidth(5.0)
+        polylineAnnotationManager.create(polylineAnnotationOptions)
     }
 
     private fun startTracking() {
