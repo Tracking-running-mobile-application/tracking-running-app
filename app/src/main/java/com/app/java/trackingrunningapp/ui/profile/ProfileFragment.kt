@@ -31,10 +31,6 @@ class ProfileFragment : Fragment() {
             requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         }
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
-
-        binding.btnSetting.setOnClickListener{
-            it.findNavController().navigate(R.id.action_profileFragment_to_settingFragment)
-        }
     }
 
 
