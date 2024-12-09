@@ -10,9 +10,4 @@
         android:name="com.app.java.trackingrunningapp.ui.run.RunFragment"
         android:label="fragment_run"
         tools:layout="@layout/fragment_run" />
-    <fragment
-        android:id="@+id/runPageFragment"
-        android:name="com.app.java.trackingrunningapp.ui.run.RunFragment"
-        tools:layout="@layout/fragment_run"
-        android:label="RunPageFragment" />
 </navigation>
