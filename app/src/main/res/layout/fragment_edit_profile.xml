@@ -113,7 +113,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="@dimen/height_edit_text"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/background_edit_text_profile"
         android:drawableStart="@drawable/ic_height"
         android:drawablePadding="8dp"
@@ -132,7 +132,7 @@
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="0dp"
         android:layout_height="@dimen/height_edit_text"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/background_edit_text_profile"
         android:drawableStart="@drawable/ic_weight"
         android:drawablePadding="@dimen/drawable_padding"
@@ -208,7 +208,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_edit_text"
             android:background="@drawable/background_edit_text_profile"
-            android:drawableStart="@drawable/ic_height"
+            android:drawableStart="@drawable/ic_gender"
             android:drawablePadding="@dimen/drawable_padding"
             android:hint="@string/hint_gender"
             android:inputType="none"
@@ -243,17 +243,5 @@
         app:layout_constraintBottom_toBottomOf="@+id/edt_weight"
         app:layout_constraintEnd_toEndOf="@+id/edt_weight"
         app:layout_constraintTop_toTopOf="@+id/edt_weight" />
-
-    <ImageView
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_save"
-        app:layout_constraintEnd_toEndOf="@+id/edt_weight"
-        app:layout_constraintStart_toStartOf="@+id/edt_weight"
-        app:layout_constraintTop_toBottomOf="@+id/edt_weight"
-        app:srcCompat="@drawable/img_running_info"
-        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

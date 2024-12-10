@@ -29,6 +29,20 @@ class ProfileFragment : Fragment() {
             it.findNavController().navigate(R.id.action_profileFragment_to_editProfileFragment)
             // hide bottom nav
             requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+        val barSet = listOf(
+            "Mon" to 4F,
+            "Tue" to 2F,
+            "Wed" to 4.5F,
+            "Thu" to 3F,
+            "Fri" to 6F,
+            "Sat" to 1.5F,
+            "Sun" to 4F
+        )
+        val barChart = view.findViewById<BarChartView>(R.id.barchart)
+        barChart.animate(barSet)
+        barChart.apply {
+            animation.duration = 1000L
+            labelsFormatter = { it.toInt().toString() }
         }
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
     }

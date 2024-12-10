@@ -19,11 +19,13 @@ import com.app.java.trackingrunningapp.ui.FusedLocationAPI.LocationService
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
 
 
-class RunFragment : Fragment(R.layout.fragment_run) {
+class RunFragment : Fragment() {
+    private lateinit var binding: FragmentRunBinding
     private var locationClient: DefaultLocationClient? = null
     private var isOverlayVisible = true
     private var isTracking = false
@@ -37,6 +39,15 @@ class RunFragment : Fragment(R.layout.fragment_run) {
                 Toast.makeText(requireContext(), "Permissions are required to proceed.", Toast.LENGTH_SHORT).show()
             }
         }
+        
+     override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentRunBinding.inflate(inflater,container,false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -59,46 +70,20 @@ class RunFragment : Fragment(R.layout.fragment_run) {
         }
 
 
-        val toggleTrackingButton: Button = view.findViewById(R.id.toggleTrackingButton)
-        toggleTrackingButton.text = "Start Tracking" // Initial text
 
-        toggleTrackingButton.setOnClickListener {
-            if (isTracking) {
-                stopTracking()
-                toggleTrackingButton.text = "Start Tracking"
-            } else {
-                startTracking()
-                toggleTrackingButton.text = "Stop Tracking"
-            }
-            isTracking = !isTracking
+        binding.layoutMetric.root.visibility = View.VISIBLE
+        // set action arrow
+        binding.icArrowUp.setOnClickListener {
+            binding.layoutMetric.root.visibility = View.GONE
+            binding.icArrowUp.visibility = View.GONE
+            binding.icArrowDown.visibility = View.VISIBLE
         }
+        binding.icArrowDown.setOnClickListener {
+            binding.icArrowUp.visibility = View.VISIBLE
+            binding.layoutMetric.root.visibility = View.VISIBLE
+            binding.icArrowDown.visibility = View.GONE
 
-        val toggleButton = view.findViewById<ImageView>(R.id.toggleButton)
-        val metricsRecyclerView = view.findViewById<RecyclerView>(R.id.metricsRecyclerView)
-        metricsRecyclerView.visibility = View.VISIBLE
 
-        toggleButton.setOnClickListener { v: View? ->
-            if (isOverlayVisible) {
-                metricsRecyclerView.visibility = View.GONE
-                toggleButton.rotation = 180f
-            } else {
-                metricsRecyclerView.visibility = View.VISIBLE
-                toggleButton.rotation = 0f
-            }
-            isOverlayVisible = !isOverlayVisible
-        }
-
-        val metricItems: MutableList<MetricItem> = ArrayList()
-        metricItems.add(MetricItem("Duration", "01:25:40"))
-        metricItems.add(MetricItem("Distance", "10.02 km"))
-        metricItems.add(MetricItem("Pace", "9:12 / km"))
-        metricItems.add(MetricItem("Calories", "220 kcal"))
-
-        metricsRecyclerView.layoutManager = GridLayoutManager(getContext(), 2)
-        val adapter = MetricItemAdapter(metricItems)
-        metricsRecyclerView.adapter = adapter
-
-    }
 
     private fun initializeMapAndLocation() {
         mapView.mapboxMap.loadStyle(Style.STANDARD) { style ->
@@ -132,5 +117,11 @@ class RunFragment : Fragment(R.layout.fragment_run) {
             action = LocationService.ACTION_STOP
         }
         context.startService(intent)
+    }
+
+
+    override fun onStop() {
+        super.onStop()
+        binding.layoutMetric.root.visibility = View.VISIBLE
     }
 }
