@@ -19,7 +19,7 @@ class AddDailyTaskFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_daily_task, container, false)
-        val spinner: Spinner = view.findViewById(R.id.spinner)
+        spinner = view.findViewById(R.id.spinner)
         val items = listOf("Every Monday", "Every Tuesday", "Every Wednesday", "Every Thursday","Every Friday","Every Saturday","Every Sunday")
         val adapter = ArrayAdapter(requireContext(),R.layout.item_spinner, items)
 
