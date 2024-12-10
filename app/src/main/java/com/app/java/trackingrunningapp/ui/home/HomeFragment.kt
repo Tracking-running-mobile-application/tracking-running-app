@@ -11,6 +11,7 @@ import com.app.java.trackingrunningapp.model.model.DailyTask
 import com.app.java.trackingrunningapp.model.model.TrainingPlan
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
 import com.app.java.trackingrunningapp.ui.home.daily_tasks.DailyTasksAdapter
+import com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
@@ -67,9 +68,12 @@ class HomeFragment : Fragment() {
         // adapter and click event
         binding.rvTrainingPlans.adapter = HomeTrainingPlanAdapter(trainingPlans,
             object : HomeTrainingPlanAdapter.OnItemTrainingClickListener {
-                override fun onClick() {
+                override fun onClick(trainingPlan: TrainingPlan) {
+                    val bundle = Bundle().apply {
+                        this.putString(TrainingPlanFragment.EXTRA_TITLE_TRAINING_PLAN,trainingPlan.name)
+                    }
                     this@HomeFragment.findNavController()
-                        .navigate(R.id.action_homeFragment_to_trainingPlans)
+                        .navigate(R.id.action_homeFragment_to_trainingPlans,bundle)
                     requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
                         .visibility = View.GONE
                 }

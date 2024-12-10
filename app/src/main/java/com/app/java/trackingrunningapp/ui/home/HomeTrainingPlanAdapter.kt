@@ -26,7 +26,7 @@ class HomeTrainingPlanAdapter(
             planName.text = trainingPlan.name
             planImage.setImageResource(trainingPlan.imageResId) // Make sure this matches the ImageView ID
             itemView.setOnClickListener {
-                listener.onClick()
+                listener.onClick(trainingPlan)
             }
         }
     }
@@ -47,6 +47,6 @@ class HomeTrainingPlanAdapter(
     }
 
     interface OnItemTrainingClickListener {
-        fun onClick()
+        fun onClick(trainingPlan:TrainingPlan)
     }
 }

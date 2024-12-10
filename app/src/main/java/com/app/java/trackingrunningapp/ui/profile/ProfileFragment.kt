@@ -27,12 +27,13 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val barSet = listOf(
-            "Week 1" to 4F,
-            "Week 2" to 2F,
-            "Week 3" to 4.5F,
-            "Week 4" to 3F,
-            "Week 5" to 9F,
-            "Week 6" to 13F,
+            "Mon" to 4F,
+            "Tue" to 2F,
+            "Wed" to 4.5F,
+            "Thu" to 3F,
+            "Fri" to 6F,
+            "Sat" to 1.5F,
+            "Sun" to 4F
         )
         val barChart = view.findViewById<BarChartView>(R.id.barchart)
         barChart.animate(barSet)
