@@ -17,7 +17,6 @@ import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
 import com.mapbox.maps.plugin.locationcomponent.location
-import com.mapbox.maps.plugin.viewport.viewport
 
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
@@ -119,7 +118,6 @@ class RunFragment : Fragment() {
                 enabled = true
             }
             locationPlugin.addOnIndicatorPositionChangedListener { point ->
-                // Khi vị trí thay đổi, di chuyển camera đến vị trí hiện tại
                 moveCameraToLocation(point)
             }
         }
@@ -133,6 +131,7 @@ class RunFragment : Fragment() {
                 .build()
         )
     }
+
 
     override fun onStop() {
         super.onStop()

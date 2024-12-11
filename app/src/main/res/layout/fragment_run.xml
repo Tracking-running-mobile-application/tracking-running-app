@@ -12,9 +12,9 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/black"
         android:text="Start"
+        android:layout_marginBottom="@dimen/margin_16"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -32,20 +32,19 @@
         app:layout_constraintTop_toBottomOf="@id/layout_arrow_down">
 
         <com.mapbox.maps.MapView
-            xmlns:mapbox="http://schemas.android.com/apk/res-auto"
             android:id="@+id/mapView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:mapbox_locationComponentEnabled="true"
-            app:mapbox_locationComponentPuckBearing="heading"/>
+            app:mapbox_locationComponentPuckBearing="heading">
+        </com.mapbox.maps.MapView>
     </FrameLayout>
 
     <include
         android:id="@+id/layout_metric"
         layout="@layout/button_metric"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/guideline4"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_arrow_down"
@@ -85,13 +84,6 @@
             android:background="@color/primary_gray"
             app:srcCompat="@drawable/ic_arrow_up" />
     </LinearLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.35" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
