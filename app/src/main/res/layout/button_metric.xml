@@ -17,8 +17,8 @@
         app:layout_constraintTop_toTopOf="@+id/cv_pace">
 
         <LinearLayout
-            android:layout_width="@dimen/statistic_button_width"
-            android:layout_height="@dimen/statistic_button_height"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -28,13 +28,14 @@
                 android:layout_marginTop="4dp"
                 android:text="Calories"
                 android:textColor="@color/white"
-                android:textSize="32sp" />
+                android:textSize="@dimen/text_size_30" />
 
             <TextView
                 android:id="@+id/textView15"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
+                android:paddingBottom="4dp"
                 android:text="Stat"
                 android:textColor="@color/main_yellow"
                 android:textSize="24sp" />
@@ -56,8 +57,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="@dimen/statistic_button_width"
-            android:layout_height="@dimen/statistic_button_height"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -67,12 +68,13 @@
                 android:layout_marginTop="4dp"
                 android:text="Duration"
                 android:textColor="@color/white"
-                android:textSize="32sp" />
+                android:textSize="@dimen/text_size_30" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
+                android:paddingBottom="4dp"
                 android:text="Stat"
                 android:textColor="@color/main_yellow"
                 android:textSize="24sp" />
@@ -93,8 +95,8 @@
         app:layout_constraintTop_toTopOf="@+id/cv_duration">
 
         <LinearLayout
-            android:layout_width="@dimen/statistic_button_width"
-            android:layout_height="@dimen/statistic_button_height"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -104,12 +106,13 @@
                 android:layout_marginTop="4dp"
                 android:text="Distance"
                 android:textColor="@color/white"
-                android:textSize="32sp" />
+                android:textSize="@dimen/text_size_30" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
+                android:paddingBottom="4dp"
                 android:text="Stat"
                 android:textColor="@color/main_yellow"
                 android:textSize="24sp" />
@@ -129,8 +132,8 @@
         app:layout_constraintTop_toBottomOf="@+id/cv_duration">
 
         <LinearLayout
-            android:layout_width="@dimen/statistic_button_width"
-            android:layout_height="@dimen/statistic_button_height"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -140,12 +143,13 @@
                 android:layout_marginTop="4dp"
                 android:text="Pace"
                 android:textColor="@color/white"
-                android:textSize="32sp" />
+                android:textSize="@dimen/text_size_30" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
+                android:paddingBottom="4dp"
                 android:text="Stat"
                 android:textColor="@color/main_yellow"
                 android:textSize="24sp" />

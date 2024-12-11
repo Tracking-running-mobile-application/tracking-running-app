@@ -15,4 +15,8 @@
         <item name="colorPrimary">@color/primary_gray</item>
     </style>
 
+    <style name="TrackingButton" parent="Theme.TrackingRunningApp">
+        <item name="colorPrimary">@color/black</item>
+    </style>
+
 </resources>
