@@ -44,8 +44,7 @@ class LocationService : Service() {
             LocationServices.getFusedLocationProviderClient(applicationContext)
         )
 
-        val runSessionRepository = RunSessionRepository(gpsPointRepository)
-        gpsPointRepository = GPSPointRepository(runSessionRepository)
+        gpsPointRepository = GPSPointRepository()
     }
 
     /*override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -91,12 +90,6 @@ class LocationService : Service() {
             .onEach { location ->
                 val lat = location.latitude
                 val long = location.longitude
-
-                serviceScope.launch {
-                    trackingMutex.withLock {
-                        gpsPointRepository.insertGPSPoint(longitude = long, latitude = lat)
-                    }
-                }
 
                 val updatedNotification = notification.setContentText("Location: ($lat, $long)")
                 notificationManager.notify(1, updatedNotification.build())

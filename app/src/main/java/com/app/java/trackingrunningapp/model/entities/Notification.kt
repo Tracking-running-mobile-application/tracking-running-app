@@ -6,24 +6,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.datetime.LocalDateTime
 
-@Entity(
-    foreignKeys = [
-        ForeignKey(
-            entity = RunSession::class,
-            parentColumns = ["sessionId"],
-            childColumns = ["notiRunSessionId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [Index(value = ["notiRunSessionId"])]
-    /*include fk of goalId in the future to send a noti when progress reach 100% */
-)
+@Entity
 data class Notification(
     @PrimaryKey(autoGenerate = true)
     val notificationId : Int = 0,
-    val notiRunSessionId: Int? = null,
     var title: String,
     var message: String,
-    var timeTriggred: LocalDateTime,
     var notificationType: String
 )

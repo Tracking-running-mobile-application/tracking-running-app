@@ -14,7 +14,6 @@ class InitDatabase : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("Database operation", "ICDICDICDIICDICDICIDICDICIDCIDI")
         runningDatabase = RunningDatabase.getInstance(this)
         Log.d("Database operation", "Database initialized successfully")
 
@@ -29,7 +28,7 @@ class InitDatabase : Application() {
                     }
                 }
             } catch (e: Exception) {
-                Log.e("DATABSE ALF", "ERROR QUEYING DB", e)
+                Log.e("DATABASE", "ERROR QUEYING DB", e)
             }
         }
     }

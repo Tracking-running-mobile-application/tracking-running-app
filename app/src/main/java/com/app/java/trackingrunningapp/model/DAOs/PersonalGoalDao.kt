@@ -12,7 +12,6 @@ interface PersonalGoalDao {
         SELECT * 
         FROM PersonalGoal 
         ORDER BY dateCreated DESC
-        WHERE isFinish != TRUE
         """)
     fun getAllPersonalGoals(): List<PersonalGoal>
 

@@ -6,6 +6,7 @@ import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.PersonalGoal
 import com.app.java.trackingrunningapp.model.entities.RunSession
 import com.app.java.trackingrunningapp.model.entities.TrainingPlan
+import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,14 +34,46 @@ class PersonalGoalRepository {
             ?: throw IllegalStateException("There is not any personal goal attached with this run session ID! (Personal Goal Repository)")
     }
 
-    suspend fun activePersonalGoal(): Boolean {
-        val currentRunSession = getCurrentSessionOrThrow()
-        return personalGoalDao.getPersonalGoalBySessionId(currentRunSession.sessionId) != null
+    suspend fun assignSessionToPersonalGoal() {
+        val existingGoal = getCurrentPersonalGoalOrThrow()
+        val currentSession = getCurrentSessionOrThrow()
+        personalGoalDao.upsertPersonalGoal(existingGoal.copy(goalSessionId = currentSession.sessionId))
     }
 
-    suspend fun upsertPersonalGoal(personalGoal: PersonalGoal) {
+
+    suspend fun upsertPersonalGoal(
+        goalId: Int? = null,
+        sessionId: Int? = null,
+        targetDistance: Double?,
+        targetDuration: Double?,
+        targetCaloriesBurned: Double?,
+        existingGoals: List<PersonalGoal>
+    ): PersonalGoal {
+        val existingGoal = goalId?.let {
+            existingGoals.find { it.goalId == goalId }
+        }
+
+        val currentDateString = DateTimeUtils.getCurrentDate().toString()
+
+        val personalGoal = existingGoal?.copy(
+            goalSessionId = sessionId ?: existingGoal.goalSessionId,
+            targetDistance = targetDistance ?: existingGoal.targetDistance,
+            targetDuration = targetDuration ?: existingGoal.targetDuration,
+            targetCaloriesBurned = targetCaloriesBurned ?: existingGoal.targetCaloriesBurned,
+            dateCreated = currentDateString
+        ) ?: PersonalGoal(
+            goalId = 0,
+            goalSessionId = sessionId,
+            targetDistance = targetDistance,
+            targetDuration = targetDuration,
+            targetCaloriesBurned = targetCaloriesBurned,
+            dateCreated = currentDateString
+        )
+
         personalGoalDao.upsertPersonalGoal(personalGoal)
+        return personalGoal
     }
+
 
     suspend fun deletePersonalGoal(goalId: Int) {
         personalGoalDao.deletePersonalGoal(goalId)
@@ -65,11 +98,6 @@ class PersonalGoalRepository {
         }
     }
 
-    /***
-     * TODO:
-     * make a fun to assign sessionID to the respective goal
-     * **/
-
     fun stopUpdatingGoalProgress() {
         if (updateJob?.isActive == true) {
             updateJob?.cancel()
@@ -92,11 +120,9 @@ class PersonalGoalRepository {
         }
     }
 
-    private suspend fun updateGoalProgress() {
+    suspend fun updateGoalProgress() {
         val currentSession = getCurrentSessionOrThrow()
-
         val personalGoal = getCurrentPersonalGoalOrThrow()
-
         val progress = calcGoalProgress(currentSession, personalGoal)
 
         personalGoalDao.updateGoalProgress(personalGoal.goalId, progress)
@@ -107,7 +133,6 @@ class PersonalGoalRepository {
     }
 
     suspend fun getAllPersonalGoals(): List<PersonalGoal> {
-        val goals = personalGoalDao.getAllPersonalGoals()
-        return goals.filter { !it.isAchieved }
+        return personalGoalDao.getAllPersonalGoals()
     }
 }

@@ -5,9 +5,7 @@ import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.Notification
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 
-class NotificationRepository(
-
-) {
+class NotificationRepository {
     val db = InitDatabase.runningDatabase
 
     private val notificationDao: NotificationDao = db.notificationDao()
@@ -21,25 +19,20 @@ class NotificationRepository(
     ) {
         /*null if not related to any sessions*/
         if (sessionId != null) {
-            val currentTime = DateTimeUtils.getCurrentDateTime()
             val newNotification = Notification(
                 notificationId = 0,
-                notiRunSessionId = sessionId,
                 title = title,
                 message = message,
                 notificationType = notificationType,
-                timeTriggred = currentTime
             )
             notificationDao.upsertNotification(newNotification)
         } else {
             val currentTime = DateTimeUtils.getCurrentDateTime()
             notificationDao.partialUpdateNotification(
                 notificationId = 0,
-                notiRunSessionId = null,
                 title = title,
                 message = message,
-                notificationType = notificationType,
-                timeTriggered = currentTime
+                notificationType = notificationType
             )
         }
     }

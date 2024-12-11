@@ -11,7 +11,7 @@ class RunSessionViewModelFactory(
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(RunSessionViewModel::class.java)) {
-            return RunSessionViewModel(runSessionRepository, gpsPointRepository) as T
+            return RunSessionViewModel(runSessionRepository) as T
         }
         throw IllegalArgumentException ("Unknown ViewModel class ${modelClass.name}")
     }

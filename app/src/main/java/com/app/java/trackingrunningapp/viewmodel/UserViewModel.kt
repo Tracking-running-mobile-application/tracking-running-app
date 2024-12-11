@@ -1,5 +1,7 @@
 package com.app.java.trackingrunningapp.viewmodel
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.model.entities.User
@@ -9,6 +11,11 @@ import kotlinx.coroutines.launch
 class UserViewModel(
     private val userRepository: UserRepository
 ) : ViewModel() {
+
+    private val _userLiveData = MutableLiveData<User?>()
+    val userLiveData: LiveData<User?> = _userLiveData
+
+
     fun upsertUserInfo(
         name: String?,
         age: Int?,
@@ -28,6 +35,16 @@ class UserViewModel(
                 unit = unit
             )
             userRepository.upsertUserInfo(user)
+            fetchUserInfo()
+        }
+    }
+
+    private fun fetchUserInfo() {
+        viewModelScope.launch {
+            val user = userRepository.getUserInfo()
+            if (user != null ) {
+                _userLiveData.postValue(user)
+            }
         }
     }
 }

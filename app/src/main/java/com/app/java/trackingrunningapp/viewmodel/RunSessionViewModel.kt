@@ -76,13 +76,15 @@ class RunSessionViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 runSessionRepository.startRunSession()
+                startStatsUpdate()
+                fetchStatsCurrentSession()
             } catch(e: Exception) {
                 println("Error starting session: ${e.message}")
             }
         }
     }
 
-    fun startStatsUpdate() {
+    private fun startStatsUpdate() {
         statsUpdateJob?.cancel()
         statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
@@ -134,7 +136,7 @@ class RunSessionViewModel(
         }
     }
 
-    suspend fun fetchStatsCurrentSession() {
+    private suspend fun fetchStatsCurrentSession() {
         statsUpdateJob?.cancel()
         statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {

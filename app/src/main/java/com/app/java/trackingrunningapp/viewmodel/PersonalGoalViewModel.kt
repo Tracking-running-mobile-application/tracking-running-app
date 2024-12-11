@@ -1,13 +1,16 @@
 package com.app.java.trackingrunningapp.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.model.entities.PersonalGoal
 import com.app.java.trackingrunningapp.model.repositories.PersonalGoalRepository
 import com.app.java.trackingrunningapp.model.repositories.RunSessionRepository
-import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class PersonalGoalViewModel(
@@ -16,7 +19,13 @@ class PersonalGoalViewModel(
 ): ViewModel() {
 
     private val _personalGoals = MutableStateFlow<List<PersonalGoal>>(emptyList())
-    val personalGoals: StateFlow<List<PersonalGoal>> = _personalGoals
+
+    val personalGoalsLiveData = _personalGoals.asLiveData()
+
+    private val _goalProgress = MutableStateFlow<Double?>(null)
+    val goalProgress: LiveData<Double?> = _goalProgress.asLiveData()
+
+    private var goalProgressJob: Job? = null
 
     init {
         loadPersonalGoals()
@@ -29,8 +38,12 @@ class PersonalGoalViewModel(
         }
     }
 
-    fun initiatePersonalGoal() {
-        observeRunSession()
+    suspend fun initiatePersonalGoal() {
+        viewModelScope.launch {
+            observeRunSession()
+            fetchGoalProgress()
+            personalGoalRepository.assignSessionToPersonalGoal()
+        }
     }
 
     fun loadPersonalGoals() {
@@ -41,51 +54,40 @@ class PersonalGoalViewModel(
     }
 
     fun fetchGoalProgress() {
-        viewModelScope.launch {
-            personalGoalRepository.getGoalProgress()
+        goalProgressJob?.cancel()
+        goalProgressJob = viewModelScope.launch {
+            while (isActive) {
+                try {
+                    val progress = personalGoalRepository.getGoalProgress()
+                    _goalProgress.value = progress
+                    delay(7000)
+                } catch (e: Exception) {
+                    println("Error fetching goal progress: ${e.message}")
+                }
+            }
         }
     }
 
-
-    /***TODO: Move this to repo!***/
     fun upsertPersonalGoal(
         goalId: Int? = null,
-        sessionId : Int? = null,
-        targetDistance: Double?,
-        targetDuration: Double?,
-        targetCaloriesBurned: Double?,
-        frequency: String
+        sessionId: Int? = null,
+        targetDistance: Double? = null,
+        targetDuration: Double? = null,
+        targetCaloriesBurned: Double? = null
     ) {
         viewModelScope.launch {
-            val existingGoal = if (goalId != null) {
-                _personalGoals.value.find { it.goalId == goalId}
-            } else null
-
-            val currentDateString = DateTimeUtils.getCurrentDate().toString()
-
-            val personalGoal = existingGoal?.copy (
-                goalSessionId = sessionId ?: existingGoal.goalSessionId,
-                targetDistance = targetDistance ?: existingGoal.targetDistance,
-                targetDuration = targetDuration ?: existingGoal.targetDuration,
-                targetCaloriesBurned = targetCaloriesBurned ?: existingGoal.targetCaloriesBurned,
-                frequency = frequency,
-                dateCreated = currentDateString
+            val updatedGoal = personalGoalRepository.upsertPersonalGoal(
+                goalId = goalId,
+                sessionId = sessionId,
+                targetDistance = targetDistance,
+                targetDuration = targetDuration,
+                targetCaloriesBurned = targetCaloriesBurned,
+                existingGoals = _personalGoals.value
             )
-                ?: PersonalGoal(
-                    goalId = 0,
-                    goalSessionId = sessionId,
-                    targetDistance = targetDistance,
-                    targetDuration = targetDuration,
-                    targetCaloriesBurned = targetCaloriesBurned,
-                    frequency = frequency,
-                    dateCreated = currentDateString
-                )
-
-            personalGoalRepository.upsertPersonalGoal(personalGoal)
 
             _personalGoals.value = _personalGoals.value.map {
-                if (it.goalId == personalGoal.goalId) personalGoal else it
-            } + if (existingGoal == null) listOf(personalGoal) else emptyList()
+                if (it.goalId == updatedGoal.goalId) updatedGoal else it
+            } + if (_personalGoals.value.none { it.goalId == updatedGoal.goalId }) listOf(updatedGoal) else emptyList()
         }
     }
 
@@ -93,9 +95,14 @@ class PersonalGoalViewModel(
         viewModelScope.launch {
             runSessionRepository.currentRunSession.collect { session ->
                 if (session == null) {
+                    personalGoalRepository.updateGoalProgress()
+                    val progress = personalGoalRepository.getGoalProgress()
+                    _goalProgress.value = progress
                     personalGoalRepository.stopUpdatingGoalProgress()
+                    goalProgressJob?.cancel()
                 } else {
                     personalGoalRepository.startUpdatingGoalProgress()
+                    fetchGoalProgress()
                 }
             }
         }

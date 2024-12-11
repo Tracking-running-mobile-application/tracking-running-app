@@ -58,17 +58,13 @@ class RunFragment : Fragment(R.layout.fragment_run) {
             requestPermissionsLauncher.launch(permissions)
         }
 
-
         val toggleTrackingButton: Button = view.findViewById(R.id.toggleTrackingButton)
-        toggleTrackingButton.text = "Start Tracking" // Initial text
 
         toggleTrackingButton.setOnClickListener {
             if (isTracking) {
                 stopTracking()
-                toggleTrackingButton.text = "Start Tracking"
             } else {
                 startTracking()
-                toggleTrackingButton.text = "Stop Tracking"
             }
             isTracking = !isTracking
         }

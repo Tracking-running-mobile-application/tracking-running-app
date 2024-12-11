@@ -14,15 +14,13 @@ interface NotificationDao {
     @Query("""
         UPDATE Notification
         SET 
-            notiRunSessionId = :notiRunSessionId,
             title = :title,
             message = :message,
-            notificationType = :notificationType,
-            timeTriggred = :timeTriggered
+            notificationType = :notificationType
         WHERE 
             notificationId = :notificationId
     """)
-    suspend fun partialUpdateNotification(notificationId: Int, notiRunSessionId: Int?, title: String, message: String, notificationType: String, timeTriggered: LocalDateTime)
+    suspend fun partialUpdateNotification(notificationId: Int, title: String, message: String, notificationType: String)
 
     @Upsert
     suspend fun upsertNotification(notification: Notification)
