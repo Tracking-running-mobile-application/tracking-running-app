@@ -80,6 +80,7 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.mapbox)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.services.map)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

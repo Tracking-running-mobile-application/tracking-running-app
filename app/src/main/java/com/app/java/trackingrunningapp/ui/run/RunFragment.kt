@@ -16,11 +16,20 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.plugin.annotation.AnnotationPlugin
+import com.mapbox.maps.plugin.annotation.annotations
+import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationManager
+import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
+import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 import com.mapbox.maps.plugin.locationcomponent.location
 
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
     private lateinit var mapView: MapView
+    private val routeCoordinates = mutableListOf<Point>()
+    private lateinit var annotationApi: AnnotationPlugin
+    private lateinit var polylineAnnotationManager: PolylineAnnotationManager
+
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val allGranted = permissions.all {
@@ -67,7 +76,6 @@ class RunFragment : Fragment() {
             // Request missing permissions
             requestPermissionsLauncher.launch(permissions)
         }
-
     }
 
     private fun initArrowAction() {
@@ -84,54 +92,33 @@ class RunFragment : Fragment() {
     }
 
     private fun initMapAndLocation() {
-        /*  mapView.mapboxMap.loadStyle(Style.STANDARD) { style ->
-               mapView.location.updateSettings {
-                   enabled = true
-               }
-               val positionChangedListener = OnIndicatorPositionChangedListener { point ->
-                   val cameraOptions = CameraOptions.Builder()
-                       .center(point)
-                       .zoom(15.0)
-                       .build()
-                   mapView.mapboxMap.setCamera(cameraOptions)
-               }
-               mapView.location.addOnIndicatorPositionChangedListener(positionChangedListener)
-           }
-
-         */
-        initMap()
-
-    }
-
-    private fun initMap() {
-//        mapView = MapView(requireContext())
-        mapView.mapboxMap.loadStyle(Style.MAPBOX_STREETS) {
-//            setCamera(
-//                CameraOptions.Builder()
-//                    .center(Point.fromLngLat(21.0481, 105.80125))
-//                    .pitch(45.0)
-//                    .zoom(15.0)
-//                    .build()
-//            )
-            val locationPlugin = mapView.location
-            locationPlugin.updateSettings {
-                enabled = true
+        // Setup rout drawing
+        annotationApi = mapView.annotations
+        polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
+        // Setup map
+        mapView.mapboxMap.loadStyle(Style.STANDARD) {
+            // Init location
+            val locationComponentPlugin = mapView.location
+            locationComponentPlugin.updateSettings {
+                this.enabled = true
             }
-            locationPlugin.addOnIndicatorPositionChangedListener { point ->
-                moveCameraToLocation(point)
+            locationComponentPlugin.addOnIndicatorPositionChangedListener { point ->
+                routeCoordinates.add(point)
+                drawRoute()
+                mapView.mapboxMap.setCamera(
+                    CameraOptions.Builder().center(point).zoom(15.0).build()
+                )
             }
         }
     }
-
-    private fun moveCameraToLocation(location: Point) {
-        mapView.mapboxMap.setCamera(
-            CameraOptions.Builder()
-                .center(location)
-                .zoom(14.0)
-                .build()
-        )
+    private fun drawRoute() {
+        polylineAnnotationManager.deleteAll()
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(routeCoordinates)
+            .withLineColor("#FF0000")
+            .withLineWidth(5.0)
+        polylineAnnotationManager.create(polylineAnnotationOptions)
     }
-
 
     override fun onStop() {
         super.onStop()
