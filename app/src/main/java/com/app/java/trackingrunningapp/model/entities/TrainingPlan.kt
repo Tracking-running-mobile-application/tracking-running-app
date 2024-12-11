@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.model.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
@@ -22,12 +23,13 @@ data class TrainingPlan(
     var title: String,
     var description: String,
     var estimatedTime: Double,
-    var targetDistance: Double? = 0.0,
-    var targetDuration: Double? = 0.0,
-    var targetCaloriesBurned: Double? = 0.0,
-    var goalProgress: Double? = 0.0,
+    @ColumnInfo(name = "targetDistance", defaultValue = "0.0") var targetDistance: Double? = 0.0,
+    @ColumnInfo(name = "targetDuration", defaultValue = "0.0") var targetDuration: Double? = 0.0,
+    @ColumnInfo(name = "targetCaloriesBurned", defaultValue = "0.0") var targetCaloriesBurned: Double? = 0.0,
+    @ColumnInfo(name = "goalProgress", defaultValue = "0.0") var goalProgress: Double? = 0.0,
     var exerciseType: String,
+    @ColumnInfo(name = "imagePath", defaultValue = "NULL") var imagePath: String? = null,
     var difficulty: String,
-    var lastRecommendedDate: String? = null,
-    var isFinished: Boolean? = false
+    @ColumnInfo(name = "lastRecommendedDate", defaultValue = "NULL") var lastRecommendedDate: String? = null,
+    @ColumnInfo(name = "isFinished", defaultValue = "0") var isFinished: Boolean? = false
 )

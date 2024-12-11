@@ -1,14 +1,18 @@
 package com.app.java.trackingrunningapp.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.model.entities.TrainingPlan
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.model.repositories.RunSessionRepository
 import com.app.java.trackingrunningapp.model.repositories.TrainingPlanRepository
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class TrainingPlanViewModel(
@@ -17,9 +21,13 @@ class TrainingPlanViewModel(
     private val runSessionRepository: RunSessionRepository
 ): ViewModel() {
     private val _recommendedPlans = MutableStateFlow<List<TrainingPlan>>(emptyList())
-    val recommendedPlans : StateFlow<List<TrainingPlan>> = _recommendedPlans
 
-    val goalProgress: StateFlow<Double?> = trainingPlanRepository.goalProgress
+    val recommendedPlansLiveData: LiveData<List<TrainingPlan>> = _recommendedPlans.asLiveData()
+
+    private val _goalProgress = MutableStateFlow<Double?>(null)
+    val goalProgress: LiveData<Double?> = _goalProgress.asLiveData()
+
+    private var goalProgressJob: Job? = null
 
     init {
         fetchRecommendedPlansDaily()
@@ -39,6 +47,21 @@ class TrainingPlanViewModel(
         }
     }
 
+    fun fetchGoalProgress() {
+        goalProgressJob?.cancel()
+        goalProgressJob = viewModelScope.launch {
+            while (isActive) {
+                try {
+                    val progress = trainingPlanRepository.getGoalProgress()
+                    _goalProgress.value = progress
+                    delay(7000)
+                } catch (e: Exception) {
+                    println("Error fetching goal progress: ${e.message}")
+                }
+            }
+        }
+    }
+
     fun deleteTrainingPlan(planId: Int) {
         viewModelScope.launch {
             trainingPlanRepository.deleteTrainingPlan(planId)
@@ -46,16 +69,11 @@ class TrainingPlanViewModel(
     }
 
     /*trigger runSession start before this!!*/
-    fun initiateTrainingPlan(planId: Int) {
-        observeRunSession()
+    fun initiateTrainingPlan() {
         viewModelScope.launch {
-            val currentSession = runSessionRepository.currentRunSession.value
-            if (currentSession != null) {
-                trainingPlanRepository.assignSessionToTrainingPlan(planId, currentSession.sessionId)
-            }
-            else {
-               println("No active current session found!")
-            }
+            observeRunSession()
+            fetchGoalProgress()
+            trainingPlanRepository.assignSessionToTrainingPlan()
         }
     }
 
@@ -63,9 +81,14 @@ class TrainingPlanViewModel(
         viewModelScope.launch {
             runSessionRepository.currentRunSession.collect { session ->
                 if (session == null) {
-                    trainingPlanRepository.stopTrainingPlan()
+                    trainingPlanRepository.updateGoalProgress()
+                    val progress = trainingPlanRepository.getGoalProgress()
+                    _goalProgress.value = progress
+                    trainingPlanRepository.stopUpdatingGoalProgress()
+                    goalProgressJob?.cancel()
                 } else {
-                    trainingPlanRepository.startTrainingPlan()
+                    trainingPlanRepository.startUpdatingGoalProgress()
+                    fetchGoalProgress()
                 }
             }
         }

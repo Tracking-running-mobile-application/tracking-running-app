@@ -1,43 +1,27 @@
 package com.app.java.trackingrunningapp.viewmodel
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.model.entities.RunSession
+import com.app.java.trackingrunningapp.model.models.StatsSession
 import com.app.java.trackingrunningapp.model.repositories.RunSessionRepository
-import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
+import com.app.java.trackingrunningapp.model.utils.StatsUtils
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
-import kotlin.random.Random
 
 class RunSessionViewModel(
     private val runSessionRepository: RunSessionRepository,
 ): ViewModel() {
-    val startDate = MutableLiveData<String>()
-    val endDate = MutableLiveData<String>()
-
     private val _filteredSessions = MutableStateFlow<List<RunSession>>(emptyList())
     val filteredSession: StateFlow<List<RunSession>> = _filteredSessions
 
     private val _runSessions = MutableStateFlow<List<RunSession>>(emptyList())
     val runSessions: StateFlow<List<RunSession>> = _runSessions
-
-    private val _duration = MutableStateFlow("00:00")
-    val duration: StateFlow<String> = _duration
-
-    private val _distance = MutableStateFlow(0.0)
-    val distance: StateFlow<Double> = _distance
-
-    private val _pace = MutableStateFlow(0.0)
-    val pace: StateFlow<Double> = _pace
-
-    private val _caloriesBurned = MutableStateFlow(0.0)
-    val caloriesBurned: StateFlow<Double> = _caloriesBurned
 
     private val _hasMoreData = MutableStateFlow(true)
     val hasMoreData: StateFlow<Boolean> = _hasMoreData
@@ -45,35 +29,26 @@ class RunSessionViewModel(
     private val _favoriteRunSessions = MutableStateFlow<List<RunSession?>>(emptyList())
     val favoriteRunSessions : StateFlow<List<RunSession?>> = _favoriteRunSessions
 
-    private val currentRunSession: StateFlow<RunSession?> = runSessionRepository.currentRunSession
+    val currentSession = runSessionRepository.currentRunSession
 
-    private var runSessionStartTime: Instant = Instant.DISTANT_PAST
+    private val _statsFlow = MutableStateFlow<StatsSession?>(null)
+    val statsFlow: StateFlow<StatsSession?> = _statsFlow
 
-    private var trackingJob: Job? = null
+    private var statsUpdateJob: Job? = null
 
     init {
         fetchRunSessions()
         loadFavoriteSessions()
     }
 
-    private fun getCurrentSessionOrThrow(): RunSession {
-        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null!")
-    }
-
-    fun filterSessionsByDateRange() {
-        val start = startDate.value
-        val end = endDate.value
-        if (start != null && end != null) {
-            viewModelScope.launch {
-                try {
-                    val sessions = runSessionRepository.filterRunningSessionByDay(start, end)
-                    _filteredSessions.value = sessions
-                } catch(e: Exception) {
-                    println("Error filtering sessions: ${e.message}")
-                }
+    fun filterSessionsByDateRange(startDate: String, endDate: String) {
+        viewModelScope.launch {
+            try {
+                val sessions = runSessionRepository.filterRunningSessionByDay(startDate, endDate)
+                _filteredSessions.value = sessions
+            } catch(e: Exception) {
+                println("Error filtering sessions: ${e.message}")
             }
-        } else {
-            println("Either or both the start date and end date are missing!")
         }
     }
 
@@ -97,47 +72,47 @@ class RunSessionViewModel(
         }
     }
 
-    fun startRunSession() {
-        runSessionStartTime = DateTimeUtils.getCurrentInstant()
-
-        viewModelScope.launch {
+    fun initiateRunSession() {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 runSessionRepository.startRunSession()
+                startStatsUpdate()
+                fetchStatsCurrentSession()
             } catch(e: Exception) {
                 println("Error starting session: ${e.message}")
             }
         }
+    }
 
-        trackingJob?.cancel()
-        trackingJob = viewModelScope.launch {
+    private fun startStatsUpdate() {
+        statsUpdateJob?.cancel()
+        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
-                val currentTime = DateTimeUtils.getCurrentInstant()
-                val formattedDuration = DateTimeUtils.calculateDuration(runSessionStartTime, currentTime)
-                _duration.value = formattedDuration
-
-                if (currentTime.epochSeconds % 4 == 0L) {
-                    updateCaloriesAndPace()
+                try {
+                    updateStats()
+                    delay(5000)
+                } catch (e: Exception) {
+                    println("Error updating stats: ${e.message}")
                 }
-
-                delay(1000)
             }
         }
+    }
 
+    fun pauseRunSession() {
+        statsUpdateJob?.cancel()
+    }
+
+    suspend fun resumeRunSession() {
+        startStatsUpdate()
+        fetchStatsCurrentSession()
     }
 
     fun finishRunSession() {
-        trackingJob?.cancel()
-        trackingJob = null
-
-        viewModelScope.launch {
-            updateCaloriesAndPace()
-
-            val durationInSeconds = DateTimeUtils.durationToSeconds(_duration.value)
-
-            runSessionRepository.updateDurationSession(durationInSeconds)
-            runSessionRepository.updatePaceRunSession()
-
-            runSessionRepository.finishRunSession()
+        viewModelScope.launch(Dispatchers.IO) {
+            updateStats()
+            fetchStatsCurrentSession()
+            statsUpdateJob?.cancel()
+            runSessionRepository.setRunSessionInactive()
         }
     }
 
@@ -161,50 +136,49 @@ class RunSessionViewModel(
         }
     }
 
-    private suspend fun updateCaloriesAndPace() {
-        val newPace = runSessionRepository.updatePaceRunSession()
-        _pace.value = newPace
+    private suspend fun fetchStatsCurrentSession() {
+        statsUpdateJob?.cancel()
+        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                try {
+                    val stats = runSessionRepository.fetchStatsSession()
+                    _statsFlow.emit(stats)
+                    delay(5000)
+                } catch (e: Exception) {
+                    println("Error updating stats: ${e.message}")
+                }
+            }
+        }
+    }
 
-        val newCaloriesBurned = runSessionRepository.updateCaloriesBurnedSession()
-        _caloriesBurned.value = newCaloriesBurned
+    private suspend fun updateStats() {
+        statsUpdateJob?.cancel()
+        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+            while (isActive) {
+                runSessionRepository.calcDuration()
+                runSessionRepository.calcPace()
+                runSessionRepository.calcCaloriesBurned()
+                runSessionRepository.calcDistance()
+                val newPace = runSessionRepository.pace.value
 
-        runSessionRepository.updateDistanceSession()
+                val newCaloriesBurned = runSessionRepository.caloriesBurned.value
+
+                val newDistance = runSessionRepository.distance.value
+                val newDuration = StatsUtils.durationToSeconds(runSessionRepository.duration.value)
+
+                runSessionRepository.updateStatsSession(
+                    newDistance,
+                    newDuration,
+                    newCaloriesBurned,
+                    newPace
+                )
+            }
+        }
     }
 
     fun deleteRunSession(sessionId: Int) {
         viewModelScope.launch {
             runSessionRepository.deleteRunSession(sessionId)
-        }
-    }
-
-    fun createMockRunSessions() {
-        viewModelScope.launch {
-            val random = java.util.Random()
-            val dateFormat = java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")
-            val startDate = java.time.LocalDate.of(2024, 11, 22)
-            val endDate = java.time.LocalDate.of(2024, 12, 31)
-
-            val mockSessions = (1..30).map {
-                val randomDays = random.nextInt(startDate.until(endDate).days + 1)
-                val runDate = startDate.plusDays(randomDays.toLong()).format(dateFormat)
-
-                RunSession(
-                    sessionId = 0,
-                    runDate = runDate,
-                    distance = Random.nextDouble(1.0, 20.0),
-                    duration = Random.nextLong(600, 7200),
-                    pace = Random.nextDouble(4.0, 12.0),
-                    caloriesBurned = Random.nextDouble(100.0, 1000.0),
-                    isActive = false,
-                    dateAddInFavorite = null,
-                    isFavorite = false
-                )
-            }
-
-            mockSessions.forEach { session ->
-                runSessionRepository.createMockData(session)
-            }
-
         }
     }
 
