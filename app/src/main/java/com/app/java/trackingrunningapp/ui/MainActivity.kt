@@ -1,10 +1,16 @@
 package com.app.java.trackingrunningapp.ui
 
+import android.app.Dialog
 import android.os.Bundle
+import android.view.Gravity
+import android.view.Window
+import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.graphics.Color
+import androidx.core.util.Pair
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -13,6 +19,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.ActivityMainBinding
+import com.google.android.material.datepicker.MaterialDatePicker
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -42,17 +49,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun handleNavigation() {
-        // handle navigation event
-        val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
-        icFilter.isVisible = false
-        val icSettings = binding.toolbarMain.menu.findItem(R.id.item_toolbar_setting)
-        icSettings.isVisible = false
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val tvTitle: TextView = binding.tvToolbarTitle
             binding.toolbarMain.setNavigationIcon(R.drawable.ic_arrow_back_24)
             binding.toolbarMain.setNavigationOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
             }
+            val icSettings = binding.toolbarMain.menu.findItem(R.id.item_toolbar_setting)
             when (destination.id) {
                 R.id.homeFragment -> {
                     tvTitle.text = getString(R.string.text_home)
@@ -88,13 +91,13 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.historyFragment -> {
                     tvTitle.text = getString(R.string.text_history)
+                    val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
                     icFilter.isVisible = true
                     icSettings.isVisible = false
                 }
             }
         }
     }
-
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()

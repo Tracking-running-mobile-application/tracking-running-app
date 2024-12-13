@@ -55,10 +55,4 @@ class ProfileFragment : Fragment() {
             labelsFormatter = { it.toInt().toString() }
         }
     }
-
-    override fun onStop() {
-        super.onStop()
-        requireActivity().findViewById<Toolbar>(R.id.toolbar_main)
-            .menu.findItem(R.id.item_toolbar_setting).isVisible = false
-    }
 }

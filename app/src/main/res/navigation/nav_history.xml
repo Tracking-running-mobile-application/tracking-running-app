@@ -10,6 +10,13 @@
         android:name="com.app.java.trackingrunningapp.ui.history.HistoryFragment"
         android:label="fragment_history"
         tools:layout="@layout/fragment_history">
+        <action
+            android:id="@+id/action_historyFragment_to_calendarFragment2"
+            app:destination="@id/calendarFragment2" />
     </fragment>
+    <fragment
+        android:id="@+id/calendarFragment2"
+        android:name="com.app.java.trackingrunningapp.ui.history.CalendarFragment"
+        android:label="CalendarFragment" />
 
 </navigation>

@@ -6,6 +6,7 @@
         android:id="@+id/item_toolbar_filter"
         android:icon="@drawable/ic_filter"
         android:title="Filter"
+        android:visible="false"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_toolbar_setting"

@@ -5,18 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentHistoryBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.app.java.trackingrunningapp.ui.history.adapter.RunDateAdapter
+import com.google.android.material.datepicker.MaterialDatePicker
 
 class HistoryFragment : Fragment() {
     private lateinit var binding: FragmentHistoryBinding
-
     private lateinit var runDateAdapter: RunDateAdapter
 
     override fun onCreateView(
@@ -24,6 +22,7 @@ class HistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHistoryBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -31,14 +30,39 @@ class HistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val runDates = generateSampleData()
         val limitedRunDates = limitToMaxItems(runDates, 20)
-
         runDateAdapter = RunDateAdapter(limitedRunDates)
         binding.rvHistoryDate.adapter = runDateAdapter
         binding.swipeRefreshLayout.setOnRefreshListener {
             refreshData()
         }
+        // hide setting, show filter
+        val toolbar = requireActivity()
+            .findViewById<Toolbar>(R.id.toolbar_main)
+        val itemSetting = toolbar.menu.findItem(R.id.item_toolbar_setting)
+        itemSetting.isVisible = false
+        val itemFilter =  toolbar.menu.findItem(R.id.item_toolbar_filter)
+        itemFilter.isVisible = true
+        itemFilter.setOnMenuItemClickListener {
+            showCalendar()
+            true
+        }
     }
-
+    private fun showCalendar() {
+        val dateRangePicker =
+            MaterialDatePicker.Builder.dateRangePicker()
+                .setTitleText("Select Dates")
+                .setTheme(R.style.ThemeMaterialCalendar)
+                .setSelection(
+                    Pair(
+                        MaterialDatePicker.thisMonthInUtcMilliseconds(),
+                        MaterialDatePicker.todayInUtcMilliseconds()
+                    )
+                ).build()
+        dateRangePicker.addOnPositiveButtonClickListener {
+            // TODO: Do something when select start, end date 
+        }
+        dateRangePicker.show(requireActivity().supportFragmentManager,"calendar")
+    }
     private fun generateSampleData(): List<RunDate> {
         val octoberRuns = listOf(
             Run("Normal Run", "12KM", "Today"),
@@ -73,7 +97,7 @@ class HistoryFragment : Fragment() {
             Run("Short Run", "5KM", "Last Month"),
             Run("Long Run", "20KM", "Last Month"),
             Run("Short Run", "5KM", "Last Month"),
-            )
+        )
 
         return listOf(
             RunDate("OCTOBER 2024", octoberRuns),
@@ -104,18 +128,18 @@ class HistoryFragment : Fragment() {
 
         return groupedRuns
     }
+
     override fun onStop() {
         super.onStop()
         val toolbar = requireActivity()
             .findViewById<Toolbar>(R.id.toolbar_main)
-
-        val itemFilter = toolbar.menu.findItem(R.id.item_toolbar_filter)
-        itemFilter.isVisible = false
-
+        // hide setting
         val itemSetting = toolbar.menu.findItem(R.id.item_toolbar_setting)
         itemSetting.isVisible = true
-
+        // hide filter
+        val itemFilter =  toolbar.menu.findItem(R.id.item_toolbar_filter)
+        itemFilter.isVisible = false
         // pop to profile
-        this.findNavController().popBackStack(R.id.profileFragment,false)
+        this.findNavController().popBackStack(R.id.profileFragment, false)
     }
 }

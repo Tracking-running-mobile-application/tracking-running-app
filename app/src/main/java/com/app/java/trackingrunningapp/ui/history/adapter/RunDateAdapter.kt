@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.history
+package com.app.java.trackingrunningapp.ui.history.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.ui.history.RunDate
 
 class RunDateAdapter(
     private val runDates: List<RunDate>

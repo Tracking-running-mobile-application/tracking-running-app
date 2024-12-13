@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentNoFavouriteBinding
-import com.app.java.trackingrunningapp.ui.history.HistoryFragment
 
 class NoFavouriteFragment : Fragment() {
     private lateinit var binding: FragmentNoFavouriteBinding
@@ -25,13 +24,16 @@ class NoFavouriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // change toolbar title
+        val toolbarTitle =  requireActivity().findViewById<TextView>(R.id.tv_toolbar_title)
+        toolbarTitle.text =
+            getString(R.string.text_favourite_run)
         // navigate to history
         binding.textAddFavourite.setOnClickListener {
             it.findNavController().navigate(R.id.action_noFavouriteFragment_to_historyFragment2)
+            toolbarTitle.text = getString(R.string.text_history)
         }
-        // change toolbar title
-        requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text =
-            getString(R.string.text_favourite_run)
         // hide setting
         requireActivity().findViewById<Toolbar>(R.id.toolbar_main)
             .menu.findItem(R.id.item_toolbar_setting)
