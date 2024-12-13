@@ -15,19 +15,24 @@
             android:id="@+id/action_homeFragment_to_trainingPlans"
             app:destination="@id/trainingPlans" />
         <action
-            android:id="@+id/action_homeFragment_to_dailyTask"
-            app:destination="@id/dailyTask" />
+            android:id="@+id/action_homeFragment_to_settingFragment2"
+            app:destination="@id/settingFragment2" />
+
     </fragment>
     <fragment
         android:id="@+id/trainingPlans"
         tools:layout="@layout/fragment_training_plans"
         android:name="com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment"
-        android:label="TrainingPlans" />
+        android:label="TrainingPlans" >
+        <action
+            android:id="@+id/action_trainingPlans_to_settingFragment2"
+            app:destination="@id/settingFragment2" />
+    </fragment>
     <fragment
-        android:id="@+id/dailyTask"
-        android:name="com.app.java.trackingrunningapp.ui.home.daily_tasks.AddDailyTaskFragment"
-        android:label="fragment_daily_task"
-        tools:layout="@layout/fragment_daily_task" />
+        android:id="@+id/settingFragment2"
+        android:name="com.app.java.trackingrunningapp.ui.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
 
 
 </navigation>

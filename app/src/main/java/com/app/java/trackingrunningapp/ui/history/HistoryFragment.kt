@@ -4,10 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentHistoryBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HistoryFragment : Fragment() {
     private lateinit var binding: FragmentHistoryBinding
@@ -18,7 +23,7 @@ class HistoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHistoryBinding.inflate(inflater,container,false)
+        binding = FragmentHistoryBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -68,8 +73,7 @@ class HistoryFragment : Fragment() {
             Run("Short Run", "5KM", "Last Month"),
             Run("Long Run", "20KM", "Last Month"),
             Run("Short Run", "5KM", "Last Month"),
-
-        )
+            )
 
         return listOf(
             RunDate("OCTOBER 2024", octoberRuns),
@@ -99,5 +103,19 @@ class HistoryFragment : Fragment() {
         }
 
         return groupedRuns
+    }
+    override fun onStop() {
+        super.onStop()
+        val toolbar = requireActivity()
+            .findViewById<Toolbar>(R.id.toolbar_main)
+
+        val itemFilter = toolbar.menu.findItem(R.id.item_toolbar_filter)
+        itemFilter.isVisible = false
+
+        val itemSetting = toolbar.menu.findItem(R.id.item_toolbar_setting)
+        itemSetting.isVisible = true
+
+        // pop to profile
+        this.findNavController().popBackStack(R.id.profileFragment,false)
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentStatisticBinding
 import com.app.java.trackingrunningapp.ui.statistic.adapter.PagerAdapter
@@ -37,4 +38,9 @@ class StatisticFragment : Fragment() {
         }.attach()
     }
 
+    override fun onStop() {
+        super.onStop()
+        // pop to profile
+        this.findNavController().popBackStack(R.id.profileFragment,false)
+    }
 }

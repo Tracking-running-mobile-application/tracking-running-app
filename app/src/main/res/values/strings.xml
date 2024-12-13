@@ -32,7 +32,7 @@
     <string name="text_statistics">Statistics</string>
     <string name="text_history">History</string>
     <string name="favourite_runs">Favourite Runs</string>
-    <string name="no_favourite_text">You are currently have no favorite runs\nAdd more!</string>
+    <string name="no_favourite_text">You are currently having\nno favorite runs</string>
     <string name="toggle_overlay">Toggle Overlay</string>
     <string name="run">Run</string>
     <string name="back_button">backButton</string>
@@ -56,4 +56,6 @@
     <string name="text_confirm">Confirm</string>
     <string name="text_btn_save">Save</string>
     <string name="text_live_stats">Live Stats\nHere</string>
+    <string name="add_more"><u>Add more!</u></string>
+    <string name="text_favourite_run">Favourite Run</string>
 </resources>

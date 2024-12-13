@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentTrainingPlansBinding
 import com.denzcoskun.imageslider.constants.ScaleTypes
@@ -30,6 +32,12 @@ class TrainingPlanFragment : Fragment() {
         binding.planTitle.text = title
         setupImageSlider()
         setupProgressBar()
+        // navigate to setting
+        requireActivity().findViewById<Toolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_setting)
+            .setOnMenuItemClickListener {
+                findNavController().navigate(R.id.action_trainingPlans_to_settingFragment2)
+                true
+            }
     }
 
     @SuppressLint("SetTextI18n")
@@ -84,8 +92,8 @@ class TrainingPlanFragment : Fragment() {
         binding.imageSlider.setImageList(imageList)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
             View.VISIBLE
     }

@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.new_favourite
+package com.app.java.trackingrunningapp.ui.profile.favorite
 
 import android.view.LayoutInflater
 import android.view.View

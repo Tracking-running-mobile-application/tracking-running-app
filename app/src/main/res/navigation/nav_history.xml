@@ -9,5 +9,7 @@
         android:id="@+id/historyFragment"
         android:name="com.app.java.trackingrunningapp.ui.history.HistoryFragment"
         android:label="fragment_history"
-        tools:layout="@layout/fragment_history" />
+        tools:layout="@layout/fragment_history">
+    </fragment>
+
 </navigation>

@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.model.model.TrainingPlan
+import com.app.java.trackingrunningapp.data.model.TrainingPlan
 
 
 class HomeTrainingPlanAdapter(
@@ -47,6 +47,6 @@ class HomeTrainingPlanAdapter(
     }
 
     interface OnItemTrainingClickListener {
-        fun onClick(trainingPlan:TrainingPlan)
+        fun onClick(trainingPlan: TrainingPlan)
     }
 }
