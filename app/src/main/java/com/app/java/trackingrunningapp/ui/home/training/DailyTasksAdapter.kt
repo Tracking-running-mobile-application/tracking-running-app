@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.home.daily_tasks
+package com.app.java.trackingrunningapp.ui.home.training
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.DailyTask
+import com.app.java.trackingrunningapp.data.model.home.DailyTask
 
 
 class DailyTasksAdapter(

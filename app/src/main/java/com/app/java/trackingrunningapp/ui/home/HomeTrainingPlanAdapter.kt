@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.TrainingPlan
+import com.app.java.trackingrunningapp.data.model.home.TrainingPlan
 
 
 class HomeTrainingPlanAdapter(
@@ -17,7 +17,7 @@ class HomeTrainingPlanAdapter(
 
     class TrainingPlansViewHolder(
         itemView: View,
-        private val listener:OnItemTrainingClickListener
+        private val listener: OnItemTrainingClickListener
     ) : RecyclerView.ViewHolder(itemView) {
         private val planName: TextView = itemView.findViewById(R.id.item_plan_name)
         private val planImage: ImageView = itemView.findViewById(R.id.item_plan_image)
