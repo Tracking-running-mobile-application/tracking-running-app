@@ -1,13 +1,11 @@
 package com.app.java.trackingrunningapp.ui
 
 import android.os.Bundle
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -32,23 +30,24 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(binding.navHostFragment.id) as NavHostFragment
         navController = navHostFragment.navController
+        // setup bottom nav
         val bottomNav = binding.bottomNav
         bottomNav.setupWithNavController(navController)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.homeFragment, R.id.profileFragment, R.id.statisticFragment)
+            setOf(R.id.homeFragment, R.id.profileFragment, R.id.statisticFragment,
+                R.id.profileFragment,R.id.historyFragment)
         )
+        handleNavigation()
+    }
 
-        // handle navigation event
-        val icFilter = binding.toolbarMain.menu.findItem(R.id.toolbar_filter)
-        icFilter.isVisible = false
-        val icSettings = binding.toolbarMain.menu.findItem(R.id.toolbar_setting)
-        icSettings.isVisible = false
+    private fun handleNavigation() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val tvTitle: TextView = binding.tvToolbarTitle
             binding.toolbarMain.setNavigationIcon(R.drawable.ic_arrow_back_24)
             binding.toolbarMain.setNavigationOnClickListener {
                 onBackPressedDispatcher.onBackPressed()
             }
+            val icSettings = binding.toolbarMain.menu.findItem(R.id.item_toolbar_setting)
             when (destination.id) {
                 R.id.homeFragment -> {
                     tvTitle.text = getString(R.string.text_home)
@@ -58,33 +57,39 @@ class MainActivity : AppCompatActivity() {
                         // TODO: do something with notification
                         Toast.makeText(this, "Notification", Toast.LENGTH_SHORT).show()
                     }
+                    // navigate to setting
+                    icSettings.setOnMenuItemClickListener{
+                        navController.navigate(R.id.action_homeFragment_to_settingFragment2)
+                        true
+                    }
                 }
-
                 R.id.profileFragment -> {
                     tvTitle.text = getString(R.string.text_profile)
                     binding.toolbarMain.setNavigationIcon(R.drawable.ic_edit)
                     binding.toolbarMain.setNavigationOnClickListener {
-                       navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
+                        navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
+                    }
+                    // navigate to setting
+                    icSettings.setOnMenuItemClickListener{
+                        navController.navigate(R.id.action_profileFragment_to_settingFragment)
+                        true
                     }
                 }
-
                 R.id.runFragment -> {
                     tvTitle.text = getString(R.string.text_run)
                 }
-
                 R.id.statisticFragment -> {
                     tvTitle.text = getString(R.string.text_statistics)
                 }
-
                 R.id.historyFragment -> {
                     tvTitle.text = getString(R.string.text_history)
+                    val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
                     icFilter.isVisible = true
                     icSettings.isVisible = false
                 }
             }
         }
     }
-
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()

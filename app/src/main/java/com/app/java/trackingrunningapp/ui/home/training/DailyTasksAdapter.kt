@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.home.daily_tasks
+package com.app.java.trackingrunningapp.ui.home.training
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.model.model.DailyTask
+import com.app.java.trackingrunningapp.data.model.home.DailyTask
 
 
 class DailyTasksAdapter(
@@ -25,7 +25,7 @@ class DailyTasksAdapter(
         private val taskFrequency: TextView = itemView.findViewById(R.id.taskFrequency)
         private val taskCheckbox: ImageView = itemView.findViewById(R.id.taskCheckbox)
 
-        fun bind(dailyTask:DailyTask){
+        fun bind(dailyTask: DailyTask){
             taskTitle.text = dailyTask.title
             taskFrequency.text = dailyTask.frequency
             taskDuration.text = dailyTask.duration
@@ -65,6 +65,6 @@ class DailyTasksAdapter(
         return taskList.size
     }
     interface OnItemDailyTaskListener{
-        fun onClick(dailyTask:DailyTask)
+        fun onClick(dailyTask: DailyTask)
     }
 }

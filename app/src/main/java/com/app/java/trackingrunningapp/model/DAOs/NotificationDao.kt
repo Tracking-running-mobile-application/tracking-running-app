@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
 import com.app.java.trackingrunningapp.model.entities.Notification
-import kotlinx.datetime.LocalDateTime
 
 @Dao
 interface NotificationDao {

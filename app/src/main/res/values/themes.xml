@@ -19,4 +19,7 @@
         <item name="colorPrimary">@color/black</item>
     </style>
 
+    <style name="ThemeMaterialCalendar" parent="ThemeOverlay.Material3.MaterialCalendar">
+        <item name="android:windowFullscreen">false</item>
+    </style>
 </resources>

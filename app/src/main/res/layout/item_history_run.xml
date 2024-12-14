@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="false"
+    android:foreground="?attr/selectableItemBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="8dp"
     android:layout_marginTop="8dp"
@@ -12,50 +16,51 @@
         android:layout_height="wrap_content" >
 
         <TextView
-            android:id="@+id/runType"
+            android:id="@+id/runTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Normal Run"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="18dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:text="00:30:10"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/runDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:layout_marginBottom="@dimen/margin_16"
             android:text="12KM"
             android:textColor="#EEFF01"
             android:textSize="48sp"
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/runType" />
+            app:layout_constraintStart_toStartOf="@+id/runTime"
+            app:layout_constraintTop_toBottomOf="@id/runTime" />
 
-        <TextView
-            android:id="@+id/runDate"
+        <ImageButton
+            android:id="@+id/ic_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:text="Today"
-            android:textColor="@android:color/white"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/starIcon" />
-
-        <ImageView
-            android:id="@+id/starIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_history_star"
             android:layout_marginEnd="16dp"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/runDistance"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/runType" />
+            app:layout_constraintTop_toTopOf="@+id/runTime"
+            app:srcCompat="@drawable/ic_history_star" />
+        <ImageButton
+            android:id="@+id/ic_star_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/runDistance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/runTime"
+            app:srcCompat="@drawable/ic_history_star_selected" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

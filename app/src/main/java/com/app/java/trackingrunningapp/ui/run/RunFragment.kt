@@ -11,6 +11,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -119,9 +121,10 @@ class RunFragment : Fragment() {
             .withLineWidth(5.0)
         polylineAnnotationManager.create(polylineAnnotationOptions)
     }
-
     override fun onStop() {
         super.onStop()
         binding.icArrowDown.visibility = View.GONE
+        // pop to profile
+        this.findNavController().popBackStack(R.id.profileFragment,false)
     }
 }

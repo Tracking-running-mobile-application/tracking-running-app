@@ -9,14 +9,57 @@
         android:id="@+id/profileFragment"
         android:name="com.app.java.trackingrunningapp.ui.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" >
+        tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_editProfileFragment"
             app:destination="@id/editProfileFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_settingFragment"
+            app:destination="@id/settingFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_noFavouriteFragment"
+            app:destination="@id/noFavouriteFragment" />
+        <action
+            android:id="@+id/action_profileFragment_to_favouriteRuns"
+            app:destination="@id/favouriteRuns" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
-        android:name="com.app.java.trackingrunningapp.ui.profile.EditProfileFragment"
+        android:name="com.app.java.trackingrunningapp.ui.profile.edit.EditProfileFragment"
         android:label="fragment_edit_profile"
         tools:layout="@layout/fragment_edit_profile" />
+    <fragment
+        android:id="@+id/settingFragment"
+        android:name="com.app.java.trackingrunningapp.ui.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/noFavouriteFragment"
+        android:name="com.app.java.trackingrunningapp.ui.profile.favorite.NoFavouriteFragment"
+        android:label="NoFavouriteFragment"
+        tools:layout="@layout/fragment_no_favourite">
+        <action
+            android:id="@+id/action_noFavouriteFragment_to_nav_history"
+            app:destination="@id/nav_history"
+            app:launchSingleTop="false" />
+        <action
+            android:id="@+id/action_noFavouriteFragment_to_historyFragment2"
+            app:destination="@id/historyFragment2" />
+    </fragment>
+    <include app:graph="@navigation/nav_history" />
+    <action
+        android:id="@+id/action_global_profileFragment"
+        app:destination="@id/profileFragment"
+        app:popUpTo="@id/profileFragment" />
+    <fragment
+        android:id="@+id/favouriteRuns"
+        android:name="com.app.java.trackingrunningapp.ui.profile.favorite.FavouriteRuns"
+        android:label="FavouriteRuns" />
+    <fragment
+        android:id="@+id/historyFragment2"
+        android:name="com.app.java.trackingrunningapp.ui.history.HistoryFragment"
+        android:label="fragment_history"
+        tools:layout="@layout/fragment_history" />
+
+
 </navigation>

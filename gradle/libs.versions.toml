@@ -17,7 +17,6 @@ playServicesMaps = "19.0.0"
 mapbox = "11.8.0"
 swiperefreshlayout = "1.1.0"
 circle-image = "3.1.0"
-
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }

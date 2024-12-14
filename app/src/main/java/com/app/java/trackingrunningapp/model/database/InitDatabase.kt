@@ -2,7 +2,6 @@ package com.app.java.trackingrunningapp.model.database
 
 import android.app.Application
 import android.util.Log
-import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

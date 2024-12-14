@@ -1,11 +1,10 @@
-package com.app.java.trackingrunningapp.ui.profile
+package com.app.java.trackingrunningapp.ui.profile.edit
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.app.java.trackingrunningapp.R

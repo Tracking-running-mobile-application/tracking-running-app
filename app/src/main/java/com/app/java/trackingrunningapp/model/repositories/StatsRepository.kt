@@ -7,7 +7,6 @@ import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.entities.MonthlyStats
 import com.app.java.trackingrunningapp.model.entities.WeeklyStats
 import com.app.java.trackingrunningapp.model.entities.YearlyStats
-import com.app.java.trackingrunningapp.modelbase.RunningDatabase
 import com.app.java.trackingrunningapp.ui.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay

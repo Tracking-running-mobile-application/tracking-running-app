@@ -3,7 +3,6 @@ package com.app.java.trackingrunningapp.model.DAOs
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Upsert
 import com.app.java.trackingrunningapp.model.entities.GPSPoint
 import com.app.java.trackingrunningapp.model.models.Location
 
