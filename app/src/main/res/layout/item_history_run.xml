@@ -41,7 +41,7 @@
             app:layout_constraintTop_toBottomOf="@id/runTime" />
 
         <ImageButton
-            android:id="@+id/imageButton5"
+            android:id="@+id/ic_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
@@ -50,6 +50,17 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/runTime"
             app:srcCompat="@drawable/ic_history_star" />
+        <ImageButton
+            android:id="@+id/ic_star_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/runDistance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/runTime"
+            app:srcCompat="@drawable/ic_history_star_selected" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

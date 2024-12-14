@@ -70,13 +70,26 @@ class HistoryFragment : Fragment() {
         val runDates = generateSampleData()
         containerLayout = binding.containerLayoutHistory
         runDateAdapter = RunDateAdapter( object : OnItemHistoryRunClickListener {
-            override fun onClick(itemRun: Run) {
-                Snackbar.make(
-                    containerLayout,
-                    "Added Successfully To Favourite",
-                    Snackbar.LENGTH_SHORT
-                ).show()
+            override fun onItemClick(itemRun: Run) {
+               findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment)
             }
+
+            override fun onAddFavouriteClick(action: Int) {
+                if(action == RunAdapter.FAVOURITE_ADD){
+                    Snackbar.make(
+                        containerLayout,
+                        "Successfully Added To Favourite",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }else if(action == RunAdapter.FAVOURITE_REMOVE){
+                    Snackbar.make(
+                        containerLayout,
+                        "Successfully Removed From Favourite",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
         })
         runDateAdapter.updateRunDate(runDates)
         binding.rvHistoryDate.adapter = runDateAdapter
