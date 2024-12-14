@@ -2,19 +2,12 @@ package com.app.java.trackingrunningapp.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentProfileBinding
-import com.db.williamchart.view.BarChartView
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.tabs.TabLayout
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding

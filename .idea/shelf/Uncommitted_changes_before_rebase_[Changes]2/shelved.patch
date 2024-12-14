@@ -1,0 +1,58 @@
+Index: app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.java.trackingrunningapp.model.entities\n\nimport androidx.room.ColumnInfo\nimport androidx.room.Entity\nimport androidx.room.ForeignKey\nimport androidx.room.Index\nimport androidx.room.PrimaryKey\n\n@Entity(\n    foreignKeys = [\n        ForeignKey(\n            entity = RunSession::class,\n            parentColumns = [\"sessionId\"],\n            childColumns = [\"goalSessionId\"]\n        )\n    ],\n    indices = [Index(value = [\"goalSessionId\"])]\n)\ndata class PersonalGoal(\n    @PrimaryKey(autoGenerate = true)\n    val goalId: Int = 0,\n    val goalSessionId : Int? = null,\n    @ColumnInfo(name = \"targetDistance\", defaultValue = \"0.0\") var targetDistance: Double? = 0.0,\n    @ColumnInfo(name = \"targetDuration\", defaultValue = \"0.0\") var targetDuration: Double? = 0.0,\n    @ColumnInfo(name = \"targetCaloriesBurned\", defaultValue = \"0.0\") var targetCaloriesBurned: Double? = 0.0,\n    @ColumnInfo(name = \"goalProgress\", defaultValue = \"0.0\") var goalProgress: Double? = 0.0,\n    @ColumnInfo(name = \"isAchieved\", defaultValue = \"0\") var isAchieved: Boolean = false,\n    var frequency: String,\n    var dateCreated: String\n)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt b/app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt
+--- a/app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt	
++++ b/app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt	
+@@ -20,6 +20,7 @@
+     @PrimaryKey(autoGenerate = true)
+     val goalId: Int = 0,
+     val goalSessionId : Int? = null,
++    @ColumnInfo(name = "name", defaultValue = "NULL") val name: String? = null,
+     @ColumnInfo(name = "targetDistance", defaultValue = "0.0") var targetDistance: Double? = 0.0,
+     @ColumnInfo(name = "targetDuration", defaultValue = "0.0") var targetDuration: Double? = 0.0,
+     @ColumnInfo(name = "targetCaloriesBurned", defaultValue = "0.0") var targetCaloriesBurned: Double? = 0.0,
+Index: app/src/main/res/navigation/nav_intro_graph.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<navigation xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:id=\"@+id/nav_intro_graph\"\n    app:startDestination=\"@id/introFragment\">\n\n    <fragment\n        android:id=\"@+id/introFragment\"\n        android:name=\"com.app.java.trackingrunningapp.ui.intro.IntroFragment\"\n        tools:layout=\"@layout/fragment_intro\"\n        android:label=\"IntroFragment\" >\n        <action\n            android:id=\"@+id/action_introFragment_to_statusFragment\"\n            app:destination=\"@id/statusFragment\" />\n    </fragment>\n    <fragment\n        android:id=\"@+id/statusFragment\"\n        tools:layout=\"@layout/fragment_status\"\n        android:name=\"com.app.java.trackingrunningapp.ui.intro.StatusFragment\"\n        android:label=\"StatusFragment\" >\n    </fragment>\n    <fragment\n        android:id=\"@+id/run_page\"\n        android:name=\"com.app.java.trackingrunningapp.ui.run_page.RunPageFragment\"\n        tools:layout=\"@layout/fragment_run_page\"\n        android:label=\"RunFragment\"/>\n</navigation>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/navigation/nav_intro_graph.xml b/app/src/main/res/navigation/nav_intro_graph.xml
+--- a/app/src/main/res/navigation/nav_intro_graph.xml	
++++ b/app/src/main/res/navigation/nav_intro_graph.xml	
+@@ -22,7 +22,7 @@
+     </fragment>
+     <fragment
+         android:id="@+id/run_page"
+-        android:name="com.app.java.trackingrunningapp.ui.run_page.RunPageFragment"
++        android:name="com.app.java.trackingrunningapp.ui.run_page.RunFragment"
+         tools:layout="@layout/fragment_run_page"
+         android:label="RunFragment"/>
+ </navigation>
+\ No newline at end of file
+Index: app/src/main/res/navigation/nav_run.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"utf-8\"?>\n<navigation xmlns:android=\"http://schemas.android.com/apk/res/android\"\n    xmlns:app=\"http://schemas.android.com/apk/res-auto\"\n    xmlns:tools=\"http://schemas.android.com/tools\"\n    android:id=\"@+id/nav_run\"\n    app:startDestination=\"@id/runPageFragment\">\n\n    <fragment\n        android:id=\"@+id/runFragment\"\n        android:name=\"com.app.java.trackingrunningapp.ui.run.RunFragment\"\n        android:label=\"fragment_run\"\n        tools:layout=\"@layout/fragment_run\" />\n    <fragment\n        android:id=\"@+id/runPageFragment\"\n        android:name=\"com.app.java.trackingrunningapp.ui.run_page.RunPageFragment\"\n        tools:layout=\"@layout/fragment_run_page\"\n        android:label=\"RunPageFragment\" />\n</navigation>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/navigation/nav_run.xml b/app/src/main/res/navigation/nav_run.xml
+--- a/app/src/main/res/navigation/nav_run.xml	
++++ b/app/src/main/res/navigation/nav_run.xml	
+@@ -12,7 +12,7 @@
+         tools:layout="@layout/fragment_run" />
+     <fragment
+         android:id="@+id/runPageFragment"
+-        android:name="com.app.java.trackingrunningapp.ui.run_page.RunPageFragment"
++        android:name="com.app.java.trackingrunningapp.ui.run_page.RunFragment"
+         tools:layout="@layout/fragment_run_page"
+         android:label="RunPageFragment" />
+ </navigation>
+\ No newline at end of file

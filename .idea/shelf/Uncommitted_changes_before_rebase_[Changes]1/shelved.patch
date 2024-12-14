@@ -1,0 +1,39 @@
+Index: app/src/main/java/com/app/java/trackingrunningapp/ui/run_page/RunPageFragment.kt
+===================================================================
+diff --git a/app/src/main/java/com/app/java/trackingrunningapp/ui/run_page/RunPageFragment.kt b/app/src/main/java/com/app/java/trackingrunningapp/ui/run_page/RunFragment.kt
+rename from app/src/main/java/com/app/java/trackingrunningapp/ui/run_page/RunPageFragment.kt
+rename to app/src/main/java/com/app/java/trackingrunningapp/ui/run_page/RunFragment.kt
+--- a/app/src/main/java/com/app/java/trackingrunningapp/ui/run_page/RunPageFragment.kt	
++++ b/app/src/main/java/com/app/java/trackingrunningapp/ui/run_page/RunFragment.kt	
+@@ -28,7 +28,7 @@
+ import kotlinx.coroutines.sync.Mutex
+ import kotlinx.coroutines.sync.withLock
+ 
+-class RunPageFragment : Fragment(R.layout.fragment_run_page) {
++class RunFragment : Fragment(R.layout.fragment_run_page) {
+     private var locationClient: DefaultLocationClient? = null
+     private var isOverlayVisible = true
+ 
+@@ -83,22 +83,10 @@
+                     startTracking()
+                     runViewModel.startStatsUpdate()
+                     runViewModel.fetchStatsCurrentSession()
+-                    if (trainingPlanRepository.activeTrainingPlan()) {
+-                        trainingPlanRepository.startUpdatingGoalProgress()
+-                    }
+-                    if (personalGoalRepository.activePersonalGoal()) {
+-                        trainingPlanRepository.startUpdatingGoalProgress()
+-                    }
+                 }
+             }
+         }
+ 
+-        /***
+-         * TODO:
+-         * start.setOnClickListener:
+-         * pause.setOnClickListener : isActive = False -> stopAllTheTracking
+-         * stop.setOnClickListener: isActive = false -> stop / update all the stats
+-         * **/
+         pauseButton.setOnClickListener {
+             lifecycleScope.launch {
+                 trackingMutex.withLock {

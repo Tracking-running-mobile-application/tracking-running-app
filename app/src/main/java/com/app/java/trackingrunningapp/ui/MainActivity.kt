@@ -1,25 +1,17 @@
 package com.app.java.trackingrunningapp.ui
 
-import android.app.Dialog
 import android.os.Bundle
-import android.view.Gravity
-import android.view.Window
-import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.ui.graphics.Color
-import androidx.core.util.Pair
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.ActivityMainBinding
-import com.google.android.material.datepicker.MaterialDatePicker
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

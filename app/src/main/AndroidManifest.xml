@@ -13,6 +13,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+        android:name=".model.database.InitDatabase"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -32,7 +33,13 @@
         </activity>
         <activity
             android:name=".ui.MainActivity"
-            android:exported="true"/>
+            android:exported="true">
+        </activity>
+
+        <service
+            android:name=".ui.FusedLocationAPI.LocationService"
+            android:foregroundServiceType="location"
+            android:exported="false" />
     </application>
 
 </manifest>
