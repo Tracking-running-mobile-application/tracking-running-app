@@ -14,8 +14,6 @@ import com.app.java.trackingrunningapp.databinding.ItemProfileLayoutBinding
 
 class DetailRunFragment : Fragment() {
     private lateinit var binding: FragmentDetailRunBinding
-    private lateinit var itemProfileBinding:ItemProfileLayoutBinding
-    private lateinit var itemRunDetailBinding:ItemHistoryRunDetailBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

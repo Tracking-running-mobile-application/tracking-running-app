@@ -27,11 +27,11 @@ import com.mapbox.maps.plugin.locationcomponent.location
 
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
+    private var isClicked:Int = 1
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
-
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val allGranted = permissions.all {
@@ -48,6 +48,7 @@ class RunFragment : Fragment() {
             }
         }
 
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -57,12 +58,41 @@ class RunFragment : Fragment() {
         return binding.root
     }
 
-    @SuppressLint("InlinedApi")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initArrowAction()
-        mapView = binding.mapView
+        setupPermission()
+        setupActionRun()
+    }
 
+    private fun setupActionRun() {
+        binding.btnStartTracking.setOnClickListener{
+            binding.btnStartTracking.visibility = View.GONE
+            binding.btnPauseAndResume.visibility = View.VISIBLE
+            binding.btnStopTracking.visibility = View.VISIBLE
+            // TODO: do something when start
+        }
+
+        binding.btnPauseAndResume.setOnClickListener {
+            isClicked++
+            if(isClicked % 2 == 0){
+                binding.btnPauseAndResume.text = "Resume"
+                // TODO: do something when continue
+            }else{
+                binding.btnPauseAndResume.text = "Pause"
+                // TODO: do something when pause
+            }
+        }
+        binding.btnStopTracking.setOnClickListener {
+            binding.btnPauseAndResume.visibility = View.GONE
+            binding.btnStopTracking.visibility = View.GONE
+            binding.btnStartTracking.visibility = View.VISIBLE
+            // TODO: Do something when stop
+        }
+    }
+
+    @SuppressLint("InlinedApi")
+    private fun setupPermission() {
         val permissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -79,7 +109,6 @@ class RunFragment : Fragment() {
             requestPermissionsLauncher.launch(permissions)
         }
     }
-
     private fun initArrowAction() {
         binding.icArrowUp.setOnClickListener {
             binding.icArrowDown.visibility = View.VISIBLE
@@ -95,6 +124,7 @@ class RunFragment : Fragment() {
 
     private fun initMapAndLocation() {
         // Setup rout drawing
+        mapView = binding.mapView
         annotationApi = mapView.annotations
         polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
         // Setup map
