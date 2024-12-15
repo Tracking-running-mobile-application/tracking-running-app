@@ -27,7 +27,7 @@ import com.mapbox.maps.plugin.locationcomponent.location
 
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
-    private var isClicked:Int = 1
+    private var isPaused:Boolean = true
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
@@ -74,13 +74,14 @@ class RunFragment : Fragment() {
         }
 
         binding.btnPauseAndResume.setOnClickListener {
-            isClicked++
-            if(isClicked % 2 == 0){
-                binding.btnPauseAndResume.text = "Resume"
-                // TODO: do something when continue
-            }else{
+            if(isPaused){
                 binding.btnPauseAndResume.text = "Pause"
+                // TODO: do something when continue
+                isPaused = false
+            }else{
+                binding.btnPauseAndResume.text = "Resume"
                 // TODO: do something when pause
+                isPaused = true
             }
         }
         binding.btnStopTracking.setOnClickListener {
