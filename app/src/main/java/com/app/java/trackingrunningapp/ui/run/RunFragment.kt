@@ -17,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
 import com.app.java.trackingrunningapp.model.DAOs.NotificationDao_Impl
-import com.app.java.trackingrunningapp.model.database.InitDatabase
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
