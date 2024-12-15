@@ -7,21 +7,9 @@ import com.app.java.trackingrunningapp.data.model.entity.Notification
 
 @Dao
 interface NotificationDao {
-    /***
-     * TODO: Change partial update to upsert!
-     * **/
     @Query("""
-        UPDATE Notification
-        SET 
-            title = :title,
-            message = :message,
-            notificationType = :notificationType
-        WHERE 
-            notificationId = :notificationId
+        SELECT * FROM Notification WHERE notificationType = :type ORDER BY RANDOM() LIMIT 1
     """)
-    suspend fun partialUpdateNotification(notificationId: Int, title: String, message: String, notificationType: String)
-
-    @Upsert
-    suspend fun upsertNotification(notification: Notification)
+    suspend fun getRandomNotificationByType(type: String): Notification
 
 }
