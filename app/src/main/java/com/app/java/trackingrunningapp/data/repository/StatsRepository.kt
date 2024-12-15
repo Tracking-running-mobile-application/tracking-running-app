@@ -3,7 +3,6 @@ package com.app.java.trackingrunningapp.data.repository
 import com.app.java.trackingrunningapp.data.dao.MonthlyStatsDao
 import com.app.java.trackingrunningapp.data.dao.WeeklyStatsDao
 import com.app.java.trackingrunningapp.data.dao.YearlyStatsDao
-import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.MonthlyStats
 import com.app.java.trackingrunningapp.data.model.entity.WeeklyStats
 import com.app.java.trackingrunningapp.data.model.entity.YearlyStats

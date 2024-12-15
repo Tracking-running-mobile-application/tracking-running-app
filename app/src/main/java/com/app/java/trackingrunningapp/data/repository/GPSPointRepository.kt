@@ -3,7 +3,6 @@ package com.app.java.trackingrunningapp.data.repository
 import com.app.java.trackingrunningapp.data.dao.GPSPointDao
 import com.app.java.trackingrunningapp.data.dao.GPSTrackDao
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
-import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.GPSPoint
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.Location

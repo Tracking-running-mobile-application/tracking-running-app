@@ -3,7 +3,6 @@ package com.app.java.trackingrunningapp.data.repository
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.dao.UserDao
 import com.app.java.trackingrunningapp.utils.LocalTimeConverter
-import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession

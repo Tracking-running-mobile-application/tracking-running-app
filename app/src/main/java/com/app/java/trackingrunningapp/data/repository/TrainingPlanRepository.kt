@@ -2,7 +2,6 @@ package com.app.java.trackingrunningapp.data.repository
 
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.dao.TrainingPlanDao
-import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
 import com.app.java.trackingrunningapp.utils.DateTimeUtils

@@ -1,7 +1,6 @@
 package com.app.java.trackingrunningapp.data.repository
 
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
-import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

@@ -1,7 +1,6 @@
 package com.app.java.trackingrunningapp.data.repository
 
 import com.app.java.trackingrunningapp.data.dao.NotificationDao
-import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.Notification
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 
