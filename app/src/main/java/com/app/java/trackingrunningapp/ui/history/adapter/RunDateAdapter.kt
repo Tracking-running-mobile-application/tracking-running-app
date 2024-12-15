@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.history.RunDate
+import com.app.java.trackingrunningapp.data.model.dataclass.history.RunDate
 import com.app.java.trackingrunningapp.ui.history.OnItemHistoryRunClickListener
 
 class RunDateAdapter(

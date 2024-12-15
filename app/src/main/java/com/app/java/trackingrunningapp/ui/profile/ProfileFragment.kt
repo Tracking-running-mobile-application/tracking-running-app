@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentProfileBinding
 
@@ -22,6 +23,9 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupBarChart()
+         //pop to profile
+//        this.findNavController().popBackStack(R.id.profileFragment, false)
+//        this.findNavController().navigate(R.id.action_global_profileFragment)
         navigateToFavourite()
     }
 

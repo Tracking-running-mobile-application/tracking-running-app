@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.home.DailyTask
-import com.app.java.trackingrunningapp.data.model.home.TrainingPlan
+import com.app.java.trackingrunningapp.data.model.dataclass.home.DailyTask
+import com.app.java.trackingrunningapp.data.model.dataclass.home.TrainingPlan
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
 import com.app.java.trackingrunningapp.ui.home.training.DailyTasksAdapter
 import com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment

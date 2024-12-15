@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.home.TrainingPlan
+import com.app.java.trackingrunningapp.data.model.dataclass.home.TrainingPlan
 
 
 class HomeTrainingPlanAdapter(
