@@ -8,7 +8,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.history.Run
+import com.app.java.trackingrunningapp.data.model.dataclass.history.Run
 import com.app.java.trackingrunningapp.ui.history.OnItemHistoryRunClickListener
 
 class RunAdapter(

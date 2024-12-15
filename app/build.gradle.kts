@@ -1,7 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.google.devtools.ksp")
+    // room, ksp
+    alias(libs.plugins.room)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -10,18 +12,15 @@ android {
 
     defaultConfig {
         applicationId = "com.app.java.trackingrunningapp"
-        minSdk = 31
+        minSdk = 30
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments["room.schemaLocation"] = "$projectDir/schemas"
-            }
-        }
+    }
+    // schema
+    room {
+        schemaDirectory("$projectDir/schemas")
     }
 
     buildTypes {
@@ -50,37 +49,29 @@ dependencies {
     implementation(libs.barchart)
     implementation(libs.circle.image)
     implementation(libs.image.slider)
-    val room_version = "2.5.0"
-
-    implementation("androidx.room:room-runtime:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
-
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$room_version")
-
-    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation("androidx.room:room-guava:$room_version")
-
-    // optional - Test helpers
-    testImplementation("androidx.room:room-testing:$room_version")
-
-    // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:$room_version")
-    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
+    // room database
+    implementation(libs.room.kotlin)
+    implementation(libs.room.runtime)
+    // ksp
+    ksp(libs.room.compiler)
+    // lifecycle ktx
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    // map
+    implementation(libs.mapbox)
+    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.services.map)
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.1")
     implementation(libs.navigation.ui)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.runtime)
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.mapbox)
-    implementation(libs.androidx.swiperefreshlayout)
-    implementation(libs.services.map)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 }

@@ -38,15 +38,9 @@
         android:name="com.app.java.trackingrunningapp.ui.profile.favorite.NoFavouriteFragment"
         android:label="NoFavouriteFragment"
         tools:layout="@layout/fragment_no_favourite">
-        <action
-            android:id="@+id/action_noFavouriteFragment_to_nav_history"
-            app:destination="@id/nav_history"
-            app:launchSingleTop="false" />
-        <action
-            android:id="@+id/action_noFavouriteFragment_to_historyFragment2"
-            app:destination="@id/historyFragment2" />
     </fragment>
-    <include app:graph="@navigation/nav_history" />
+
+
     <action
         android:id="@+id/action_global_profileFragment"
         app:destination="@id/profileFragment"
@@ -55,11 +49,4 @@
         android:id="@+id/favouriteRuns"
         android:name="com.app.java.trackingrunningapp.ui.profile.favorite.FavouriteRuns"
         android:label="FavouriteRuns" />
-    <fragment
-        android:id="@+id/historyFragment2"
-        android:name="com.app.java.trackingrunningapp.ui.history.HistoryFragment"
-        android:label="fragment_history"
-        tools:layout="@layout/fragment_history" />
-
-
 </navigation>

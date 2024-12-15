@@ -9,11 +9,12 @@ import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.history.Run
-import com.app.java.trackingrunningapp.data.model.history.RunDate
+import com.app.java.trackingrunningapp.data.model.dataclass.history.Run
+import com.app.java.trackingrunningapp.data.model.dataclass.history.RunDate
 import com.app.java.trackingrunningapp.databinding.FragmentHistoryBinding
 import com.app.java.trackingrunningapp.ui.history.adapter.RunAdapter
 import com.app.java.trackingrunningapp.ui.history.adapter.RunDateAdapter
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
 
@@ -37,6 +38,7 @@ class HistoryFragment : Fragment() {
         setupRecyclerHistory()
         setupToolbarHistory()
     }
+
     private fun setupToolbarHistory() {
         // hide setting, show filter
         val toolbar = requireActivity()
@@ -69,19 +71,19 @@ class HistoryFragment : Fragment() {
     private fun setupRunDate() {
         val runDates = generateSampleData()
         containerLayout = binding.containerLayoutHistory
-        runDateAdapter = RunDateAdapter( object : OnItemHistoryRunClickListener {
+        runDateAdapter = RunDateAdapter(object : OnItemHistoryRunClickListener {
             override fun onItemClick(itemRun: Run) {
-               findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment)
+                findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment)
+                requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
             }
-
             override fun onAddFavouriteClick(action: Int) {
-                if(action == RunAdapter.FAVOURITE_ADD){
+                if (action == RunAdapter.FAVOURITE_ADD) {
                     Snackbar.make(
                         containerLayout,
                         "Successfully Added To Favourite",
                         Snackbar.LENGTH_SHORT
                     ).show()
-                }else if(action == RunAdapter.FAVOURITE_REMOVE){
+                } else if (action == RunAdapter.FAVOURITE_REMOVE) {
                     Snackbar.make(
                         containerLayout,
                         "Successfully Removed From Favourite",
@@ -89,8 +91,8 @@ class HistoryFragment : Fragment() {
                     ).show()
                 }
             }
-
         })
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
         runDateAdapter.updateRunDate(runDates)
         binding.rvHistoryDate.adapter = runDateAdapter
     }
@@ -143,7 +145,5 @@ class HistoryFragment : Fragment() {
         // hide filter
         val itemFilter = toolbar.menu.findItem(R.id.item_toolbar_filter)
         itemFilter.isVisible = false
-        // pop to profile
-        this.findNavController().popBackStack(R.id.profileFragment, false)
     }
 }

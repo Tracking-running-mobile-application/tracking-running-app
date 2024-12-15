@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentNoFavouriteBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 
 class NoFavouriteFragment : Fragment() {
     private lateinit var binding: FragmentNoFavouriteBinding
@@ -26,14 +28,17 @@ class NoFavouriteFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // change toolbar title
-        val toolbarTitle =  requireActivity().findViewById<TextView>(R.id.tv_toolbar_title)
+        val toolbarTitle = requireActivity().findViewById<TextView>(R.id.tv_toolbar_title)
         toolbarTitle.text =
             getString(R.string.text_favourite_run)
-        // navigate to history
-        binding.textAddFavourite.setOnClickListener {
-            it.findNavController().navigate(R.id.action_noFavouriteFragment_to_historyFragment2)
-            toolbarTitle.text = getString(R.string.text_history)
-        }
+        // hide bottom nav
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+        // notify
+        Snackbar.make(
+            binding.containerLayoutNoFavourite,
+            "Please Come To History Section To Add Your New Favourite Run.",
+            Snackbar.LENGTH_SHORT
+        ).show()
         // hide setting
         requireActivity().findViewById<Toolbar>(R.id.toolbar_main)
             .menu.findItem(R.id.item_toolbar_setting)
@@ -45,5 +50,7 @@ class NoFavouriteFragment : Fragment() {
         requireActivity().findViewById<Toolbar>(R.id.toolbar_main)
             .menu.findItem(R.id.item_toolbar_setting)
             .isVisible = true
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
+            View.VISIBLE
     }
 }

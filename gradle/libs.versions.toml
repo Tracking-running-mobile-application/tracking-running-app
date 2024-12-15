@@ -7,16 +7,20 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-activity = "1.9.2"
-constraintlayout = "2.1.4"
+activity = "1.9.3"
+constraintlayout = "2.2.0"
 
-navigation = "2.6.0"
+navigation = "2.8.5"
 barchart = "3.10.1"
 image-slider = "0.1.2"
 playServicesMaps = "19.0.0"
 mapbox = "11.8.0"
 swiperefreshlayout = "1.1.0"
 circle-image = "3.1.0"
+#
+roomdatabase = "2.6.1"
+lifecycle-ktx = "2.8.7"
+ksp = "1.9.0-1.0.13"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -41,7 +45,17 @@ mapbox = {group = "com.mapbox.maps",name = "android",version.ref = "mapbox"}
 androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 #circle-image
 circle-image = {group = "de.hdodenhof",name="circleimageview",version.ref="circle-image"}
+# room
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomdatabase" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomdatabase" }
+room-kotlin = { group = "androidx.room", name = "room-ktx", version.ref = "roomdatabase" }
+# viewmodel,livedata
+androidx-lifecycle-viewmodel-ktx = {group = "androidx.lifecycle",name="lifecycle-viewmodel-ktx",version.ref="lifecycle-ktx"}
+androidx-lifecycle-livedata-ktx = {group = "androidx.lifecycle",name="lifecycle-livedata-ktx",version.ref="lifecycle-ktx"}
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+# room ,ksp
+room = { id = "androidx.room", version.ref = "roomdatabase" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
