@@ -86,6 +86,7 @@ class RunFragment : Fragment() {
         }
         binding.btnStopTracking.setOnClickListener {
             binding.btnPauseAndResume.visibility = View.GONE
+            isPaused = true
             binding.btnStopTracking.visibility = View.GONE
             binding.btnStartTracking.visibility = View.VISIBLE
             // TODO: Do something when stop
