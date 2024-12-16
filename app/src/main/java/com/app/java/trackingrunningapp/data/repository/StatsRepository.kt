@@ -1,118 +1,43 @@
 package com.app.java.trackingrunningapp.data.repository
 
-import com.app.java.trackingrunningapp.data.dao.MonthlyStatsDao
-import com.app.java.trackingrunningapp.data.dao.WeeklyStatsDao
-import com.app.java.trackingrunningapp.data.dao.YearlyStatsDao
-import com.app.java.trackingrunningapp.data.model.entity.MonthlyStats
-import com.app.java.trackingrunningapp.data.model.entity.WeeklyStats
-import com.app.java.trackingrunningapp.data.model.entity.YearlyStats
-import com.app.java.trackingrunningapp.utils.DateTimeUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.atStartOfDayIn
-import kotlinx.datetime.plus
+import com.app.java.trackingrunningapp.data.dao2.StatsDao
+import com.app.java.trackingrunningapp.data.model.entity.stat.MonthlyStats
+import com.app.java.trackingrunningapp.data.model.entity.stat.WeeklyStats
+import com.app.java.trackingrunningapp.data.model.entity.stat.YearlyStats
 
 class StatsRepository(
-    private val coroutineScope: CoroutineScope
-
+    private val statsDao: StatsDao
 ) {
-    val db = InitDatabase.runningDatabase
-
-    private val yearlyStatsDao: YearlyStatsDao = db.yearlyStatsDao()
-    private val monthlyStatsDao: MonthlyStatsDao = db.monthlyStatsDao()
-    private val weeklyStatsDao: WeeklyStatsDao = db.weeklyStatsDao()
-
-    private val weeklyKeys = mutableSetOf<String>()
-    private val monthlyKeys = mutableSetOf<String>()
-    private val yearlyKeys = mutableSetOf<String>()
-
-    private val _weeklyStatsMap = MutableStateFlow<Map<String, WeeklyStats>>(emptyMap())
-    val weeklyStatsMap: StateFlow<Map<String, WeeklyStats>> = _weeklyStatsMap
-
-    private val _monthlyStatsMap = MutableStateFlow<Map<String, MonthlyStats>>(emptyMap())
-    val monthlyStatsMap: StateFlow<Map<String, MonthlyStats>> = _monthlyStatsMap
-
-    private val _yearlyStatsMap = MutableStateFlow<Map<String, YearlyStats>>(emptyMap())
-    val yearlyStatsMap: StateFlow<Map<String, YearlyStats>> = _yearlyStatsMap
-
-    suspend fun addStatsMultipleWeeks(weeklyStats: List<WeeklyStats>) {
-        weeklyStats.forEach { stats ->
-            weeklyStatsDao.upsertWeeklyStats(stats)
-            _weeklyStatsMap.value = _weeklyStatsMap.value.toMutableMap().apply {
-                this[stats.weeklyStatsKey] = stats
-            }
-        }
+    suspend fun getMonthlyStats(month: String): MonthlyStats? {
+        return statsDao.getMonthlyStats(month)
     }
 
-    suspend fun addStatsMultipleMonths(monthlyStats: List<MonthlyStats>) {
-        monthlyStats.forEach { stats ->
-            monthlyStatsDao.upsertMonthlyStats(stats)
-            _monthlyStatsMap.value = _monthlyStatsMap.value.toMutableMap().apply {
-                this[stats.monthStatsKey] = stats
-            }
-        }
+    suspend fun updateMonthlyStats(monthlyStats: MonthlyStats) {
+        statsDao.updateMonthlyStats(monthlyStats)
     }
 
-    suspend fun addStatsMultipleYears(yearlyStats: List<YearlyStats>) {
-        yearlyStats.forEach { stats ->
-            yearlyStatsDao.upsertYearlyStats(stats)
-            _yearlyStatsMap.value = _yearlyStatsMap.value.toMutableMap().apply {
-                this[stats.yearlyStatsKey] = stats
-            }
-        }
+    suspend fun insertMonthlyStats(monthlyStats: MonthlyStats){
+        statsDao.insertMonthlyStats(monthlyStats)
+    }
+    suspend fun getWeeklyStats(week: String): WeeklyStats? {
+        return statsDao.getWeeklyStats(week)
     }
 
-    private fun updateWeekKey(currentWeekKey: MutableSet<String>): Set<String> {
-        val today = DateTimeUtils.getCurrentDate().toString()
-        if (!currentWeekKey.contains(today)) {
-            currentWeekKey.add(today)
-        }
-        return currentWeekKey
+    suspend fun updateWeeklyStats(weeklyStats: WeeklyStats) {
+        statsDao.updateWeeklyStats(weeklyStats)
+    }
+    suspend fun insertWeeklyStats(weeklyStats: WeeklyStats){
+        statsDao.insertWeeklyStats(weeklyStats)
     }
 
-    private fun updateMonthKey(currentMonthKey: MutableSet<String>): Set<String> {
-        val firstDayOfWeek = DateTimeUtils.getFirstDayOfCurrentWeek().toString()
-        if (!currentMonthKey.contains(firstDayOfWeek)) {
-            currentMonthKey.add(firstDayOfWeek)
-        }
-        return currentMonthKey
+    suspend fun getYearlyStats(year: String): YearlyStats? {
+        return statsDao.getYearlyStats(year)
     }
 
-    private fun updateYearKey(currentYearKey: MutableSet<String>): Set<String> {
-        val year = DateTimeUtils.getCurrentDate().year.toString()
-        if (!currentYearKey.contains(year)) {
-            currentYearKey.add(year)
-        }
-        return currentYearKey
+    suspend fun updateYearlyStats(yearlyStats: YearlyStats) {
+        return statsDao.updateYearlyStats(yearlyStats)
     }
-
-
-    private fun updateKeys() {
-        updateWeekKey(weeklyKeys)
-        updateMonthKey(monthlyKeys)
-        updateYearKey(yearlyKeys)
+    suspend fun insertYearlyStats(yearlyStats: YearlyStats){
+        statsDao.insertYearlyStats(yearlyStats)
     }
-
-    fun startUpdatingKeys() {
-        coroutineScope.launch {
-            while (isActive) {
-                val now = DateTimeUtils.getCurrentDateTime()
-                val nextMidnight = now.date.plus(1, DateTimeUnit.DAY)
-                    .atStartOfDayIn(TimeZone.currentSystemDefault())
-
-                val nowInstant = DateTimeUtils.getCurrentInstant()
-                val delayUntilMidnight = nextMidnight.toEpochMilliseconds() - nowInstant.toEpochMilliseconds()
-
-                delay(delayUntilMidnight)
-                updateKeys()
-            }
-        }
-    }
-
 }

@@ -2,34 +2,23 @@ package com.app.java.trackingrunningapp.data.model.entity
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(
-    foreignKeys = [
-        ForeignKey(
-            entity = RunSession::class,
-            parentColumns = ["sessionId"],
-            childColumns = ["planSessionId"]
-        )
-    ],
-    indices = [Index(value = ["planSessionId"])]
-)
+@Entity("TrainingPlan")
 data class TrainingPlan(
     @PrimaryKey(autoGenerate = true)
-    val planId: Int = 0,
-    val planSessionId: Int?,
-    var title: String,
-    var description: String,
-    var estimatedTime: Double,
-    @ColumnInfo(name = "targetDistance", defaultValue = "0.0") var targetDistance: Double? = 0.0,
-    @ColumnInfo(name = "targetDuration", defaultValue = "0.0") var targetDuration: Double? = 0.0,
-    @ColumnInfo(name = "targetCaloriesBurned", defaultValue = "0.0") var targetCaloriesBurned: Double? = 0.0,
-    @ColumnInfo(name = "goalProgress", defaultValue = "0.0") var goalProgress: Double? = 0.0,
-    var exerciseType: String,
-    @ColumnInfo(name = "imagePath", defaultValue = "NULL") var imagePath: String? = null,
-    var difficulty: String,
-    @ColumnInfo(name = "lastRecommendedDate", defaultValue = "NULL") var lastRecommendedDate: String? = null,
-    @ColumnInfo(name = "isFinished", defaultValue = "0") var isFinished: Boolean? = false
+    @ColumnInfo("plan_id") val planId: Int = 0,
+    @ColumnInfo("plan_session_id") val planSessionId: Int?,
+    @ColumnInfo("plan_title") var title: String,
+    @ColumnInfo("plan_description") var description: String,
+    @ColumnInfo("plan_estimate_time") var estimatedTime: Double,
+    @ColumnInfo("plan_target_distance") var targetDistance: Double? = 0.0,
+    @ColumnInfo("plan_target_duration") var targetDuration: Double? = 0.0,
+    @ColumnInfo("plan_target_calories_burned") var targetCaloriesBurned: Double? = 0.0,
+    @ColumnInfo("plan_goal_progress") var goalProgress: Double? = 0.0,
+    @ColumnInfo("plan_exercise_type") var exerciseType: String,
+    @ColumnInfo("plan_image_path") var imagePath: String? = null,
+    @ColumnInfo("plan_difficulty") var difficulty: String,
+    @ColumnInfo("plan_last_recommended_date") var lastRecommendedDate: String? = null,
+    @ColumnInfo("plan_is_finished") var isFinished: Boolean? = false
 )

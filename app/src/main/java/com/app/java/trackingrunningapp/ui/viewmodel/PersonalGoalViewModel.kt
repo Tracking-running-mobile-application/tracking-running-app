@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
+import com.app.java.trackingrunningapp.data.model.entity.goal.PersonalGoal
 import com.app.java.trackingrunningapp.data.repository.PersonalGoalRepository
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import kotlinx.coroutines.Job

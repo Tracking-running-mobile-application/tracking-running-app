@@ -6,26 +6,24 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.app.java.trackingrunningapp.data.dao.GPSPointDao
-import com.app.java.trackingrunningapp.data.dao.GPSTrackDao
-import com.app.java.trackingrunningapp.data.dao.MonthlyStatsDao
-import com.app.java.trackingrunningapp.data.model.entity.MonthlyStats
-import com.app.java.trackingrunningapp.data.dao.NotificationDao
-import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
-import com.app.java.trackingrunningapp.data.dao.PersonalGoalDao
-import com.app.java.trackingrunningapp.data.dao.RunSessionDao
-import com.app.java.trackingrunningapp.data.dao.TrainingPlanDao
-import com.app.java.trackingrunningapp.data.dao.UserDao
-import com.app.java.trackingrunningapp.data.dao.WeeklyStatsDao
-import com.app.java.trackingrunningapp.data.dao.YearlyStatsDao
+import com.app.java.trackingrunningapp.data.dao2.GPSPointDao
+import com.app.java.trackingrunningapp.data.dao2.GPSTrackDao
+import com.app.java.trackingrunningapp.data.model.entity.stat.MonthlyStats
+import com.app.java.trackingrunningapp.data.dao2.NotificationDao
+import com.app.java.trackingrunningapp.data.model.entity.goal.PersonalGoal
+import com.app.java.trackingrunningapp.data.dao2.PersonalGoalDao
+import com.app.java.trackingrunningapp.data.dao2.RunSessionDao
+import com.app.java.trackingrunningapp.data.dao2.StatsDao
+import com.app.java.trackingrunningapp.data.dao2.TrainingPlanDao
+import com.app.java.trackingrunningapp.data.dao2.UserDao
 import com.app.java.trackingrunningapp.utils.LocalTimeConverter
-import com.app.java.trackingrunningapp.data.model.entity.GPSPoint
-import com.app.java.trackingrunningapp.data.model.entity.User
-import com.app.java.trackingrunningapp.data.model.entity.WeeklyStats
-import com.app.java.trackingrunningapp.data.model.entity.YearlyStats
-import com.app.java.trackingrunningapp.data.model.entity.GPSTrack
-import com.app.java.trackingrunningapp.data.model.entity.Notification
-import com.app.java.trackingrunningapp.data.model.entity.RunSession
+import com.app.java.trackingrunningapp.data.model.entity.gps.GPSPoint
+import com.app.java.trackingrunningapp.data.model.entity.user.User
+import com.app.java.trackingrunningapp.data.model.entity.stat.WeeklyStats
+import com.app.java.trackingrunningapp.data.model.entity.stat.YearlyStats
+import com.app.java.trackingrunningapp.data.model.entity.gps.GPSTrack
+import com.app.java.trackingrunningapp.data.model.entity.notification.Notification
+import com.app.java.trackingrunningapp.data.model.entity.goal.RunSession
 import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
 
 @Database(
@@ -48,9 +46,7 @@ import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
 abstract class RunningDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun personalGoalDao(): PersonalGoalDao
-    abstract fun weeklyStatsDao(): WeeklyStatsDao
-    abstract fun monthlyStatsDao(): MonthlyStatsDao
-    abstract fun yearlyStatsDao(): YearlyStatsDao
+    abstract fun statsDao():StatsDao
     abstract fun runSessionDao(): RunSessionDao
     abstract fun trainingPlanDao(): TrainingPlanDao
     abstract fun GPSTrackDao(): GPSTrackDao

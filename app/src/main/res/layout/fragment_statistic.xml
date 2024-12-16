@@ -99,11 +99,11 @@
                 android:textSize="32sp" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/text_stat_calories"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
-                android:text="Stat"
+                android:text="456.6 cal"
                 android:textColor="@color/main_yellow"
                 android:textSize="24sp" />
         </LinearLayout>
@@ -136,10 +136,11 @@
                 android:textSize="32sp" />
 
             <TextView
+                android:id="@+id/text_stat_duration"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
-                android:text="Stat"
+                android:text="38:45"
                 android:textColor="@color/main_yellow"
                 android:textSize="24sp" />
         </LinearLayout>
@@ -173,10 +174,11 @@
                 android:textSize="32sp" />
 
             <TextView
+                android:id="@+id/text_stat_distance"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
-                android:text="Stat"
+                android:text="15 km"
                 android:textColor="@color/main_yellow"
                 android:textSize="24sp" />
         </LinearLayout>
@@ -208,10 +210,11 @@
                 android:textSize="32sp" />
 
             <TextView
+                android:id="@+id/text_stat_pace"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
-                android:text="Stat"
+                android:text="10:03 /km"
                 android:textColor="@color/main_yellow"
                 android:textSize="24sp" />
         </LinearLayout>

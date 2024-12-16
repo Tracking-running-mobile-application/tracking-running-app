@@ -5,14 +5,22 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.RunningDatabase
+import com.app.java.trackingrunningapp.data.repository.StatsRepository
 import com.app.java.trackingrunningapp.databinding.FragmentStatisticBinding
+import com.app.java.trackingrunningapp.ui.statistic.StatisticViewModel
 import com.app.java.trackingrunningapp.ui.statistic.adapter.PagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 class StatisticFragment : Fragment() {
     private lateinit var binding: FragmentStatisticBinding
+    private val viewModel by viewModels<StatisticViewModel> {
+        val repository = StatsRepository(RunningDatabase.getInstance(requireContext()).statsDao())
+        StatisticViewModel.Factory(repository)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,6 +33,21 @@ class StatisticFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initPager2()
+        setupObserve()
+    }
+
+    private fun setupObserve() {
+        val duration = binding.textStatDuration
+        val distance = binding.textStatDistance
+        val pace = binding.textStatPace
+        val calories = binding.textStatCalories
+
+        viewModel.months.observe(viewLifecycleOwner){
+            duration.text = it.totalDuration.toString()
+            distance.text = it.totalDistance.toString()
+            pace.text = it.totalAvgPace.toString()
+            calories.text = it.totalCaloriesBurned.toString()
+        }
     }
 
     private fun initPager2() {

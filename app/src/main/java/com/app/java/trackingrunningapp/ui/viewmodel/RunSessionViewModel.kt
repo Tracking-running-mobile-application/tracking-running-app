@@ -2,7 +2,7 @@ package com.app.java.trackingrunningapp.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.app.java.trackingrunningapp.data.model.entity.RunSession
+import com.app.java.trackingrunningapp.data.model.entity.goal.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.utils.StatsUtils
