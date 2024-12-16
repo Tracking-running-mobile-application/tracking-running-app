@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class RunSession(
     @PrimaryKey(autoGenerate = true)
-    val sessionId: Int,
+    val sessionId: Int = 0,
     var runDate: String,
     @ColumnInfo(name = "distance", defaultValue = "0.0") var distance: Double,
     @ColumnInfo(name = "duration", defaultValue = "0") var duration: Long,

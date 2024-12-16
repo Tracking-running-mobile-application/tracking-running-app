@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.data.repository
 
+import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.dao.UserDao
 import com.app.java.trackingrunningapp.utils.LocalTimeConverter
@@ -56,15 +57,17 @@ class RunSessionRepository(
     private var runSessionStartTime: Instant = DateTimeUtils.getCurrentInstant()
 
     private fun getCurrentSessionOrThrow(): RunSession {
-        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null!")
+        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null! (RunSession Repository)")
     }
 
-    private suspend fun setCurrentRunSession() {
+    private suspend fun setCurrentRunSession(): RunSession? {
         val currentRunSession = runSessionDao.getCurrentRunSession()
         if (currentRunSession != null) {
             _currentRunSession.emit(currentRunSession)
+            return currentRunSession
         } else {
             println("No run session to initialize with!")
+            return null
         }
     }
 
@@ -99,8 +102,19 @@ class RunSessionRepository(
 
     suspend fun startRunSession() {
         val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())
-        runSessionDao.initiateRunSession(0, runDate)
 
+        val newRunSession = RunSession(
+            runDate = runDate,
+            distance = 0.0,
+            duration = 0L,
+            pace = 0.0,
+            caloriesBurned = 0.0,
+            isActive = true,
+            dateAddInFavorite = null,
+            isFavorite = false
+        )
+
+        runSessionDao.initiateRunSession(newRunSession)
         setCurrentRunSession()
     }
 

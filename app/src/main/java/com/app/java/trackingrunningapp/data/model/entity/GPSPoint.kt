@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
 )
 data class GPSPoint(
     @PrimaryKey(autoGenerate = true)
-    val gpsPointId: Int,
+    val gpsPointId: Int = 0,
     val trackId: Int,
     var longitude: Double,
     var latitude: Double,

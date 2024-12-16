@@ -7,13 +7,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
+import com.app.java.trackingrunningapp.model.DAOs.NotificationDao_Impl
+import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -71,6 +75,21 @@ class RunFragment : Fragment() {
             binding.btnPauseAndResume.visibility = View.VISIBLE
             binding.btnStopTracking.visibility = View.VISIBLE
             // TODO: do something when start
+            lifecycleScope.launch {
+                mutex.withLock {
+                    Log.e("Error", "Error1")
+                    runSessionViewModel.initiateRunSession()
+                    Log.e("Error", "Error2")
+                    gpsTrackViewModel.initiateGPSTrack()
+
+                    Log.e("Error", "Error4")
+                    runSessionViewModel.startStatsUpdate()
+
+                    Log.e("Error", "Error5")
+                    runSessionViewModel.fetchStatsCurrentSession()
+                    // TODO: insert start tracking and sending gps function
+                }
+            }
         }
 
         binding.btnPauseAndResume.setOnClickListener {
@@ -90,6 +109,22 @@ class RunFragment : Fragment() {
             binding.btnStopTracking.visibility = View.GONE
             binding.btnStartTracking.visibility = View.VISIBLE
             // TODO: Do something when stop
+            lifecycleScope.launch {
+                // TODO: stop gps tracking
+
+                Log.e("Error", "Error6")
+                runSessionViewModel.updateStats()
+
+                Log.e("Error", "Error7")
+                runSessionViewModel.fetchStatsCurrentSession()
+
+                Log.e("Error", "Error8")
+
+                gpsTrackViewModel.stopGPSTrack()
+
+                Log.e("Error", "Error9")
+                runSessionViewModel.finishRunSession()
+            }
         }
     }
 

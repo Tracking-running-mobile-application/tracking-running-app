@@ -6,8 +6,7 @@ import com.app.java.trackingrunningapp.data.repository.GPSPointRepository
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 
 class RunSessionViewModelFactory(
-    private val runSessionRepository: RunSessionRepository,
-    private val gpsPointRepository: GPSPointRepository
+    private val runSessionRepository: RunSessionRepository
 ): ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(RunSessionViewModel::class.java)) {

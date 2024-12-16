@@ -20,8 +20,6 @@ class GPSPointRepository(
 ) {
     val db = InitDatabase.runningDatabase
 
-    private var fetchingJob: Job? = null
-
     private val gpsPointDao: GPSPointDao = db.GPSPointDao()
     private val gpsTrackDao: GPSTrackDao = db.GPSTrackDao()
     private val runSessionDao: RunSessionDao = db.runSessionDao()
@@ -46,7 +44,6 @@ class GPSPointRepository(
         val currentGPSTrackId = getCurrentGPSTrackIDOrThrow()
 
         val newGPSPoint = GPSPoint(
-            gpsPointId = 0,
             trackId = currentGPSTrackId,
             longitude = longitude,
             latitude = latitude,
@@ -64,7 +61,7 @@ class GPSPointRepository(
                 val latestLocations = gpsPointDao.getTwoLatestLocation(gpsTrackID)
                 emit(latestLocations)
             } catch (e: Exception) {
-                println("Error fetching location ${e.message}")
+                println("Error fetching location (GPS Point) ${e.message}")
             }
             delay(3000)
         }
