@@ -1,29 +1,14 @@
 package com.app.java.trackingrunningapp.data.repository
 
-import com.app.java.trackingrunningapp.data.dao2.RunSessionDao
-import com.app.java.trackingrunningapp.data.dao2.UserDao
-import com.app.java.trackingrunningapp.utils.LocalTimeConverter
+import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.model.entity.goal.RunSession
-import com.app.java.trackingrunningapp.data.model.entity.user.User
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
-import com.app.java.trackingrunningapp.utils.StatsUtils
-import com.app.java.trackingrunningapp.utils.DateTimeUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
 
 class RunSessionRepository(
     private val runSessionDao: RunSessionDao
 ) {
-    suspend fun deleteRunSession(sessionId: Int): Long {
-        return runSessionDao.deleteRunSession(sessionId)
+    suspend fun deleteRunSession(session: RunSession) {
+        return runSessionDao.deleteRunSession(session)
     }
 
     suspend fun getAllRunSessions(limit: Int, offset: Int): List<RunSession> {
@@ -79,10 +64,9 @@ class RunSessionRepository(
     suspend fun filterRunningSessionByDay(startDate: String, endDate: String): List<RunSession>{
         return runSessionDao.filterRunningSessionByDay(startDate,endDate)
     }
-
-    suspend fun fetchStatsSession(sessionId: Int): StatsSession{
-        return runSessionDao.fetchStatsSession(sessionId)
-    }
+//    suspend fun fetchStatsSession(sessionId: Int): StatsSession{
+//        return runSessionDao.fetchStatsSession(sessionId)
+//    }
 //    suspend fun getCompleteSessionData(sessionId: Int): List<CompleteSessionData>{
 //        return runSessionDao.getCompleteSessionData(sessionId)
 //    }

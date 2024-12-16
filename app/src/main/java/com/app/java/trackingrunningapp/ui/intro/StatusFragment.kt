@@ -37,26 +37,17 @@ class StatusFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpToggle()
         binding.btnConfirm.setOnClickListener {
+            val age = binding.edtAge.text.toString().toInt()
+            val height = binding.edtHeight.text.toString().toDouble()
+            val weight = binding.edtWeight.text.toString().toDouble()
+            val user = User(age = age, height = height, weight = weight)
+            viewModel.insertOneUser(user)
             val intent = Intent(requireContext(), MainActivity::class.java)
             startActivity(intent)
         }
-        setupObserve()
     }
-
-    private fun setupObserve() {
-        binding.tvSelectGender.setOnItemClickListener { parent, view, position, id ->
-            val selectedItem = parent.getItemAtPosition(position) as String
-            if (selectedItem == "Male") {
-                // TODO: do smt with male
-            } else {
-                // TODO: do smt with female
-            }
-        }
-        setUpToggle()
-    }
-
-
     private fun setUpToggle() {
         val btnFt = binding.btnFt
         val btnCm = binding.btnCm
@@ -65,30 +56,27 @@ class StatusFragment : Fragment() {
         val hintHeight = binding.textHintHeightUnit
         val hintWeight = binding.textHintWeightUnit
 
-        var height: Double = 0.0
-        val age: Int = binding.edtAge.text.toString().toInt()
-        var weight: Double = 0.0
         //ft
         btnFt.setOnClickListener {
             hintHeight.text = getString(R.string.text_ft)
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_gray))
             val heightFt: Double = binding.edtHeight.toString().toDouble()
-            height = heightFt * 34.48
+//            height = heightFt * 34.48
         }
         //cm
         btnCm.setOnClickListener {
             hintHeight.text = getString(R.string.text_cm)
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_gray))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
-            height = binding.edtHeight.toString().toDouble()
+//            height = binding.edtHeight.toString().toDouble()
         }
         //kg
         btnKg.setOnClickListener {
             hintWeight.text = getString(R.string.text_kg)
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_gray))
-            weight = binding.edtWeight.toString().toDouble()
+//            weight = binding.edtWeight.toString().toDouble()
         }
         //lbs
         btnLbs.setOnClickListener {
@@ -96,9 +84,7 @@ class StatusFragment : Fragment() {
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
             val weightLbs = binding.edtWeight.text.toString().toDouble()
-            weight = weightLbs * 0.45
+//            weight = weightLbs * 0.45
         }
-        val user = User(age = age, height = height, weight = weight)
-        viewModel.insertOneUser(user)
     }
 }

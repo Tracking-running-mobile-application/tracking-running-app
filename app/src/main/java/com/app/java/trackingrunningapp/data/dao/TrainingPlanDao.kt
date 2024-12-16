@@ -1,17 +1,16 @@
-package com.app.java.trackingrunningapp.data.dao2
+package com.app.java.trackingrunningapp.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Update
-import androidx.room.Upsert
 import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
 
 @Dao
 interface TrainingPlanDao {
 
     @Delete
-    suspend fun deleteTrainingPlan(planId: Int)
+    suspend fun deleteTrainingPlan(plan: TrainingPlan)
 
     @Query("UPDATE TrainingPlan SET plan_is_finished = TRUE WHERE plan_id = :planId")
     suspend fun finishTrainingPlan(planId: Int)

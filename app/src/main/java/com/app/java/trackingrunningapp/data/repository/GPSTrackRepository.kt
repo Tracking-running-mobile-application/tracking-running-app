@@ -1,6 +1,7 @@
 package com.app.java.trackingrunningapp.data.repository
 
-import com.app.java.trackingrunningapp.data.dao2.GPSTrackDao
+import com.app.java.trackingrunningapp.data.dao.GPSTrackDao
+import com.app.java.trackingrunningapp.data.model.entity.gps.GPSTrack
 
 class GPSTrackRepository(
     private val gpsTrackDao: GPSTrackDao
@@ -17,11 +18,11 @@ class GPSTrackRepository(
         gpsTrackDao.getPauseOrContinueGPSTrack(gpsTrackId)
     }
 
-    suspend fun deleteGPSTrack(gpsTrackId: Int){
-        gpsTrackDao.deleteGPSTrack(gpsTrackId)
+    suspend fun deleteGPSTrack(gpsTrack: GPSTrack){
+        gpsTrackDao.deleteGPSTrack(gpsTrack)
     }
 
-    suspend fun createGPSTrack(gpsTrackId: Int){
-        gpsTrackDao.createGPSTrack(gpsTrackId)
+    suspend fun createGPSTrack(gpsTrack: GPSTrack){
+        gpsTrackDao.createGPSTrack(gpsTrack)
     }
 }

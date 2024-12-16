@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.data.dao2
+package com.app.java.trackingrunningapp.data.dao
 
 import androidx.room.Dao
 import androidx.room.Insert

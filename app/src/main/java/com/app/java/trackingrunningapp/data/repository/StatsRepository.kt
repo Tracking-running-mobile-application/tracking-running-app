@@ -1,6 +1,6 @@
 package com.app.java.trackingrunningapp.data.repository
 
-import com.app.java.trackingrunningapp.data.dao2.StatsDao
+import com.app.java.trackingrunningapp.data.dao.StatsDao
 import com.app.java.trackingrunningapp.data.model.entity.stat.MonthlyStats
 import com.app.java.trackingrunningapp.data.model.entity.stat.WeeklyStats
 import com.app.java.trackingrunningapp.data.model.entity.stat.YearlyStats

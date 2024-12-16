@@ -1,7 +1,7 @@
 package com.app.java.trackingrunningapp.data.repository
 
 import androidx.room.Delete
-import com.app.java.trackingrunningapp.data.dao2.UserDao
+import com.app.java.trackingrunningapp.data.dao.UserDao
 import com.app.java.trackingrunningapp.data.model.entity.user.User
 
 class UserRepository(

@@ -1,8 +1,7 @@
 package com.app.java.trackingrunningapp.data.repository
 
-import com.app.java.trackingrunningapp.data.dao2.NotificationDao
+import com.app.java.trackingrunningapp.data.dao.NotificationDao
 import com.app.java.trackingrunningapp.data.model.entity.notification.Notification
-import com.app.java.trackingrunningapp.utils.DateTimeUtils
 
 class NotificationRepository(
     private val notificationDao: NotificationDao

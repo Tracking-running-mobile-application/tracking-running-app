@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.data.dao2
+package com.app.java.trackingrunningapp.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -12,7 +12,7 @@ import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSessio
 @Dao
 interface RunSessionDao {
     @Delete
-    suspend fun deleteRunSession(sessionId: Int):Long
+    suspend fun deleteRunSession(session: RunSession)
 
     @Query(""" SELECT * FROM RunSession ORDER BY run_date DESC LIMIT :limit OFFSET :offset """)
     suspend fun getAllRunSessions(limit: Int, offset: Int): List<RunSession>
@@ -76,12 +76,12 @@ interface RunSessionDao {
         endDate: String
     ): List<RunSession>
 
-    @Query("""
-        SELECT duration, distance, pace, calories_burned
-        FROM runsession
-        WHERE session_id = :sessionId
-    """)
-    suspend fun fetchStatsSession(sessionId: Int): StatsSession
+//    @Query("""
+//        SELECT duration, distance, pace, calories_burned
+//        FROM runsession
+//        WHERE session_id = :sessionId
+//    """)
+//    suspend fun fetchStatsSession(sessionId: Int): StatsSession
 
     @Query("""
         SELECT * FROM RunSession AS rs    

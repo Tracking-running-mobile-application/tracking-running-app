@@ -6,16 +6,16 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.app.java.trackingrunningapp.data.dao2.GPSPointDao
-import com.app.java.trackingrunningapp.data.dao2.GPSTrackDao
+import com.app.java.trackingrunningapp.data.dao.GPSPointDao
+import com.app.java.trackingrunningapp.data.dao.GPSTrackDao
 import com.app.java.trackingrunningapp.data.model.entity.stat.MonthlyStats
-import com.app.java.trackingrunningapp.data.dao2.NotificationDao
+import com.app.java.trackingrunningapp.data.dao.NotificationDao
 import com.app.java.trackingrunningapp.data.model.entity.goal.PersonalGoal
-import com.app.java.trackingrunningapp.data.dao2.PersonalGoalDao
-import com.app.java.trackingrunningapp.data.dao2.RunSessionDao
-import com.app.java.trackingrunningapp.data.dao2.StatsDao
-import com.app.java.trackingrunningapp.data.dao2.TrainingPlanDao
-import com.app.java.trackingrunningapp.data.dao2.UserDao
+import com.app.java.trackingrunningapp.data.dao.PersonalGoalDao
+import com.app.java.trackingrunningapp.data.dao.RunSessionDao
+import com.app.java.trackingrunningapp.data.dao.StatsDao
+import com.app.java.trackingrunningapp.data.dao.TrainingPlanDao
+import com.app.java.trackingrunningapp.data.dao.UserDao
 import com.app.java.trackingrunningapp.utils.LocalTimeConverter
 import com.app.java.trackingrunningapp.data.model.entity.gps.GPSPoint
 import com.app.java.trackingrunningapp.data.model.entity.user.User
@@ -65,7 +65,6 @@ abstract class RunningDatabase : RoomDatabase() {
                     RunningDatabase::class.java,
                     "running_database"
                 )
-                    .createFromAsset("database/initial_data.db")
                     .fallbackToDestructiveMigration()
                     .build().also { INSTANCE = it }
             }

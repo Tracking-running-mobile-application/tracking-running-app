@@ -1,26 +1,13 @@
 package com.app.java.trackingrunningapp.data.repository
 
-import androidx.room.Query
-import androidx.room.Update
-import com.app.java.trackingrunningapp.data.dao2.RunSessionDao
-import com.app.java.trackingrunningapp.data.dao2.TrainingPlanDao
-import com.app.java.trackingrunningapp.data.model.entity.goal.RunSession
+import com.app.java.trackingrunningapp.data.dao.TrainingPlanDao
 import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
-import com.app.java.trackingrunningapp.utils.DateTimeUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.minus
 
 class TrainingPlanRepository (
     private val trainingPlanDao: TrainingPlanDao
 ){
-    suspend fun deleteTrainingPlan(planId: Int){
-        trainingPlanDao.deleteTrainingPlan(planId)
+    suspend fun deleteTrainingPlan(plan: TrainingPlan){
+        trainingPlanDao.deleteTrainingPlan(plan)
     }
     suspend fun finishTrainingPlan(planId: Int){
         trainingPlanDao.finishTrainingPlan(planId)

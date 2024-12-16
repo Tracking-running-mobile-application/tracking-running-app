@@ -1,17 +1,7 @@
 package com.app.java.trackingrunningapp.data.repository
 
-import com.app.java.trackingrunningapp.data.dao2.PersonalGoalDao
-import com.app.java.trackingrunningapp.data.dao2.RunSessionDao
+import com.app.java.trackingrunningapp.data.dao.PersonalGoalDao
 import com.app.java.trackingrunningapp.data.model.entity.goal.PersonalGoal
-import com.app.java.trackingrunningapp.data.model.entity.goal.RunSession
-import com.app.java.trackingrunningapp.utils.DateTimeUtils
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.launch
-import java.lang.IllegalStateException
 
 class PersonalGoalRepository(
     private val personalGoalDao: PersonalGoalDao
@@ -37,7 +27,7 @@ class PersonalGoalRepository(
     suspend fun getPersonalGoalBySessionId(goalSessionId: Int): PersonalGoal?{
         return personalGoalDao.getPersonalGoalBySessionId(goalSessionId)
     }
-    suspend fun deletePersonalGoal(goalId: Int){
-        personalGoalDao.deletePersonalGoal(goalId)
+    suspend fun deletePersonalGoal(personalGoal: PersonalGoal){
+        personalGoalDao.deletePersonalGoal(personalGoal)
     }
 }

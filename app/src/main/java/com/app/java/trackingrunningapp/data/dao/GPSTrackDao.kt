@@ -1,9 +1,10 @@
-package com.app.java.trackingrunningapp.data.dao2
+package com.app.java.trackingrunningapp.data.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Update
+import com.app.java.trackingrunningapp.data.model.entity.gps.GPSTrack
 
 @Dao
 interface GPSTrackDao {
@@ -17,9 +18,9 @@ interface GPSTrackDao {
     suspend fun getPauseOrContinueGPSTrack(gpsTrackId: Int): Boolean
 
     @Delete
-    suspend fun deleteGPSTrack(gpsTrackId: Int):Long
+    suspend fun deleteGPSTrack(gpsTrack: GPSTrack)
 
     @Update
-    suspend fun createGPSTrack(gpsTrackId: Int):Long
+    suspend fun createGPSTrack(gpsTrack: GPSTrack)
 
 }

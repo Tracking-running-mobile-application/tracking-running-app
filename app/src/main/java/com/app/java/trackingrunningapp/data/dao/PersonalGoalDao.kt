@@ -1,9 +1,9 @@
-package com.app.java.trackingrunningapp.data.dao2
+package com.app.java.trackingrunningapp.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Query
 import androidx.room.Update
-import androidx.room.Upsert
 import com.app.java.trackingrunningapp.data.model.entity.goal.PersonalGoal
 
 @Dao
@@ -31,6 +31,6 @@ interface PersonalGoalDao {
     @Query("SELECT * FROM PersonalGoal WHERE goal_session_id = :goalSessionId LIMIT 1")
     suspend fun getPersonalGoalBySessionId(goalSessionId: Int): PersonalGoal?
 
-    @Query("DELETE FROM PersonalGoal WHERE goal_id = :goalId")
-    suspend fun deletePersonalGoal(goalId: Int)
+    @Delete
+    suspend fun deletePersonalGoal(goal: PersonalGoal)
 }
