@@ -2,15 +2,15 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "14ee789b75dc0af875f20ae3cd84b5ea",
+    "identityHash": "fefa17238e89e9a6c92b083f7c1d398b",
     "entities": [
       {
         "tableName": "User",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT DEFAULT NULL, `age` INTEGER DEFAULT NULL, `height` REAL DEFAULT NULL, `weight` REAL DEFAULT 50.0, `metricPreference` TEXT DEFAULT 'kg', `unit` TEXT DEFAULT 'km')",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`user_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `age` INTEGER, `height` REAL, `weight` REAL)",
         "fields": [
           {
             "fieldPath": "userId",
-            "columnName": "userId",
+            "columnName": "user_id",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -18,49 +18,31 @@
             "fieldPath": "name",
             "columnName": "name",
             "affinity": "TEXT",
-            "notNull": false,
-            "defaultValue": "NULL"
+            "notNull": true
           },
           {
             "fieldPath": "age",
             "columnName": "age",
             "affinity": "INTEGER",
-            "notNull": false,
-            "defaultValue": "NULL"
+            "notNull": false
           },
           {
             "fieldPath": "height",
             "columnName": "height",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "NULL"
+            "notNull": false
           },
           {
             "fieldPath": "weight",
             "columnName": "weight",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "50.0"
-          },
-          {
-            "fieldPath": "metricPreference",
-            "columnName": "metricPreference",
-            "affinity": "TEXT",
-            "notNull": false,
-            "defaultValue": "'kg'"
-          },
-          {
-            "fieldPath": "unit",
-            "columnName": "unit",
-            "affinity": "TEXT",
-            "notNull": false,
-            "defaultValue": "'km'"
+            "notNull": false
           }
         ],
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "userId"
+            "user_id"
           ]
         },
         "indices": [],
@@ -68,17 +50,17 @@
       },
       {
         "tableName": "PersonalGoal",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`goalId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `goalSessionId` INTEGER, `name` TEXT DEFAULT NULL, `targetDistance` REAL DEFAULT 0.0, `targetDuration` REAL DEFAULT 0.0, `targetCaloriesBurned` REAL DEFAULT 0.0, `goalProgress` REAL DEFAULT 0.0, `isAchieved` INTEGER NOT NULL DEFAULT 0, `dateCreated` TEXT NOT NULL, FOREIGN KEY(`goalSessionId`) REFERENCES `RunSession`(`sessionId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`goal_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `goal_session_id` INTEGER, `name` TEXT, `target_distance` REAL, `target_duration` REAL, `target_calories_burned` REAL, `goal_progress` REAL, `is_achieved` INTEGER NOT NULL, `dateCreated` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "goalId",
-            "columnName": "goalId",
+            "columnName": "goal_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "goalSessionId",
-            "columnName": "goalSessionId",
+            "columnName": "goal_session_id",
             "affinity": "INTEGER",
             "notNull": false
           },
@@ -86,43 +68,37 @@
             "fieldPath": "name",
             "columnName": "name",
             "affinity": "TEXT",
-            "notNull": false,
-            "defaultValue": "NULL"
+            "notNull": false
           },
           {
             "fieldPath": "targetDistance",
-            "columnName": "targetDistance",
+            "columnName": "target_distance",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "targetDuration",
-            "columnName": "targetDuration",
+            "columnName": "target_duration",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "targetCaloriesBurned",
-            "columnName": "targetCaloriesBurned",
+            "columnName": "target_calories_burned",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "goalProgress",
-            "columnName": "goalProgress",
+            "columnName": "goal_progress",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "isAchieved",
-            "columnName": "isAchieved",
+            "columnName": "is_achieved",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           },
           {
             "fieldPath": "dateCreated",
@@ -134,77 +110,51 @@
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "goalId"
+            "goal_id"
           ]
         },
-        "indices": [
-          {
-            "name": "index_PersonalGoal_goalSessionId",
-            "unique": false,
-            "columnNames": [
-              "goalSessionId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_PersonalGoal_goalSessionId` ON `${TABLE_NAME}` (`goalSessionId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "RunSession",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "goalSessionId"
-            ],
-            "referencedColumns": [
-              "sessionId"
-            ]
-          }
-        ]
+        "indices": [],
+        "foreignKeys": []
       },
       {
         "tableName": "WeeklyStats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`weeklyStatsKey` TEXT NOT NULL, `totalDistance` REAL DEFAULT 0.0, `totalDuration` INTEGER DEFAULT 0, `totalCaloriesBurned` REAL DEFAULT 0.0, `totalAvgPace` REAL DEFAULT 0.0, PRIMARY KEY(`weeklyStatsKey`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`week_stats_key` TEXT NOT NULL, `total_distance` REAL, `total_duration` INTEGER, `total_calories_burned` REAL, `total_avg_pace` REAL, PRIMARY KEY(`week_stats_key`))",
         "fields": [
           {
             "fieldPath": "weeklyStatsKey",
-            "columnName": "weeklyStatsKey",
+            "columnName": "week_stats_key",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "totalDistance",
-            "columnName": "totalDistance",
+            "columnName": "total_distance",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "totalDuration",
-            "columnName": "totalDuration",
+            "columnName": "total_duration",
             "affinity": "INTEGER",
-            "notNull": false,
-            "defaultValue": "0"
+            "notNull": false
           },
           {
             "fieldPath": "totalCaloriesBurned",
-            "columnName": "totalCaloriesBurned",
+            "columnName": "total_calories_burned",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "totalAvgPace",
-            "columnName": "totalAvgPace",
+            "columnName": "total_avg_pace",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "weeklyStatsKey"
+            "week_stats_key"
           ]
         },
         "indices": [],
@@ -212,47 +162,43 @@
       },
       {
         "tableName": "MonthlyStats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`monthStatsKey` TEXT NOT NULL, `totalDistance` REAL DEFAULT 0.0, `totalDuration` INTEGER DEFAULT 0, `totalCaloriesBurned` REAL DEFAULT 0.0, `totalAvgPace` REAL DEFAULT 0.0, PRIMARY KEY(`monthStatsKey`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`month_stats_key` TEXT NOT NULL, `total_distance` REAL, `total_duration` INTEGER, `total_calories_burned` REAL, `total_avg_pace` REAL, PRIMARY KEY(`month_stats_key`))",
         "fields": [
           {
             "fieldPath": "monthStatsKey",
-            "columnName": "monthStatsKey",
+            "columnName": "month_stats_key",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "totalDistance",
-            "columnName": "totalDistance",
+            "columnName": "total_distance",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "totalDuration",
-            "columnName": "totalDuration",
+            "columnName": "total_duration",
             "affinity": "INTEGER",
-            "notNull": false,
-            "defaultValue": "0"
+            "notNull": false
           },
           {
             "fieldPath": "totalCaloriesBurned",
-            "columnName": "totalCaloriesBurned",
+            "columnName": "total_calories_burned",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "totalAvgPace",
-            "columnName": "totalAvgPace",
+            "columnName": "total_avg_pace",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "monthStatsKey"
+            "month_stats_key"
           ]
         },
         "indices": [],
@@ -260,47 +206,43 @@
       },
       {
         "tableName": "YearlyStats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`yearlyStatsKey` TEXT NOT NULL, `totalDistance` REAL DEFAULT 0.0, `totalDuration` INTEGER DEFAULT 0, `totalCaloriesBurned` REAL DEFAULT 0.0, `totalAvgPace` REAL DEFAULT 0.0, PRIMARY KEY(`yearlyStatsKey`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`year_stats_key` TEXT NOT NULL, `total_distance` REAL, `total_duration` INTEGER, `total_calories_burned` REAL, `total_avg_pace` REAL, PRIMARY KEY(`year_stats_key`))",
         "fields": [
           {
             "fieldPath": "yearlyStatsKey",
-            "columnName": "yearlyStatsKey",
+            "columnName": "year_stats_key",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "totalDistance",
-            "columnName": "totalDistance",
+            "columnName": "total_distance",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "totalDuration",
-            "columnName": "totalDuration",
+            "columnName": "total_duration",
             "affinity": "INTEGER",
-            "notNull": false,
-            "defaultValue": "0"
+            "notNull": false
           },
           {
             "fieldPath": "totalCaloriesBurned",
-            "columnName": "totalCaloriesBurned",
+            "columnName": "total_calories_burned",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "totalAvgPace",
-            "columnName": "totalAvgPace",
+            "columnName": "total_avg_pace",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           }
         ],
         "primaryKey": {
           "autoGenerate": false,
           "columnNames": [
-            "yearlyStatsKey"
+            "year_stats_key"
           ]
         },
         "indices": [],
@@ -308,74 +250,73 @@
       },
       {
         "tableName": "RunSession",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `runDate` TEXT NOT NULL, `distance` REAL NOT NULL DEFAULT 0.0, `duration` INTEGER NOT NULL DEFAULT 0, `pace` REAL NOT NULL DEFAULT 0.0, `caloriesBurned` REAL NOT NULL DEFAULT 0.0, `isActive` INTEGER DEFAULT 0, `dateAddInFavorite` TEXT DEFAULT NULL, `isFavorite` INTEGER NOT NULL DEFAULT 0)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`session_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `run_date` TEXT NOT NULL, `speed` REAL NOT NULL, `distance` REAL NOT NULL, `duration` INTEGER NOT NULL, `pace` REAL NOT NULL, `calories_burned` REAL NOT NULL, `is_active` INTEGER NOT NULL, `date_add_in_favorite` TEXT, `is_favorite` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "sessionId",
-            "columnName": "sessionId",
+            "columnName": "session_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "runDate",
-            "columnName": "runDate",
+            "columnName": "run_date",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "speed",
+            "columnName": "speed",
+            "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "distance",
             "columnName": "distance",
             "affinity": "REAL",
-            "notNull": true,
-            "defaultValue": "0.0"
+            "notNull": true
           },
           {
             "fieldPath": "duration",
             "columnName": "duration",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           },
           {
             "fieldPath": "pace",
             "columnName": "pace",
             "affinity": "REAL",
-            "notNull": true,
-            "defaultValue": "0.0"
+            "notNull": true
           },
           {
             "fieldPath": "caloriesBurned",
-            "columnName": "caloriesBurned",
+            "columnName": "calories_burned",
             "affinity": "REAL",
-            "notNull": true,
-            "defaultValue": "0.0"
+            "notNull": true
           },
           {
             "fieldPath": "isActive",
-            "columnName": "isActive",
+            "columnName": "is_active",
             "affinity": "INTEGER",
-            "notNull": false,
-            "defaultValue": "0"
+            "notNull": true
           },
           {
             "fieldPath": "dateAddInFavorite",
-            "columnName": "dateAddInFavorite",
+            "columnName": "date_add_in_favorite",
             "affinity": "TEXT",
-            "notNull": false,
-            "defaultValue": "NULL"
+            "notNull": false
           },
           {
             "fieldPath": "isFavorite",
-            "columnName": "isFavorite",
+            "columnName": "is_favorite",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "sessionId"
+            "session_id"
           ]
         },
         "indices": [],
@@ -383,162 +324,133 @@
       },
       {
         "tableName": "TrainingPlan",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`planId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `planSessionId` INTEGER, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `estimatedTime` REAL NOT NULL, `targetDistance` REAL DEFAULT 0.0, `targetDuration` REAL DEFAULT 0.0, `targetCaloriesBurned` REAL DEFAULT 0.0, `goalProgress` REAL DEFAULT 0.0, `exerciseType` TEXT NOT NULL, `imagePath` TEXT DEFAULT NULL, `difficulty` TEXT NOT NULL, `lastRecommendedDate` TEXT DEFAULT NULL, `isFinished` INTEGER DEFAULT 0, FOREIGN KEY(`planSessionId`) REFERENCES `RunSession`(`sessionId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`plan_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `plan_session_id` INTEGER, `plan_title` TEXT NOT NULL, `plan_description` TEXT NOT NULL, `plan_estimate_time` REAL NOT NULL, `plan_target_distance` REAL, `plan_target_duration` REAL, `plan_target_calories_burned` REAL, `plan_goal_progress` REAL, `plan_exercise_type` TEXT NOT NULL, `plan_image_path` TEXT, `plan_difficulty` TEXT NOT NULL, `plan_last_recommended_date` TEXT, `plan_is_finished` INTEGER)",
         "fields": [
           {
             "fieldPath": "planId",
-            "columnName": "planId",
+            "columnName": "plan_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "planSessionId",
-            "columnName": "planSessionId",
+            "columnName": "plan_session_id",
             "affinity": "INTEGER",
             "notNull": false
           },
           {
             "fieldPath": "title",
-            "columnName": "title",
+            "columnName": "plan_title",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "description",
-            "columnName": "description",
+            "columnName": "plan_description",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "estimatedTime",
-            "columnName": "estimatedTime",
+            "columnName": "plan_estimate_time",
             "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "targetDistance",
-            "columnName": "targetDistance",
+            "columnName": "plan_target_distance",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "targetDuration",
-            "columnName": "targetDuration",
+            "columnName": "plan_target_duration",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "targetCaloriesBurned",
-            "columnName": "targetCaloriesBurned",
+            "columnName": "plan_target_calories_burned",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "goalProgress",
-            "columnName": "goalProgress",
+            "columnName": "plan_goal_progress",
             "affinity": "REAL",
-            "notNull": false,
-            "defaultValue": "0.0"
+            "notNull": false
           },
           {
             "fieldPath": "exerciseType",
-            "columnName": "exerciseType",
+            "columnName": "plan_exercise_type",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "imagePath",
-            "columnName": "imagePath",
+            "columnName": "plan_image_path",
             "affinity": "TEXT",
-            "notNull": false,
-            "defaultValue": "NULL"
+            "notNull": false
           },
           {
             "fieldPath": "difficulty",
-            "columnName": "difficulty",
+            "columnName": "plan_difficulty",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "lastRecommendedDate",
-            "columnName": "lastRecommendedDate",
+            "columnName": "plan_last_recommended_date",
             "affinity": "TEXT",
-            "notNull": false,
-            "defaultValue": "NULL"
+            "notNull": false
           },
           {
             "fieldPath": "isFinished",
-            "columnName": "isFinished",
+            "columnName": "plan_is_finished",
             "affinity": "INTEGER",
-            "notNull": false,
-            "defaultValue": "0"
+            "notNull": false
           }
         ],
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "planId"
+            "plan_id"
           ]
         },
-        "indices": [
-          {
-            "name": "index_TrainingPlan_planSessionId",
-            "unique": false,
-            "columnNames": [
-              "planSessionId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_TrainingPlan_planSessionId` ON `${TABLE_NAME}` (`planSessionId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "RunSession",
-            "onDelete": "NO ACTION",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "planSessionId"
-            ],
-            "referencedColumns": [
-              "sessionId"
-            ]
-          }
-        ]
+        "indices": [],
+        "foreignKeys": []
       },
       {
         "tableName": "GPSPoint",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gpsPointId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `trackId` INTEGER NOT NULL, `longitude` REAL NOT NULL, `latitude` REAL NOT NULL, `timeStamp` INTEGER NOT NULL, FOREIGN KEY(`trackId`) REFERENCES `GPSTrack`(`gpsTrackId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gps_point_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gps_point_track_id` INTEGER NOT NULL, `gps_point_longitude` REAL NOT NULL, `gps_point_latitude` REAL NOT NULL, `gps_point_timestamp` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "gpsPointId",
-            "columnName": "gpsPointId",
+            "columnName": "gps_point_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "trackId",
-            "columnName": "trackId",
+            "columnName": "gps_point_track_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "longitude",
-            "columnName": "longitude",
+            "columnName": "gps_point_longitude",
             "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "latitude",
-            "columnName": "latitude",
+            "columnName": "gps_point_latitude",
             "affinity": "REAL",
             "notNull": true
           },
           {
             "fieldPath": "timeStamp",
-            "columnName": "timeStamp",
+            "columnName": "gps_point_timestamp",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -546,114 +458,75 @@
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "gpsPointId"
+            "gps_point_id"
           ]
         },
-        "indices": [
-          {
-            "name": "index_GPSPoint_trackId",
-            "unique": false,
-            "columnNames": [
-              "trackId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_GPSPoint_trackId` ON `${TABLE_NAME}` (`trackId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "GPSTrack",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "trackId"
-            ],
-            "referencedColumns": [
-              "gpsTrackId"
-            ]
-          }
-        ]
+        "indices": [],
+        "foreignKeys": []
       },
       {
         "tableName": "GPSTrack",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gpsTrackId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gpsSessionId` INTEGER NOT NULL, `isPaused` INTEGER NOT NULL DEFAULT 0, FOREIGN KEY(`gpsSessionId`) REFERENCES `RunSession`(`sessionId`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`gps_track_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `gps_track_session_id` INTEGER NOT NULL, `gps_track_is_paused` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "gpsTrackId",
-            "columnName": "gpsTrackId",
+            "columnName": "gps_track_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "gpsSessionId",
-            "columnName": "gpsSessionId",
+            "columnName": "gps_track_session_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "isPaused",
-            "columnName": "isPaused",
+            "columnName": "gps_track_is_paused",
             "affinity": "INTEGER",
-            "notNull": true,
-            "defaultValue": "0"
+            "notNull": true
           }
         ],
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "gpsTrackId"
+            "gps_track_id"
           ]
         },
-        "indices": [
-          {
-            "name": "index_GPSTrack_gpsSessionId",
-            "unique": false,
-            "columnNames": [
-              "gpsSessionId"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_GPSTrack_gpsSessionId` ON `${TABLE_NAME}` (`gpsSessionId`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "RunSession",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "gpsSessionId"
-            ],
-            "referencedColumns": [
-              "sessionId"
-            ]
-          }
-        ]
+        "indices": [],
+        "foreignKeys": []
       },
       {
         "tableName": "Notification",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`notificationId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `title` TEXT NOT NULL, `message` TEXT NOT NULL, `notificationType` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`notification_id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `notification_run_session_id` INTEGER NOT NULL, `notification_title` TEXT NOT NULL, `notification_message` TEXT NOT NULL, `notification_type` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "notificationId",
-            "columnName": "notificationId",
+            "columnName": "notification_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notifySessionId",
+            "columnName": "notification_run_session_id",
             "affinity": "INTEGER",
             "notNull": true
           },
           {
             "fieldPath": "title",
-            "columnName": "title",
+            "columnName": "notification_title",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "message",
-            "columnName": "message",
+            "columnName": "notification_message",
             "affinity": "TEXT",
             "notNull": true
           },
           {
             "fieldPath": "notificationType",
-            "columnName": "notificationType",
+            "columnName": "notification_type",
             "affinity": "TEXT",
             "notNull": true
           }
@@ -661,7 +534,7 @@
         "primaryKey": {
           "autoGenerate": true,
           "columnNames": [
-            "notificationId"
+            "notification_id"
           ]
         },
         "indices": [],
@@ -671,7 +544,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14ee789b75dc0af875f20ae3cd84b5ea')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'fefa17238e89e9a6c92b083f7c1d398b')"
     ]
   }
 }

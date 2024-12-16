@@ -4,9 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import androidx.room.Delete
 import com.app.java.trackingrunningapp.data.model.entity.user.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class UserViewModel(
     private val userRepository: UserRepository
@@ -14,8 +17,10 @@ class UserViewModel(
     private val _user = MutableLiveData<User?>()
     val user: LiveData<User?> = _user
 
-    suspend fun insertOneUser(user: User) {
-        userRepository.insertOneUser(user)
+     fun insertOneUser(user: User) {
+        viewModelScope.launch (Dispatchers.IO){
+            userRepository.insertOneUser(user)
+        }
     }
     suspend fun getUserById(id: Int): User? {
         val newUser = userRepository.getUserById(id)

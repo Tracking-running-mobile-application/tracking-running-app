@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.RunningDatabase
 import com.app.java.trackingrunningapp.data.model.entity.user.User
@@ -16,6 +17,7 @@ import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentStatusBinding
 import com.app.java.trackingrunningapp.ui.MainActivity
 import com.app.java.trackingrunningapp.ui.statistic.StatisticViewModel
+import kotlinx.coroutines.launch
 
 class StatusFragment : Fragment() {
     private lateinit var binding: FragmentStatusBinding
@@ -43,17 +45,15 @@ class StatusFragment : Fragment() {
     }
 
     private fun setupObserve() {
-
         binding.tvSelectGender.setOnItemClickListener { parent, view, position, id ->
             val selectedItem = parent.getItemAtPosition(position) as String
-            if(selectedItem == "Male"){
+            if (selectedItem == "Male") {
                 // TODO: do smt with male
-            }else{
+            } else {
                 // TODO: do smt with female
             }
         }
         setUpToggle()
-
     }
 
 
@@ -65,16 +65,16 @@ class StatusFragment : Fragment() {
         val hintHeight = binding.textHintHeightUnit
         val hintWeight = binding.textHintWeightUnit
 
-        var height:Double
-        var age:Int = binding.edtAge.text.toString().toInt()
-        var weight:Double
+        var height: Double = 0.0
+        val age: Int = binding.edtAge.text.toString().toInt()
+        var weight: Double = 0.0
         //ft
         btnFt.setOnClickListener {
             hintHeight.text = getString(R.string.text_ft)
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_gray))
-            val heightFt:Double = binding.edtHeight.toString().toDouble()
-            height = heightFt*34.48
+            val heightFt: Double = binding.edtHeight.toString().toDouble()
+            height = heightFt * 34.48
         }
         //cm
         btnCm.setOnClickListener {
@@ -96,9 +96,9 @@ class StatusFragment : Fragment() {
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
             val weightLbs = binding.edtWeight.text.toString().toDouble()
-            weight = weightLbs*0.45
+            weight = weightLbs * 0.45
         }
-
         val user = User(age = age, height = height, weight = weight)
+        viewModel.insertOneUser(user)
     }
 }
