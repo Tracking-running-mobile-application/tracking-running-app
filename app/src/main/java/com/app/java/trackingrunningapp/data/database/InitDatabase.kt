@@ -25,7 +25,7 @@ class InitDatabase : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        runningDatabase = RunningDatabase.getInstance(this)
+        runningDatabase = RunningDatabase.getInstance(this@InitDatabase)
         Log.d("Database operation", "Database initialized successfully")
 
         notificationRepository = NotificationRepository()

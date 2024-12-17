@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentStatisticMonthBinding
+import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.db.williamchart.view.BarChartView
@@ -17,7 +19,8 @@ import com.google.android.material.tabs.TabLayout
 
 class StatisticMonthFragment : Fragment() {
     private lateinit var binding:FragmentStatisticMonthBinding
-
+    private lateinit var runSessionViewModel: RunSessionViewModel
+    private lateinit var gpsTrackViewModel: GPSTrackViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,7 +31,11 @@ class StatisticMonthFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
-        runSessionViewModel = ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+        runSessionViewModel = ViewModelProvider(this, runFactory)[RunSessionViewModel::class.java]
+
+        val gpsTrackFactory = GPSTrackViewModelFactory(InitDatabase.gpsTrackRepository)
+        gpsTrackViewModel = ViewModelProvider(this, gpsTrackFactory)[GPSTrackViewModel::class.java]
+
         val barSet = listOf(
             "1" to 4F,
             "2" to 2F,

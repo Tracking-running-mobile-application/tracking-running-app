@@ -17,7 +17,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 
 class StatusFragment : Fragment() {
     private lateinit var binding: FragmentStatusBinding
-    private val viewModel = UserViewModel(UserRepository())
+//    private val viewModel = UserViewModel(UserRepository())
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
