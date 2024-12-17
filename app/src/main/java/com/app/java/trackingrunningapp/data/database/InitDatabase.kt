@@ -25,32 +25,33 @@ class InitDatabase : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        runningDatabase = RunningDatabase.getInstance(this@InitDatabase)
-        Log.d("Database operation", "Database initialized successfully")
-
-        notificationRepository = NotificationRepository()
-        // init run session repo
-        notificationRepository = NotificationRepository()
-        gpsPointRepository = GPSPointRepository()
-        gpsTrackRepository = GPSTrackRepository()
-        runSessionRepository = RunSessionRepository(gpsPointRepository)
-        // init viewmodel
-        runSessionViewModel = RunSessionViewModel(runSessionRepository)
-        gpsTrackViewModel = GPSTrackViewModel(gpsTrackRepository)
-
-
         CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val records = runningDatabase.runSessionDao().getAllRunSessions(20, 20)
-                if (records.isEmpty()) {
-                    Log.d("DatabaseRecord", "No records found in RunSession table.")
-                } else {
-                    records.forEach { record ->
-                        Log.d("DatabaseRecord", record.toString())
+            runningDatabase = RunningDatabase.getInstance(this@InitDatabase)
+            Log.d("Database operation", "Database initialized successfully")
+
+            notificationRepository = NotificationRepository()
+            // init run session repo
+            gpsPointRepository = GPSPointRepository()
+            gpsTrackRepository = GPSTrackRepository()
+            runSessionRepository = RunSessionRepository(gpsPointRepository)
+            // init viewmodel
+            runSessionViewModel = RunSessionViewModel(runSessionRepository)
+            gpsTrackViewModel = GPSTrackViewModel(gpsTrackRepository)
+
+
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val records = runningDatabase.runSessionDao().getAllRunSessions(20, 20)
+                    if (records.isEmpty()) {
+                        Log.d("DatabaseRecord", "No records found in RunSession table.")
+                    } else {
+                        records.forEach { record ->
+                            Log.d("DatabaseRecord", record.toString())
+                        }
                     }
+                } catch (e: Exception) {
+                    Log.e("DATABASE", "ERROR QUEYING DB", e)
                 }
-            } catch (e: Exception) {
-                Log.e("DATABASE", "ERROR QUEYING DB", e)
             }
         }
     }

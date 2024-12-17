@@ -1,6 +1,7 @@
 package com.app.java.trackingrunningapp.ui.statistic.fragment.period
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,22 +21,35 @@ import com.google.android.material.tabs.TabLayout
 class StatisticMonthFragment : Fragment() {
     private lateinit var binding:FragmentStatisticMonthBinding
     private lateinit var runSessionViewModel: RunSessionViewModel
-    private lateinit var gpsTrackViewModel: GPSTrackViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStatisticMonthBinding.inflate(inflater,container,false)
+
+        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+        runSessionViewModel = ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+
+        val startDate = "20241123"
+        val endDate = "20241222"
+        runSessionViewModel.filterSessionsByDateRange(startDate, endDate)
+
+        runSessionViewModel.filteredSession.observe(viewLifecycleOwner) {
+            sessions ->
+            if (sessions.isNotEmpty()) {
+                for (session in sessions) {
+                    Log.d("Filtered Session", "${session.sessionId}, ${session.distance}, ${session.runDate}")
+                }
+            }
+            else {
+                Log.e("Error", "No session found in given dates")
+            }
+        }
+
         return binding.root
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
-        runSessionViewModel = ViewModelProvider(this, runFactory)[RunSessionViewModel::class.java]
-
-        val gpsTrackFactory = GPSTrackViewModelFactory(InitDatabase.gpsTrackRepository)
-        gpsTrackViewModel = ViewModelProvider(this, gpsTrackFactory)[GPSTrackViewModel::class.java]
-
         val barSet = listOf(
             "1" to 4F,
             "2" to 2F,
