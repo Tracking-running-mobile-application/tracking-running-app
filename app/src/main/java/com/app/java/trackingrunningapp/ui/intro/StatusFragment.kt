@@ -6,13 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.RunningDatabase
+import com.app.java.trackingrunningapp.data.model.entity.User
+import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentStatusBinding
 import com.app.java.trackingrunningapp.ui.MainActivity
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 
 class StatusFragment : Fragment() {
     private lateinit var binding: FragmentStatusBinding
-
+    private val viewModel = UserViewModel(UserRepository())
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -27,6 +32,19 @@ class StatusFragment : Fragment() {
         setUpToggle()
         binding.btnConfirm.setOnClickListener {
             val intent = Intent(requireContext(),MainActivity::class.java)
+//            val ageStr = binding.edtAge.text.toString()
+//            var age = 1
+//            if(ageStr.isNotEmpty()){
+//                age = ageStr.toInt()
+//            }
+//            val height = binding.edtHeight.text.toString().toFloat()
+//            val weight = binding.edtWeight.text.toString().toDouble()
+//            viewModel.upsertUserInfo(
+//                age = age,
+//                height = height,
+//                weight = weight,
+//                name = "Thang"
+//            )
             startActivity(intent)
         }
     }
