@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,12 +13,16 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
-import com.app.java.trackingrunningapp.model.DAOs.NotificationDao_Impl
-import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
+import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -28,6 +33,9 @@ import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 import com.mapbox.maps.plugin.locationcomponent.location
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
@@ -36,6 +44,11 @@ class RunFragment : Fragment() {
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
+    private lateinit var runSessionViewModel: RunSessionViewModel
+    private lateinit var gpsTrackViewModel: GPSTrackViewModel
+
+    private var mutex = Mutex()
+
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val allGranted = permissions.all {
@@ -58,6 +71,12 @@ class RunFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+        runSessionViewModel = ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+
+        val gpsTrackFactory = GPSTrackViewModelFactory(InitDatabase.gpsTrackRepository)
+        gpsTrackViewModel = ViewModelProvider(this, gpsTrackFactory).get(GPSTrackViewModel::class.java)
+
         binding = FragmentRunBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -77,17 +96,14 @@ class RunFragment : Fragment() {
             // TODO: do something when start
             lifecycleScope.launch {
                 mutex.withLock {
-                    Log.e("Error", "Error1")
+                    Log.d("START", "Initiating session and GPS tracking")
                     runSessionViewModel.initiateRunSession()
-                    Log.e("Error", "Error2")
+                    Log.d("START", "Fetching and updating stats")
                     gpsTrackViewModel.initiateGPSTrack()
 
-                    Log.e("Error", "Error4")
-                    runSessionViewModel.startStatsUpdate()
-
-                    Log.e("Error", "Error5")
-                    runSessionViewModel.fetchStatsCurrentSession()
                     // TODO: insert start tracking and sending gps function
+                    Log.e("Error", "Error5")
+                    runSessionViewModel.fetchAndUpdateStats()
                 }
             }
         }
@@ -103,6 +119,7 @@ class RunFragment : Fragment() {
                 isPaused = true
             }
         }
+
         binding.btnStopTracking.setOnClickListener {
             binding.btnPauseAndResume.visibility = View.GONE
             isPaused = true
@@ -110,20 +127,17 @@ class RunFragment : Fragment() {
             binding.btnStartTracking.visibility = View.VISIBLE
             // TODO: Do something when stop
             lifecycleScope.launch {
-                // TODO: stop gps tracking
+                mutex.withLock {
+                    // TODO: stop gps tracking
 
-                Log.e("Error", "Error6")
-                runSessionViewModel.updateStats()
+                    Log.e("Error", "Error6")
+                    runSessionViewModel.fetchAndUpdateStats()
+                    Log.e("Error", "Error8")
 
-                Log.e("Error", "Error7")
-                runSessionViewModel.fetchStatsCurrentSession()
-
-                Log.e("Error", "Error8")
-
-                gpsTrackViewModel.stopGPSTrack()
-
-                Log.e("Error", "Error9")
-                runSessionViewModel.finishRunSession()
+                    Log.e("Error", "Error9")
+                    gpsTrackViewModel.stopGPSTrack()
+                    runSessionViewModel.finishRunSession()
+                }
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.data.repository
 
+import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.GPSPointDao
 import com.app.java.trackingrunningapp.data.dao.GPSTrackDao
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
@@ -32,6 +33,7 @@ class GPSPointRepository(
 
     private suspend fun getCurrentGPSTrackIDOrThrow(): Int {
         val currentRunSession = getCurrentSessionOrThrow()
+        Log.d("GPS Point", "${currentRunSession.sessionId}, ${currentRunSession.isActive}")
         return gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
             ?: throw IllegalStateException("No GPS Track ID is attached with the current run session! (GPS Point)")
     }

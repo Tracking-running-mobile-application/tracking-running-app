@@ -4,16 +4,12 @@ import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.GPSTrack
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 class GPSTrackRepository {
     val db = InitDatabase.runningDatabase
 
     private val gpsTrackDao = db.GPSTrackDao()
     private val runSessionDao: RunSessionDao = db.runSessionDao()
-
-    private val gpsTrackMutex = Mutex()
 
     private suspend fun getCurrentRunSessionOrThrow(): RunSession {
         val currentRunSession = runSessionDao.getCurrentRunSession()
@@ -34,7 +30,6 @@ class GPSTrackRepository {
         )
 
         gpsTrackDao.createGPSTrack(newGPSTrack)
-
     }
 
     suspend fun resumeGPSTrack() {

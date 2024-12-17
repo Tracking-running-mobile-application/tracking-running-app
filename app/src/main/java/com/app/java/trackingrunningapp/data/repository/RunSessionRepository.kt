@@ -10,14 +10,18 @@ import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
 import com.app.java.trackingrunningapp.utils.StatsUtils
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 
@@ -25,10 +29,6 @@ class RunSessionRepository(
     private val gpsPointRepository: GPSPointRepository
 ) {
     val db = InitDatabase.runningDatabase
-
-    val repoScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    private var statsJob: Job? = null
 
     private val runSessionDao: RunSessionDao = db.runSessionDao()
     private val userDao: UserDao = db.userDao()
@@ -56,6 +56,8 @@ class RunSessionRepository(
 
     private var runSessionStartTime: Instant = DateTimeUtils.getCurrentInstant()
 
+    private var calcStatsJob: Job? = null
+
     private fun getCurrentSessionOrThrow(): RunSession {
         return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null! (RunSession Repository)")
     }
@@ -69,6 +71,10 @@ class RunSessionRepository(
             println("No run session to initialize with!")
             return null
         }
+    }
+
+    suspend fun pauseCalculatingDuration() {
+        calcStatsJob?.cancelAndJoin()
     }
 
     suspend fun filterRunningSessionByDay(startDate: String, endDate: String): List<RunSession> {
@@ -140,6 +146,7 @@ class RunSessionRepository(
     }
 
     suspend fun calcPace(): Double {
+        Log.d("Run Session Repo", "update pace")
         val currentSession = getCurrentSessionOrThrow()
 
         val userUnitPreference = userInfo?.unit
@@ -165,10 +172,12 @@ class RunSessionRepository(
         return runSessionDao.getRunSessionById(sessionId)
     }
 
-    suspend fun calcCaloriesBurned(): Double {
+    // TODO: UPDATE VALUE AS WELL AND PUT IN ANOTHER SCOPE!
+    suspend fun calcCaloriesBurned() {
         val userMetricPreference: String? = userInfo?.metricPreference
         val unit: String? = userInfo?.unit
 
+        Log.d("Run Session Repo", "update calories")
         val currentSession = getCurrentSessionOrThrow()
 
         val adjustedWeight = when (userMetricPreference) {
@@ -191,16 +200,15 @@ class RunSessionRepository(
             else -> 0.0
         }
 
-        val caloriesBurnedPerHour = MET * adjustedWeight.toDouble()
+        val caloriesBurnedPerHour = MET * adjustedWeight
         val caloriesBurned = caloriesBurnedPerHour * durationInHours
-
-        return caloriesBurned
     }
 
     suspend fun calcDuration() {
+         Log.d("Run Session Repo", "update duration")
          val currentRunSession = getCurrentSessionOrThrow()
-         repoScope.launch {
-            while (currentRunSession.isActive != false) {
+         calcStatsJob = CoroutineScope(Dispatchers.IO).launch{
+            while (isActive && currentRunSession.isActive != false) {
                 try {
                     val currentTime = DateTimeUtils.getCurrentInstant()
                     val formattedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
@@ -209,6 +217,8 @@ class RunSessionRepository(
                     delay(1000)
                 } catch (e: Exception) {
                     println("Error updating duration: ${e.message}")
+                } catch (ce: CancellationException) {
+                    println("Error cancellation ${ce.message}")
                 }
             }
         }
@@ -230,6 +240,7 @@ class RunSessionRepository(
 
     suspend fun updateStatsSession(distance: Double, duration: Long, caloriesBurned: Double, pace: Double) {
         val currentSession = getCurrentSessionOrThrow()
+        Log.d("Run Session Repo", "update stats repo")
         runSessionDao.updateStatsSession(currentSession.sessionId, distance, duration, caloriesBurned, pace)
     }
 }
