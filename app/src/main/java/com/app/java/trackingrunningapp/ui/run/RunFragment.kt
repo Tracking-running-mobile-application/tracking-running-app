@@ -147,9 +147,9 @@ class RunFragment : Fragment() {
 
                 // Draw the route
                 drawRoute()
-                // Add the listener to start tracking
-                indicatorListener?.let { locationComponentPlugin.addOnIndicatorPositionChangedListener(it) }
             }
+            // Add the listener to start tracking
+            indicatorListener?.let { locationComponentPlugin.addOnIndicatorPositionChangedListener(it) }
         }
     }
 
