@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 
 class RunSessionRepository(
@@ -56,7 +57,7 @@ class RunSessionRepository(
 
     private var runSessionStartTime: Instant = DateTimeUtils.getCurrentInstant()
 
-    private var calcStatsJob: Job? = null
+    private var repoScope = CoroutineScope(Job() + Dispatchers.IO)
 
     private fun getCurrentSessionOrThrow(): RunSession {
         return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null! (RunSession Repository)")
@@ -74,7 +75,7 @@ class RunSessionRepository(
     }
 
     suspend fun pauseCalculatingDuration() {
-        calcStatsJob?.cancelAndJoin()
+        repoScope.cancel()
     }
 
     suspend fun filterRunningSessionByDay(startDate: String, endDate: String): List<RunSession> {
@@ -145,26 +146,27 @@ class RunSessionRepository(
         return runSessionDao.fetchStatsSession(currentSession.sessionId)
     }
 
-    suspend fun calcPace(): Double {
-        Log.d("Run Session Repo", "update pace")
-        val currentSession = getCurrentSessionOrThrow()
+    suspend fun calcPace() {
+        repoScope.launch {
+            Log.d("Run Session Repo", "update pace")
+            val currentSession = getCurrentSessionOrThrow()
 
-        val userUnitPreference = userInfo?.unit
+            val userUnitPreference = userInfo?.unit
 
-        val durationInMinutes = currentSession.duration / 60
+            val durationInMinutes = currentSession.duration / 60
 
-        val adjustedDistance: Double = when (userUnitPreference) {
-            User.UNIT_MILE -> currentSession.distance * 0.621371f
-            else -> currentSession.distance
+            val adjustedDistance: Double = when (userUnitPreference) {
+                User.UNIT_MILE -> currentSession.distance * 0.621371f
+                else -> currentSession.distance
+            }
+
+            val pace: Double = if (adjustedDistance > 0) {
+                durationInMinutes / adjustedDistance
+            } else {
+                0.0
+            }
+
         }
-
-        val pace: Double = if (adjustedDistance > 0) {
-            durationInMinutes / adjustedDistance
-        } else {
-            0.0
-        }
-
-        return pace
     }
 
     /*add in the viewmodel in the future to see run session detail*/
@@ -174,44 +176,47 @@ class RunSessionRepository(
 
     // TODO: UPDATE VALUE AS WELL AND PUT IN ANOTHER SCOPE!
     suspend fun calcCaloriesBurned() {
-        val userMetricPreference: String? = userInfo?.metricPreference
-        val unit: String? = userInfo?.unit
+        repoScope.launch {
+            val userMetricPreference: String? = userInfo?.metricPreference
+            val unit: String? = userInfo?.unit
 
-        Log.d("Run Session Repo", "update calories")
-        val currentSession = getCurrentSessionOrThrow()
+            Log.d("Run Session Repo", "update calories")
+            val currentSession = getCurrentSessionOrThrow()
 
-        val adjustedWeight = when (userMetricPreference) {
-            User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
-            else -> userInfo?.weight ?: 50.0
+            val adjustedWeight = when (userMetricPreference) {
+                User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
+                else -> userInfo?.weight ?: 50.0
+            }
+
+            val adjustedPace: Double = when (unit) {
+                User.UNIT_MILE -> currentSession.pace / 1.609344
+                else -> currentSession.pace
+            }
+
+            val speedMetersPerSec: Double = 1000.0 / (adjustedPace * 60.0)
+
+            val durationInHours = currentSession.duration / 3600.0
+
+            val MET = when {
+                speedMetersPerSec < 2.0 -> 0.5 + (speedMetersPerSec * 0.3)
+                speedMetersPerSec >= 2.0 -> 1.0 + (speedMetersPerSec * 0.9)
+                else -> 0.0
+            }
+
+            val caloriesBurnedPerHour = MET * adjustedWeight
+            val caloriesBurned = caloriesBurnedPerHour * durationInHours
         }
-
-        val adjustedPace: Double = when (unit) {
-            User.UNIT_MILE -> currentSession.pace / 1.609344
-            else -> currentSession.pace
-        }
-
-        val speedMetersPerSec: Double = 1000.0 / (adjustedPace * 60.0)
-
-        val durationInHours = currentSession.duration / 3600.0
-
-        val MET = when {
-            speedMetersPerSec < 2.0 -> 0.5 + (speedMetersPerSec * 0.3)
-            speedMetersPerSec >= 2.0 -> 1.0 + (speedMetersPerSec * 0.9)
-            else -> 0.0
-        }
-
-        val caloriesBurnedPerHour = MET * adjustedWeight
-        val caloriesBurned = caloriesBurnedPerHour * durationInHours
     }
 
     suspend fun calcDuration() {
-         Log.d("Run Session Repo", "update duration")
-         val currentRunSession = getCurrentSessionOrThrow()
-         calcStatsJob = CoroutineScope(Dispatchers.IO).launch{
+        repoScope.launch {
+            Log.d("Run Session Repo", "update duration")
+            val currentRunSession = getCurrentSessionOrThrow()
             while (isActive && currentRunSession.isActive != false) {
                 try {
                     val currentTime = DateTimeUtils.getCurrentInstant()
-                    val formattedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
+                    val formattedDuration =
+                        StatsUtils.calculateDuration(runSessionStartTime, currentTime)
                     _duration.emit(formattedDuration)
 
                     delay(1000)
@@ -224,16 +229,19 @@ class RunSessionRepository(
         }
     }
 
-    suspend fun calcDistance() = coroutineScope {
-        val latestLocationsFlow = gpsPointRepository.fetchTwoLatestLocation()
+    suspend fun calcDistance() {
+        repoScope.launch {
+            Log.d("Run Session Repo", "update distance")
+            val latestLocationsFlow = gpsPointRepository.fetchTwoLatestLocation()
 
-        latestLocationsFlow.collect { latestLocations ->
-            if (latestLocations.size == 2) {
-                val (location1, location2) = latestLocations
+            latestLocationsFlow.collect { latestLocations ->
+                if (latestLocations.size == 2) {
+                    val (location1, location2) = latestLocations
 
-                val distance = StatsUtils.haversineFormula(location1, location2)
+                    val distance = StatsUtils.haversineFormula(location1, location2)
 
-                _distance.value = distance
+                    _distance.value = distance
+                }
             }
         }
     }

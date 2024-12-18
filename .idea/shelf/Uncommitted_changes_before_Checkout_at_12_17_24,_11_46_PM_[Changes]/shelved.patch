@@ -1,0 +1,554 @@
+Index: app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSPointRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.java.trackingrunningapp.data.repository\n\nimport com.app.java.trackingrunningapp.data.dao.GPSPointDao\nimport com.app.java.trackingrunningapp.data.dao.GPSTrackDao\nimport com.app.java.trackingrunningapp.data.dao.RunSessionDao\nimport com.app.java.trackingrunningapp.data.database.InitDatabase\nimport com.app.java.trackingrunningapp.data.model.entity.GPSPoint\nimport com.app.java.trackingrunningapp.data.model.entity.RunSession\nimport com.app.java.trackingrunningapp.data.model.dataclass.location.Location\nimport com.app.java.trackingrunningapp.utils.DateTimeUtils\nimport kotlinx.coroutines.Dispatchers\nimport kotlinx.coroutines.Job\nimport kotlinx.coroutines.delay\nimport kotlinx.coroutines.flow.Flow\nimport kotlinx.coroutines.flow.flow\nimport kotlinx.coroutines.flow.flowOn\nimport java.lang.IllegalStateException\n\nclass GPSPointRepository(\n) {\n    val db = InitDatabase.runningDatabase\n\n    private val gpsPointDao: GPSPointDao = db.GPSPointDao()\n    private val gpsTrackDao: GPSTrackDao = db.GPSTrackDao()\n    private val runSessionDao: RunSessionDao = db.runSessionDao()\n\n    private suspend fun getCurrentSessionOrThrow(): RunSession {\n        val currentRunSession = runSessionDao.getCurrentRunSession()\n        return currentRunSession\n            ?: throw IllegalStateException(\"Value of current run session is null! (GPS Point)\")\n    }\n\n    private suspend fun getCurrentGPSTrackIDOrThrow(): Int {\n        val currentRunSession = getCurrentSessionOrThrow()\n        return gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)\n            ?: throw IllegalStateException(\"No GPS Track ID is attached with the current run session! (GPS Point)\")\n    }\n\n    suspend fun insertGPSPoint(\n        longitude: Double,\n        latitude: Double\n    ) {\n        val currentInstant = DateTimeUtils.getCurrentInstant()\n        val currentGPSTrackId = getCurrentGPSTrackIDOrThrow()\n\n        val newGPSPoint = GPSPoint(\n            trackId = currentGPSTrackId,\n            longitude = longitude,\n            latitude = latitude,\n            timeStamp = currentInstant.toEpochMilliseconds()\n        )\n\n        gpsPointDao.insertGPSPoint(newGPSPoint)\n    }\n\n    suspend fun fetchTwoLatestLocation(): Flow<List<Location>> = flow {\n        val gpsTrackID = getCurrentGPSTrackIDOrThrow()\n\n        while (gpsTrackDao.pauseOrContinueGPSTrack(gpsTrackID)) {\n            try {\n                val latestLocations = gpsPointDao.getTwoLatestLocation(gpsTrackID)\n                emit(latestLocations)\n            } catch (e: Exception) {\n                println(\"Error fetching location (GPS Point) ${e.message}\")\n            }\n            delay(3000)\n        }\n\n    }.flowOn(Dispatchers.IO)\n\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSPointRepository.kt b/app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSPointRepository.kt
+--- a/app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSPointRepository.kt	(revision 83ec5369dfbec3f64243b7a6132c4e7ddb3db023)
++++ b/app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSPointRepository.kt	(date 1734447579456)
+@@ -1,5 +1,6 @@
+ package com.app.java.trackingrunningapp.data.repository
+ 
++import android.util.Log
+ import com.app.java.trackingrunningapp.data.dao.GPSPointDao
+ import com.app.java.trackingrunningapp.data.dao.GPSTrackDao
+ import com.app.java.trackingrunningapp.data.dao.RunSessionDao
+@@ -32,6 +33,7 @@
+ 
+     private suspend fun getCurrentGPSTrackIDOrThrow(): Int {
+         val currentRunSession = getCurrentSessionOrThrow()
++        Log.d("GPS Point", "${currentRunSession.sessionId}, ${currentRunSession.isActive}")
+         return gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
+             ?: throw IllegalStateException("No GPS Track ID is attached with the current run session! (GPS Point)")
+     }
+Index: app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSTrackRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.java.trackingrunningapp.data.repository\n\nimport com.app.java.trackingrunningapp.data.dao.RunSessionDao\nimport com.app.java.trackingrunningapp.data.database.InitDatabase\nimport com.app.java.trackingrunningapp.data.model.entity.GPSTrack\nimport com.app.java.trackingrunningapp.data.model.entity.RunSession\nimport kotlinx.coroutines.sync.Mutex\nimport kotlinx.coroutines.sync.withLock\n\nclass GPSTrackRepository {\n    val db = InitDatabase.runningDatabase\n\n    private val gpsTrackDao = db.GPSTrackDao()\n    private val runSessionDao: RunSessionDao = db.runSessionDao()\n\n    private val gpsTrackMutex = Mutex()\n\n    private suspend fun getCurrentRunSessionOrThrow(): RunSession {\n        val currentRunSession = runSessionDao.getCurrentRunSession()\n        return currentRunSession ?: throw IllegalStateException(\"Value of current run session is null! (GPS Track)\")\n    }\n\n    private suspend fun getCurrentGPSTrackIDOrThrow(): Int {\n        val currentRunSession = getCurrentRunSessionOrThrow()\n        return gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId) ?: throw java.lang.IllegalStateException(\"No GPS Track ID is attached with the current run session! (GPS Track)\")\n    }\n\n    suspend fun createGPSTrack() {\n        val currentRunSession = getCurrentRunSessionOrThrow()\n\n        val newGPSTrack = GPSTrack(\n            gpsSessionId = currentRunSession.sessionId,\n            isPaused = false\n        )\n\n        gpsTrackDao.createGPSTrack(newGPSTrack)\n\n    }\n\n    suspend fun resumeGPSTrack() {\n        val currentGpsTrackId = getCurrentGPSTrackIDOrThrow()\n        gpsTrackDao.setGPSTrackActive(currentGpsTrackId)\n    }\n\n    suspend fun stopGPSTrack() {\n        val currentGpsTrackId = getCurrentGPSTrackIDOrThrow()\n        gpsTrackDao.setGPSTrackInactive(currentGpsTrackId)\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSTrackRepository.kt b/app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSTrackRepository.kt
+--- a/app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSTrackRepository.kt	(revision 83ec5369dfbec3f64243b7a6132c4e7ddb3db023)
++++ b/app/src/main/java/com/app/java/trackingrunningapp/data/repository/GPSTrackRepository.kt	(date 1734447010056)
+@@ -4,8 +4,6 @@
+ import com.app.java.trackingrunningapp.data.database.InitDatabase
+ import com.app.java.trackingrunningapp.data.model.entity.GPSTrack
+ import com.app.java.trackingrunningapp.data.model.entity.RunSession
+-import kotlinx.coroutines.sync.Mutex
+-import kotlinx.coroutines.sync.withLock
+ 
+ class GPSTrackRepository {
+     val db = InitDatabase.runningDatabase
+@@ -13,8 +11,6 @@
+     private val gpsTrackDao = db.GPSTrackDao()
+     private val runSessionDao: RunSessionDao = db.runSessionDao()
+ 
+-    private val gpsTrackMutex = Mutex()
+-
+     private suspend fun getCurrentRunSessionOrThrow(): RunSession {
+         val currentRunSession = runSessionDao.getCurrentRunSession()
+         return currentRunSession ?: throw IllegalStateException("Value of current run session is null! (GPS Track)")
+@@ -34,7 +30,6 @@
+         )
+ 
+         gpsTrackDao.createGPSTrack(newGPSTrack)
+-
+     }
+ 
+     suspend fun resumeGPSTrack() {
+Index: app/src/main/java/com/app/java/trackingrunningapp/ui/viewmodel/RunSessionViewModel.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.java.trackingrunningapp.ui.viewmodel\n\nimport android.util.Log\nimport androidx.lifecycle.ViewModel\nimport androidx.lifecycle.viewModelScope\nimport com.app.java.trackingrunningapp.data.model.entity.RunSession\nimport com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession\nimport com.app.java.trackingrunningapp.data.repository.RunSessionRepository\nimport com.app.java.trackingrunningapp.utils.StatsUtils\nimport kotlinx.coroutines.Dispatchers\nimport kotlinx.coroutines.Job\nimport kotlinx.coroutines.cancelAndJoin\nimport kotlinx.coroutines.delay\nimport kotlinx.coroutines.flow.MutableStateFlow\nimport kotlinx.coroutines.flow.StateFlow\nimport kotlinx.coroutines.isActive\nimport kotlinx.coroutines.launch\nimport kotlinx.coroutines.withContext\nimport kotlin.coroutines.cancellation.CancellationException\n\nclass RunSessionViewModel(\n    private val runSessionRepository: RunSessionRepository,\n): ViewModel() {\n    private val _filteredSessions = MutableStateFlow<List<RunSession>>(emptyList())\n    val filteredSession: StateFlow<List<RunSession>> = _filteredSessions\n\n    private val _runSessions = MutableStateFlow<List<RunSession>>(emptyList())\n    val runSessions: StateFlow<List<RunSession>> = _runSessions\n\n    private val _hasMoreData = MutableStateFlow(true)\n    val hasMoreData: StateFlow<Boolean> = _hasMoreData\n\n    private val _favoriteRunSessions = MutableStateFlow<List<RunSession?>>(emptyList())\n    val favoriteRunSessions : StateFlow<List<RunSession?>> = _favoriteRunSessions\n\n    val currentSession = runSessionRepository.currentRunSession\n\n    private val _statsFlow = MutableStateFlow<StatsSession?>(null)\n    val statsFlow: StateFlow<StatsSession?> = _statsFlow\n\n    private var statsUpdateJob: Job? = null\n\n    init {\n        fetchRunSessions()\n        loadFavoriteSessions()\n    }\n\n    fun filterSessionsByDateRange(startDate: String, endDate: String) {\n        viewModelScope.launch {\n            try {\n                val sessions = runSessionRepository.filterRunningSessionByDay(startDate, endDate)\n                _filteredSessions.value = sessions\n            } catch(e: Exception) {\n                println(\"Error filtering sessions: ${e.message}\")\n            }\n        }\n    }\n\n    private fun fetchRunSessions(fetchMore: Boolean = false) {\n        viewModelScope.launch {\n            val (newSessions, hasMore) = runSessionRepository.getAllRunSessions(fetchMore)\n\n            if (fetchMore) {\n                _runSessions.value = _runSessions.value + newSessions\n            } else {\n                _runSessions.value = newSessions\n            }\n\n            _hasMoreData.value = hasMore\n        }\n    }\n\n    fun reloadRunSessionHistory() {\n        viewModelScope.launch {\n            _runSessions.value = runSessionRepository.refreshRunSessionHistory()\n        }\n    }\n\n    suspend fun initiateRunSession() {\n        withContext(Dispatchers.IO) {\n            try {\n                runSessionRepository.startRunSession()\n            } catch(e: Exception) {\n                println(\"Error starting session: ${e.message}\")\n            }\n        }\n    }\n\n    suspend fun startStatsUpdate() {\n        statsUpdateJob?.cancelAndJoin()\n        statsUpdateJob = null\n        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {\n            while (isActive) {\n                try {\n                    updateStats()\n                    delay(5000)\n                } catch (e: Exception) {\n                    println(\"Error updating stats: ${e.message}\")\n                }\n            }\n        }\n    }\n\n    suspend fun pauseRunSession() {\n        statsUpdateJob?.cancelAndJoin()\n        statsUpdateJob = null\n        Log.d(\"StatsUpdate\", \"Stats update paused\")\n    }\n\n    suspend fun resumeRunSession() {\n        startStatsUpdate()\n        fetchStatsCurrentSession()\n        Log.d(\"StatsUpdate\", \"Stats update resumed\")\n    }\n\n    fun finishRunSession() {\n        viewModelScope.launch(Dispatchers.IO) {\n            statsUpdateJob?.cancelAndJoin()\n            statsUpdateJob = null\n            runSessionRepository.setRunSessionInactive()\n            Log.d(\"StatsUpdate\", \"Stats update finished in finishRunSession\")\n        }\n    }\n\n    fun addAndRemoveFavoriteSession(session: RunSession) {\n        viewModelScope.launch {\n            if (session.isFavorite) {\n                runSessionRepository.removeFavoriteRunSession(session.sessionId)\n                _favoriteRunSessions.value = _favoriteRunSessions.value - session\n            } else {\n                runSessionRepository.addFavoriteRunSession(session.sessionId)\n                _favoriteRunSessions.value = _favoriteRunSessions.value + session\n            }\n            session.isFavorite = !session.isFavorite\n        }\n    }\n\n    fun loadFavoriteSessions() {\n        viewModelScope.launch {\n            val favorites = runSessionRepository.getFavoriteRunSessions()\n            _favoriteRunSessions.value = favorites\n        }\n    }\n\n    suspend fun fetchStatsCurrentSession() {\n        statsUpdateJob?.cancelAndJoin()\n        statsUpdateJob = null\n        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {\n            while (isActive) {\n                try {\n                    val stats = runSessionRepository.fetchStatsSession()\n                    _statsFlow.emit(stats)\n                    delay(5000)\n                } catch (e: CancellationException) {\n                    Log.d(\"StatsUpdate\", \"Job canceled during execution ${e.message}\")\n                    throw e\n                } catch (e: Exception) {\n                    println(\"Error updating stats: ${e.message}\")\n                }\n            }\n        }\n    }\n\n    suspend fun updateStats() {\n        statsUpdateJob?.cancelAndJoin()\n        statsUpdateJob = null\n        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {\n            while (isActive) {\n                try {\n                    runSessionRepository.calcDuration()\n                    runSessionRepository.calcPace()\n                    runSessionRepository.calcCaloriesBurned()\n                    runSessionRepository.calcDistance()\n                    val newPace = runSessionRepository.pace.value\n\n                    val newCaloriesBurned = runSessionRepository.caloriesBurned.value\n\n                    val newDistance = runSessionRepository.distance.value\n                    val newDuration =\n                        StatsUtils.durationToSeconds(runSessionRepository.duration.value)\n\n                    runSessionRepository.updateStatsSession(\n                        newDistance,\n                        newDuration,\n                        newCaloriesBurned,\n                        newPace\n                    )\n\n                    delay(1200)\n                } catch (e: CancellationException) {\n                    Log.d(\"StatsUpdate\", \"Job canceled during execution\")\n                    throw e\n                }\n            }\n            Log.d(\"StatsUpdate\", \"Coroutine completed in updateStats\")\n        }\n    }\n\n    fun deleteRunSession(sessionId: Int) {\n        viewModelScope.launch {\n            runSessionRepository.deleteRunSession(sessionId)\n        }\n    }\n\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/java/trackingrunningapp/ui/viewmodel/RunSessionViewModel.kt b/app/src/main/java/com/app/java/trackingrunningapp/ui/viewmodel/RunSessionViewModel.kt
+--- a/app/src/main/java/com/app/java/trackingrunningapp/ui/viewmodel/RunSessionViewModel.kt	(revision 83ec5369dfbec3f64243b7a6132c4e7ddb3db023)
++++ b/app/src/main/java/com/app/java/trackingrunningapp/ui/viewmodel/RunSessionViewModel.kt	(date 1734447010056)
+@@ -15,6 +15,8 @@
+ import kotlinx.coroutines.flow.StateFlow
+ import kotlinx.coroutines.isActive
+ import kotlinx.coroutines.launch
++import kotlinx.coroutines.sync.Mutex
++import kotlinx.coroutines.sync.withLock
+ import kotlinx.coroutines.withContext
+ import kotlin.coroutines.cancellation.CancellationException
+ 
+@@ -39,6 +41,9 @@
+     val statsFlow: StateFlow<StatsSession?> = _statsFlow
+ 
+     private var statsUpdateJob: Job? = null
++    private var fetchStatsJob: Job? = null
++
++    private var jobMutex = Mutex()
+ 
+     init {
+         fetchRunSessions()
+@@ -86,39 +91,29 @@
+         }
+     }
+ 
+-    suspend fun startStatsUpdate() {
+-        statsUpdateJob?.cancelAndJoin()
+-        statsUpdateJob = null
+-        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+-            while (isActive) {
+-                try {
+-                    updateStats()
+-                    delay(5000)
+-                } catch (e: Exception) {
+-                    println("Error updating stats: ${e.message}")
+-                }
+-            }
+-        }
+-    }
+ 
+     suspend fun pauseRunSession() {
+         statsUpdateJob?.cancelAndJoin()
+-        statsUpdateJob = null
++        fetchStatsJob?.cancelAndJoin()
++        runSessionRepository.pauseCalculatingDuration()
+         Log.d("StatsUpdate", "Stats update paused")
+     }
+ 
+-    suspend fun resumeRunSession() {
+-        startStatsUpdate()
++    suspend fun fetchAndUpdateStats() {
++        updateStats()
+         fetchStatsCurrentSession()
+         Log.d("StatsUpdate", "Stats update resumed")
+     }
+ 
+     fun finishRunSession() {
+         viewModelScope.launch(Dispatchers.IO) {
+-            statsUpdateJob?.cancelAndJoin()
+-            statsUpdateJob = null
+-            runSessionRepository.setRunSessionInactive()
+-            Log.d("StatsUpdate", "Stats update finished in finishRunSession")
++            jobMutex.withLock {
++                runSessionRepository.pauseCalculatingDuration()
++                statsUpdateJob?.cancelAndJoin()
++                fetchStatsJob?.cancelAndJoin()
++                runSessionRepository.setRunSessionInactive()
++                Log.d("StatsUpdate", "Stats update finished in finishRunSession")
++            }
+         }
+     }
+ 
+@@ -142,17 +137,16 @@
+         }
+     }
+ 
+-    suspend fun fetchStatsCurrentSession() {
+-        statsUpdateJob?.cancelAndJoin()
+-        statsUpdateJob = null
+-        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
++    private suspend fun fetchStatsCurrentSession() {
++        fetchStatsJob?.cancelAndJoin()
++        fetchStatsJob = viewModelScope.launch(Dispatchers.IO) {
+             while (isActive) {
+                 try {
+                     val stats = runSessionRepository.fetchStatsSession()
+                     _statsFlow.emit(stats)
+                     delay(5000)
+                 } catch (e: CancellationException) {
+-                    Log.d("StatsUpdate", "Job canceled during execution ${e.message}")
++                    Log.d("fetchStatsCurrentSession()", "Job canceled during execution ${e.message}")
+                     throw e
+                 } catch (e: Exception) {
+                     println("Error updating stats: ${e.message}")
+@@ -161,9 +155,9 @@
+         }
+     }
+ 
+-    suspend fun updateStats() {
++    private suspend fun updateStats() {
+         statsUpdateJob?.cancelAndJoin()
+-        statsUpdateJob = null
++        Log.d("updateStats()", "ARE U UPDATING")
+         statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+             while (isActive) {
+                 try {
+@@ -171,13 +165,11 @@
+                     runSessionRepository.calcPace()
+                     runSessionRepository.calcCaloriesBurned()
+                     runSessionRepository.calcDistance()
++
+                     val newPace = runSessionRepository.pace.value
+-
+                     val newCaloriesBurned = runSessionRepository.caloriesBurned.value
+-
+                     val newDistance = runSessionRepository.distance.value
+-                    val newDuration =
+-                        StatsUtils.durationToSeconds(runSessionRepository.duration.value)
++                    val newDuration = StatsUtils.durationToSeconds(runSessionRepository.duration.value)
+ 
+                     runSessionRepository.updateStatsSession(
+                         newDistance,
+@@ -186,7 +178,7 @@
+                         newPace
+                     )
+ 
+-                    delay(1200)
++                    delay(1000)
+                 } catch (e: CancellationException) {
+                     Log.d("StatsUpdate", "Job canceled during execution")
+                     throw e
+Index: app/src/main/java/com/app/java/trackingrunningapp/ui/run/RunFragment.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.java.trackingrunningapp.ui.run\n\nimport android.Manifest\nimport android.annotation.SuppressLint\nimport android.content.pm.PackageManager\nimport android.os.Bundle\nimport android.view.LayoutInflater\nimport android.view.View\nimport android.view.ViewGroup\nimport android.widget.Button\nimport android.widget.Toast\nimport androidx.activity.result.contract.ActivityResultContracts\nimport androidx.core.content.ContextCompat\nimport androidx.fragment.app.Fragment\nimport androidx.lifecycle.lifecycleScope\nimport androidx.navigation.fragment.findNavController\nimport com.app.java.trackingrunningapp.R\nimport com.app.java.trackingrunningapp.databinding.FragmentRunBinding\nimport com.app.java.trackingrunningapp.model.DAOs.NotificationDao_Impl\nimport com.app.java.trackingrunningapp.model.repositories.NotificationRepository\nimport com.mapbox.geojson.Point\nimport com.mapbox.maps.CameraOptions\nimport com.mapbox.maps.MapView\nimport com.mapbox.maps.Style\nimport com.mapbox.maps.plugin.annotation.AnnotationPlugin\nimport com.mapbox.maps.plugin.annotation.annotations\nimport com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationManager\nimport com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions\nimport com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager\nimport com.mapbox.maps.plugin.locationcomponent.location\n\nclass RunFragment : Fragment() {\n    private lateinit var binding: FragmentRunBinding\n    private var isPaused:Boolean = true\n    private lateinit var mapView: MapView\n    private val routeCoordinates = mutableListOf<Point>()\n    private lateinit var annotationApi: AnnotationPlugin\n    private lateinit var polylineAnnotationManager: PolylineAnnotationManager\n    private val requestPermissionsLauncher =\n        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->\n            val allGranted = permissions.all {\n                it.value\n            }\n            if (allGranted) {\n                initMapAndLocation()\n            } else {\n                Toast.makeText(\n                    requireContext(),\n                    \"Permissions are required to proceed.\",\n                    Toast.LENGTH_SHORT\n                ).show()\n            }\n        }\n\n\n    override fun onCreateView(\n        inflater: LayoutInflater,\n        container: ViewGroup?,\n        savedInstanceState: Bundle?\n    ): View {\n        binding = FragmentRunBinding.inflate(inflater, container, false)\n        return binding.root\n    }\n\n    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {\n        super.onViewCreated(view, savedInstanceState)\n        initArrowAction()\n        setupPermission()\n        setupActionRun()\n    }\n\n    private fun setupActionRun() {\n        binding.btnStartTracking.setOnClickListener{\n            binding.btnStartTracking.visibility = View.GONE\n            binding.btnPauseAndResume.visibility = View.VISIBLE\n            binding.btnStopTracking.visibility = View.VISIBLE\n            // TODO: do something when start\n            lifecycleScope.launch {\n                mutex.withLock {\n                    Log.e(\"Error\", \"Error1\")\n                    runSessionViewModel.initiateRunSession()\n                    Log.e(\"Error\", \"Error2\")\n                    gpsTrackViewModel.initiateGPSTrack()\n\n                    Log.e(\"Error\", \"Error4\")\n                    runSessionViewModel.startStatsUpdate()\n\n                    Log.e(\"Error\", \"Error5\")\n                    runSessionViewModel.fetchStatsCurrentSession()\n                    // TODO: insert start tracking and sending gps function\n                }\n            }\n        }\n\n        binding.btnPauseAndResume.setOnClickListener {\n            if(isPaused){\n                binding.btnPauseAndResume.text = \"Pause\"\n                // TODO: do something when continue\n                isPaused = false\n            }else{\n                binding.btnPauseAndResume.text = \"Resume\"\n                // TODO: do something when pause\n                isPaused = true\n            }\n        }\n        binding.btnStopTracking.setOnClickListener {\n            binding.btnPauseAndResume.visibility = View.GONE\n            isPaused = true\n            binding.btnStopTracking.visibility = View.GONE\n            binding.btnStartTracking.visibility = View.VISIBLE\n            // TODO: Do something when stop\n            lifecycleScope.launch {\n                // TODO: stop gps tracking\n\n                Log.e(\"Error\", \"Error6\")\n                runSessionViewModel.updateStats()\n\n                Log.e(\"Error\", \"Error7\")\n                runSessionViewModel.fetchStatsCurrentSession()\n\n                Log.e(\"Error\", \"Error8\")\n\n                gpsTrackViewModel.stopGPSTrack()\n\n                Log.e(\"Error\", \"Error9\")\n                runSessionViewModel.finishRunSession()\n            }\n        }\n    }\n\n    @SuppressLint(\"InlinedApi\")\n    private fun setupPermission() {\n        val permissions = arrayOf(\n            Manifest.permission.ACCESS_FINE_LOCATION,\n            Manifest.permission.ACCESS_COARSE_LOCATION,\n            Manifest.permission.POST_NOTIFICATIONS\n        )\n        // Check if all permissions are granted\n        if (permissions.all {// false if 1 permission is denied\n                ContextCompat\n                    .checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED\n            }) {\n            initMapAndLocation()\n        } else {\n            // Request missing permissions\n            requestPermissionsLauncher.launch(permissions)\n        }\n    }\n    private fun initArrowAction() {\n        binding.icArrowUp.setOnClickListener {\n            binding.icArrowDown.visibility = View.VISIBLE\n            binding.icArrowUp.visibility = View.GONE\n            binding.layoutMetric.root.visibility = View.GONE\n        }\n        binding.icArrowDown.setOnClickListener {\n            binding.icArrowUp.visibility = View.VISIBLE\n            binding.icArrowDown.visibility = View.GONE\n            binding.layoutMetric.root.visibility = View.VISIBLE\n        }\n    }\n\n    private fun initMapAndLocation() {\n        // Setup rout drawing\n        mapView = binding.mapView\n        annotationApi = mapView.annotations\n        polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()\n        // Setup map\n        mapView.mapboxMap.loadStyle(Style.STANDARD) {\n            // Init location\n            val locationComponentPlugin = mapView.location\n            locationComponentPlugin.updateSettings {\n                this.enabled = true\n            }\n            locationComponentPlugin.addOnIndicatorPositionChangedListener { point ->\n                routeCoordinates.add(point)\n                drawRoute()\n                mapView.mapboxMap.setCamera(\n                    CameraOptions.Builder().center(point).zoom(15.0).build()\n                )\n            }\n        }\n    }\n    private fun drawRoute() {\n        polylineAnnotationManager.deleteAll()\n        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()\n            .withPoints(routeCoordinates)\n            .withLineColor(\"#FF0000\")\n            .withLineWidth(5.0)\n        polylineAnnotationManager.create(polylineAnnotationOptions)\n    }\n    override fun onStop() {\n        super.onStop()\n        binding.icArrowDown.visibility = View.GONE\n        // pop to profile\n        this.findNavController().popBackStack(R.id.profileFragment,false)\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/java/trackingrunningapp/ui/run/RunFragment.kt b/app/src/main/java/com/app/java/trackingrunningapp/ui/run/RunFragment.kt
+--- a/app/src/main/java/com/app/java/trackingrunningapp/ui/run/RunFragment.kt	(revision 83ec5369dfbec3f64243b7a6132c4e7ddb3db023)
++++ b/app/src/main/java/com/app/java/trackingrunningapp/ui/run/RunFragment.kt	(date 1734447167196)
+@@ -4,6 +4,7 @@
+ import android.annotation.SuppressLint
+ import android.content.pm.PackageManager
+ import android.os.Bundle
++import android.util.Log
+ import android.view.LayoutInflater
+ import android.view.View
+ import android.view.ViewGroup
+@@ -12,12 +13,16 @@
+ import androidx.activity.result.contract.ActivityResultContracts
+ import androidx.core.content.ContextCompat
+ import androidx.fragment.app.Fragment
++import androidx.lifecycle.ViewModelProvider
+ import androidx.lifecycle.lifecycleScope
+ import androidx.navigation.fragment.findNavController
+ import com.app.java.trackingrunningapp.R
++import com.app.java.trackingrunningapp.data.database.InitDatabase
+ import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
+-import com.app.java.trackingrunningapp.model.DAOs.NotificationDao_Impl
+-import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
++import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
++import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
++import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
++import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+ import com.mapbox.geojson.Point
+ import com.mapbox.maps.CameraOptions
+ import com.mapbox.maps.MapView
+@@ -28,6 +33,9 @@
+ import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
+ import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
+ import com.mapbox.maps.plugin.locationcomponent.location
++import kotlinx.coroutines.launch
++import kotlinx.coroutines.sync.Mutex
++import kotlinx.coroutines.sync.withLock
+ 
+ class RunFragment : Fragment() {
+     private lateinit var binding: FragmentRunBinding
+@@ -36,6 +44,11 @@
+     private val routeCoordinates = mutableListOf<Point>()
+     private lateinit var annotationApi: AnnotationPlugin
+     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
++    private lateinit var runSessionViewModel: RunSessionViewModel
++    private lateinit var gpsTrackViewModel: GPSTrackViewModel
++
++    private var mutex = Mutex()
++
+     private val requestPermissionsLauncher =
+         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
+             val allGranted = permissions.all {
+@@ -58,6 +71,12 @@
+         container: ViewGroup?,
+         savedInstanceState: Bundle?
+     ): View {
++        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
++        runSessionViewModel = ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
++
++        val gpsTrackFactory = GPSTrackViewModelFactory(InitDatabase.gpsTrackRepository)
++        gpsTrackViewModel = ViewModelProvider(this, gpsTrackFactory).get(GPSTrackViewModel::class.java)
++
+         binding = FragmentRunBinding.inflate(inflater, container, false)
+         return binding.root
+     }
+@@ -77,17 +96,14 @@
+             // TODO: do something when start
+             lifecycleScope.launch {
+                 mutex.withLock {
+-                    Log.e("Error", "Error1")
++                    Log.d("START", "Initiating session and GPS tracking")
+                     runSessionViewModel.initiateRunSession()
+-                    Log.e("Error", "Error2")
++                    Log.d("START", "Fetching and updating stats")
+                     gpsTrackViewModel.initiateGPSTrack()
+ 
+-                    Log.e("Error", "Error4")
+-                    runSessionViewModel.startStatsUpdate()
+-
+-                    Log.e("Error", "Error5")
+-                    runSessionViewModel.fetchStatsCurrentSession()
+                     // TODO: insert start tracking and sending gps function
++                    Log.e("Error", "Error5")
++                    runSessionViewModel.fetchAndUpdateStats()
+                 }
+             }
+         }
+@@ -103,6 +119,7 @@
+                 isPaused = true
+             }
+         }
++
+         binding.btnStopTracking.setOnClickListener {
+             binding.btnPauseAndResume.visibility = View.GONE
+             isPaused = true
+@@ -110,20 +127,17 @@
+             binding.btnStartTracking.visibility = View.VISIBLE
+             // TODO: Do something when stop
+             lifecycleScope.launch {
+-                // TODO: stop gps tracking
++                mutex.withLock {
++                    // TODO: stop gps tracking
+ 
+-                Log.e("Error", "Error6")
+-                runSessionViewModel.updateStats()
+-
+-                Log.e("Error", "Error7")
+-                runSessionViewModel.fetchStatsCurrentSession()
+-
+-                Log.e("Error", "Error8")
++                    Log.e("Error", "Error6")
++                    runSessionViewModel.fetchAndUpdateStats()
++                    Log.e("Error", "Error8")
+ 
+-                gpsTrackViewModel.stopGPSTrack()
+-
+-                Log.e("Error", "Error9")
+-                runSessionViewModel.finishRunSession()
++                    Log.e("Error", "Error9")
++                    gpsTrackViewModel.stopGPSTrack()
++                    runSessionViewModel.finishRunSession()
++                }
+             }
+         }
+     }
+Index: app/src/main/java/com/app/java/trackingrunningapp/data/repository/RunSessionRepository.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.java.trackingrunningapp.data.repository\n\nimport android.util.Log\nimport com.app.java.trackingrunningapp.data.dao.RunSessionDao\nimport com.app.java.trackingrunningapp.data.dao.UserDao\nimport com.app.java.trackingrunningapp.utils.LocalTimeConverter\nimport com.app.java.trackingrunningapp.data.database.InitDatabase\nimport com.app.java.trackingrunningapp.data.model.entity.RunSession\nimport com.app.java.trackingrunningapp.data.model.entity.User\nimport com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession\nimport com.app.java.trackingrunningapp.utils.StatsUtils\nimport com.app.java.trackingrunningapp.utils.DateTimeUtils\nimport kotlinx.coroutines.CoroutineScope\nimport kotlinx.coroutines.Dispatchers\nimport kotlinx.coroutines.Job\nimport kotlinx.coroutines.SupervisorJob\nimport kotlinx.coroutines.coroutineScope\nimport kotlinx.coroutines.delay\nimport kotlinx.coroutines.flow.MutableStateFlow\nimport kotlinx.coroutines.flow.StateFlow\nimport kotlinx.coroutines.launch\nimport kotlinx.datetime.Instant\n\nclass RunSessionRepository(\n    private val gpsPointRepository: GPSPointRepository\n) {\n    val db = InitDatabase.runningDatabase\n\n    val repoScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)\n\n    private var statsJob: Job? = null\n\n    private val runSessionDao: RunSessionDao = db.runSessionDao()\n    private val userDao: UserDao = db.userDao()\n    private val convert = LocalTimeConverter()\n\n    private val userInfo = userDao.getUserInfo()\n\n    private val _currentRunSession = MutableStateFlow<RunSession?>(null)\n    val currentRunSession: StateFlow<RunSession?> = _currentRunSession\n\n    private var offset: Int = 20\n    private var limit: Int = 0\n\n    private val _duration = MutableStateFlow(\"00:00\")\n    val duration: StateFlow<String> = _duration\n\n    private val _pace = MutableStateFlow(0.0)\n    val pace: StateFlow<Double> = _pace\n\n    private val _caloriesBurned = MutableStateFlow(0.0)\n    val caloriesBurned: StateFlow<Double> = _caloriesBurned\n\n    private val _distance = MutableStateFlow<Double>(0.0)\n    val distance: StateFlow<Double> = _distance\n\n    private var runSessionStartTime: Instant = DateTimeUtils.getCurrentInstant()\n\n    private fun getCurrentSessionOrThrow(): RunSession {\n        return currentRunSession.value ?: throw IllegalStateException(\"Value of current run session is null! (RunSession Repository)\")\n    }\n\n    private suspend fun setCurrentRunSession(): RunSession? {\n        val currentRunSession = runSessionDao.getCurrentRunSession()\n        if (currentRunSession != null) {\n            _currentRunSession.emit(currentRunSession)\n            return currentRunSession\n        } else {\n            println(\"No run session to initialize with!\")\n            return null\n        }\n    }\n\n    suspend fun filterRunningSessionByDay(startDate: String, endDate: String): List<RunSession> {\n        return runSessionDao.filterRunningSessionByDay(startDate, endDate)\n    }\n\n    suspend fun getAllRunSessions(fetchMore: Boolean = false): Pair<List<RunSession>, Boolean> {\n        if( !fetchMore ) {\n            offset = 0\n        }\n        val sessionList = runSessionDao.getAllRunSessions(limit, offset)\n        offset += sessionList.size\n\n        val hasMoreData = sessionList.size == limit\n\n        return Pair(runSessionDao.getAllRunSessions(limit, offset), hasMoreData)\n    }\n\n    suspend fun getFavoriteRunSessions(): List<RunSession> {\n        return runSessionDao.getAllFavoriteRunSessions()\n    }\n\n    suspend fun refreshRunSessionHistory(): List<RunSession> {\n        offset = 0\n        return runSessionDao.getAllRunSessions(limit, offset)\n    }\n\n    suspend fun deleteRunSession(sessionId: Int) {\n         runSessionDao.deleteRunSession(sessionId)\n    }\n\n    suspend fun startRunSession() {\n        val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())\n\n        val newRunSession = RunSession(\n            runDate = runDate,\n            distance = 0.0,\n            duration = 0L,\n            pace = 0.0,\n            caloriesBurned = 0.0,\n            isActive = true,\n            dateAddInFavorite = null,\n            isFavorite = false\n        )\n\n        runSessionDao.initiateRunSession(newRunSession)\n        setCurrentRunSession()\n    }\n\n    suspend fun setRunSessionInactive() {\n        val currentSession = getCurrentSessionOrThrow()\n        runSessionDao.setRunSessionInactive(currentSession.sessionId)\n\n        _currentRunSession.emit(null)\n    }\n\n    suspend fun addFavoriteRunSession(sessionId: Int) {\n        val today = DateTimeUtils.getCurrentDate().toString()\n        runSessionDao.addFavoriteRunSession(sessionId, today)\n    }\n\n    suspend fun removeFavoriteRunSession(sessionId: Int) {\n        runSessionDao.removeFavoriteRunSession(sessionId)\n    }\n\n    suspend fun fetchStatsSession(): StatsSession {\n        val currentSession = getCurrentSessionOrThrow()\n        return runSessionDao.fetchStatsSession(currentSession.sessionId)\n    }\n\n    suspend fun calcPace(): Double {\n        val currentSession = getCurrentSessionOrThrow()\n\n        val userUnitPreference = userInfo?.unit\n\n        val durationInMinutes = currentSession.duration / 60\n\n        val adjustedDistance: Double = when (userUnitPreference) {\n            User.UNIT_MILE -> currentSession.distance * 0.621371f\n            else -> currentSession.distance\n        }\n\n        val pace: Double = if (adjustedDistance > 0) {\n            durationInMinutes / adjustedDistance\n        } else {\n            0.0\n        }\n\n        return pace\n    }\n\n    /*add in the viewmodel in the future to see run session detail*/\n    suspend fun getRunSessionById(sessionId: Int): RunSession? {\n        return runSessionDao.getRunSessionById(sessionId)\n    }\n\n    suspend fun calcCaloriesBurned(): Double {\n        val userMetricPreference: String? = userInfo?.metricPreference\n        val unit: String? = userInfo?.unit\n\n        val currentSession = getCurrentSessionOrThrow()\n\n        val adjustedWeight = when (userMetricPreference) {\n            User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)\n            else -> userInfo?.weight ?: 50.0\n        }\n\n        val adjustedPace: Double = when (unit) {\n            User.UNIT_MILE -> currentSession.pace / 1.609344\n            else -> currentSession.pace\n        }\n\n        val speedMetersPerSec: Double = 1000.0 / (adjustedPace * 60.0)\n\n        val durationInHours = currentSession.duration / 3600.0\n\n        val MET = when {\n            speedMetersPerSec < 2.0 -> 0.5 + (speedMetersPerSec * 0.3)\n            speedMetersPerSec >= 2.0 -> 1.0 + (speedMetersPerSec * 0.9)\n            else -> 0.0\n        }\n\n        val caloriesBurnedPerHour = MET * adjustedWeight.toDouble()\n        val caloriesBurned = caloriesBurnedPerHour * durationInHours\n\n        return caloriesBurned\n    }\n\n    suspend fun calcDuration() {\n         val currentRunSession = getCurrentSessionOrThrow()\n         repoScope.launch {\n            while (currentRunSession.isActive != false) {\n                try {\n                    val currentTime = DateTimeUtils.getCurrentInstant()\n                    val formattedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)\n                    _duration.emit(formattedDuration)\n\n                    delay(1000)\n                } catch (e: Exception) {\n                    println(\"Error updating duration: ${e.message}\")\n                }\n            }\n        }\n    }\n\n    suspend fun calcDistance() = coroutineScope {\n        val latestLocationsFlow = gpsPointRepository.fetchTwoLatestLocation()\n\n        latestLocationsFlow.collect { latestLocations ->\n            if (latestLocations.size == 2) {\n                val (location1, location2) = latestLocations\n\n                val distance = StatsUtils.haversineFormula(location1, location2)\n\n                _distance.value = distance\n            }\n        }\n    }\n\n    suspend fun updateStatsSession(distance: Double, duration: Long, caloriesBurned: Double, pace: Double) {\n        val currentSession = getCurrentSessionOrThrow()\n        runSessionDao.updateStatsSession(currentSession.sessionId, distance, duration, caloriesBurned, pace)\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/java/trackingrunningapp/data/repository/RunSessionRepository.kt b/app/src/main/java/com/app/java/trackingrunningapp/data/repository/RunSessionRepository.kt
+--- a/app/src/main/java/com/app/java/trackingrunningapp/data/repository/RunSessionRepository.kt	(revision 83ec5369dfbec3f64243b7a6132c4e7ddb3db023)
++++ b/app/src/main/java/com/app/java/trackingrunningapp/data/repository/RunSessionRepository.kt	(date 1734447010056)
+@@ -10,14 +10,18 @@
+ import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
+ import com.app.java.trackingrunningapp.utils.StatsUtils
+ import com.app.java.trackingrunningapp.utils.DateTimeUtils
++import kotlinx.coroutines.CancellationException
+ import kotlinx.coroutines.CoroutineScope
+ import kotlinx.coroutines.Dispatchers
+ import kotlinx.coroutines.Job
+ import kotlinx.coroutines.SupervisorJob
++import kotlinx.coroutines.cancel
++import kotlinx.coroutines.cancelAndJoin
+ import kotlinx.coroutines.coroutineScope
+ import kotlinx.coroutines.delay
+ import kotlinx.coroutines.flow.MutableStateFlow
+ import kotlinx.coroutines.flow.StateFlow
++import kotlinx.coroutines.isActive
+ import kotlinx.coroutines.launch
+ import kotlinx.datetime.Instant
+ 
+@@ -26,10 +30,6 @@
+ ) {
+     val db = InitDatabase.runningDatabase
+ 
+-    val repoScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+-
+-    private var statsJob: Job? = null
+-
+     private val runSessionDao: RunSessionDao = db.runSessionDao()
+     private val userDao: UserDao = db.userDao()
+     private val convert = LocalTimeConverter()
+@@ -56,6 +56,8 @@
+ 
+     private var runSessionStartTime: Instant = DateTimeUtils.getCurrentInstant()
+ 
++    private var calcStatsJob: Job? = null
++
+     private fun getCurrentSessionOrThrow(): RunSession {
+         return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null! (RunSession Repository)")
+     }
+@@ -71,6 +73,10 @@
+         }
+     }
+ 
++    suspend fun pauseCalculatingDuration() {
++        calcStatsJob?.cancelAndJoin()
++    }
++
+     suspend fun filterRunningSessionByDay(startDate: String, endDate: String): List<RunSession> {
+         return runSessionDao.filterRunningSessionByDay(startDate, endDate)
+     }
+@@ -140,6 +146,7 @@
+     }
+ 
+     suspend fun calcPace(): Double {
++        Log.d("Run Session Repo", "update pace")
+         val currentSession = getCurrentSessionOrThrow()
+ 
+         val userUnitPreference = userInfo?.unit
+@@ -165,10 +172,12 @@
+         return runSessionDao.getRunSessionById(sessionId)
+     }
+ 
+-    suspend fun calcCaloriesBurned(): Double {
++    // TODO: UPDATE VALUE AS WELL AND PUT IN ANOTHER SCOPE!
++    suspend fun calcCaloriesBurned() {
+         val userMetricPreference: String? = userInfo?.metricPreference
+         val unit: String? = userInfo?.unit
+ 
++        Log.d("Run Session Repo", "update calories")
+         val currentSession = getCurrentSessionOrThrow()
+ 
+         val adjustedWeight = when (userMetricPreference) {
+@@ -191,16 +200,15 @@
+             else -> 0.0
+         }
+ 
+-        val caloriesBurnedPerHour = MET * adjustedWeight.toDouble()
++        val caloriesBurnedPerHour = MET * adjustedWeight
+         val caloriesBurned = caloriesBurnedPerHour * durationInHours
+-
+-        return caloriesBurned
+     }
+ 
+     suspend fun calcDuration() {
++         Log.d("Run Session Repo", "update duration")
+          val currentRunSession = getCurrentSessionOrThrow()
+-         repoScope.launch {
+-            while (currentRunSession.isActive != false) {
++         calcStatsJob = CoroutineScope(Dispatchers.IO).launch{
++            while (isActive && currentRunSession.isActive != false) {
+                 try {
+                     val currentTime = DateTimeUtils.getCurrentInstant()
+                     val formattedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
+@@ -209,6 +217,8 @@
+                     delay(1000)
+                 } catch (e: Exception) {
+                     println("Error updating duration: ${e.message}")
++                } catch (ce: CancellationException) {
++                    println("Error cancellation ${ce.message}")
+                 }
+             }
+         }
+@@ -230,6 +240,7 @@
+ 
+     suspend fun updateStatsSession(distance: Double, duration: Long, caloriesBurned: Double, pace: Double) {
+         val currentSession = getCurrentSessionOrThrow()
++        Log.d("Run Session Repo", "update stats repo")
+         runSessionDao.updateStatsSession(currentSession.sessionId, distance, duration, caloriesBurned, pace)
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/assets/database/initial_data.sql
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>BEGIN TRANSACTION;\nCREATE TABLE IF NOT EXISTS \"TrainingPlan\" (\n\t\"planId\"\tINTEGER NOT NULL,\n\t\"planSessionId\"\tINTEGER,\n\t\"title\"\tTEXT NOT NULL,\n\t\"description\"\tTEXT NOT NULL,\n\t\"estimatedTime\"\tREAL NOT NULL,\n\t\"targetDistance\"\tREAL DEFAULT 0.0,\n\t\"targetDuration\"\tREAL DEFAULT 0.0,\n\t\"targetCaloriesBurned\"\tREAL DEFAULT 0.0,\n\t\"goalProgress\"\tREAL DEFAULT 0.0,\n\t\"exerciseType\"\tTEXT NOT NULL,\n\t\"imagePath\"\tTEXT DEFAULT NULL,\n\t\"difficulty\"\tTEXT NOT NULL,\n\t\"lastRecommendedDate\"\tTEXT DEFAULT NULL,\n\t\"isFinished\"\tINTEGER DEFAULT 0 CHECK(\"isFinished\" IN (0, 1)),\n\tFOREIGN KEY(\"planSessionId\") REFERENCES \"RunSession\"(\"sessionId\"),\n\tPRIMARY KEY(\"planId\" AUTOINCREMENT)\n);\nCREATE TABLE IF NOT EXISTS \"RunSession\" (\n\t\"sessionId\"\tINTEGER NOT NULL,\n\t\"runDate\"\tTEXT NOT NULL,\n\t\"distance\"\tREAL NOT NULL DEFAULT 0.0,\n\t\"duration\"\tINTEGER NOT NULL DEFAULT 0,\n\t\"pace\"\tREAL NOT NULL DEFAULT 0.0,\n\t\"caloriesBurned\"\tREAL NOT NULL DEFAULT 0.0,\n\t\"isActive\"\tINTEGER DEFAULT 0,\n\t\"dateAddInFavorite\"\tTEXT DEFAULT NULL,\n\t\"isFavorite\"\tINTEGER NOT NULL DEFAULT 0,\n\tPRIMARY KEY(\"sessionId\")\n);\nCREATE TABLE IF NOT EXISTS \"GPSPoint\" (\n\t\"gpsPointId\"\tINTEGER NOT NULL,\n\t\"trackId\"\tINTEGER NOT NULL,\n\t\"longitude\"\tREAL NOT NULL,\n\t\"latitude\"\tREAL NOT NULL,\n\t\"timeStamp\"\tINTEGER NOT NULL,\n\tPRIMARY KEY(\"gpsPointId\" AUTOINCREMENT),\n\tFOREIGN KEY(\"trackId\") REFERENCES \"GPSTrack\"(\"gpsTrackId\") ON DELETE CASCADE\n);\nCREATE TABLE IF NOT EXISTS \"GPSTrack\" (\n\t\"gpsTrackId\"\tINTEGER NOT NULL,\n\t\"gpsSessionId\"\tINTEGER NOT NULL,\n\t\"isPaused\"\tINTEGER NOT NULL DEFAULT 0 CHECK(\"isPaused\" IN (0, 1)),\n\tFOREIGN KEY(\"gpsSessionId\") REFERENCES \"RunSession\"(\"sessionId\") ON DELETE CASCADE,\n\tPRIMARY KEY(\"gpsTrackId\" AUTOINCREMENT)\n);\nCREATE TABLE IF NOT EXISTS \"MonthlyStats\" (\n\t\"monthStatsKey\"\tTEXT NOT NULL,\n\t\"totalDistance\"\tREAL DEFAULT 0.0,\n\t\"totalDuration\"\tINTEGER DEFAULT 0,\n\t\"totalCaloriesBurned\"\tREAL DEFAULT 0.0,\n\t\"totalAvgPace\"\tREAL DEFAULT 0.0,\n\tPRIMARY KEY(\"monthStatsKey\")\n);\nCREATE TABLE IF NOT EXISTS \"Notification\" (\n\t\"notificationId\"\tINTEGER NOT NULL,\n\t\"title\"\tTEXT NOT NULL,\n\t\"message\"\tTEXT NOT NULL,\n\t\"notificationType\"\tTEXT NOT NULL,\n\tPRIMARY KEY(\"notificationId\" AUTOINCREMENT)\n);\nCREATE TABLE IF NOT EXISTS \"PersonalGoal\" (\n\t\"goalId\"\tINTEGER NOT NULL,\n\t\"goalSessionId\"\tINTEGER,\n\t\"name\"\tTEXT DEFAULT NULL,\n\t\"targetDistance\"\tREAL DEFAULT 0.0,\n\t\"targetDuration\"\tREAL DEFAULT 0.0,\n\t\"targetCaloriesBurned\"\tREAL DEFAULT 0.0,\n\t\"goalProgress\"\tREAL DEFAULT 0.0,\n\t\"isAchieved\"\tINTEGER NOT NULL DEFAULT 0 CHECK(\"isAchieved\" IN (0, 1)),\n\t\"dateCreated\"\tTEXT NOT NULL,\n\tPRIMARY KEY(\"goalId\" AUTOINCREMENT),\n\tFOREIGN KEY(\"goalSessionId\") REFERENCES \"RunSession\"(\"sessionId\")\n);\nCREATE TABLE IF NOT EXISTS \"User\" (\n\t\"userId\"\tINTEGER NOT NULL,\n\t\"name\"\tTEXT DEFAULT NULL,\n\t\"age\"\tINTEGER DEFAULT NULL,\n\t\"height\"\tREAL DEFAULT NULL,\n\t\"weight\"\tREAL DEFAULT 50.0,\n\t\"metricPreference\"\tTEXT DEFAULT 'kg',\n\t\"unit\"\tTEXT DEFAULT 'km',\n\tPRIMARY KEY(\"userId\" AUTOINCREMENT)\n);\nCREATE TABLE IF NOT EXISTS \"WeeklyStats\" (\n\t\"weeklyStatsKey\"\tTEXT NOT NULL,\n\t\"totalDistance\"\tREAL DEFAULT 0.0,\n\t\"totalDuration\"\tINTEGER DEFAULT 0,\n\t\"totalCaloriesBurned\"\tREAL DEFAULT 0.0,\n\t\"totalAvgPace\"\tREAL DEFAULT 0.0,\n\tPRIMARY KEY(\"weeklyStatsKey\")\n);\nCREATE TABLE IF NOT EXISTS \"YearlyStats\" (\n\t\"yearlyStatsKey\"\tTEXT NOT NULL,\n\t\"totalDistance\"\tREAL DEFAULT 0.0,\n\t\"totalDuration\"\tINTEGER DEFAULT 0,\n\t\"totalCaloriesBurned\"\tREAL DEFAULT 0.0,\n\t\"totalAvgPace\"\tREAL DEFAULT 0.0,\n\tPRIMARY KEY(\"yearlyStatsKey\")\n);\nINSERT INTO \"TrainingPlan\" VALUES (1,NULL,'Running for Beginners','This plan helps new runners build a solid foundation of endurance and stamina while gradually increasing their distances.',30.0,5.0,NULL,NULL,0.0,'Running',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (2,NULL,'Trail Hiking Basics','Perfect for those starting their hiking journey, focusing on short distances and light trails to improve overall fitness.',60.0,2.0,NULL,NULL,0.0,'Hiking',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (3,NULL,'Mindful Movement','Combine light running with mindfulness exercises to improve focus and reduce stress while staying active.',20.0,NULL,20.0,NULL,0.0,'Mindful Running',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (4,NULL,'Strength Training for Trails','This plan introduces basic strength exercises to help trail runners navigate uneven terrains safely.',45.0,NULL,NULL,200.0,0.0,'Trail Running',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (5,NULL,'Trail Exploration Start','Begin exploring trails with manageable distances to build your endurance and adapt to new surfaces.',70.0,10.0,NULL,NULL,0.0,'Trail Running',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (6,NULL,'Easy Running Plan','Develop a consistent running habit by aligning breath and stride for better endurance and mental clarity.',30.0,NULL,30.0,NULL,0.0,'Running',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (7,NULL,'Hiking Preparation','Build the necessary stamina and strength for day-long hiking adventures with a focus on light trails.',90.0,3.0,NULL,NULL,0.0,'Hiking',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (8,NULL,'Introduction to Running','A beginner-friendly approach to running, focusing on consistency and gradual progression to cover moderate distances.',35.0,5.0,NULL,NULL,0.0,'Running',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (9,NULL,'Trail Basics','Learn the essentials of trail running, including handling varied terrains and maintaining proper balance.',50.0,6.0,NULL,NULL,0.0,'Trail Running',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (10,NULL,'Mindful Jogging','Focus on syncing your breathing with movement to enhance your running efficiency and mental focus.',15.0,NULL,15.0,NULL,0.0,'Mindful Running',NULL,'Beginner',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (11,NULL,'Distance Builder','Enhance your endurance through structured runs aimed at gradually increasing the distance you can cover.',60.0,10.0,NULL,NULL,0.0,'Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (12,NULL,'Trail Endurance Plan','Prepare for trails with significant elevation changes through targeted exercises to build stamina and strength.',75.0,NULL,NULL,400.0,0.0,'Trail Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (13,NULL,'Stamina for Long Runs','Focus on long, steady runs to improve endurance and prepare for covering greater distances.',90.0,15.0,NULL,NULL,0.0,'Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (14,NULL,'Trail Fitness Plan','Challenge yourself with steady trail runs to improve your stamina and overall trail performance.',80.0,12.0,NULL,NULL,0.0,'Trail Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (15,NULL,'Long Distance Focus','Work on pacing and energy management for longer durations, perfect for runners aiming to push their limits.',45.0,NULL,45.0,NULL,0.0,'Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (16,NULL,'Mindful Endurance','Practice mindful techniques while running to help you stay focused and reduce fatigue during longer runs.',30.0,NULL,30.0,NULL,0.0,'Mindful Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (17,NULL,'Advanced Trail Exploration','Master trail techniques like handling steep inclines and sharp descents to improve trail running performance.',100.0,10.0,NULL,NULL,0.0,'Trail Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (18,NULL,'Trail Climbing Strength','Boost your strength with targeted hill climbing exercises designed for tackling trails with varying elevations.',90.0,NULL,NULL,450.0,0.0,'Trail Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (19,NULL,'Focused Running','Combine mindful exercises with your runs to build focus and reduce fatigue, enhancing your overall running experience.',40.0,NULL,40.0,NULL,0.0,'Mindful Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (20,NULL,'Trail Endurance Challenge','Push your trail fitness with runs that test your endurance and help you adapt to challenging surfaces.',85.0,12.0,NULL,NULL,0.0,'Trail Running',NULL,'Intermediate',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (21,NULL,'Advanced Distance Training','Prepare for advanced distances with structured long runs, speed intervals, and expert pacing strategies.',120.0,21.1,NULL,NULL,0.0,'Running',NULL,'Advanced',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (22,NULL,'Marathon Preparation','Develop the endurance needed for marathons with a plan focused on gradual distance increases and recovery.',240.0,42.2,NULL,NULL,0.0,'Running',NULL,'Advanced',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (23,NULL,'Trail Mastery','Learn advanced trail techniques to handle technical trails with steep descents, sharp turns, and rough surfaces.',150.0,20.0,NULL,NULL,0.0,'Trail Running',NULL,'Advanced',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (24,NULL,'Endurance Running','Enhance your stamina for ultra-distance events with a mix of long runs and focused interval training.',180.0,50.0,NULL,NULL,0.0,'Running',NULL,'Advanced',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (25,NULL,'Mindful Ultra Training','Strengthen your mental focus and reduce fatigue during ultra-distance runs by practicing advanced mindfulness techniques.',90.0,NULL,90.0,NULL,0.0,'Mindful Running',NULL,'Advanced',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (26,NULL,'Trail Marathon Preparation','Train for long trail marathons with a focus on endurance, pacing, and handling technical terrains.',200.0,42.2,NULL,NULL,0.0,'Trail Running',NULL,'Advanced',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (27,NULL,'Elite Hiking Endurance','Prepare for multi-day hiking adventures with targeted exercises to build strength and long-lasting endurance.',240.0,20.0,NULL,NULL,0.0,'Hiking',NULL,'Advanced',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (28,NULL,'Marathon Excellence','Focus on advanced strategies and training to achieve peak performance in competitive marathon events.',240.0,42.2,NULL,NULL,0.0,'Running',NULL,'Advanced',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (29,NULL,'Trail Climbing Mastery','Master steep climbs and descents with advanced training techniques to boost power and adaptability.',180.0,30.0,NULL,NULL,0.0,'Trail Running',NULL,'Advanced',NULL,0);\nINSERT INTO \"TrainingPlan\" VALUES (30,NULL,'Ultra Running Focus','Develop both the physical and mental endurance needed for ultra-distance running events with this advanced training.',300.0,NULL,120.0,NULL,0.0,'Mindful Running',NULL,'Advanced',NULL,0);\nINSERT INTO \"RunSession\" VALUES (1,'2024-11-23',5.5,1800,5.8,350.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (2,'2024-11-24',6.0,2000,5.7,400.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (3,'2024-11-25',7.0,2300,5.5,450.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (4,'2024-11-26',4.5,1600,6.2,300.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (5,'2024-11-27',6.2,2100,5.6,410.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (6,'2024-11-28',5.8,1900,5.9,370.0,0,NULL,1);\nINSERT INTO \"RunSession\" VALUES (7,'2024-11-29',7.5,2500,5.4,500.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (8,'2024-11-30',5.0,1800,6.0,350.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (9,'2024-12-01',6.8,2200,5.5,420.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (10,'2024-12-02',7.0,2400,5.4,480.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (11,'2024-12-03',5.6,1900,5.8,360.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (12,'2024-12-04',6.3,2100,5.6,410.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (13,'2024-12-05',4.8,1700,6.2,310.0,0,NULL,1);\nINSERT INTO \"RunSession\" VALUES (14,'2024-12-06',5.2,1800,6.1,320.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (15,'2024-12-07',6.7,2300,5.5,430.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (16,'2024-12-08',7.2,2500,5.4,490.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (17,'2024-12-09',5.9,2000,5.8,380.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (18,'2024-12-10',6.1,2100,5.7,400.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (19,'2024-12-11',4.9,1700,6.3,320.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (20,'2024-12-12',5.4,1900,6.0,340.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (21,'2024-12-13',6.5,2200,5.6,420.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (22,'2024-12-14',5.7,2000,5.9,370.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (23,'2024-12-14',7.3,2500,5.4,500.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (24,'2024-12-16',6.0,2100,5.7,400.0,0,NULL,1);\nINSERT INTO \"RunSession\" VALUES (25,'2024-12-17',5.3,1900,6.0,350.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (26,'2024-12-18',7.0,2400,5.5,470.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (27,'2024-12-19',5.8,2000,5.8,380.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (28,'2024-12-21',6.4,2200,5.6,420.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (29,'2024-12-21',4.7,1600,6.3,300.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (30,'2024-12-21',2.7,1100,3.3,400.0,0,NULL,0);\nINSERT INTO \"RunSession\" VALUES (31,'2024-12-22',5.1,1800,6.1,320.0,0,NULL,1);\nINSERT INTO \"Notification\" VALUES (1,'Halfway There!','You are halfway through your goal. Keep going!','HALF');\nINSERT INTO \"Notification\" VALUES (2,'Keep Pushing!','Halfway to your goal. Stay strong!','HALF');\nINSERT INTO \"Notification\" VALUES (3,'Midway Success!','You’re halfway done. Finish strong!','HALF');\nINSERT INTO \"Notification\" VALUES (4,'Great Progress!','Half the journey is complete. Don’t stop now!','HALF');\nINSERT INTO \"Notification\" VALUES (5,'Almost There!','Halfway point reached. Keep up the momentum!','HALF');\nINSERT INTO \"Notification\" VALUES (6,'Halfway Hero!','You’re halfway there. Great job so far!','HALF');\nINSERT INTO \"Notification\" VALUES (7,'50% Complete!','You’ve completed half your goal. Push on!','HALF');\nINSERT INTO \"Notification\" VALUES (8,'Midway Milestone!','Halfway through. Stay focused!','HALF');\nINSERT INTO \"Notification\" VALUES (9,'Halfway Achieved!','You’ve hit the halfway mark. Keep moving!','HALF');\nINSERT INTO \"Notification\" VALUES (10,'Halfway Done!','Only halfway left to go. You’ve got this!','HALF');\nINSERT INTO \"Notification\" VALUES (11,'Goal Achieved!','Congratulations! You’ve completed your goal!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (12,'Mission Complete!','Well done! You’ve reached your target!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (13,'Outstanding!','You’ve accomplished your goal. Amazing work!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (14,'Success!','You’ve successfully completed your goal!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (15,'Complete Triumph!','Goal achieved. Time to celebrate!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (16,'Victory!','You’ve done it. Goal complete!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (17,'Achievement Unlocked!','Congratulations on completing your goal!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (18,'Well Done!','You’ve completed your goal. Great job!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (19,'You Did It!','Goal achieved. Fantastic effort!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (20,'Target Reached!','Congratulations! You’ve hit your goal!','COMPLETE');\nINSERT INTO \"Notification\" VALUES (21,'Take a Break!','You’ve earned a break. Rest up!','BREAK');\nINSERT INTO \"Notification\" VALUES (22,'Pause and Relax!','Take some time to recharge.','BREAK');\nINSERT INTO \"Notification\" VALUES (23,'Break Time!','Relax and refresh. You deserve it.','BREAK');\nINSERT INTO \"Notification\" VALUES (24,'Step Back!','Take a short break. You’ve been working hard.','BREAK');\nINSERT INTO \"Notification\" VALUES (25,'Rest Up!','Time for a break. Recharge your energy.','BREAK');\nINSERT INTO \"Notification\" VALUES (26,'Slow Down!','Pause and recover. Great effort so far.','BREAK');\nINSERT INTO \"Notification\" VALUES (27,'Recharge!','Take a moment to rest and rejuvenate.','BREAK');\nINSERT INTO \"Notification\" VALUES (28,'Breathe!','Catch your breath. It’s break time.','BREAK');\nINSERT INTO \"Notification\" VALUES (29,'Refresh!','Time to relax. You’ve earned it.','BREAK');\nINSERT INTO \"Notification\" VALUES (30,'Recover!','Take a well-deserved break and get ready to go again.','BREAK');\nCREATE INDEX IF NOT EXISTS \"index_GPSPoint_trackId\" ON \"GPSPoint\" (\n\t\"trackId\"\n);\nCREATE INDEX IF NOT EXISTS \"index_GPSTrack_gpsSessionId\" ON \"GPSTrack\" (\n\t\"gpsSessionId\"\n);\nCREATE INDEX IF NOT EXISTS \"index_PersonalGoal_goalSessionId\" ON \"PersonalGoal\" (\n\t\"goalSessionId\"\n);\nCOMMIT;\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/assets/database/initial_data.sql b/app/src/main/assets/database/initial_data.sql
+--- a/app/src/main/assets/database/initial_data.sql	(revision 83ec5369dfbec3f64243b7a6132c4e7ddb3db023)
++++ b/app/src/main/assets/database/initial_data.sql	(date 1734447010052)
+@@ -35,8 +35,8 @@
+ 	"longitude"	REAL NOT NULL,
+ 	"latitude"	REAL NOT NULL,
+ 	"timeStamp"	INTEGER NOT NULL,
+-	PRIMARY KEY("gpsPointId" AUTOINCREMENT),
+-	FOREIGN KEY("trackId") REFERENCES "GPSTrack"("gpsTrackId") ON DELETE CASCADE
++	FOREIGN KEY("trackId") REFERENCES "GPSTrack"("gpsTrackId") ON DELETE CASCADE,
++	PRIMARY KEY("gpsPointId" AUTOINCREMENT)
+ );
+ CREATE TABLE IF NOT EXISTS "GPSTrack" (
+ 	"gpsTrackId"	INTEGER NOT NULL,
+@@ -70,8 +70,8 @@
+ 	"goalProgress"	REAL DEFAULT 0.0,
+ 	"isAchieved"	INTEGER NOT NULL DEFAULT 0 CHECK("isAchieved" IN (0, 1)),
+ 	"dateCreated"	TEXT NOT NULL,
+-	PRIMARY KEY("goalId" AUTOINCREMENT),
+-	FOREIGN KEY("goalSessionId") REFERENCES "RunSession"("sessionId")
++	FOREIGN KEY("goalSessionId") REFERENCES "RunSession"("sessionId"),
++	PRIMARY KEY("goalId" AUTOINCREMENT)
+ );
+ CREATE TABLE IF NOT EXISTS "User" (
+ 	"userId"	INTEGER NOT NULL,
+@@ -129,37 +129,37 @@
+ INSERT INTO "TrainingPlan" VALUES (28,NULL,'Marathon Excellence','Focus on advanced strategies and training to achieve peak performance in competitive marathon events.',240.0,42.2,NULL,NULL,0.0,'Running',NULL,'Advanced',NULL,0);
+ INSERT INTO "TrainingPlan" VALUES (29,NULL,'Trail Climbing Mastery','Master steep climbs and descents with advanced training techniques to boost power and adaptability.',180.0,30.0,NULL,NULL,0.0,'Trail Running',NULL,'Advanced',NULL,0);
+ INSERT INTO "TrainingPlan" VALUES (30,NULL,'Ultra Running Focus','Develop both the physical and mental endurance needed for ultra-distance running events with this advanced training.',300.0,NULL,120.0,NULL,0.0,'Mindful Running',NULL,'Advanced',NULL,0);
+-INSERT INTO "RunSession" VALUES (1,'2024-11-23',5.5,1800,5.8,350.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (2,'2024-11-24',6.0,2000,5.7,400.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (3,'2024-11-25',7.0,2300,5.5,450.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (4,'2024-11-26',4.5,1600,6.2,300.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (5,'2024-11-27',6.2,2100,5.6,410.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (6,'2024-11-28',5.8,1900,5.9,370.0,0,NULL,1);
+-INSERT INTO "RunSession" VALUES (7,'2024-11-29',7.5,2500,5.4,500.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (8,'2024-11-30',5.0,1800,6.0,350.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (9,'2024-12-01',6.8,2200,5.5,420.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (10,'2024-12-02',7.0,2400,5.4,480.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (11,'2024-12-03',5.6,1900,5.8,360.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (12,'2024-12-04',6.3,2100,5.6,410.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (13,'2024-12-05',4.8,1700,6.2,310.0,0,NULL,1);
+-INSERT INTO "RunSession" VALUES (14,'2024-12-06',5.2,1800,6.1,320.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (15,'2024-12-07',6.7,2300,5.5,430.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (16,'2024-12-08',7.2,2500,5.4,490.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (17,'2024-12-09',5.9,2000,5.8,380.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (18,'2024-12-10',6.1,2100,5.7,400.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (19,'2024-12-11',4.9,1700,6.3,320.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (20,'2024-12-12',5.4,1900,6.0,340.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (21,'2024-12-13',6.5,2200,5.6,420.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (22,'2024-12-14',5.7,2000,5.9,370.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (23,'2024-12-14',7.3,2500,5.4,500.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (24,'2024-12-16',6.0,2100,5.7,400.0,0,NULL,1);
+-INSERT INTO "RunSession" VALUES (25,'2024-12-17',5.3,1900,6.0,350.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (26,'2024-12-18',7.0,2400,5.5,470.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (27,'2024-12-19',5.8,2000,5.8,380.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (28,'2024-12-21',6.4,2200,5.6,420.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (29,'2024-12-21',4.7,1600,6.3,300.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (30,'2024-12-21',2.7,1100,3.3,400.0,0,NULL,0);
+-INSERT INTO "RunSession" VALUES (31,'2024-12-22',5.1,1800,6.1,320.0,0,NULL,1);
++INSERT INTO "RunSession" VALUES (1,'20241123',5.5,1800,5.8,350.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (2,'20241124',6.0,2000,5.7,400.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (3,'20241125',7.0,2300,5.5,450.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (4,'20241126',4.5,1600,6.2,300.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (5,'20241127',6.2,2100,5.6,410.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (6,'20241128',5.8,1900,5.9,370.0,0,NULL,1);
++INSERT INTO "RunSession" VALUES (7,'20241129',7.5,2500,5.4,500.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (8,'20241130',5.0,1800,6.0,350.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (9,'20241201',6.8,2200,5.5,420.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (10,'20241202',7.0,2400,5.4,480.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (11,'20241203',5.6,1900,5.8,360.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (12,'20241204',6.3,2100,5.6,410.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (13,'20241205',4.8,1700,6.2,310.0,0,NULL,1);
++INSERT INTO "RunSession" VALUES (14,'20241206',5.2,1800,6.1,320.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (15,'20241207',6.7,2300,5.5,430.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (16,'20241208',7.2,2500,5.4,490.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (17,'20241209',5.9,2000,5.8,380.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (18,'20241210',6.1,2100,5.7,400.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (19,'20241211',4.9,1700,6.3,320.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (20,'20241212',5.4,1900,6.0,340.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (21,'20241213',6.5,2200,5.6,420.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (22,'20241214',5.7,2000,5.9,370.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (23,'20241214',7.3,2500,5.4,500.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (24,'20241216',6.0,2100,5.7,400.0,0,NULL,1);
++INSERT INTO "RunSession" VALUES (25,'20241217',5.3,1900,6.0,350.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (26,'20241218',7.0,2400,5.5,470.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (27,'20241219',5.8,2000,5.8,380.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (28,'20241221',6.4,2200,5.6,420.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (29,'20241221',4.7,1600,6.3,300.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (30,'20241221',2.7,1100,3.3,400.0,0,NULL,0);
++INSERT INTO "RunSession" VALUES (31,'20241222',5.1,1800,6.1,320.0,0,NULL,1);
+ INSERT INTO "Notification" VALUES (1,'Halfway There!','You are halfway through your goal. Keep going!','HALF');
+ INSERT INTO "Notification" VALUES (2,'Keep Pushing!','Halfway to your goal. Stay strong!','HALF');
+ INSERT INTO "Notification" VALUES (3,'Midway Success!','You’re halfway done. Finish strong!','HALF');

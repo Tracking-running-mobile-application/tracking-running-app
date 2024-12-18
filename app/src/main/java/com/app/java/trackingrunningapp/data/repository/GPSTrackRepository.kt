@@ -1,9 +1,13 @@
 package com.app.java.trackingrunningapp.data.repository
 
+import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.GPSTrack
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class GPSTrackRepository {
     val db = InitDatabase.runningDatabase
@@ -22,14 +26,22 @@ class GPSTrackRepository {
     }
 
     suspend fun createGPSTrack() {
-        val currentRunSession = getCurrentRunSessionOrThrow()
+        withContext(Dispatchers.IO) {
+            val currentRunSession = getCurrentRunSessionOrThrow()
 
-        val newGPSTrack = GPSTrack(
-            gpsSessionId = currentRunSession.sessionId,
-            isPaused = false
-        )
-
-        gpsTrackDao.createGPSTrack(newGPSTrack)
+            val newGPSTrack = GPSTrack(
+                gpsSessionId = currentRunSession.sessionId,
+                isPaused = false
+            )
+            Log.d(
+                "GPS Track Repo",
+                "${newGPSTrack.gpsSessionId}, ${newGPSTrack.isPaused}, GPS Track ID: ${newGPSTrack.gpsTrackId}"
+            )
+            gpsTrackDao.createGPSTrack(newGPSTrack)
+            delay(100)
+            val gpsTrackId = gpsTrackDao.getGPSTrackIdBySessionId(newGPSTrack.gpsSessionId)
+                ?: throw IllegalStateException("GPS Track insertion was not successful.")
+        }
     }
 
     suspend fun resumeGPSTrack() {

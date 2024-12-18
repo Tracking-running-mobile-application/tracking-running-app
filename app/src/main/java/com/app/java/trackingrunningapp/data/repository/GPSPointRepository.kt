@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import java.lang.IllegalStateException
 
 class GPSPointRepository(
@@ -32,10 +33,14 @@ class GPSPointRepository(
     }
 
     private suspend fun getCurrentGPSTrackIDOrThrow(): Int {
-        val currentRunSession = getCurrentSessionOrThrow()
-        Log.d("GPS Point", "${currentRunSession.sessionId}, ${currentRunSession.isActive}")
-        return gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
-            ?: throw IllegalStateException("No GPS Track ID is attached with the current run session! (GPS Point)")
+        return withContext(Dispatchers.IO) {
+            val currentRunSession = getCurrentSessionOrThrow()
+            Log.d("GPS Point", "${currentRunSession.sessionId}, ${currentRunSession.isActive}")
+            val trackId = gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
+            Log.d("GPS Point Repo", "Fetched Track ID: $trackId")
+            gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
+                ?: throw IllegalStateException("No GPS Track ID is attached with the current run session! (GPS Point)")
+        }
     }
 
     suspend fun insertGPSPoint(

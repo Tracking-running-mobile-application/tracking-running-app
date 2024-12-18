@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.repository.GPSTrackRepository
@@ -12,6 +13,7 @@ class GPSTrackViewModel (
 
     fun initiateGPSTrack() {
         viewModelScope.launch(Dispatchers.IO) {
+            Log.d("GPS Track View Model", "Initiating session and GPS tracking")
             gpsTrackRepository.createGPSTrack()
         }
     }
