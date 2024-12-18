@@ -5,9 +5,11 @@ import android.util.Log
 import com.app.java.trackingrunningapp.data.repository.GPSPointRepository
 import com.app.java.trackingrunningapp.data.repository.GPSTrackRepository
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
+import com.app.java.trackingrunningapp.data.repository.TrainingPlanRepository
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +23,8 @@ class InitDatabase : Application() {
         lateinit var gpsTrackRepository: GPSTrackRepository
         lateinit var runSessionViewModel: RunSessionViewModel
         lateinit var gpsTrackViewModel: GPSTrackViewModel
+        lateinit var trainingPlanRepository: TrainingPlanRepository
+        lateinit var trainingPlanViewModel: TrainingPlanViewModel
     }
 
     override fun onCreate() {
@@ -33,10 +37,12 @@ class InitDatabase : Application() {
             // init run session repo
             gpsPointRepository = GPSPointRepository()
             gpsTrackRepository = GPSTrackRepository()
+            trainingPlanRepository = TrainingPlanRepository()
             runSessionRepository = RunSessionRepository(gpsPointRepository)
             // init viewmodel
             runSessionViewModel = RunSessionViewModel(runSessionRepository)
             gpsTrackViewModel = GPSTrackViewModel(gpsTrackRepository)
+            trainingPlanViewModel = TrainingPlanViewModel(trainingPlanRepository, notificationRepository, runSessionRepository)
 
 
             CoroutineScope(Dispatchers.IO).launch {

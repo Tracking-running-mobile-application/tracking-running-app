@@ -25,12 +25,9 @@ interface TrainingPlanDao {
     @Query(
         """
         SELECT * FROM TrainingPlan
-        WHERE lastRecommendedDate <= :dateLimit 
-        AND isFinished = False
-        ORDER BY lastRecommendedDate ASC
-        LIMIT :limit
+        WHERE difficulty =:difficulty 
     """)
-    suspend fun getTrainingPlansNotShownSince(dateLimit: String, limit: Int): List<TrainingPlan>
+    suspend fun getTrainingPlansByDifficulty(difficulty: String): List<TrainingPlan>
 
 
     @Query("UPDATE TrainingPlan SET goalProgress = :goalProgress WHERE planId = :planId")

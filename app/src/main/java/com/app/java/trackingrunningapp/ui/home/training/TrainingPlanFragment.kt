@@ -2,25 +2,78 @@ package com.app.java.trackingrunningapp.ui.home.training
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentTrainingPlansBinding
+import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.denzcoskun.imageslider.constants.ScaleTypes
 import com.denzcoskun.imageslider.models.SlideModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class TrainingPlanFragment : Fragment() {
     private lateinit var binding: FragmentTrainingPlansBinding
+    private lateinit var trainingPlanViewModel: TrainingPlanViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val planFactory = TrainingPlanViewModelFactory(InitDatabase.trainingPlanRepository, InitDatabase.notificationRepository, InitDatabase.runSessionRepository)
+        trainingPlanViewModel = ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
+
+        trainingPlanViewModel.fetchRecommendedPlans()
+
+        trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner) {
+            trainingPlans ->
+            if (trainingPlans.isNotEmpty()) {
+                for (plan in trainingPlans) {
+                    Log.d(
+                        "Training Plan Log",
+                        "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
+                    )
+                }
+            } else {
+                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
+                }
+        }
+
+        trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner) {
+            trainingPlans ->
+            if (trainingPlans.isNotEmpty()) {
+                for (plan in trainingPlans) {
+                    Log.d(
+                        "Training Plan Log",
+                        "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
+                    )
+                }
+            } else {
+                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
+                }
+        }
+
+        trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner) {
+            trainingPlans ->
+            if (trainingPlans.isNotEmpty()) {
+                for (plan in trainingPlans) {
+                    Log.d(
+                        "Training Plan Log",
+                        "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
+                    )
+                }
+            } else {
+                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
+                }
+        }
+
         binding = FragmentTrainingPlansBinding.inflate(inflater, container, false)
         return binding.root
     }
