@@ -45,7 +45,7 @@ class RunSessionViewModel(
     fun filterSessionsByDateRange(startDate: String, endDate: String) {
         viewModelScope.launch {
             try {
-                val sessions = runSessionRepository.filterRunningSessionByDay(startDate, endDate)
+                val sessions= runSessionRepository.filterRunningSessionByDay(startDate, endDate)
                 _filteredSessions.value = sessions
             } catch(e: Exception) {
                 println("Error filtering sessions: ${e.message}")
