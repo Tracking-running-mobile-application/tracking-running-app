@@ -7,6 +7,7 @@ import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.utils.StatsUtils
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -17,7 +18,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 class RunSessionViewModel(
@@ -42,6 +42,8 @@ class RunSessionViewModel(
 
     private var statsUpdateJob: Job? = null
     private var fetchStatsJob: Job? = null
+
+    private var repoScope = CoroutineScope(Job() + Dispatchers.IO)
 
     private var jobMutex = Mutex()
 
@@ -82,12 +84,10 @@ class RunSessionViewModel(
     }
 
     suspend fun initiateRunSession() {
-        withContext(Dispatchers.IO) {
-            try {
-                runSessionRepository.startRunSession()
-            } catch(e: Exception) {
-                println("Error starting session: ${e.message}")
-            }
+        try {
+            runSessionRepository.startRunSession()
+        } catch(e: Exception) {
+            println("Error starting session: ${e.message}")
         }
     }
 
@@ -95,7 +95,7 @@ class RunSessionViewModel(
     suspend fun pauseRunSession() {
         statsUpdateJob?.cancelAndJoin()
         fetchStatsJob?.cancelAndJoin()
-        runSessionRepository.pauseCalculatingDuration()
+        runSessionRepository.stopUpdatingStats()
         Log.d("StatsUpdate", "Stats update paused")
     }
 
@@ -106,11 +106,12 @@ class RunSessionViewModel(
     }
 
     fun finishRunSession() {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch() {
             jobMutex.withLock {
-                runSessionRepository.pauseCalculatingDuration()
+                runSessionRepository.stopUpdatingStats()
                 statsUpdateJob?.cancelAndJoin()
                 fetchStatsJob?.cancelAndJoin()
+                runSessionRepository.resetStatsValue()
                 runSessionRepository.setRunSessionInactive()
                 Log.d("StatsUpdate", "Stats update finished in finishRunSession")
             }
@@ -160,6 +161,7 @@ class RunSessionViewModel(
         Log.d("updateStats()", "ARE U UPDATING")
         statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
+                Log.d("updateStats() RunSessionVM", "ARE U UPDATING (YES)")
                 try {
                     runSessionRepository.calcDuration()
                     runSessionRepository.calcPace()

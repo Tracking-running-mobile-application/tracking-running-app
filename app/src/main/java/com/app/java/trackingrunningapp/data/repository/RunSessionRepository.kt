@@ -14,16 +14,12 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 
 class RunSessionRepository(
@@ -65,6 +61,7 @@ class RunSessionRepository(
 
     private suspend fun setCurrentRunSession(): RunSession? {
         val currentRunSession = runSessionDao.getCurrentRunSession()
+        Log.d("Run SessionRepository", "Set current run session ! ${currentRunSession?.isActive}, ${currentRunSession?.sessionId}")
         if (currentRunSession != null) {
             _currentRunSession.emit(currentRunSession)
             return currentRunSession
@@ -74,7 +71,20 @@ class RunSessionRepository(
         }
     }
 
-    suspend fun pauseCalculatingDuration() {
+    private fun ensureRepoScope() {
+        if (!repoScope.isActive) {
+            repoScope = CoroutineScope(Job() + Dispatchers.IO)
+        }
+    }
+
+    suspend fun resetStatsValue() {
+        _duration.emit("00:00")
+        _distance.emit(0.0)
+        _pace.emit(0.0)
+        _caloriesBurned.emit(0.0)
+    }
+
+    suspend fun stopUpdatingStats() {
         repoScope.cancel()
     }
 
@@ -147,6 +157,7 @@ class RunSessionRepository(
     }
 
     suspend fun calcPace() {
+        ensureRepoScope()
         repoScope.launch {
             Log.d("Run Session Repo", "update pace")
             val currentSession = getCurrentSessionOrThrow()
@@ -176,6 +187,7 @@ class RunSessionRepository(
 
     // TODO: UPDATE VALUE AS WELL AND PUT IN ANOTHER SCOPE!
     suspend fun calcCaloriesBurned() {
+        ensureRepoScope()
         repoScope.launch {
             val userMetricPreference: String? = userInfo?.metricPreference
             val unit: String? = userInfo?.unit
@@ -209,6 +221,7 @@ class RunSessionRepository(
     }
 
     suspend fun calcDuration() {
+        ensureRepoScope()
         repoScope.launch {
             Log.d("Run Session Repo", "update duration")
             val currentRunSession = getCurrentSessionOrThrow()
@@ -230,6 +243,7 @@ class RunSessionRepository(
     }
 
     suspend fun calcDistance() {
+        ensureRepoScope()
         repoScope.launch {
             Log.d("Run Session Repo", "update distance")
             val latestLocationsFlow = gpsPointRepository.fetchTwoLatestLocation()

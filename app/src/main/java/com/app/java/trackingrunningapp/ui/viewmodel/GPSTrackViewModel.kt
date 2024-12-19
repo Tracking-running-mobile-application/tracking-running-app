@@ -11,11 +11,9 @@ class GPSTrackViewModel (
     private val gpsTrackRepository: GPSTrackRepository,
 ): ViewModel() {
 
-    fun initiateGPSTrack() {
-        viewModelScope.launch(Dispatchers.IO) {
-            Log.d("GPS Track View Model", "Initiating session and GPS tracking")
-            gpsTrackRepository.createGPSTrack()
-        }
+    suspend fun initiateGPSTrack() {
+        Log.d("GPS Track View Model", "Initiating session and GPS tracking")
+        gpsTrackRepository.createGPSTrack()
     }
 
     fun resumeGPSTrack() {
