@@ -139,9 +139,6 @@ class HistoryFragment : Fragment() {
         super.onStop()
         val toolbar = requireActivity()
             .findViewById<Toolbar>(R.id.toolbar_main)
-        // hide setting
-        val itemSetting = toolbar.menu.findItem(R.id.item_toolbar_setting)
-        itemSetting.isVisible = true
         // hide filter
         val itemFilter = toolbar.menu.findItem(R.id.item_toolbar_filter)
         itemFilter.isVisible = false

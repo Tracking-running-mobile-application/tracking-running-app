@@ -11,7 +11,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         android:backgroundTint="@color/black"
         android:text="Pause"
         android:textColor="@color/white"
@@ -27,16 +27,16 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="16dp"
         android:backgroundTint="@color/red"
         android:text="Stop"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_pause_and_resume"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guideline13" />
+        app:layout_constraintStart_toStartOf="@+id/guideline13"
+        app:layout_constraintTop_toTopOf="@+id/btn_pause_and_resume" />
 
     <FrameLayout
         android:id="@+id/frameLayout"
@@ -60,6 +60,7 @@
         layout="@layout/button_metric"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_arrow_down"
@@ -79,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="32dp"
             android:background="@color/primary_gray"
-            android:visibility="gone"
+            android:visibility="visible"
             app:srcCompat="@drawable/ic_arrow_down" />
     </LinearLayout>
 
@@ -95,8 +96,9 @@
         <ImageView
             android:id="@+id/ic_arrow_up"
             android:layout_width="match_parent"
-            android:layout_height="32dp"
+            android:layout_height="24dp"
             android:background="@color/primary_gray"
+            android:visibility="gone"
             app:srcCompat="@drawable/ic_arrow_up" />
     </LinearLayout>
 

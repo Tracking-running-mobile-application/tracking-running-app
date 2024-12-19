@@ -10,10 +10,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentRunningBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -59,6 +61,7 @@ class RunningFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         initArrowAction()
         setupPermission()
         setupActionRun()

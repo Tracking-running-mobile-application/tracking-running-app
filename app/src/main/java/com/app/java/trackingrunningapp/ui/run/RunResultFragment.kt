@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentRunResultBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class RunResultFragment : Fragment() {
@@ -47,5 +48,10 @@ class RunResultFragment : Fragment() {
         val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar_main)
         toolbar.navigationIcon = null
         toolbarTitle.text = "Run Result"
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
     }
 }

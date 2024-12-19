@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -119,7 +120,10 @@ class HomeFragment : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        // pop to profile
-        this.findNavController().popBackStack(R.id.profileFragment,false)
+        val toolbar = requireActivity()
+            .findViewById<Toolbar>(R.id.toolbar_main)
+        // hide setting
+        val itemSetting = toolbar.menu.findItem(R.id.item_toolbar_setting)
+        itemSetting.isVisible = false
     }
 }

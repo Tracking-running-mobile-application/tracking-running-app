@@ -48,6 +48,8 @@ class MainActivity : AppCompatActivity() {
                 onBackPressedDispatcher.onBackPressed()
             }
             val icSettings = binding.toolbarMain.menu.findItem(R.id.item_toolbar_setting)
+            val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
+            val icEdit = binding.toolbarMain.menu.findItem(R.id.item_toolbar_edit)
             when (destination.id) {
                 R.id.homeFragment -> {
                     tvTitle.text = getString(R.string.text_home)
@@ -65,14 +67,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.profileFragment -> {
                     tvTitle.text = getString(R.string.text_profile)
-                    icSettings.isVisible = true
-                    binding.toolbarMain.setNavigationIcon(R.drawable.ic_edit)
-                    binding.toolbarMain.setNavigationOnClickListener {
+                    icEdit.isVisible = true
+                    icEdit.setOnMenuItemClickListener {
                         navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
-                    }
-                    // navigate to setting
-                    icSettings.setOnMenuItemClickListener{
-                        navController.navigate(R.id.action_profileFragment_to_settingFragment)
                         true
                     }
                 }
@@ -86,9 +83,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.historyFragment -> {
                     tvTitle.text = getString(R.string.text_history)
-                    val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
                     icFilter.isVisible = true
-                    icSettings.isVisible = false
                 }
             }
         }
