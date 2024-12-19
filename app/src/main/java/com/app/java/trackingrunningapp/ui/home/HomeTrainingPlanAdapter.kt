@@ -27,24 +27,8 @@ class HomeTrainingPlanAdapter(
 
         fun bind(trainingPlan: TrainingPlan) {
             planName.text = trainingPlan.name
-//            planImage.setImageResource(trainingPlan.imageResId) // Make sure this matches the ImageView ID
-            if (trainingPlan.imageResId != null) {
-                val imgFile = File("tracking-running-app/app/src/main/res/drawable/img04.jpg")
-                if (imgFile.exists()) {
-                    val myBitmap = BitmapFactory.decodeFile(imgFile.absolutePath)
-                    if (myBitmap != null) {
-                        planImage.setImageBitmap(myBitmap)
-                    } else {
-                        Log.e("ImageError", "Failed to decode image from file: $imgFile")
-                    }
-                } else {
-                    Log.e("FileError", "Image file does not exist: $imgFile")
-                }
-            } else {
-                Log.e("ImageResIdError", "ImageResId is null.")
-            }
-//            planImage.setImageResource(R.drawable.img04)
-
+            val resId = 2131230955
+            planImage.setImageResource(resId) // Make sure this matches the ImageView ID
             itemView.setOnClickListener {
                 listener.onClick(trainingPlan)
             }

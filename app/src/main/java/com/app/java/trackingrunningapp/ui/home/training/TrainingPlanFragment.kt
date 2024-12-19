@@ -39,6 +39,8 @@ class TrainingPlanFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val resId = R.drawable.img04
+        Log.d("res_id","$resId")
         setupViewModel()
         setupImageSlider()
         setupProgressBar()

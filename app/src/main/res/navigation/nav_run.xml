@@ -27,6 +27,6 @@
         android:id="@+id/runResultFragment"
         android:name="com.app.java.trackingrunningapp.ui.run.RunResultFragment"
         android:label="fragment_run_result"
-        tools:layout="@layout/fragment_run_result" />
+        tools:layout="@layout/fragment_run_result" /><action android:id="@+id/action_global_runFragment" app:destination="@id/runFragment"/>
 
 </navigation>

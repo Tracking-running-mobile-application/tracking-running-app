@@ -7,14 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".ui.run.DetailRunFragment">
 
+
     <include
-        android:id="@+id/history_run_detail"
         layout="@layout/item_history_run_detail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/mapView"
         app:layout_constraintEnd_toEndOf="@id/mapView"
         app:layout_constraintStart_toStartOf="@id/mapView" />
@@ -41,5 +42,12 @@
         app:mapbox_locationComponentPuckBearing="heading">
 
     </com.mapbox.maps.MapView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
