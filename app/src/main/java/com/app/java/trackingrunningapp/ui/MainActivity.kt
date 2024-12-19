@@ -65,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.profileFragment -> {
                     tvTitle.text = getString(R.string.text_profile)
+                    icSettings.isVisible = true
                     binding.toolbarMain.setNavigationIcon(R.drawable.ic_edit)
                     binding.toolbarMain.setNavigationOnClickListener {
                         navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
@@ -76,9 +77,11 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 R.id.runFragment -> {
+                    icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_run)
                 }
                 R.id.statisticFragment -> {
+                    icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_statistics)
                 }
                 R.id.historyFragment -> {

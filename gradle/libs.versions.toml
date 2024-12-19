@@ -17,6 +17,7 @@ playServicesMaps = "19.0.0"
 mapbox = "11.8.0"
 swiperefreshlayout = "1.1.0"
 circle-image = "3.1.0"
+glide = "4.16.0"
 #
 roomdatabase = "2.6.1"
 lifecycle-ktx = "2.8.7"
@@ -38,6 +39,8 @@ navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime
 barchart = { group = "com.diogobernardino", name = "williamchart", version.ref = "barchart" }
 #image slider
 image-slider = { group = "com.github.denzcoskun", name = "ImageSlideshow", version.ref = "image-slider" }
+#glide
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 #map
 services-map = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 mapbox = {group = "com.mapbox.maps",name = "android",version.ref = "mapbox"}

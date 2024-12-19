@@ -4,17 +4,16 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
+import com.app.java.trackingrunningapp.databinding.FragmentRunningBinding
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -26,8 +25,9 @@ import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 import com.mapbox.maps.plugin.locationcomponent.location
 
-class RunFragment : Fragment() {
-    private lateinit var binding: FragmentRunBinding
+
+class RunningFragment : Fragment() {
+    private lateinit var binding:FragmentRunningBinding
     private var isPaused:Boolean = true
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
@@ -49,27 +49,39 @@ class RunFragment : Fragment() {
             }
         }
 
-
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentRunBinding.inflate(inflater, container, false)
+        binding = FragmentRunningBinding.inflate(inflater,container,false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initArrowAction()
         setupPermission()
         setupActionRun()
     }
 
     private fun setupActionRun() {
-        binding.btnStartTracking.setOnClickListener{
-            binding.btnStartTracking.visibility = View.GONE
-            // TODO: do something when start
-            it.findNavController().navigate(R.id.action_runFragment_to_runningFragment)
+        binding.btnPauseAndResume.setOnClickListener {
+            if(isPaused){
+                binding.btnPauseAndResume.text = "Pause"
+                // TODO: do something when continue
+                isPaused = false
+            }else{
+                binding.btnPauseAndResume.text = "Resume"
+                // TODO: do something when pause
+                isPaused = true
+            }
+        }
+        binding.btnStopTracking.setOnClickListener {
+            binding.btnPauseAndResume.visibility = View.GONE
+            isPaused = true
+            binding.btnStopTracking.visibility = View.GONE
+            // TODO: Do something when stop
+            it.findNavController().navigate(R.id.action_runningFragment_to_runResultFragment)
         }
     }
 
@@ -91,6 +103,20 @@ class RunFragment : Fragment() {
             requestPermissionsLauncher.launch(permissions)
         }
     }
+
+    private fun initArrowAction() {
+        binding.icArrowUp.setOnClickListener {
+            binding.icArrowDown.visibility = View.VISIBLE
+            binding.icArrowUp.visibility = View.GONE
+            binding.layoutMetric.root.visibility = View.GONE
+        }
+        binding.icArrowDown.setOnClickListener {
+            binding.icArrowUp.visibility = View.VISIBLE
+            binding.icArrowDown.visibility = View.GONE
+            binding.layoutMetric.root.visibility = View.VISIBLE
+        }
+    }
+
     private fun initMapAndLocation() {
         // Setup rout drawing
         mapView = binding.mapView
@@ -112,6 +138,7 @@ class RunFragment : Fragment() {
             }
         }
     }
+
     private fun drawRoute() {
         polylineAnnotationManager.deleteAll()
         val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
@@ -120,4 +147,5 @@ class RunFragment : Fragment() {
             .withLineWidth(5.0)
         polylineAnnotationManager.create(polylineAnnotationOptions)
     }
+
 }

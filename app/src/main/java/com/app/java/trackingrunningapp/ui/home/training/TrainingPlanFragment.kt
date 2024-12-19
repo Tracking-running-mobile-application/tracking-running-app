@@ -30,49 +30,8 @@ class TrainingPlanFragment : Fragment() {
         val planFactory = TrainingPlanViewModelFactory(InitDatabase.trainingPlanRepository, InitDatabase.notificationRepository, InitDatabase.runSessionRepository)
         trainingPlanViewModel = ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
 
+        // fetch data
         trainingPlanViewModel.fetchRecommendedPlans()
-
-        trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner) {
-            trainingPlans ->
-            if (trainingPlans.isNotEmpty()) {
-                for (plan in trainingPlans) {
-                    Log.d(
-                        "Training Plan Log",
-                        "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
-                    )
-                }
-            } else {
-                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
-                }
-        }
-
-        trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner) {
-            trainingPlans ->
-            if (trainingPlans.isNotEmpty()) {
-                for (plan in trainingPlans) {
-                    Log.d(
-                        "Training Plan Log",
-                        "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
-                    )
-                }
-            } else {
-                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
-                }
-        }
-
-        trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner) {
-            trainingPlans ->
-            if (trainingPlans.isNotEmpty()) {
-                for (plan in trainingPlans) {
-                    Log.d(
-                        "Training Plan Log",
-                        "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
-                    )
-                }
-            } else {
-                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
-                }
-        }
 
         binding = FragmentTrainingPlansBinding.inflate(inflater, container, false)
         return binding.root
@@ -80,8 +39,7 @@ class TrainingPlanFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val title = arguments?.getString(EXTRA_TITLE_TRAINING_PLAN)
-        binding.planTitle.text = title
+        setupViewModel()
         setupImageSlider()
         setupProgressBar()
         // navigate to setting
@@ -90,6 +48,62 @@ class TrainingPlanFragment : Fragment() {
                 findNavController().navigate(R.id.action_trainingPlans_to_settingFragment2)
                 true
             }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun setupViewModel() {
+        val title = arguments?.getString(EXTRA_TITLE_TRAINING_PLAN)
+        if(title == "Beginner Run"){
+            // beginner
+            trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner) {
+                    trainingPlans ->
+                if (trainingPlans.isNotEmpty()) {
+                    for (plan in trainingPlans) {
+                        Log.d(
+                            "Training Plan Log",
+                            "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
+                        )
+                        binding.planTitle.text = plan.title
+                        binding.textPlanDescription.text = plan.description
+                        binding.textPlanEstimateTime.text = plan.estimatedTime.toInt().toString() + " minute"
+                        binding.textPlanTargetDistance.text =plan.targetDistance?.toInt().toString() + " km"
+                        return@observe
+                    }
+                } else {
+                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
+                }
+            }
+        }else if(title == "Intermediate Run"){
+            // intermediate
+            trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner) {
+                    trainingPlans ->
+                if (trainingPlans.isNotEmpty()) {
+                    for (plan in trainingPlans) {
+                        Log.d(
+                            "Training Plan Log",
+                            "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
+                        )
+                    }
+                } else {
+                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
+                }
+            }
+        } else if(title == "Advanced Run"){
+            // advanced
+            trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner) {
+                    trainingPlans ->
+                if (trainingPlans.isNotEmpty()) {
+                    for (plan in trainingPlans) {
+                        Log.d(
+                            "Training Plan Log",
+                            "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
+                        )
+                    }
+                } else {
+                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
+                }
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")

@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.barchart)
     implementation(libs.circle.image)
     implementation(libs.image.slider)
+    implementation(libs.glide)
     // room database
     implementation(libs.room.kotlin)
     implementation(libs.room.runtime)

@@ -64,7 +64,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/text_plan_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -86,8 +86,8 @@
         android:backgroundTint="@color/primary_gray"
         app:cardCornerRadius="10dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintStart_toStartOf="@+id/text_plan_description"
+        app:layout_constraintTop_toBottomOf="@+id/text_plan_description">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -98,6 +98,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_clock" />
 
             <LinearLayout
@@ -110,12 +111,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Est. Time"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/text_plan_estimate_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8"
+                    android:layout_marginTop="4dp"
                     android:text="1 hour"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -144,6 +147,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_plan_chart" />
 
             <LinearLayout
@@ -155,14 +159,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rec. Pace"
-                    android:textColor="@color/white" />
+                    android:text="@string/text_distance"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/text_plan_target_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8"
-                    android:text="3 min/km"
+                    android:layout_marginTop="4dp"
+                    android:text="22 km"
                     android:textColor="@color/white" />
             </LinearLayout>
         </LinearLayout>

@@ -9,5 +9,24 @@
         android:id="@+id/runFragment"
         android:name="com.app.java.trackingrunningapp.ui.run.RunFragment"
         android:label="fragment_run"
-        tools:layout="@layout/fragment_run" />
+        tools:layout="@layout/fragment_run" >
+        <action
+            android:id="@+id/action_runFragment_to_runningFragment"
+            app:destination="@id/runningFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/runningFragment"
+        android:name="com.app.java.trackingrunningapp.ui.run.RunningFragment"
+        tools:layout="@layout/fragment_running"
+        android:label="RunningFragment" >
+        <action
+            android:id="@+id/action_runningFragment_to_runResultFragment"
+            app:destination="@id/runResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/runResultFragment"
+        android:name="com.app.java.trackingrunningapp.ui.run.RunResultFragment"
+        android:label="fragment_run_result"
+        tools:layout="@layout/fragment_run_result" />
+
 </navigation>
