@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "14ee789b75dc0af875f20ae3cd84b5ea",
+    "identityHash": "614576703c73601dfa1e4c4be4494352",
     "entities": [
       {
         "tableName": "User",
@@ -308,7 +308,7 @@
       },
       {
         "tableName": "RunSession",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `runDate` TEXT NOT NULL, `distance` REAL NOT NULL DEFAULT 0.0, `duration` INTEGER NOT NULL DEFAULT 0, `pace` REAL NOT NULL DEFAULT 0.0, `caloriesBurned` REAL NOT NULL DEFAULT 0.0, `isActive` INTEGER DEFAULT 0, `dateAddInFavorite` TEXT DEFAULT NULL, `isFavorite` INTEGER NOT NULL DEFAULT 0)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `runDate` TEXT NOT NULL, `distance` REAL DEFAULT 0.0, `duration` INTEGER DEFAULT 0, `pace` REAL DEFAULT 0.0, `caloriesBurned` REAL DEFAULT 0.0, `isActive` INTEGER DEFAULT 0, `dateAddInFavorite` TEXT DEFAULT NULL, `isFavorite` INTEGER NOT NULL DEFAULT 0)",
         "fields": [
           {
             "fieldPath": "sessionId",
@@ -326,28 +326,28 @@
             "fieldPath": "distance",
             "columnName": "distance",
             "affinity": "REAL",
-            "notNull": true,
+            "notNull": false,
             "defaultValue": "0.0"
           },
           {
             "fieldPath": "duration",
             "columnName": "duration",
             "affinity": "INTEGER",
-            "notNull": true,
+            "notNull": false,
             "defaultValue": "0"
           },
           {
             "fieldPath": "pace",
             "columnName": "pace",
             "affinity": "REAL",
-            "notNull": true,
+            "notNull": false,
             "defaultValue": "0.0"
           },
           {
             "fieldPath": "caloriesBurned",
             "columnName": "caloriesBurned",
             "affinity": "REAL",
-            "notNull": true,
+            "notNull": false,
             "defaultValue": "0.0"
           },
           {
@@ -671,7 +671,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '14ee789b75dc0af875f20ae3cd84b5ea')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '614576703c73601dfa1e4c4be4494352')"
     ]
   }
 }

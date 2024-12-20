@@ -114,6 +114,7 @@ class RunSessionViewModel(
                 runSessionRepository.resetStatsValue()
                 runSessionRepository.setRunSessionInactive()
                 Log.d("StatsUpdate", "Stats update finished in finishRunSession")
+                Log.d("finishRunSession()", "stats duration: ${runSessionRepository.duration.value}")
             }
         }
     }

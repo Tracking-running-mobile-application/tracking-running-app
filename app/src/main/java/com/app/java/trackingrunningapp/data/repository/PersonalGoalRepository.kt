@@ -107,13 +107,13 @@ class PersonalGoalRepository {
     private fun calcGoalProgress(runSession: RunSession, goal: PersonalGoal): Double {
         return when {
             goal.targetDistance != null -> goal.targetDistance?.let {
-                (runSession.distance / it) * 100
+                (runSession.distance?.div(it))?.times(100)
             } ?: 0.0
             goal.targetDuration != null -> goal.targetDuration?.let {
-                (runSession.duration / it) * 100
+                (runSession.duration?.div(it))?.times(100)
             } ?: 0.0
             goal.targetCaloriesBurned != null -> goal.targetCaloriesBurned?.let {
-                (runSession.caloriesBurned / it) * 100
+                (runSession.caloriesBurned?.div(it))?.times(100)
             } ?: 0.0
             else -> 0.0
         }
