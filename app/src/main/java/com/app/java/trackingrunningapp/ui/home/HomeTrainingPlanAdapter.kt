@@ -14,7 +14,7 @@ import java.io.File
 
 
 class HomeTrainingPlanAdapter(
-    private val trainingPlans: MutableList<TrainingPlan>,
+    private val trainingPlans: List<TrainingPlan>,
     private val listener: OnItemTrainingClickListener
 ) : RecyclerView.Adapter<HomeTrainingPlanAdapter.TrainingPlansViewHolder>() {
 
@@ -27,8 +27,7 @@ class HomeTrainingPlanAdapter(
 
         fun bind(trainingPlan: TrainingPlan) {
             planName.text = trainingPlan.name
-            val resId = 2131230955
-            planImage.setImageResource(resId) // Make sure this matches the ImageView ID
+            planImage.setImageResource(trainingPlan.imageResId) // Make sure this matches the ImageView ID
             itemView.setOnClickListener {
                 listener.onClick(trainingPlan)
             }

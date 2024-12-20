@@ -12,27 +12,32 @@
         android:label="Home"
         tools:layout="@layout/fragment_home" >
         <action
-            android:id="@+id/action_homeFragment_to_trainingPlans"
-            app:destination="@id/trainingPlans" />
-        <action
             android:id="@+id/action_homeFragment_to_settingFragment2"
             app:destination="@id/settingFragment2" />
+        <action
+            android:id="@+id/action_homeFragment_to_listTrainingPlanFragment"
+            app:destination="@id/listTrainingPlanFragment" />
 
     </fragment>
     <fragment
         android:id="@+id/trainingPlans"
         tools:layout="@layout/fragment_training_plans"
         android:name="com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment"
-        android:label="TrainingPlans" >
-        <action
-            android:id="@+id/action_trainingPlans_to_settingFragment2"
-            app:destination="@id/settingFragment2" />
-    </fragment>
+        android:label="TrainingPlans" />
     <fragment
         android:id="@+id/settingFragment2"
         android:name="com.app.java.trackingrunningapp.ui.setting.SettingFragment"
         android:label="fragment_setting"
         tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/listTrainingPlanFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment"
+        android:label="fragment_list_training_plan"
+        tools:layout="@layout/fragment_list_training_plan" >
+        <action
+            android:id="@+id/action_listTrainingPlanFragment_to_trainingPlans"
+            app:destination="@id/trainingPlans" />
+    </fragment>
 
 
 </navigation>

@@ -1,7 +1,6 @@
 package com.app.java.trackingrunningapp.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,7 @@ import com.app.java.trackingrunningapp.data.model.dataclass.home.DailyTask
 import com.app.java.trackingrunningapp.data.model.dataclass.home.TrainingPlan
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
 import com.app.java.trackingrunningapp.ui.home.training.DailyTasksAdapter
-import com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment
+import com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -76,46 +75,28 @@ class HomeFragment : Fragment() {
     }
 
     private fun setUpTrainingPlanRecycler() {
-//        val trainingPlans = listOf(
-//            TrainingPlan("Beginner Run", R.drawable.img_beginner),
-//            TrainingPlan("Intermediate Run", R.drawable.img_intermediate),
-//            TrainingPlan("Advanced Run", R.drawable.img_advanced)
-//        )
+        val trainingPlans = listOf(
+            TrainingPlan("Beginner Run", R.drawable.img_beginner),
+            TrainingPlan("Intermediate Run", R.drawable.img_intermediate),
+            TrainingPlan("Advanced Run", R.drawable.img_advanced)
+        )
 //        val trainingPlans = mutableListOf<TrainingPlan>()
         // beginner
-        trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner) {
-                plans ->
-            if (plans.isNotEmpty()) {
-                for (plan in plans) {
-                    Log.d(
-                        "Training Plan Log",
-                        "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
-                    )
-                    // plan home
-                    val trainingPlan = TrainingPlan(plan.title,plan.imagePath)
-                    trainingPlans.add(trainingPlan)
-                }
-            } else {
-                Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
-            }
-            Log.d("list_plan","$trainingPlans")
-            // adapter and click event
-            binding.rvTrainingPlans.adapter = HomeTrainingPlanAdapter(trainingPlans,
-                object : HomeTrainingPlanAdapter.OnItemTrainingClickListener {
-                    override fun onClick(trainingPlan: TrainingPlan) {
-                        val bundle = Bundle().apply {
-                            this.putString(
-                                TrainingPlanFragment.EXTRA_TITLE_TRAINING_PLAN,
-                                trainingPlan.name
-                            )
-                        }
-                        this@HomeFragment.findNavController()
-                            .navigate(R.id.action_homeFragment_to_trainingPlans, bundle)
-                        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-                            .visibility = View.GONE
+        binding.rvTrainingPlans.adapter = HomeTrainingPlanAdapter(trainingPlans,
+            object : HomeTrainingPlanAdapter.OnItemTrainingClickListener {
+                override fun onClick(trainingPlan: TrainingPlan) {
+                    val bundle = Bundle().apply {
+                        this.putString(
+                            ListTrainingPlanFragment.EXTRA_TITLE_PLAN,
+                            trainingPlan.name
+                        )
                     }
-                })
-        }
+                    this@HomeFragment.findNavController()
+                        .navigate(R.id.action_homeFragment_to_listTrainingPlanFragment, bundle)
+                    requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+                        .visibility = View.GONE
+                }
+            })
     }
 
     override fun onStop() {

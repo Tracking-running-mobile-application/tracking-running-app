@@ -44,12 +44,6 @@ class TrainingPlanFragment : Fragment() {
         setupViewModel()
         setupImageSlider()
         setupProgressBar()
-        // navigate to setting
-        requireActivity().findViewById<Toolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_setting)
-            .setOnMenuItemClickListener {
-                findNavController().navigate(R.id.action_trainingPlans_to_settingFragment2)
-                true
-            }
     }
 
     @SuppressLint("SetTextI18n")
