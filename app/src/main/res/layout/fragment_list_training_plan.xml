@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_background"
-    tools:context=".ui.home.plan_list.ListTrainingPlanFragment">
+    android:background="@color/main_background">
 
 
     <ImageView
@@ -22,13 +21,13 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView22"
+        android:id="@+id/text_title_exercise"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="RUNS LIST"
         android:textColor="@color/text_shadow_white"
-        android:textSize="20sp"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="@+id/img_plan_title"
         app:layout_constraintStart_toStartOf="@+id/img_plan_title"
         app:layout_constraintTop_toBottomOf="@+id/img_plan_title" />
@@ -36,11 +35,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_plan_beginner"
         android:layout_width="0dp"
+        android:clickable="true"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_height="wrap_content"
         tools:listitem="@layout/item_plan_exercise"
         android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/textView22"
-        app:layout_constraintStart_toStartOf="@+id/textView22"
-        app:layout_constraintTop_toBottomOf="@+id/textView22" />
+        app:layout_constraintEnd_toEndOf="@+id/text_title_exercise"
+        app:layout_constraintStart_toStartOf="@+id/text_title_exercise"
+        app:layout_constraintTop_toBottomOf="@+id/text_title_exercise" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

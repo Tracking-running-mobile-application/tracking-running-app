@@ -5,12 +5,12 @@
     android:id="@+id/nav_home"
     app:startDestination="@id/homeFragment">
 
-<!--   home fragment can be global -->
+    <!--   home fragment can be global -->
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.app.java.trackingrunningapp.ui.home.HomeFragment"
         android:label="Home"
-        tools:layout="@layout/fragment_home" >
+        tools:layout="@layout/fragment_home">
         <action
             android:id="@+id/action_homeFragment_to_settingFragment2"
             app:destination="@id/settingFragment2" />
@@ -20,11 +20,6 @@
 
     </fragment>
     <fragment
-        android:id="@+id/trainingPlans"
-        tools:layout="@layout/fragment_training_plans"
-        android:name="com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment"
-        android:label="TrainingPlans" />
-    <fragment
         android:id="@+id/settingFragment2"
         android:name="com.app.java.trackingrunningapp.ui.setting.SettingFragment"
         android:label="fragment_setting"
@@ -33,11 +28,16 @@
         android:id="@+id/listTrainingPlanFragment"
         android:name="com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment"
         android:label="fragment_list_training_plan"
-        tools:layout="@layout/fragment_list_training_plan" >
+        tools:layout="@layout/fragment_list_training_plan">
         <action
-            android:id="@+id/action_listTrainingPlanFragment_to_trainingPlans"
-            app:destination="@id/trainingPlans" />
+            android:id="@+id/action_listTrainingPlanFragment_to_trainingPlanFragment"
+            app:destination="@id/trainingPlanFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/trainingPlanFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment"
+        tools:layout="@layout/fragment_training_plans"
+        android:label="TrainingPlanFragment" />
 
 
 </navigation>

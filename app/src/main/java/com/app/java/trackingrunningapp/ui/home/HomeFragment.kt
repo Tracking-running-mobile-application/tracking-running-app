@@ -13,8 +13,8 @@ import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.dataclass.home.DailyTask
 import com.app.java.trackingrunningapp.data.model.dataclass.home.TrainingPlan
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
-import com.app.java.trackingrunningapp.ui.home.training.DailyTasksAdapter
 import com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment
+import com.app.java.trackingrunningapp.ui.home.training.DailyTasksAdapter
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -91,7 +91,7 @@ class HomeFragment : Fragment() {
                             trainingPlan.name
                         )
                     }
-                    this@HomeFragment.findNavController()
+                    findNavController()
                         .navigate(R.id.action_homeFragment_to_listTrainingPlanFragment, bundle)
                     requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
                         .visibility = View.GONE

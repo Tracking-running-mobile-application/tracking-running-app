@@ -1,9 +1,11 @@
 package com.app.java.trackingrunningapp.ui.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
 import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.data.repository.TrainingPlanRepository

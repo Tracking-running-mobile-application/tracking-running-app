@@ -3,13 +3,11 @@ package com.app.java.trackingrunningapp.ui.home.training
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentTrainingPlansBinding
@@ -27,76 +25,57 @@ class TrainingPlanFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val planFactory = TrainingPlanViewModelFactory(InitDatabase.trainingPlanRepository, InitDatabase.notificationRepository, InitDatabase.runSessionRepository)
-        trainingPlanViewModel = ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
-
+        val planFactory = TrainingPlanViewModelFactory(
+            InitDatabase.trainingPlanRepository,
+            InitDatabase.notificationRepository,
+            InitDatabase.runSessionRepository
+        )
+        trainingPlanViewModel =
+            ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
         // fetch data
         trainingPlanViewModel.fetchRecommendedPlans()
-
         binding = FragmentTrainingPlansBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val resId = R.drawable.img04
-        Log.d("res_id","$resId")
-        setupViewModel()
-        setupImageSlider()
         setupProgressBar()
+        setUpView()
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun setupViewModel() {
-        val title = arguments?.getString(EXTRA_TITLE_TRAINING_PLAN)
-        if(title == "Beginner Run"){
-            // beginner
-            trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner) {
-                    trainingPlans ->
-                if (trainingPlans.isNotEmpty()) {
-                    for (plan in trainingPlans) {
-                        Log.d(
-                            "Training Plan Log",
-                            "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
-                        )
-                        binding.planTitle.text = plan.title
-                        binding.textPlanDescription.text = plan.description
-                        binding.textPlanEstimateTime.text = plan.estimatedTime.toInt().toString() + " minute"
-                        binding.textPlanTargetDistance.text =plan.targetDistance?.toInt().toString() + " km"
-                        return@observe
-                    }
-                } else {
-                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
+    private fun setUpView() {
+        val planTitle = arguments?.getString(EXTRA_TITLE_TRAINING_PLAN)!!
+        val imageResId = arguments?.getInt(EXTRA_IMAGE_RES_ID,-1)!!
+//        Log.d("image_id","$imageResId")
+        setupImageSlider(imageResId)
+        trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner){beginnerPlans ->
+            for (plan in beginnerPlans){
+                if(plan.title.trim().compareTo(planTitle.trim()) == 0){
+                    binding.planTitle.text = plan.title
+                    binding.textPlanDescription.text = plan.description
+                    binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
+                    binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
                 }
             }
-        }else if(title == "Intermediate Run"){
-            // intermediate
-            trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner) {
-                    trainingPlans ->
-                if (trainingPlans.isNotEmpty()) {
-                    for (plan in trainingPlans) {
-                        Log.d(
-                            "Training Plan Log",
-                            "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
-                        )
-                    }
-                } else {
-                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
+        }
+        trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner){beginnerPlans ->
+            for (plan in beginnerPlans){
+                if(plan.title.trim().compareTo(planTitle.trim()) == 0){
+                    binding.planTitle.text = plan.title
+                    binding.textPlanDescription.text = plan.description
+                    binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
+                    binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
                 }
             }
-        } else if(title == "Advanced Run"){
-            // advanced
-            trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner) {
-                    trainingPlans ->
-                if (trainingPlans.isNotEmpty()) {
-                    for (plan in trainingPlans) {
-                        Log.d(
-                            "Training Plan Log",
-                            "${plan.planId}, ${plan.imagePath}, ${plan.title}, ${plan.description}, ${plan.difficulty}"
-                        )
-                    }
-                } else {
-                    Log.e("Error LOL", "No training plan exist re-install the app or clean project before call me please")
+        }
+        trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner){beginnerPlans ->
+            for (plan in beginnerPlans){
+                if(plan.title.trim().compareTo(planTitle.trim()) == 0){
+                    binding.planTitle.text = plan.title
+                    binding.textPlanDescription.text = plan.description
+                    binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
+                    binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
                 }
             }
         }
@@ -146,11 +125,15 @@ class TrainingPlanFragment : Fragment() {
         }
     }
 
-    private fun setupImageSlider() {
+    private fun setupImageSlider(imageResId: Int) {
         val imageList = ArrayList<SlideModel>()
-        imageList.add(SlideModel(R.drawable.img_running_man, ScaleTypes.CENTER_CROP))
-        imageList.add(SlideModel(R.drawable.img_advanced, ScaleTypes.CENTER_CROP))
-        imageList.add(SlideModel(R.drawable.img_intermediate, ScaleTypes.CENTER_CROP))
+        imageList.add(SlideModel(imageResId, ScaleTypes.FIT))
+        imageList.add(SlideModel(R.drawable.img05, ScaleTypes.FIT))
+        imageList.add(SlideModel(R.drawable.img13, ScaleTypes.FIT))
+        imageList.add(SlideModel(R.drawable.img28, ScaleTypes.FIT))
+        imageList.add(SlideModel(R.drawable.img23, ScaleTypes.FIT))
+        imageList.add(SlideModel(R.drawable.img12, ScaleTypes.FIT))
+        imageList.add(SlideModel(R.drawable.img27, ScaleTypes.FIT))
         binding.imageSlider.setImageList(imageList)
     }
 
@@ -162,5 +145,6 @@ class TrainingPlanFragment : Fragment() {
 
     companion object {
         const val EXTRA_TITLE_TRAINING_PLAN = "EXTRA_TITLE_TRAINING_PLAN"
+        const val EXTRA_IMAGE_RES_ID = "EXTRA_IMAGE_RES_ID"
     }
 }
