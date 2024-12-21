@@ -1,5 +1,7 @@
 package com.app.java.trackingrunningapp.ui.home
 
+import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.model.dataclass.home.TrainingPlan
+import java.io.File
 
 
 class HomeTrainingPlanAdapter(

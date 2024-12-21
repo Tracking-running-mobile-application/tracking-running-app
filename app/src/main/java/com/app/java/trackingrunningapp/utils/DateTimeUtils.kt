@@ -1,7 +1,7 @@
 package com.app.java.trackingrunningapp.utils
 
 import kotlinx.datetime.Clock
-import kotlinx.datetime.Clock.*
+import kotlinx.datetime.Clock.System
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate

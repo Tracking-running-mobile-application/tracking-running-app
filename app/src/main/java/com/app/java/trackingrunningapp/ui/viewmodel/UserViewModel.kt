@@ -3,6 +3,7 @@ package com.app.java.trackingrunningapp.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
@@ -15,6 +16,19 @@ class UserViewModel(
     private val _userLiveData = MutableLiveData<User?>()
     val userLiveData: LiveData<User?> = _userLiveData
 
+    class Factory(
+        private val userRepository: UserRepository
+    ):ViewModelProvider.Factory{
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            if(modelClass.isAssignableFrom(UserViewModel::class.java)){
+                @Suppress("UNCHECKED_CAST")
+                return UserViewModel(userRepository) as T
+            }
+            else{
+                throw IllegalArgumentException("Unknown Viewmodel")
+            }
+        }
+    }
 
     fun upsertUserInfo(
         name: String?,

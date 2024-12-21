@@ -12,8 +12,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.minus
 
 class TrainingPlanRepository {
     val db = InitDatabase.runningDatabase
@@ -41,17 +39,8 @@ class TrainingPlanRepository {
         return trainingPlanDao.getTrainingPlanBySessionId(currentRunSession.sessionId) != null
     }
 
-    suspend fun updateTrainingPlanRecommendation(limit: Int = 4): List<TrainingPlan> {
-        val today = DateTimeUtils.getCurrentDate()
-        val dateLimit = today.minus(7, DateTimeUnit.DAY).toString()
-
-        if (lastFetchDate < today) {
-           lastFetchDate = today
-
-           return trainingPlanDao.getTrainingPlansNotShownSince(dateLimit, limit)
-        }
-
-        return emptyList()
+    suspend fun getTrainingPlanByDifficulty(exerciseType: String): List<TrainingPlan> {
+        return trainingPlanDao.getTrainingPlansByDifficulty(exerciseType)
     }
 
     suspend fun getGoalProgress(): Double {

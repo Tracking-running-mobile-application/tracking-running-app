@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
@@ -60,7 +61,6 @@ class RunFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initArrowAction()
         setupPermission()
         setupActionRun()
     }
@@ -68,28 +68,8 @@ class RunFragment : Fragment() {
     private fun setupActionRun() {
         binding.btnStartTracking.setOnClickListener{
             binding.btnStartTracking.visibility = View.GONE
-            binding.btnPauseAndResume.visibility = View.VISIBLE
-            binding.btnStopTracking.visibility = View.VISIBLE
             // TODO: do something when start
-        }
-
-        binding.btnPauseAndResume.setOnClickListener {
-            if(isPaused){
-                binding.btnPauseAndResume.text = "Pause"
-                // TODO: do something when continue
-                isPaused = false
-            }else{
-                binding.btnPauseAndResume.text = "Resume"
-                // TODO: do something when pause
-                isPaused = true
-            }
-        }
-        binding.btnStopTracking.setOnClickListener {
-            binding.btnPauseAndResume.visibility = View.GONE
-            isPaused = true
-            binding.btnStopTracking.visibility = View.GONE
-            binding.btnStartTracking.visibility = View.VISIBLE
-            // TODO: Do something when stop
+            it.findNavController().navigate(R.id.action_runFragment_to_runningFragment)
         }
     }
 
@@ -111,19 +91,6 @@ class RunFragment : Fragment() {
             requestPermissionsLauncher.launch(permissions)
         }
     }
-    private fun initArrowAction() {
-        binding.icArrowUp.setOnClickListener {
-            binding.icArrowDown.visibility = View.VISIBLE
-            binding.icArrowUp.visibility = View.GONE
-            binding.layoutMetric.root.visibility = View.GONE
-        }
-        binding.icArrowDown.setOnClickListener {
-            binding.icArrowUp.visibility = View.VISIBLE
-            binding.icArrowDown.visibility = View.GONE
-            binding.layoutMetric.root.visibility = View.VISIBLE
-        }
-    }
-
     private fun initMapAndLocation() {
         // Setup rout drawing
         mapView = binding.mapView
@@ -152,11 +119,5 @@ class RunFragment : Fragment() {
             .withLineColor("#FF0000")
             .withLineWidth(5.0)
         polylineAnnotationManager.create(polylineAnnotationOptions)
-    }
-    override fun onStop() {
-        super.onStop()
-        binding.icArrowDown.visibility = View.GONE
-        // pop to profile
-        this.findNavController().popBackStack(R.id.profileFragment,false)
     }
 }
