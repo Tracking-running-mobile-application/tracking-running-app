@@ -1,19 +1,24 @@
 package com.app.java.trackingrunningapp.ui.history
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.dataclass.history.Run
 import com.app.java.trackingrunningapp.data.model.dataclass.history.RunDate
 import com.app.java.trackingrunningapp.databinding.FragmentHistoryBinding
 import com.app.java.trackingrunningapp.ui.history.adapter.RunAdapter
 import com.app.java.trackingrunningapp.ui.history.adapter.RunDateAdapter
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
@@ -23,12 +28,45 @@ class HistoryFragment : Fragment() {
     private lateinit var runDateAdapter: RunDateAdapter
     private lateinit var runAdapter: RunAdapter
     private lateinit var containerLayout: View
+    private lateinit var runSessionViewModel: RunSessionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHistoryBinding.inflate(inflater, container, false)
+
+        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+        runSessionViewModel = ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+
+        //IMPORTANT: fetchMore should be false initially,
+        //it should only be true when the user click show more !!
+
+        runSessionViewModel.fetchRunSessions(fetchMore = false)
+
+        runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
+            Log.d("History Fragment Log", "Observed Sessions: ${sessions.size}")
+            if (sessions.isNotEmpty()) {
+                for (session in sessions) {
+                    Log.d ("History Fragment Log",
+                        "${session.sessionId}, ${session.runDate}")
+                }
+            } else {
+                Log.e("Error", "No run sessions found in the database")
+            }
+        }
+
+        // hasMoreData == true then show more option appears, else disappear
+        runSessionViewModel.hasMoreData.observe(viewLifecycleOwner) { hasMoreData ->
+            if (hasMoreData) {
+                Log.d(
+                    "History Fragment Log hasMoreData",
+                    "if $hasMoreData then there is still more run sessions in the database"
+                )
+            } else {
+                Log.e("Error", "No run sessions found in the database (hasMoreData)")
+            }
+        }
 
         return binding.root
     }
