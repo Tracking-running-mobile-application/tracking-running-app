@@ -7,14 +7,15 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
-import com.app.java.trackingrunningapp.data.model.dataclass.home.DailyTask
+import com.app.java.trackingrunningapp.data.model.dataclass.home.PersonalGoal
 import com.app.java.trackingrunningapp.data.model.dataclass.home.TrainingPlan
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
 import com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment
-import com.app.java.trackingrunningapp.ui.home.training.DailyTasksAdapter
+import com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalAdapter
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -23,15 +24,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var trainingPlanViewModel: TrainingPlanViewModel
-    private  val trainingPlans = mutableListOf<TrainingPlan>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val planFactory = TrainingPlanViewModelFactory(InitDatabase.trainingPlanRepository, InitDatabase.notificationRepository, InitDatabase.runSessionRepository)
-        trainingPlanViewModel = ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
+        val planFactory = TrainingPlanViewModelFactory(
+            InitDatabase.trainingPlanRepository,
+            InitDatabase.notificationRepository,
+            InitDatabase.runSessionRepository
+        )
+        trainingPlanViewModel =
+            ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
 
         // fetch data
         trainingPlanViewModel.fetchRecommendedPlans()
@@ -42,36 +47,38 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpTrainingPlanRecycler()
-        setUpDailyTaskRecycler()
+        setUpPersonalGoal()
     }
 
-    private fun setUpDailyTaskRecycler() {
+    private fun setUpPersonalGoal() {
         // Create a list of DailyTask objects
         val dailyTasks = listOf(
-            DailyTask(
+            PersonalGoal(
                 "Beginner Run", "20 minutes", "Daily",
                 R.drawable.img_beginner
             ),
-            DailyTask(
+            PersonalGoal(
                 "My Run 1", "40 minutes", "Monday, Wednesday, Friday",
                 R.drawable.img_intermediate
             ),
-            DailyTask(
+            PersonalGoal(
                 "My Run 2", "10 minutes", "Daily",
                 R.drawable.img_advanced
             ),
-            DailyTask(
+            PersonalGoal(
                 "My Run 3", "30 minutes", "Daily",
                 R.drawable.img_advanced
             )
         )
-
-        binding.rvDailyTask.adapter = DailyTasksAdapter(dailyTasks,
-            object : DailyTasksAdapter.OnItemDailyTaskListener {
-                override fun onClick(dailyTask: DailyTask) {
+        binding.rvDailyTask.adapter = PersonalGoalAdapter(dailyTasks,
+            object : PersonalGoalAdapter.OnItemPersonalGoalListener {
+                override fun onClick(dailyTask: PersonalGoal) {
                     dailyTask.isClicked++
                 }
             })
+        binding.icAddGoal.setOnClickListener {
+            it.findNavController().navigate(R.id.action_homeFragment_to_personalGoalFragment)
+        }
     }
 
     private fun setUpTrainingPlanRecycler() {
@@ -93,8 +100,6 @@ class HomeFragment : Fragment() {
                     }
                     findNavController()
                         .navigate(R.id.action_homeFragment_to_listTrainingPlanFragment, bundle)
-                    requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-                        .visibility = View.GONE
                 }
             })
     }

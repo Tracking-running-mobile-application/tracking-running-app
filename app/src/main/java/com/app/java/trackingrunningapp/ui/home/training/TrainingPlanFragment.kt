@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.R
@@ -47,7 +49,9 @@ class TrainingPlanFragment : Fragment() {
     private fun setUpView() {
         val planTitle = arguments?.getString(EXTRA_TITLE_TRAINING_PLAN)!!
         val imageResId = arguments?.getInt(EXTRA_IMAGE_RES_ID,-1)!!
-//        Log.d("image_id","$imageResId")
+        // toolbar
+        val toolbarTitle = arguments?.getString(EXTRA_PLAN_LEVEL) + "'s Guide"
+        requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = toolbarTitle
         setupImageSlider(imageResId)
         trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner){beginnerPlans ->
             for (plan in beginnerPlans){
@@ -137,14 +141,9 @@ class TrainingPlanFragment : Fragment() {
         binding.imageSlider.setImageList(imageList)
     }
 
-    override fun onStop() {
-        super.onStop()
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
-            View.VISIBLE
-    }
-
     companion object {
         const val EXTRA_TITLE_TRAINING_PLAN = "EXTRA_TITLE_TRAINING_PLAN"
         const val EXTRA_IMAGE_RES_ID = "EXTRA_IMAGE_RES_ID"
+        const val EXTRA_PLAN_LEVEL = "EXTRA_PLAN_LEVEL"
     }
 }

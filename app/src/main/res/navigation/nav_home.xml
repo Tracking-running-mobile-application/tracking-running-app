@@ -17,6 +17,9 @@
         <action
             android:id="@+id/action_homeFragment_to_listTrainingPlanFragment"
             app:destination="@id/listTrainingPlanFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_personalGoalFragment"
+            app:destination="@id/personalGoalFragment" />
 
     </fragment>
     <fragment
@@ -38,6 +41,11 @@
         android:name="com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment"
         tools:layout="@layout/fragment_training_plans"
         android:label="TrainingPlanFragment" />
+    <fragment
+        android:id="@+id/personalGoalFragment"
+        tools:layout="@layout/fragment_personal_goal"
+        android:name="com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalFragment"
+        android:label="PersonalGoalFragment" /><action android:id="@+id/action_global_homeFragment" app:destination="@id/homeFragment"/>
 
 
 </navigation>

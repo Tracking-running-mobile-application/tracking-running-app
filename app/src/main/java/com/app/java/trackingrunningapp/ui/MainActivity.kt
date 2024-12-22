@@ -5,6 +5,7 @@ import android.widget.TextView
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -64,6 +65,7 @@ class MainActivity : AppCompatActivity() {
                         navController.navigate(R.id.action_homeFragment_to_settingFragment2)
                         true
                     }
+                    binding.bottomNav.isVisible = true
                 }
                 R.id.profileFragment -> {
                     tvTitle.text = getString(R.string.text_profile)
@@ -72,18 +74,22 @@ class MainActivity : AppCompatActivity() {
                         navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
                         true
                     }
+                    binding.bottomNav.isVisible = true
                 }
                 R.id.runFragment -> {
                     icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_run)
+                    binding.bottomNav.isVisible = true
                 }
                 R.id.statisticFragment -> {
                     icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_statistics)
+                    binding.bottomNav.isVisible = true
                 }
                 R.id.historyFragment -> {
                     tvTitle.text = getString(R.string.text_history)
                     icFilter.isVisible = true
+                    binding.bottomNav.isVisible = true
                 }
             }
         }

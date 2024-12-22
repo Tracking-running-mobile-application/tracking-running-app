@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.home.training
+package com.app.java.trackingrunningapp.ui.home.personalGoal
 
 import android.view.LayoutInflater
 import android.view.View
@@ -7,28 +7,24 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.dataclass.home.DailyTask
+import com.app.java.trackingrunningapp.data.model.dataclass.home.PersonalGoal
 
 
-class DailyTasksAdapter(
-    private val taskList: List<DailyTask>,
-    private val listener: OnItemDailyTaskListener
-) : RecyclerView.Adapter<DailyTasksAdapter.DailyTasksViewHolder>() {
+class PersonalGoalAdapter(
+    private val taskList: List<PersonalGoal>,
+    private val listener: OnItemPersonalGoalListener
+) : RecyclerView.Adapter<PersonalGoalAdapter.PersonalGoalViewHolder>() {
 
-    class DailyTasksViewHolder(
+    class PersonalGoalViewHolder(
         itemView: View,
-        private val listener: OnItemDailyTaskListener
+        private val listener: OnItemPersonalGoalListener
     ) : RecyclerView.ViewHolder(itemView) {
         private val taskImage: ImageView = itemView.findViewById(R.id.taskImage)
-        private val taskTitle: TextView = itemView.findViewById(R.id.taskTitle)
-        private val taskDuration: TextView = itemView.findViewById(R.id.taskDuration)
-        private val taskFrequency: TextView = itemView.findViewById(R.id.taskFrequency)
+        private val taskTitle: TextView = itemView.findViewById(R.id.text_task_title)
         private val taskCheckbox: ImageView = itemView.findViewById(R.id.taskCheckbox)
 
-        fun bind(dailyTask: DailyTask){
+        fun bind(dailyTask: PersonalGoal){
             taskTitle.text = dailyTask.title
-            taskFrequency.text = dailyTask.frequency
-            taskDuration.text = dailyTask.duration
             taskImage.setImageResource(dailyTask.imageResId)
             // TODO: handle check box
             itemView.setOnClickListener {
@@ -43,13 +39,13 @@ class DailyTasksAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DailyTasksViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonalGoalViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_daily_task, parent, false)
-        return DailyTasksViewHolder(view,listener)
+            .inflate(R.layout.item_personal_goal, parent, false)
+        return PersonalGoalViewHolder(view,listener)
     }
 
-    override fun onBindViewHolder(holder: DailyTasksViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: PersonalGoalViewHolder, position: Int) {
         val task = taskList[position]
         holder.bind(task)
         // Set the checkbox based on `isChecked` value
@@ -64,7 +60,7 @@ class DailyTasksAdapter(
     override fun getItemCount(): Int {
         return taskList.size
     }
-    interface OnItemDailyTaskListener{
-        fun onClick(dailyTask: DailyTask)
+    interface OnItemPersonalGoalListener{
+        fun onClick(dailyTask: PersonalGoal)
     }
 }

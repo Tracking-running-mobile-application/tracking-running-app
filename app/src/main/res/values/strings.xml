@@ -69,4 +69,6 @@
     <string name="objective_amount">%s • %s</string>
     <string name="text_estimate_time">%.2f hour</string>
     <string name="text_target_distance">%.2f km</string>
+    <string name="enter_plan_here">Plan here</string>
+    <string name="objective">Objective</string>
 </resources>
