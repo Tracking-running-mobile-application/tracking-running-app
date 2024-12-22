@@ -6,6 +6,7 @@
     android:backgroundTint="@color/primary_gray"
     style="@style/CardView"
     app:cardCornerRadius="@dimen/margin_16"
+    app:strokeWidth="2dp"
     app:strokeColor="@color/main_yellow">
 
     <androidx.constraintlayout.widget.ConstraintLayout
