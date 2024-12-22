@@ -5,6 +5,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
@@ -18,6 +21,7 @@ import com.app.java.trackingrunningapp.ui.home.HomeFragment
 import com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ListTrainingPlanFragment : Fragment() {
     private lateinit var binding: FragmentListTrainingPlanBinding
@@ -37,6 +41,8 @@ class ListTrainingPlanFragment : Fragment() {
         // fetch data
         trainingPlanViewModel.fetchRecommendedPlans()
         binding = FragmentListTrainingPlanBinding.inflate(inflater, container, false)
+        requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = "Training Plans"
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
         return binding.root
     }
 
@@ -77,6 +83,7 @@ class ListTrainingPlanFragment : Fragment() {
                 override fun onExerciseClick(exercise: PlanExercise) {
                     val bundle = Bundle().apply {
                         putString(TrainingPlanFragment.EXTRA_TITLE_TRAINING_PLAN,exercise.title)
+                        putString(TrainingPlanFragment.EXTRA_PLAN_LEVEL,exercise.level)
                         putInt(TrainingPlanFragment.EXTRA_IMAGE_RES_ID,exercise.imageRes)
                     }
                     findNavController().navigate(R.id.action_listTrainingPlanFragment_to_trainingPlanFragment,bundle)
@@ -101,6 +108,7 @@ class ListTrainingPlanFragment : Fragment() {
                 override fun onExerciseClick(exercise: PlanExercise) {
                     val bundle = Bundle().apply {
                         putString(TrainingPlanFragment.EXTRA_TITLE_TRAINING_PLAN,exercise.title)
+                        putString(TrainingPlanFragment.EXTRA_PLAN_LEVEL,exercise.level)
                         putInt(TrainingPlanFragment.EXTRA_IMAGE_RES_ID,exercise.imageRes)
                     }
                     findNavController().navigate(R.id.action_listTrainingPlanFragment_to_trainingPlanFragment,bundle)
@@ -131,6 +139,7 @@ class ListTrainingPlanFragment : Fragment() {
                 override fun onExerciseClick(exercise: PlanExercise) {
                     val bundle = Bundle().apply {
                         putString(TrainingPlanFragment.EXTRA_TITLE_TRAINING_PLAN,exercise.title)
+                        putString(TrainingPlanFragment.EXTRA_PLAN_LEVEL,exercise.level)
                         putInt(TrainingPlanFragment.EXTRA_IMAGE_RES_ID,exercise.imageRes)
                     }
                     findNavController().navigate(R.id.action_listTrainingPlanFragment_to_trainingPlanFragment,bundle)
