@@ -40,8 +40,10 @@ class RunSessionRepository(
     private var offset: Int = 20
     private var limit: Int = 0
 
-    private val _duration = MutableStateFlow("00:00")
-    val duration: StateFlow<String> = _duration
+    private val _duration = MutableStateFlow(0L)
+    val duration: StateFlow<Long> = _duration
+
+    private var cumulativeDurationSeconds: Long = 0L
 
     private val _pace = MutableStateFlow(0.0)
     val pace: StateFlow<Double> = _pace
@@ -80,7 +82,7 @@ class RunSessionRepository(
 
     suspend fun resetStatsValue() {
         Log.d("resetStatsValue", "Function called")
-        _duration.value = "00:00"
+        _duration.value = 0L
         _distance.value = 0.0
         _pace.value = 0.0
         _caloriesBurned.value = 0.0
@@ -120,9 +122,16 @@ class RunSessionRepository(
          runSessionDao.deleteRunSession(sessionId)
     }
 
-    suspend fun startRunSession() {
-        val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())
+    fun setRunSessionStartTime() {
+        val currentRunSession = getCurrentSessionOrThrow()
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
+        cumulativeDurationSeconds += currentRunSession.duration ?: 0L
+        Log.d("setRunSessionStartTime", "Cumulative Duration Updated: $cumulativeDurationSeconds")
+    }
+
+    suspend fun startRunSession() {
+        cumulativeDurationSeconds = 0
+        val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())
 
         val newRunSession = RunSession(
             runDate = runDate,
@@ -199,7 +208,6 @@ class RunSessionRepository(
         return runSessionDao.getRunSessionById(sessionId)
     }
 
-    // TODO: UPDATE VALUE AS WELL AND PUT IN ANOTHER SCOPE!
     suspend fun calcCaloriesBurned() {
         ensureRepoScope()
         repoScope.launch {
@@ -255,13 +263,15 @@ class RunSessionRepository(
         ensureRepoScope()
         repoScope.launch {
             Log.d("Run Session Repo", "update duration")
-            val currentRunSession = getCurrentSessionOrThrow()
-            while (isActive && currentRunSession.isActive != false) {
+            while (isActive) {
                 try {
                     val currentTime = DateTimeUtils.getCurrentInstant()
-                    val formattedDuration =
-                        StatsUtils.calculateDuration(runSessionStartTime, currentTime)
-                    _duration.emit(formattedDuration)
+                    val currentDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
+                    val totalDurationSeconds = cumulativeDurationSeconds + currentDuration
+
+                    Log.d("calcDuration", "Cumulative: $cumulativeDurationSeconds, Current: $currentDuration, Total: $totalDurationSeconds")
+
+                    _duration.emit(totalDurationSeconds)
 
                     delay(1000)
                 } catch (e: Exception) {

@@ -9,12 +9,12 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 object StatsUtils {
-    fun calculateDuration(startTime: Instant, endTime: Instant = Clock.System.now()): String {
+    fun calculateDuration(startTime: Instant, endTime: Instant = Clock.System.now()): Long {
         val durationInSeconds = endTime.epochSeconds - startTime.epochSeconds
-        return formatDuration(durationInSeconds)
+        return durationInSeconds
     }
 
-    private fun formatDuration(seconds: Long): String {
+    fun formatDuration(seconds: Long): String {
         val hours = seconds / 3600
         val minutes = (seconds % 3600) / 60
         val secs = seconds % 60

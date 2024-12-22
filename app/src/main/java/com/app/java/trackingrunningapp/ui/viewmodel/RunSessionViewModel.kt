@@ -43,8 +43,6 @@ class RunSessionViewModel(
     private var statsUpdateJob: Job? = null
     private var fetchStatsJob: Job? = null
 
-    private var repoScope = CoroutineScope(Job() + Dispatchers.IO)
-
     private var jobMutex = Mutex()
 
     init {
@@ -91,6 +89,9 @@ class RunSessionViewModel(
         }
     }
 
+    fun setRunSessionStartTime() {
+        runSessionRepository.setRunSessionStartTime()
+    }
 
     suspend fun pauseRunSession() {
         statsUpdateJob?.cancelAndJoin()
@@ -114,7 +115,6 @@ class RunSessionViewModel(
                 runSessionRepository.resetStatsValue()
                 runSessionRepository.setRunSessionInactive()
                 Log.d("StatsUpdate", "Stats update finished in finishRunSession")
-                Log.d("finishRunSession()", "stats duration: ${runSessionRepository.duration.value}")
             }
         }
     }
@@ -172,7 +172,7 @@ class RunSessionViewModel(
                     val newPace = runSessionRepository.pace.value
                     val newCaloriesBurned = runSessionRepository.caloriesBurned.value
                     val newDistance = runSessionRepository.distance.value
-                    val newDuration = StatsUtils.durationToSeconds(runSessionRepository.duration.value)
+                    val newDuration = runSessionRepository.duration.value
 
                     runSessionRepository.updateStatsSession(
                         newDistance,

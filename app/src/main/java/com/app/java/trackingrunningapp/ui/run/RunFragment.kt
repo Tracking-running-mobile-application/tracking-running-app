@@ -100,9 +100,9 @@ class RunFragment : Fragment() {
                     runSessionViewModel.initiateRunSession()
                     Log.d("START", "Fetching and updating stats")
                     gpsTrackViewModel.initiateGPSTrack()
+                    runSessionViewModel.setRunSessionStartTime()
 
                     // TODO: insert start tracking and sending gps function
-                    Log.e("Error", "Error5")
                     runSessionViewModel.fetchAndUpdateStats()
                 }
             }
@@ -111,12 +111,27 @@ class RunFragment : Fragment() {
         binding.btnPauseAndResume.setOnClickListener {
             if(isPaused){
                 binding.btnPauseAndResume.text = "Pause"
-                // TODO: do something when continue
                 isPaused = false
+                lifecycleScope.launch {
+                    mutex.withLock {
+                        // TODO: do something when continue
+                        runSessionViewModel.fetchAndUpdateStats()
+                        runSessionViewModel.setRunSessionStartTime()
+                        gpsTrackViewModel.resumeGPSTrack()
+                    }
+                }
             }else{
                 binding.btnPauseAndResume.text = "Resume"
                 // TODO: do something when pause
                 isPaused = true
+                lifecycleScope.launch {
+                    mutex.withLock {
+                        // TODO: do something when continue
+                        runSessionViewModel.fetchAndUpdateStats()
+                        runSessionViewModel.pauseRunSession()
+                        gpsTrackViewModel.stopGPSTrack()
+                    }
+                }
             }
         }
 
@@ -129,12 +144,7 @@ class RunFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: stop gps tracking
-
-                    Log.e("Error", "Error6")
                     runSessionViewModel.fetchAndUpdateStats()
-                    Log.e("Error", "Error8")
-
-                    Log.e("Error", "Error9")
                     gpsTrackViewModel.stopGPSTrack()
                     runSessionViewModel.finishRunSession()
                 }

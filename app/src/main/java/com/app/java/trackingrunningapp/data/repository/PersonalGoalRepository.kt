@@ -39,7 +39,6 @@ class PersonalGoalRepository {
         personalGoalDao.upsertPersonalGoal(existingGoal.copy(goalSessionId = currentSession.sessionId))
     }
 
-
     suspend fun upsertPersonalGoal(
         goalId: Int? = null,
         sessionId: Int? = null,
