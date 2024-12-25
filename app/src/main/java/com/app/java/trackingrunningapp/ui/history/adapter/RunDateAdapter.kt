@@ -8,12 +8,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.model.dataclass.history.RunDate
+import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.ui.history.OnItemHistoryRunClickListener
 
 class RunDateAdapter(
+    private val runDates: MutableList<RunDate> = mutableListOf(),
     private val itemRunListener: OnItemHistoryRunClickListener
 ) : RecyclerView.Adapter<RunDateAdapter.RunDateViewHolder>() {
-    private val runDates = mutableListOf<RunDate>()
     inner class RunDateViewHolder(
         view: View,
         private val listener: OnItemHistoryRunClickListener
@@ -24,7 +25,7 @@ class RunDateAdapter(
         fun bind(runDate: RunDate) {
             dateTextView.text = runDate.date
             // set up run adapter
-            val runAdapter = RunAdapter(listener)
+            val runAdapter = RunAdapter(runDate.runs,listener)
             runAdapter.updateRunHistory(runDate.runs)
             runRecycler.adapter = runAdapter
         }

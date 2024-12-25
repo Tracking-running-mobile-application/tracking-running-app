@@ -9,12 +9,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.model.dataclass.history.Run
+import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.ui.history.OnItemHistoryRunClickListener
 
 class RunAdapter(
+    private val runs: MutableList<Run>,
     private val listener: OnItemHistoryRunClickListener
 ) : RecyclerView.Adapter<RunAdapter.RunViewHolder>() {
-    private val runs = mutableListOf<Run>()
     inner class RunViewHolder(
         itemView: View,
         private val listener: OnItemHistoryRunClickListener
@@ -24,8 +25,9 @@ class RunAdapter(
         private val icStar = itemView.findViewById<ImageButton>(R.id.ic_star)
         private val icStarSelected = itemView.findViewById<ImageButton>(R.id.ic_star_selected)
 
+        @SuppressLint("SetTextI18n")
         fun bind(itemRun: Run) {
-            runTime.text = itemRun.runTime // change to time
+            runTime.text = itemRun.runTime// change to time
             runDistance.text = itemRun.distance
             icStar.setOnClickListener {
                 icStar.visibility = View.GONE
@@ -44,15 +46,16 @@ class RunAdapter(
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateRunHistory(listRun: List<Run>){
+    fun updateRunHistory(listRun: MutableList<Run>) {
         runs.clear()
         runs.addAll(listRun)
         notifyDataSetChanged()
     }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RunViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_history_run, parent, false)
-        return RunViewHolder(view,listener)
+        return RunViewHolder(view, listener)
     }
 
     override fun onBindViewHolder(holder: RunViewHolder, position: Int) {
@@ -62,7 +65,7 @@ class RunAdapter(
 
     override fun getItemCount(): Int = runs.size
 
-    companion object{
+    companion object {
         const val FAVOURITE_ADD = 1
         const val FAVOURITE_REMOVE = 2
     }
