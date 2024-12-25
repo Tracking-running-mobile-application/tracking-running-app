@@ -17,17 +17,15 @@ import com.app.java.trackingrunningapp.data.model.dataclass.history.RunDate
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.databinding.FragmentHistoryBinding
 import com.app.java.trackingrunningapp.ui.history.adapter.RunAdapter
-import com.app.java.trackingrunningapp.ui.history.adapter.RunDateAdapter
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
-import com.mapbox.maps.extension.style.expressions.dsl.generated.distance
 
 class HistoryFragment : Fragment() {
     private lateinit var binding: FragmentHistoryBinding
-    private lateinit var runDateAdapter: RunDateAdapter
+    private lateinit var runDateAdapter: RunAdapter
     private lateinit var runAdapter: RunAdapter
     private lateinit var containerLayout: View
     private lateinit var runSessionViewModel: RunSessionViewModel
@@ -46,7 +44,10 @@ class HistoryFragment : Fragment() {
         //it should only be true when the user click show more !!
 
         runSessionViewModel.fetchRunSessions(fetchMore = false)
-        setupViewModel()
+
+        runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
+            setupAdapter(sessions)
+        }
 
         // hasMoreData == true then show more option appears, else disappear
         runSessionViewModel.hasMoreData.observe(viewLifecycleOwner) { hasMoreData ->
@@ -63,29 +64,10 @@ class HistoryFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupViewModel() {
-        runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
-            Log.d("History Fragment Log", "Observed Sessions: ${sessions.size}")
-            val runDates = mutableListOf<RunDate>()
-            if (sessions.isNotEmpty()) {
-                for (session in sessions) {
-                  if(session.sessionId == 1){
-
-                  }
-                }
-            }
-
-            setupAdapter(runDates)
-        }
-    }
-
-//        val runDates = generateSampleData()
-
-    private fun setupAdapter(runDates: MutableList<RunDate>) {
-        Log.d("adapter", "$runDates")
+    private fun setupAdapter(runs: List<RunSession>) {
         containerLayout = binding.containerLayoutHistory
-        runDateAdapter = RunDateAdapter(runDates, object : OnItemHistoryRunClickListener {
-            override fun onItemClick(itemRun: Run) {
+        runDateAdapter = RunAdapter(runs, object : OnItemHistoryRunClickListener {
+            override fun onItemClick(itemRun: RunSession) {
                 findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment)
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
                     View.GONE
@@ -115,6 +97,7 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupRecyclerHistory()
         setupToolbarHistory()
     }
 
@@ -138,13 +121,13 @@ class HistoryFragment : Fragment() {
     }
 
     private fun setUpRefreshing() {
-//        binding.swipeRefreshLayout.setOnRefreshListener {
-//            val newRunDates = generateSampleData() // Replace with API or database fetch logic
-//            // update
-//            runDateAdapter.updateRunDate(newRunDates)
-//            // Stop the refresh indicator
-//            binding.swipeRefreshLayout.isRefreshing = false
-//        }
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            // val newRunDates = generateSampleData() // Replace with API or database fetch logic
+            // update
+            //   runDateAdapter.updateRunDate(newRunDates)
+            // Stop the refresh indicator
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     private fun setupRunDate() {
@@ -162,7 +145,7 @@ class HistoryFragment : Fragment() {
                     )
                 ).build()
         dateRangePicker.addOnPositiveButtonClickListener {
-            // TODO: Do something when select start, end date
+            // TODO: Do something when select start, end date 
         }
         dateRangePicker.show(requireActivity().supportFragmentManager, "calendar")
     }

@@ -14,7 +14,7 @@ object StatsUtils {
         return formatDuration(durationInSeconds)
     }
 
-    private fun formatDuration(seconds: Long): String {
+    fun formatDuration(seconds: Long): String {
         val hours = seconds / 3600
         val minutes = (seconds % 3600) / 60
         val secs = seconds % 60
