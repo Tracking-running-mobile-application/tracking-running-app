@@ -4,25 +4,18 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
+import android.text.TextUtils.TruncateAt
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
-import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
-import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
-import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
-import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -32,23 +25,18 @@ import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
-    private var isPaused:Boolean = true
+    private var isPaused: Boolean = true
+    private var isTracking: Boolean = false
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
-    private lateinit var runSessionViewModel: RunSessionViewModel
-    private lateinit var gpsTrackViewModel: GPSTrackViewModel
-
-    private var mutex = Mutex()
-
+    private var indicatorListener: OnIndicatorPositionChangedListener? = null
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val allGranted = permissions.all {
@@ -71,19 +59,12 @@ class RunFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
-        runSessionViewModel = ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
-
-        val gpsTrackFactory = GPSTrackViewModelFactory(InitDatabase.gpsTrackRepository)
-        gpsTrackViewModel = ViewModelProvider(this, gpsTrackFactory).get(GPSTrackViewModel::class.java)
-
         binding = FragmentRunBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initArrowAction()
         setupPermission()
         setupActionRun()
     }
@@ -91,64 +72,9 @@ class RunFragment : Fragment() {
     private fun setupActionRun() {
         binding.btnStartTracking.setOnClickListener{
             binding.btnStartTracking.visibility = View.GONE
-            binding.btnPauseAndResume.visibility = View.VISIBLE
-            binding.btnStopTracking.visibility = View.VISIBLE
-            // TODO: do something when start
-            lifecycleScope.launch {
-                mutex.withLock {
-                    Log.d("START", "Initiating session and GPS tracking")
-                    runSessionViewModel.initiateRunSession()
-                    Log.d("START", "Fetching and updating stats")
-                    gpsTrackViewModel.initiateGPSTrack()
-                    runSessionViewModel.setRunSessionStartTime()
+            startTracking()
+            it.findNavController().navigate(R.id.action_runFragment_to_runningFragment)
 
-                    // TODO: insert start tracking and sending gps function
-                    runSessionViewModel.fetchAndUpdateStats()
-                }
-            }
-        }
-
-        binding.btnPauseAndResume.setOnClickListener {
-            if(isPaused){
-                binding.btnPauseAndResume.text = "Pause"
-                isPaused = false
-                lifecycleScope.launch {
-                    mutex.withLock {
-                        // TODO: do something when resume
-                        runSessionViewModel.setRunSessionStartTime()
-                        runSessionViewModel.fetchAndUpdateStats()
-                        gpsTrackViewModel.resumeGPSTrack()
-                    }
-                }
-            }else{
-                binding.btnPauseAndResume.text = "Resume"
-                // TODO: do something when pause
-                isPaused = true
-                lifecycleScope.launch {
-                    mutex.withLock {
-                        // TODO: do something when pause
-                        runSessionViewModel.fetchAndUpdateStats()
-                        runSessionViewModel.pauseRunSession()
-                        gpsTrackViewModel.stopGPSTrack()
-                    }
-                }
-            }
-        }
-
-        binding.btnStopTracking.setOnClickListener {
-            binding.btnPauseAndResume.visibility = View.GONE
-            isPaused = true
-            binding.btnStopTracking.visibility = View.GONE
-            binding.btnStartTracking.visibility = View.VISIBLE
-            // TODO: Do something when stop
-            lifecycleScope.launch {
-                mutex.withLock {
-                    // TODO: stop gps tracking
-                    runSessionViewModel.fetchAndUpdateStats()
-                    gpsTrackViewModel.stopGPSTrack()
-                    runSessionViewModel.finishRunSession()
-                }
-            }
         }
     }
 
@@ -170,21 +96,8 @@ class RunFragment : Fragment() {
             requestPermissionsLauncher.launch(permissions)
         }
     }
-    private fun initArrowAction() {
-        binding.icArrowUp.setOnClickListener {
-            binding.icArrowDown.visibility = View.VISIBLE
-            binding.icArrowUp.visibility = View.GONE
-            binding.layoutMetric.root.visibility = View.GONE
-        }
-        binding.icArrowDown.setOnClickListener {
-            binding.icArrowUp.visibility = View.VISIBLE
-            binding.icArrowDown.visibility = View.GONE
-            binding.layoutMetric.root.visibility = View.VISIBLE
-        }
-    }
-
     private fun initMapAndLocation() {
-        // Setup rout drawing
+        // Setup route drawing
         mapView = binding.mapView
         annotationApi = mapView.annotations
         polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
@@ -195,15 +108,71 @@ class RunFragment : Fragment() {
             locationComponentPlugin.updateSettings {
                 this.enabled = true
             }
-            locationComponentPlugin.addOnIndicatorPositionChangedListener { point ->
-                routeCoordinates.add(point)
-                drawRoute()
-                mapView.mapboxMap.setCamera(
-                    CameraOptions.Builder().center(point).zoom(15.0).build()
-                )
-            }
+
+            // Listen for the first location update to zoom in but don't track yet
+            locationComponentPlugin.addOnIndicatorPositionChangedListener(object :
+                OnIndicatorPositionChangedListener {
+                override fun onIndicatorPositionChanged(point: Point) {
+                    // Zoom to the initial position
+                    mapView.mapboxMap.setCamera(
+                        CameraOptions.Builder()
+                            .center(point) // Set initial camera position
+                            .zoom(15.0) // Zoom level
+                            .build()
+                    )
+
+                    // Remove the listener after the initial zoom
+                    locationComponentPlugin.removeOnIndicatorPositionChangedListener(this)
+                }
+            })
         }
     }
+
+    private fun startTracking() {
+        if (!isTracking) {
+            isTracking = true
+            // Clear previous route coordinates if restarting
+            routeCoordinates.clear()
+
+            // Set up the location listener for tracking
+            val locationComponentPlugin = mapView.location
+            locationComponentPlugin.updateSettings {
+                this.enabled = true // Enable location updates
+            }
+            indicatorListener = OnIndicatorPositionChangedListener { point ->
+            // TODO: Implement pause mechanism
+                routeCoordinates.add(point)
+
+                // TODO: Save <<point>> to database
+
+                // Draw the route
+                drawRoute()
+            }
+            // Add the listener to start tracking
+            indicatorListener?.let { locationComponentPlugin.addOnIndicatorPositionChangedListener(it) }
+        }
+    }
+
+    private fun stopTracking() {
+        if (isTracking) {
+            isTracking = false
+
+            // Remove the location listener
+            val locationComponentPlugin = mapView.location
+
+            indicatorListener?.let {
+                locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
+            }
+            indicatorListener = null // Clear the reference
+
+            // Clear the route from the map
+            polylineAnnotationManager.deleteAll()
+
+            // Clear the routeCoordinates list
+            routeCoordinates.clear()
+        }
+    }
+
     private fun drawRoute() {
         polylineAnnotationManager.deleteAll()
         val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
@@ -211,11 +180,7 @@ class RunFragment : Fragment() {
             .withLineColor("#FF0000")
             .withLineWidth(5.0)
         polylineAnnotationManager.create(polylineAnnotationOptions)
-    }
-    override fun onStop() {
-        super.onStop()
-        binding.icArrowDown.visibility = View.GONE
-        // pop to profile
-        this.findNavController().popBackStack(R.id.profileFragment,false)
+
+        // TODO: Save <<point>> to database
     }
 }

@@ -42,14 +42,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.45" />
+        app:layout_constraintGuide_percent="0.43" />
 
     <Button
         android:id="@+id/btn_start_training"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/background_medium_button"
         android:foreground="?attr/selectableItemBackground"
@@ -64,14 +64,14 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/text_plan_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:lineSpacingExtra="4dp"
-        android:textSize="14sp"
         android:text="Beginner Run recommend the best-plan for the new-runner. Choose this if you are new."
         android:textColor="@color/white"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/plan_title"
         app:layout_constraintStart_toStartOf="@+id/plan_title"
         app:layout_constraintTop_toBottomOf="@+id/plan_title" />
@@ -81,16 +81,17 @@
         android:id="@+id/cardView2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/primary_gray"
         app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView3"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cardView3">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="14dp">
@@ -98,6 +99,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_clock" />
 
             <LinearLayout
@@ -109,14 +111,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Est. Time"
-                    android:textColor="@color/white" />
+                    android:text="Est.Time"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:id="@+id/text_plan_estimate_time"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8"
-                    android:text="1 hour"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/text_estimate_time"
                     android:textColor="@color/white" />
             </LinearLayout>
         </LinearLayout>
@@ -127,13 +131,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/primary_gray"
         app:cardCornerRadius="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/cardView2">
+        app:layout_constraintTop_toBottomOf="@+id/text_plan_description">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -144,6 +148,7 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:src="@drawable/ic_plan_chart" />
 
             <LinearLayout
@@ -155,14 +160,16 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rec. Pace"
-                    android:textColor="@color/white" />
+                    android:text="@string/text_distance"
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
                 <TextView
+                    android:id="@+id/text_plan_target_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_8"
-                    android:text="3 min/km"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/text_target_distance"
                     android:textColor="@color/white" />
             </LinearLayout>
         </LinearLayout>
@@ -180,13 +187,13 @@
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
         android:layout_height="24dp"
-        android:thumb="@drawable/custom_thumb"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
-        android:splitTrack="false"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:max="20"
         android:progressDrawable="@drawable/custom_progress_bar"
+        android:splitTrack="false"
+        android:thumb="@drawable/custom_thumb"
+        app:layout_constraintBottom_toTopOf="@+id/tv_progress_desc"
         app:layout_constraintEnd_toEndOf="@+id/cardView3"
         app:layout_constraintStart_toStartOf="@+id/cardView2"
         app:layout_constraintTop_toBottomOf="@+id/cardView2" />
@@ -195,23 +202,23 @@
         android:id="@+id/tv_progress_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
         android:text="Let’s start running with us!"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/btn_start_training"
         app:layout_constraintEnd_toEndOf="@+id/progressBar"
-        app:layout_constraintStart_toStartOf="@+id/progressBar"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+        app:layout_constraintStart_toStartOf="@+id/progressBar" />
 
     <Button
         android:id="@+id/btn_cancel_plan"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:background="@drawable/background_medium_button"
         android:text="Cancel the Plan"
+        android:textColor="@color/text_shadow_white"
         android:textSize="16sp"
         android:theme="@style/MediumButton"
         android:visibility="invisible"

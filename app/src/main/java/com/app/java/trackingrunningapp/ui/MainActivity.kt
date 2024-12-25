@@ -5,6 +5,7 @@ import android.widget.TextView
 import android.widget.Toast
 
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -48,6 +49,8 @@ class MainActivity : AppCompatActivity() {
                 onBackPressedDispatcher.onBackPressed()
             }
             val icSettings = binding.toolbarMain.menu.findItem(R.id.item_toolbar_setting)
+            val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
+            val icEdit = binding.toolbarMain.menu.findItem(R.id.item_toolbar_edit)
             when (destination.id) {
                 R.id.homeFragment -> {
                     tvTitle.text = getString(R.string.text_home)
@@ -62,30 +65,31 @@ class MainActivity : AppCompatActivity() {
                         navController.navigate(R.id.action_homeFragment_to_settingFragment2)
                         true
                     }
+                    binding.bottomNav.isVisible = true
                 }
                 R.id.profileFragment -> {
                     tvTitle.text = getString(R.string.text_profile)
-                    binding.toolbarMain.setNavigationIcon(R.drawable.ic_edit)
-                    binding.toolbarMain.setNavigationOnClickListener {
+                    icEdit.isVisible = true
+                    icEdit.setOnMenuItemClickListener {
                         navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
-                    }
-                    // navigate to setting
-                    icSettings.setOnMenuItemClickListener{
-                        navController.navigate(R.id.action_profileFragment_to_settingFragment)
                         true
                     }
+                    binding.bottomNav.isVisible = true
                 }
                 R.id.runFragment -> {
+                    icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_run)
+                    binding.bottomNav.isVisible = true
                 }
                 R.id.statisticFragment -> {
+                    icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_statistics)
+                    binding.bottomNav.isVisible = true
                 }
                 R.id.historyFragment -> {
                     tvTitle.text = getString(R.string.text_history)
-                    val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
                     icFilter.isVisible = true
-                    icSettings.isVisible = false
+                    binding.bottomNav.isVisible = true
                 }
             }
         }

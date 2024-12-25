@@ -86,7 +86,6 @@
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="@+id/card_view_home"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_training_plans"
             app:layout_constraintTop_toBottomOf="@id/tv_training_plans"
             tools:listitem="@layout/item_training_plan" />
@@ -96,7 +95,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="DAILY TASKS"
+            android:text="PERSONAL GOALS"
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
@@ -104,11 +103,13 @@
             app:layout_constraintTop_toBottomOf="@id/rv_training_plans" />
 
         <ImageView
-            android:id="@+id/ic_add"
+            android:id="@+id/ic_add_goal"
+            android:clickable="true"
             android:layout_width="24dp"
+            android:foreground="?attr/selectableItemBackground"
             android:layout_height="24dp"
             android:layout_marginEnd="16dp"
-            android:contentDescription="Add Daily Task"
+            android:contentDescription="PERSONAL GOALS"
             android:src="@drawable/ic_add"
             app:layout_constraintBottom_toBottomOf="@id/tv_daily_task"
             app:layout_constraintEnd_toEndOf="parent"
@@ -124,7 +125,7 @@
             app:layout_constraintEnd_toEndOf="@+id/rv_training_plans"
             app:layout_constraintStart_toStartOf="@+id/rv_training_plans"
             app:layout_constraintTop_toBottomOf="@id/tv_daily_task"
-            tools:listitem="@layout/item_daily_task" />
+            tools:listitem="@layout/item_personal_goal" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

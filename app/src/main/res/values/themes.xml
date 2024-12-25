@@ -22,4 +22,11 @@
     <style name="ThemeMaterialCalendar" parent="ThemeOverlay.Material3.MaterialCalendar">
         <item name="android:windowFullscreen">false</item>
     </style>
+
+    <style name="CardView" parent="Widget.MaterialComponents.CardView">
+    </style>
+
+    <style name="BottomNavBackground" parent="Widget.Material3.BottomNavigationView">
+        <item name="colorOnSurfaceVariant">@color/text_shadow_white</item>
+    </style>
 </resources>

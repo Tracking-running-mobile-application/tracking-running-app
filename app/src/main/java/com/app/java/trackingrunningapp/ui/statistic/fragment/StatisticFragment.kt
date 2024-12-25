@@ -30,7 +30,7 @@ class StatisticFragment : Fragment() {
     private fun initPager2() {
         val pagerAdapter = PagerAdapter(this)
         binding.pagerStatistic.adapter = pagerAdapter
-        val titles = listOf("Today", "Week", "Month")
+        val titles = listOf("Weekly", "Monthly", "Yearly")
         TabLayoutMediator(binding.tabLayoutStatistic, binding.pagerStatistic)
         { tab, position ->
             tab.text = titles[position]

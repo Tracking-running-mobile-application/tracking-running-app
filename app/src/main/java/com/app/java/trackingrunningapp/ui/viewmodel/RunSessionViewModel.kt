@@ -2,6 +2,7 @@ package com.app.java.trackingrunningapp.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
@@ -14,6 +15,7 @@ import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -24,13 +26,13 @@ class RunSessionViewModel(
     private val runSessionRepository: RunSessionRepository,
 ): ViewModel() {
     private val _filteredSessions = MutableStateFlow<List<RunSession>>(emptyList())
-    val filteredSession: StateFlow<List<RunSession>> = _filteredSessions
+    val filteredSession = _filteredSessions.asLiveData()
 
     private val _runSessions = MutableStateFlow<List<RunSession>>(emptyList())
-    val runSessions: StateFlow<List<RunSession>> = _runSessions
+    val runSessions = _runSessions.asLiveData()
 
     private val _hasMoreData = MutableStateFlow(true)
-    val hasMoreData: StateFlow<Boolean> = _hasMoreData
+    val hasMoreData = _hasMoreData.asLiveData()
 
     private val _favoriteRunSessions = MutableStateFlow<List<RunSession?>>(emptyList())
     val favoriteRunSessions : StateFlow<List<RunSession?>> = _favoriteRunSessions
@@ -53,7 +55,7 @@ class RunSessionViewModel(
     fun filterSessionsByDateRange(startDate: String, endDate: String) {
         viewModelScope.launch {
             try {
-                val sessions = runSessionRepository.filterRunningSessionByDay(startDate, endDate)
+                val sessions= runSessionRepository.filterRunningSessionByDay(startDate, endDate)
                 _filteredSessions.value = sessions
             } catch(e: Exception) {
                 println("Error filtering sessions: ${e.message}")
@@ -61,7 +63,7 @@ class RunSessionViewModel(
         }
     }
 
-    private fun fetchRunSessions(fetchMore: Boolean = false) {
+    fun fetchRunSessions(fetchMore: Boolean = false) {
         viewModelScope.launch {
             val (newSessions, hasMore) = runSessionRepository.getAllRunSessions(fetchMore)
 

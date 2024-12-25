@@ -3,9 +3,11 @@ package com.app.java.trackingrunningapp.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class UserViewModel(
@@ -14,8 +16,6 @@ class UserViewModel(
 
     private val _userLiveData = MutableLiveData<User?>()
     val userLiveData: LiveData<User?> = _userLiveData
-
-
     fun upsertUserInfo(
         name: String?,
         age: Int?,
@@ -24,7 +24,7 @@ class UserViewModel(
         metricPreference: String? = User.KILOGRAM,
         unit: String? = User.UNIT_KM
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val user = User(
                 userId = 1,
                 name = name,
@@ -40,7 +40,7 @@ class UserViewModel(
     }
 
     private fun fetchUserInfo() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val user = userRepository.getUserInfo()
             if (user != null ) {
                 _userLiveData.postValue(user)

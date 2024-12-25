@@ -4,25 +4,42 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.dataclass.home.DailyTask
+import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.dataclass.home.PersonalGoal
 import com.app.java.trackingrunningapp.data.model.dataclass.home.TrainingPlan
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
-import com.app.java.trackingrunningapp.ui.home.training.DailyTasksAdapter
-import com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment
+import com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment
+import com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalAdapter
+import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var trainingPlanViewModel: TrainingPlanViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val planFactory = TrainingPlanViewModelFactory(
+            InitDatabase.trainingPlanRepository,
+            InitDatabase.notificationRepository,
+            InitDatabase.runSessionRepository
+        )
+        trainingPlanViewModel =
+            ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
+
+        // fetch data
+        trainingPlanViewModel.fetchRecommendedPlans()
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -30,36 +47,38 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpTrainingPlanRecycler()
-        setUpDailyTaskRecycler()
+        setUpPersonalGoal()
     }
 
-    private fun setUpDailyTaskRecycler() {
+    private fun setUpPersonalGoal() {
         // Create a list of DailyTask objects
         val dailyTasks = listOf(
-            DailyTask(
+            PersonalGoal(
                 "Beginner Run", "20 minutes", "Daily",
                 R.drawable.img_beginner
             ),
-            DailyTask(
+            PersonalGoal(
                 "My Run 1", "40 minutes", "Monday, Wednesday, Friday",
                 R.drawable.img_intermediate
             ),
-            DailyTask(
+            PersonalGoal(
                 "My Run 2", "10 minutes", "Daily",
                 R.drawable.img_advanced
             ),
-            DailyTask(
+            PersonalGoal(
                 "My Run 3", "30 minutes", "Daily",
                 R.drawable.img_advanced
             )
         )
-
-        binding.rvDailyTask.adapter = DailyTasksAdapter(dailyTasks,
-            object : DailyTasksAdapter.OnItemDailyTaskListener {
-                override fun onClick(dailyTask: DailyTask) {
+        binding.rvDailyTask.adapter = PersonalGoalAdapter(dailyTasks,
+            object : PersonalGoalAdapter.OnItemPersonalGoalListener {
+                override fun onClick(dailyTask: PersonalGoal) {
                     dailyTask.isClicked++
                 }
             })
+        binding.icAddGoal.setOnClickListener {
+            it.findNavController().navigate(R.id.action_homeFragment_to_personalGoalFragment)
+        }
     }
 
     private fun setUpTrainingPlanRecycler() {
@@ -68,27 +87,29 @@ class HomeFragment : Fragment() {
             TrainingPlan("Intermediate Run", R.drawable.img_intermediate),
             TrainingPlan("Advanced Run", R.drawable.img_advanced)
         )
-        // adapter and click event
+//        val trainingPlans = mutableListOf<TrainingPlan>()
+        // beginner
         binding.rvTrainingPlans.adapter = HomeTrainingPlanAdapter(trainingPlans,
             object : HomeTrainingPlanAdapter.OnItemTrainingClickListener {
                 override fun onClick(trainingPlan: TrainingPlan) {
                     val bundle = Bundle().apply {
                         this.putString(
-                            TrainingPlanFragment.EXTRA_TITLE_TRAINING_PLAN,
+                            ListTrainingPlanFragment.EXTRA_TITLE_PLAN,
                             trainingPlan.name
                         )
                     }
-                    this@HomeFragment.findNavController()
-                        .navigate(R.id.action_homeFragment_to_trainingPlans, bundle)
-                    requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
-                        .visibility = View.GONE
+                    findNavController()
+                        .navigate(R.id.action_homeFragment_to_listTrainingPlanFragment, bundle)
                 }
             })
     }
 
     override fun onStop() {
         super.onStop()
-        // pop to profile
-        this.findNavController().popBackStack(R.id.profileFragment,false)
+        val toolbar = requireActivity()
+            .findViewById<Toolbar>(R.id.toolbar_main)
+        // hide setting
+        val itemSetting = toolbar.menu.findItem(R.id.item_toolbar_setting)
+        itemSetting.isVisible = false
     }
 }

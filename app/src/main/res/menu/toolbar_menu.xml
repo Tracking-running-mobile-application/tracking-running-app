@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/item_toolbar_edit"
+        android:icon="@drawable/ic_edit"
+        android:title="Edit"
+        android:visible="false"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/item_toolbar_filter"
         android:icon="@drawable/ic_filter"
         android:title="Filter"
@@ -10,7 +16,8 @@
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/item_toolbar_setting"
-        android:icon="@drawable/ic_settings"
+        android:icon="@drawable/ic_setting"
         android:title="Settings"
+        android:visible="false"
         app:showAsAction="ifRoom" />
 </menu>
