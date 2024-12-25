@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:clickable="true"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_history_date" />
+            tools:listitem="@layout/item_history_run" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

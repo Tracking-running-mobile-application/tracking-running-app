@@ -148,12 +148,6 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline16"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textView22"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="requireActivity().findViewById&lt;BottomNavigationView>(R.id.bottom_nav).isVisible = false" />
-
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btn_goal_save"
         android:layout_width="0dp"

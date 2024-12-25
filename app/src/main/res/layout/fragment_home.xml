@@ -86,7 +86,6 @@
             android:orientation="horizontal"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="@+id/card_view_home"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tv_training_plans"
             app:layout_constraintTop_toBottomOf="@id/tv_training_plans"
             tools:listitem="@layout/item_training_plan" />

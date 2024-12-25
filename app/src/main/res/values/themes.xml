@@ -24,6 +24,9 @@
     </style>
 
     <style name="CardView" parent="Widget.MaterialComponents.CardView">
+    </style>
 
+    <style name="BottomNavBackground" parent="Widget.Material3.BottomNavigationView">
+        <item name="colorOnSurfaceVariant">@color/text_shadow_white</item>
     </style>
 </resources>

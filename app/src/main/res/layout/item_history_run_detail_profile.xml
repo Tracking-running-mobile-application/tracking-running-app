@@ -7,6 +7,7 @@
     android:elevation="@dimen/margin_8"
     style="@style/CardView"
     app:strokeColor="@color/main_yellow"
+    app:strokeWidth="2dp"
     android:backgroundTint="@color/primary_gray"
     app:cardCornerRadius="@dimen/margin_16">
 

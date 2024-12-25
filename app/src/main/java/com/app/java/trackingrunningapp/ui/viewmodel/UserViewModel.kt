@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class UserViewModel(
@@ -15,21 +16,6 @@ class UserViewModel(
 
     private val _userLiveData = MutableLiveData<User?>()
     val userLiveData: LiveData<User?> = _userLiveData
-
-    class Factory(
-        private val userRepository: UserRepository
-    ):ViewModelProvider.Factory{
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            if(modelClass.isAssignableFrom(UserViewModel::class.java)){
-                @Suppress("UNCHECKED_CAST")
-                return UserViewModel(userRepository) as T
-            }
-            else{
-                throw IllegalArgumentException("Unknown Viewmodel")
-            }
-        }
-    }
-
     fun upsertUserInfo(
         name: String?,
         age: Int?,
@@ -38,7 +24,7 @@ class UserViewModel(
         metricPreference: String? = User.KILOGRAM,
         unit: String? = User.UNIT_KM
     ) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val user = User(
                 userId = 1,
                 name = name,
@@ -54,7 +40,7 @@ class UserViewModel(
     }
 
     private fun fetchUserInfo() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val user = userRepository.getUserInfo()
             if (user != null ) {
                 _userLiveData.postValue(user)

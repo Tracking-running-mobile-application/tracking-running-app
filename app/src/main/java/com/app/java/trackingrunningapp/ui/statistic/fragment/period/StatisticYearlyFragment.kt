@@ -19,16 +19,13 @@ import com.google.android.material.tabs.TabLayout
 class StatisticYearlyFragment : Fragment() {
     private lateinit var binding:FragmentStatisticYearlyBinding
     private lateinit var runSessionViewModel: RunSessionViewModel
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStatisticYearlyBinding.inflate(inflater,container,false)
-        return binding.root
-    }
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-//        initViewModel()
+
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
@@ -55,6 +52,10 @@ class StatisticYearlyFragment : Fragment() {
                 Log.e("Error", "No session found in given dates")
             }
         }
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
     }
 
 

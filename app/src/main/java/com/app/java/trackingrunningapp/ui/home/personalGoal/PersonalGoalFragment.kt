@@ -25,6 +25,7 @@ class PersonalGoalFragment : Fragment() {
     ): View {
         binding = FragmentPersonalGoalBinding.inflate(inflater, container, false)
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
+        requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = "Personal Goal"
         return binding.root
     }
 

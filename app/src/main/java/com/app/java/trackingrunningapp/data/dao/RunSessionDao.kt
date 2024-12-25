@@ -17,7 +17,7 @@ interface RunSessionDao {
         """
         SELECT * 
         FROM RunSession 
-        ORDER BY runDate DESC
+        ORDER BY runDate DESC, sessionId DESC
         LIMIT :limit OFFSET :offset
         """)
     suspend fun getAllRunSessions(limit: Int, offset: Int): List<RunSession>

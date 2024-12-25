@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -12,6 +13,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -22,10 +24,10 @@ class RunSessionViewModel(
     val filteredSession = _filteredSessions.asLiveData()
 
     private val _runSessions = MutableStateFlow<List<RunSession>>(emptyList())
-    val runSessions: StateFlow<List<RunSession>> = _runSessions
+    val runSessions = _runSessions.asLiveData()
 
     private val _hasMoreData = MutableStateFlow(true)
-    val hasMoreData: StateFlow<Boolean> = _hasMoreData
+    val hasMoreData = _hasMoreData.asLiveData()
 
     private val _favoriteRunSessions = MutableStateFlow<List<RunSession?>>(emptyList())
     val favoriteRunSessions : StateFlow<List<RunSession?>> = _favoriteRunSessions
@@ -53,7 +55,7 @@ class RunSessionViewModel(
         }
     }
 
-    private fun fetchRunSessions(fetchMore: Boolean = false) {
+    fun fetchRunSessions(fetchMore: Boolean = false) {
         viewModelScope.launch {
             val (newSessions, hasMore) = runSessionRepository.getAllRunSessions(fetchMore)
 
