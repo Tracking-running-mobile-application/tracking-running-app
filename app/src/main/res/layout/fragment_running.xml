@@ -7,17 +7,35 @@
 
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/btn_pause_and_resume"
+        android:id="@+id/btn_pause"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="24dp"
         android:backgroundTint="@color/black"
-        android:text="Pause"
+        android:clickable="true"
+        android:text="@string/text_pause"
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
         android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline13"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/btn_resume"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/black"
+        android:clickable="true"
+        android:text="Resume"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline13"
         app:layout_constraintStart_toStartOf="parent" />
@@ -33,10 +51,10 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_pause_and_resume"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_pause"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline13"
-        app:layout_constraintTop_toTopOf="@+id/btn_pause_and_resume" />
+        app:layout_constraintTop_toTopOf="@+id/btn_pause" />
 
     <FrameLayout
         android:id="@+id/frameLayout"

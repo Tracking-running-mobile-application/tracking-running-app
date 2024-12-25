@@ -71,4 +71,5 @@
     <string name="text_target_distance">%.2f km</string>
     <string name="enter_plan_here">Plan here</string>
     <string name="objective">Objective</string>
+    <string name="text_pause">Pause</string>
 </resources>
