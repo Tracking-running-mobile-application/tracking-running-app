@@ -83,6 +83,7 @@ class RunSessionViewModel(
 
     suspend fun initiateRunSession() {
         try {
+            runSessionRepository.resetStatsValue()
             runSessionRepository.startRunSession()
         } catch(e: Exception) {
             println("Error starting session: ${e.message}")
@@ -90,20 +91,20 @@ class RunSessionViewModel(
     }
 
     fun setRunSessionStartTime() {
-        runSessionRepository.setRunSessionStartTime()
+        viewModelScope.launch(Dispatchers.IO) {
+            runSessionRepository.setRunSessionStartTime()
+        }
     }
 
     suspend fun pauseRunSession() {
         statsUpdateJob?.cancelAndJoin()
         fetchStatsJob?.cancelAndJoin()
         runSessionRepository.stopUpdatingStats()
-        Log.d("StatsUpdate", "Stats update paused")
     }
 
     suspend fun fetchAndUpdateStats() {
         updateStats()
         fetchStatsCurrentSession()
-        Log.d("StatsUpdate", "Stats update resumed")
     }
 
     fun finishRunSession() {
@@ -159,10 +160,8 @@ class RunSessionViewModel(
 
     private suspend fun updateStats() {
         statsUpdateJob?.cancelAndJoin()
-        Log.d("updateStats()", "ARE U UPDATING")
         statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
-                Log.d("updateStats() RunSessionVM", "ARE U UPDATING (YES)")
                 try {
                     runSessionRepository.calcDuration()
                     runSessionRepository.calcPace()

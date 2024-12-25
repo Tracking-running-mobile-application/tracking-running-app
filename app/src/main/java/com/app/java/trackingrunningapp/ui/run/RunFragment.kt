@@ -114,9 +114,9 @@ class RunFragment : Fragment() {
                 isPaused = false
                 lifecycleScope.launch {
                     mutex.withLock {
-                        // TODO: do something when continue
-                        runSessionViewModel.fetchAndUpdateStats()
+                        // TODO: do something when resume
                         runSessionViewModel.setRunSessionStartTime()
+                        runSessionViewModel.fetchAndUpdateStats()
                         gpsTrackViewModel.resumeGPSTrack()
                     }
                 }
@@ -126,7 +126,7 @@ class RunFragment : Fragment() {
                 isPaused = true
                 lifecycleScope.launch {
                     mutex.withLock {
-                        // TODO: do something when continue
+                        // TODO: do something when pause
                         runSessionViewModel.fetchAndUpdateStats()
                         runSessionViewModel.pauseRunSession()
                         gpsTrackViewModel.stopGPSTrack()
