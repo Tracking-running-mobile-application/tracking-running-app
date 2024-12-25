@@ -30,7 +30,7 @@ import com.mapbox.maps.plugin.locationcomponent.location
 
 class RunningFragment : Fragment() {
     private lateinit var binding:FragmentRunningBinding
-    private var isPaused:Boolean = true
+    private var isPaused: Boolean = false
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
@@ -61,28 +61,27 @@ class RunningFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+//        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         initArrowAction()
         setupPermission()
         setupActionRun()
     }
 
     private fun setupActionRun() {
-        binding.btnPauseAndResume.setOnClickListener {
-            if(isPaused){
-                binding.btnPauseAndResume.text = "Pause"
-                // TODO: do something when continue
-                isPaused = false
-            }else{
-                binding.btnPauseAndResume.text = "Resume"
-                // TODO: do something when pause
-                isPaused = true
-            }
+        binding.btnPause.setOnClickListener {
+            binding.btnPause.visibility = View.INVISIBLE
+            binding.btnResume.visibility = View.VISIBLE
+            // TODO: PAUSE
+        }
+        binding.btnResume.setOnClickListener {
+            binding.btnResume.visibility = View.GONE
+            binding.btnPause.visibility = View.VISIBLE
+            // TODO: PAUSE
         }
         binding.btnStopTracking.setOnClickListener {
-            binding.btnPauseAndResume.visibility = View.GONE
+            binding.btnResume.visibility = View.GONE
             isPaused = true
-            binding.btnStopTracking.visibility = View.GONE
+//            binding.btnStopTracking.visibility = View.INVISIBLE
             // TODO: Do something when stop
             it.findNavController().navigate(R.id.action_runningFragment_to_runResultFragment)
         }

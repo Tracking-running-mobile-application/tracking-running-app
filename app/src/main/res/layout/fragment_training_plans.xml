@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.45" />
+        app:layout_constraintGuide_percent="0.43" />
 
     <Button
         android:id="@+id/btn_start_training"
@@ -67,7 +67,7 @@
         android:id="@+id/text_plan_description"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:lineSpacingExtra="4dp"
         android:text="Beginner Run recommend the best-plan for the new-runner. Choose this if you are new."
         android:textColor="@color/white"
@@ -81,16 +81,17 @@
         android:id="@+id/cardView2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/primary_gray"
         app:cardCornerRadius="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView3"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
-        app:layout_constraintStart_toStartOf="@+id/text_plan_description"
-        app:layout_constraintTop_toBottomOf="@+id/text_plan_description">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cardView3">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="14dp">
@@ -110,13 +111,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Est. Time"
+                    android:text="Est.Time"
                     android:textColor="@color/white"
                     android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/text_plan_estimate_time"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/text_estimate_time"
@@ -130,13 +131,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:backgroundTint="@color/primary_gray"
         app:cardCornerRadius="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/cardView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toTopOf="@+id/cardView2">
+        app:layout_constraintTop_toBottomOf="@+id/text_plan_description">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -213,10 +214,11 @@
     <Button
         android:id="@+id/btn_cancel_plan"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:background="@drawable/background_medium_button"
         android:text="Cancel the Plan"
+        android:textColor="@color/text_shadow_white"
         android:textSize="16sp"
         android:theme="@style/MediumButton"
         android:visibility="invisible"
