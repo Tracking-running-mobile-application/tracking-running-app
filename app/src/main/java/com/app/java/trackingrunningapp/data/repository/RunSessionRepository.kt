@@ -238,7 +238,6 @@ class RunSessionRepository(
                 }
 
                 val durationInHours = _duration.value.div(3600.0)
-
                 val MET = when {
                     speedMetersPerSec == 0.0 -> 0.0
                     speedMetersPerSec < 2.0 -> 0.5 + (speedMetersPerSec * 0.3)

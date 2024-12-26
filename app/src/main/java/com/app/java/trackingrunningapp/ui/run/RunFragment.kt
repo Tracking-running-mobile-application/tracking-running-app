@@ -12,10 +12,17 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
+import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -27,6 +34,9 @@ import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
@@ -36,6 +46,11 @@ class RunFragment : Fragment() {
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
+    private lateinit var runSessionViewModel: RunSessionViewModel
+    private lateinit var gpsTrackViewModel: GPSTrackViewModel
+
+    private var mutex = Mutex()
+
     private var indicatorListener: OnIndicatorPositionChangedListener? = null
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
@@ -59,6 +74,12 @@ class RunFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+        runSessionViewModel = ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+
+        val gpsTrackFactory = GPSTrackViewModelFactory(InitDatabase.gpsTrackRepository)
+        gpsTrackViewModel = ViewModelProvider(this, gpsTrackFactory).get(GPSTrackViewModel::class.java)
+
         binding = FragmentRunBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -72,8 +93,15 @@ class RunFragment : Fragment() {
     private fun setupActionRun() {
         binding.btnStartTracking.setOnClickListener{
             binding.btnStartTracking.visibility = View.GONE
-            startTracking()
             it.findNavController().navigate(R.id.action_runFragment_to_runningFragment)
+            lifecycleScope.launch {
+                mutex.withLock {
+                    runSessionViewModel.initiateRunSession()
+                    gpsTrackViewModel.initiateGPSTrack()
+                    runSessionViewModel.setRunSessionStartTime()
+                    runSessionViewModel.fetchAndUpdateStats()
+                }
+            }
 
         }
     }
@@ -150,26 +178,6 @@ class RunFragment : Fragment() {
             }
             // Add the listener to start tracking
             indicatorListener?.let { locationComponentPlugin.addOnIndicatorPositionChangedListener(it) }
-        }
-    }
-
-    private fun stopTracking() {
-        if (isTracking) {
-            isTracking = false
-
-            // Remove the location listener
-            val locationComponentPlugin = mapView.location
-
-            indicatorListener?.let {
-                locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
-            }
-            indicatorListener = null // Clear the reference
-
-            // Clear the route from the map
-            polylineAnnotationManager.deleteAll()
-
-            // Clear the routeCoordinates list
-            routeCoordinates.clear()
         }
     }
 

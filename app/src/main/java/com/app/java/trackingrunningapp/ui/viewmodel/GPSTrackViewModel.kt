@@ -22,7 +22,7 @@ class GPSTrackViewModel (
         }
     }
 
-    fun stopGPSTrack() {
+    suspend fun stopGPSTrack() {
         viewModelScope.launch(Dispatchers.IO) {
             gpsTrackRepository.stopGPSTrack()
         }

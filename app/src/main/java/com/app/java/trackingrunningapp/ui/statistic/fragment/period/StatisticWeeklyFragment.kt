@@ -52,7 +52,7 @@ class StatisticWeeklyFragment : Fragment() {
                 for (session in sessions) {
                     val idx = days.indexOf(session.runDate)
                     if(idx != -1) {
-                        daySums[idx] += session.distance
+                        daySums[idx] += session.distance ?: 0.0
                     }
                 }
                 for (daySum in daySums) {

@@ -109,7 +109,7 @@ class RunSessionViewModel(
         fetchStatsCurrentSession()
     }
 
-    fun finishRunSession() {
+    suspend fun finishRunSession() {
         viewModelScope.launch() {
             jobMutex.withLock {
                 runSessionRepository.stopUpdatingStats()
