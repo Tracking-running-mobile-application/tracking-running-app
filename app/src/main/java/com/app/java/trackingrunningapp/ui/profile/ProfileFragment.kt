@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
@@ -23,9 +24,6 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupBarChart()
-         //pop to profile
-//        this.findNavController().popBackStack(R.id.profileFragment, false)
-//        this.findNavController().navigate(R.id.action_global_profileFragment)
         navigateToFavourite()
     }
 
@@ -51,5 +49,13 @@ class ProfileFragment : Fragment() {
             animation.duration = 1000L
             labelsFormatter = { it.toInt().toString() }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val toolbar = requireActivity()
+            .findViewById<Toolbar>(R.id.toolbar_main)
+        val icEdit = toolbar.menu.findItem(R.id.item_toolbar_edit)
+        icEdit.isVisible = false
     }
 }

@@ -1,14 +1,15 @@
 package com.app.java.trackingrunningapp.ui.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavDirections
 import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.data.repository.TrainingPlanRepository
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
-import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,9 +21,13 @@ class TrainingPlanViewModel(
     private val notificationRepository: NotificationRepository,
     private val runSessionRepository: RunSessionRepository
 ): ViewModel() {
-    private val _recommendedPlans = MutableStateFlow<List<TrainingPlan>>(emptyList())
+    private val _recommendedPlansBeginner = MutableStateFlow<List<TrainingPlan>>(emptyList())
+    private val _recommendedPlansIntermediate = MutableStateFlow<List<TrainingPlan>>(emptyList())
+    private val _recommendedPlansAdvanced = MutableStateFlow<List<TrainingPlan>>(emptyList())
 
-    val recommendedPlansLiveData: LiveData<List<TrainingPlan>> = _recommendedPlans.asLiveData()
+    val recommendedPlansBeginner: LiveData<List<TrainingPlan>> = _recommendedPlansBeginner.asLiveData()
+    val recommendedPlansIntermediate: LiveData<List<TrainingPlan>> = _recommendedPlansIntermediate.asLiveData()
+    val recommendedPlansAdvanced: LiveData<List<TrainingPlan>> = _recommendedPlansAdvanced.asLiveData()
 
     private val _goalProgress = MutableStateFlow<Double?>(null)
     val goalProgress: LiveData<Double?> = _goalProgress.asLiveData()
@@ -30,19 +35,24 @@ class TrainingPlanViewModel(
     private var goalProgressJob: Job? = null
 
     init {
-        fetchRecommendedPlansDaily()
+        fetchRecommendedPlans()
     }
 
-    fun fetchRecommendedPlansDaily() {
+    fun fetchRecommendedPlans() {
         viewModelScope.launch {
-            val plans = trainingPlanRepository.updateTrainingPlanRecommendation()
-            if (plans.isNotEmpty()) {
-                _recommendedPlans.value = plans
+            val beginnerPlans = trainingPlanRepository.getTrainingPlanByDifficulty(exerciseType = "Beginner")
+            if (beginnerPlans.isNotEmpty()) {
+                _recommendedPlansBeginner.value = beginnerPlans
+            }
 
-                plans.forEach { plan ->
-                    val today = DateTimeUtils.getCurrentDate().toString()
-                    trainingPlanRepository.assignLastDateToTrainingPlan(plan.planId, today)
-                }
+            val intermediatePlans = trainingPlanRepository.getTrainingPlanByDifficulty(exerciseType = "Intermediate")
+            if (beginnerPlans.isNotEmpty()) {
+                _recommendedPlansIntermediate.value = intermediatePlans
+            }
+
+            val advancedPlans = trainingPlanRepository.getTrainingPlanByDifficulty(exerciseType = "Advanced")
+            if (beginnerPlans.isNotEmpty()) {
+                _recommendedPlansAdvanced.value = advancedPlans
             }
         }
     }

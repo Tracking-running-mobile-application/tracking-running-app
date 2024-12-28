@@ -4,17 +4,15 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
+import android.text.TextUtils.TruncateAt
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
@@ -32,6 +30,7 @@ import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -39,7 +38,8 @@ import kotlinx.coroutines.sync.withLock
 
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
-    private var isPaused:Boolean = true
+    private var isPaused: Boolean = true
+    private var isTracking: Boolean = false
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
@@ -49,6 +49,7 @@ class RunFragment : Fragment() {
 
     private var mutex = Mutex()
 
+    private var indicatorListener: OnIndicatorPositionChangedListener? = null
     private val requestPermissionsLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             val allGranted = permissions.all {
@@ -184,7 +185,7 @@ class RunFragment : Fragment() {
     }
 
     private fun initMapAndLocation() {
-        // Setup rout drawing
+        // Setup route drawing
         mapView = binding.mapView
         annotationApi = mapView.annotations
         polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
@@ -195,15 +196,71 @@ class RunFragment : Fragment() {
             locationComponentPlugin.updateSettings {
                 this.enabled = true
             }
-            locationComponentPlugin.addOnIndicatorPositionChangedListener { point ->
-                routeCoordinates.add(point)
-                drawRoute()
-                mapView.mapboxMap.setCamera(
-                    CameraOptions.Builder().center(point).zoom(15.0).build()
-                )
-            }
+
+            // Listen for the first location update to zoom in but don't track yet
+            locationComponentPlugin.addOnIndicatorPositionChangedListener(object :
+                OnIndicatorPositionChangedListener {
+                override fun onIndicatorPositionChanged(point: Point) {
+                    // Zoom to the initial position
+                    mapView.mapboxMap.setCamera(
+                        CameraOptions.Builder()
+                            .center(point) // Set initial camera position
+                            .zoom(15.0) // Zoom level
+                            .build()
+                    )
+
+                    // Remove the listener after the initial zoom
+                    locationComponentPlugin.removeOnIndicatorPositionChangedListener(this)
+                }
+            })
         }
     }
+
+    private fun startTracking() {
+        if (!isTracking) {
+            isTracking = true
+            // Clear previous route coordinates if restarting
+            routeCoordinates.clear()
+
+            // Set up the location listener for tracking
+            val locationComponentPlugin = mapView.location
+            locationComponentPlugin.updateSettings {
+                this.enabled = true // Enable location updates
+            }
+            indicatorListener = OnIndicatorPositionChangedListener { point ->
+            // TODO: Implement pause mechanism
+                routeCoordinates.add(point)
+
+                // TODO: Save <<point>> to database
+
+                // Draw the route
+                drawRoute()
+            }
+            // Add the listener to start tracking
+            indicatorListener?.let { locationComponentPlugin.addOnIndicatorPositionChangedListener(it) }
+        }
+    }
+
+    private fun stopTracking() {
+        if (isTracking) {
+            isTracking = false
+
+            // Remove the location listener
+            val locationComponentPlugin = mapView.location
+
+            indicatorListener?.let {
+                locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
+            }
+            indicatorListener = null // Clear the reference
+
+            // Clear the route from the map
+            polylineAnnotationManager.deleteAll()
+
+            // Clear the routeCoordinates list
+            routeCoordinates.clear()
+        }
+    }
+
     private fun drawRoute() {
         polylineAnnotationManager.deleteAll()
         val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
@@ -211,11 +268,5 @@ class RunFragment : Fragment() {
             .withLineColor("#FF0000")
             .withLineWidth(5.0)
         polylineAnnotationManager.create(polylineAnnotationOptions)
-    }
-    override fun onStop() {
-        super.onStop()
-        binding.icArrowDown.visibility = View.GONE
-        // pop to profile
-        this.findNavController().popBackStack(R.id.profileFragment,false)
     }
 }

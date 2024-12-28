@@ -2,9 +2,9 @@ package com.app.java.trackingrunningapp.ui.statistic.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.app.java.trackingrunningapp.ui.statistic.fragment.period.StatisticMonthFragment
-import com.app.java.trackingrunningapp.ui.statistic.fragment.period.StatisticTodayFragment
-import com.app.java.trackingrunningapp.ui.statistic.fragment.period.StatisticWeekFragment
+import com.app.java.trackingrunningapp.ui.statistic.fragment.period.StatisticYearlyFragment
+import com.app.java.trackingrunningapp.ui.statistic.fragment.period.StatisticWeeklyFragment
+import com.app.java.trackingrunningapp.ui.statistic.fragment.period.StatisticMonthlyFragment
 
 class PagerAdapter(
     private val fm: Fragment
@@ -15,10 +15,10 @@ class PagerAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when(position){
-            0 -> StatisticTodayFragment()
-            1 -> StatisticWeekFragment()
-            2 -> StatisticMonthFragment()
-            else -> StatisticTodayFragment()
+            0 -> StatisticWeeklyFragment()
+            1 -> StatisticMonthlyFragment()
+            2 -> StatisticYearlyFragment()
+            else -> StatisticWeeklyFragment()
         }
     }
 }

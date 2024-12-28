@@ -37,8 +37,7 @@ class RunSessionRepository(
     private val _currentRunSession = MutableStateFlow<RunSession?>(null)
     val currentRunSession: StateFlow<RunSession?> = _currentRunSession
 
-    private var offset: Int = 20
-    private var limit: Int = 0
+    private var offset: Int = 0
 
     private val _duration = MutableStateFlow(0L)
     val duration: StateFlow<Long> = _duration
@@ -102,12 +101,22 @@ class RunSessionRepository(
         if( !fetchMore ) {
             offset = 0
         }
-        val sessionList = runSessionDao.getAllRunSessions(limit, offset)
+        val sessionList = runSessionDao.getAllRunSessions(21, offset)
         offset += sessionList.size
 
-        val hasMoreData = sessionList.size == limit
+        val hasMoreData = sessionList.size == 21
 
-        return Pair(runSessionDao.getAllRunSessions(limit, offset), hasMoreData)
+        val finalList = if (hasMoreData) {
+            sessionList.dropLast(1)
+        } else {
+            sessionList
+        }
+
+        if (fetchMore) {
+            offset += 20
+        }
+
+        return Pair(finalList, hasMoreData)
     }
 
     suspend fun getFavoriteRunSessions(): List<RunSession> {
@@ -116,7 +125,7 @@ class RunSessionRepository(
 
     suspend fun refreshRunSessionHistory(): List<RunSession> {
         offset = 0
-        return runSessionDao.getAllRunSessions(limit, offset)
+        return runSessionDao.getAllRunSessions(20, 0)
     }
 
     suspend fun deleteRunSession(sessionId: Int) {
