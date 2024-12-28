@@ -62,8 +62,7 @@ class GPSPointRepository(
 
     suspend fun fetchTwoLatestLocation(): Flow<List<Location>> = flow {
         val gpsTrackID = getCurrentGPSTrackIDOrThrow()
-
-        while (gpsTrackDao.pauseOrContinueGPSTrack(gpsTrackID)) {
+        while (!gpsTrackDao.pauseOrContinueGPSTrack(gpsTrackID)) {
             try {
                 val latestLocations = gpsPointDao.getTwoLatestLocation(gpsTrackID)
                 emit(latestLocations)

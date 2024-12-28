@@ -184,11 +184,9 @@ class RunSessionRepository(
         ensureRepoScope()
         repoScope.launch {
             try {
-                Log.d("Run Session Repo", "update pace")
                 val userUnitPreference = userInfo?.unit
 
                 val durationInMinutes = _duration.value.div(60)
-
                 val adjustedDistance: Double = when (userUnitPreference) {
                     User.UNIT_MILE -> _distance.value.times(0.621371f)
                     else -> _distance.value
@@ -220,7 +218,6 @@ class RunSessionRepository(
                 val userMetricPreference: String? = userInfo?.metricPreference
                 val unit: String? = userInfo?.unit
 
-                Log.d("Run Session Repo", "update calories")
                 val adjustedWeight = when (userMetricPreference) {
                     User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
                     else -> userInfo?.weight ?: 50.0
@@ -253,7 +250,6 @@ class RunSessionRepository(
                 } else {
                     0.0
                 }
-
                 _caloriesBurned.value = caloriesBurned
 
                 delay(100)
@@ -266,19 +262,12 @@ class RunSessionRepository(
     suspend fun calcDuration() {
         ensureRepoScope()
         repoScope.launch {
-            Log.d("Run Session Repo", "update duration")
             while (isActive) {
                 try {
                     val currentTime = DateTimeUtils.getCurrentInstant()
                     val currentDuration =
                         StatsUtils.calculateDuration(runSessionStartTime, currentTime)
                     totalDurationSeconds = cumulativeDurationSeconds + currentDuration
-
-                    Log.d(
-                        "calcDuration",
-                        "Cumulative: $cumulativeDurationSeconds, Current: $currentDuration, Total: $totalDurationSeconds"
-                    )
-
                     _duration.emit(totalDurationSeconds)
 
                     delay(1000)
@@ -295,12 +284,12 @@ class RunSessionRepository(
         ensureRepoScope()
         repoScope.launch {
             try {
-                Log.d("Run Session Repo", "update distance")
                 val latestLocationsFlow = gpsPointRepository.fetchTwoLatestLocation()
 
                 latestLocationsFlow.collect { latestLocations ->
                     if (latestLocations.size == 2) {
                         val (location1, location2) = latestLocations
+                        Log.d("calc distance", "location 1: $location1, location 2: $location2")
 
                         val distance = StatsUtils.haversineFormula(location1, location2)
                         _distance.emit(distance)
@@ -316,7 +305,6 @@ class RunSessionRepository(
 
     suspend fun updateStatsSession(distance: Double, duration: Long, caloriesBurned: Double, pace: Double) {
         val currentSession = getCurrentSessionOrThrow()
-        Log.d("Run Session Repo", "update stats repo")
         runSessionDao.updateStatsSession(currentSession.sessionId, distance, duration, caloriesBurned, pace)
     }
 }
