@@ -7,7 +7,7 @@ import com.app.java.trackingrunningapp.data.model.entity.User
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM User LIMIT 1")
+    @Query("SELECT * FROM User WHERE userId = 1")
     fun getUserInfo(): User?
 
     @Upsert

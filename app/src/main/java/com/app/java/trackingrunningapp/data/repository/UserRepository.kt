@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.data.repository
 
+import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.UserDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.User
@@ -12,7 +13,8 @@ class UserRepository {
     suspend fun upsertUserInfo(user: User) {
         userDao.upsertUserInfo(user)
     }
-    suspend fun getUserInfo(): User? {
+     fun getUserInfo(): User? {
         return userDao.getUserInfo()
+         Log.d("User Repository", "get user info")
     }
 }
