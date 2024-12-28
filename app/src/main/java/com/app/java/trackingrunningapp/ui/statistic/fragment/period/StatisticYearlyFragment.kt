@@ -41,7 +41,7 @@ class StatisticYearlyFragment : Fragment() {
                 for (session in sessions) {
                     val date = session.runDate
                     val month = date[4].toString().toInt() * 10 + date[5].toString().toInt()
-                    yearSums[month-1] += session.distance
+                    yearSums[month-1] += session.distance ?: 0.0
                 }
                 for(yearSum in yearSums) {
                     yearData.add(yearSum)

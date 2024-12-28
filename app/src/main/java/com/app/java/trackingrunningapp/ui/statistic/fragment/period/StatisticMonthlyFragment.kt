@@ -48,7 +48,7 @@ class StatisticMonthlyFragment : Fragment() {
                 var sumDay = 0.0
                 var week = 0
                 for (session in sessions) {
-                    sumDay += session.distance
+                    sumDay += session.distance ?: 0.0
                     if (session.runDate > endWeeks[week]) {
                         monthData.add(sumDay)
                         sumDay = 0.0

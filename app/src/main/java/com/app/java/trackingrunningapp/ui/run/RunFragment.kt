@@ -4,7 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.text.TextUtils.TruncateAt
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +12,14 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
+import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
@@ -38,7 +41,6 @@ import kotlinx.coroutines.sync.withLock
 
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
-    private var isPaused: Boolean = true
     private var isTracking: Boolean = false
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
@@ -46,6 +48,7 @@ class RunFragment : Fragment() {
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var runSessionViewModel: RunSessionViewModel
     private lateinit var gpsTrackViewModel: GPSTrackViewModel
+    private lateinit var gpsPointViewModel: GPSPointViewModel
 
     private var mutex = Mutex()
 
@@ -73,10 +76,15 @@ class RunFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
-        runSessionViewModel = ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+        runSessionViewModel =
+            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
 
         val gpsTrackFactory = GPSTrackViewModelFactory(InitDatabase.gpsTrackRepository)
-        gpsTrackViewModel = ViewModelProvider(this, gpsTrackFactory).get(GPSTrackViewModel::class.java)
+        gpsTrackViewModel =
+            ViewModelProvider(this, gpsTrackFactory).get(GPSTrackViewModel::class.java)
+
+        val gpsPointFactory = GPSPointViewModelFactory(InitDatabase.gpsPointRepository)
+        gpsPointViewModel = ViewModelProvider(this, gpsPointFactory).get(GPSPointViewModel::class.java)
 
         binding = FragmentRunBinding.inflate(inflater, container, false)
         return binding.root
@@ -90,68 +98,79 @@ class RunFragment : Fragment() {
     }
 
     private fun setupActionRun() {
-        binding.btnStartTracking.setOnClickListener{
-            binding.btnStartTracking.visibility = View.GONE
-            binding.btnPauseAndResume.visibility = View.VISIBLE
-            binding.btnStopTracking.visibility = View.VISIBLE
-            // TODO: do something when start
+        binding.btnStartTracking.setOnClickListener {
+            binding.btnStartTracking.visibility = View.INVISIBLE
+            binding.btnPause.visibility = View.VISIBLE
+            binding.btnStop.visibility = View.VISIBLE
+
+            // TODO: START
             lifecycleScope.launch {
                 mutex.withLock {
-                    Log.d("START", "Initiating session and GPS tracking")
                     runSessionViewModel.initiateRunSession()
-                    Log.d("START", "Fetching and updating stats")
                     gpsTrackViewModel.initiateGPSTrack()
                     runSessionViewModel.setRunSessionStartTime()
 
                     // TODO: insert start tracking and sending gps function
+                    startTracking()
                     runSessionViewModel.fetchAndUpdateStats()
                 }
             }
         }
 
-        binding.btnPauseAndResume.setOnClickListener {
-            if(isPaused){
-                binding.btnPauseAndResume.text = "Pause"
-                isPaused = false
-                lifecycleScope.launch {
-                    mutex.withLock {
-                        // TODO: do something when resume
-                        runSessionViewModel.setRunSessionStartTime()
-                        runSessionViewModel.fetchAndUpdateStats()
-                        gpsTrackViewModel.resumeGPSTrack()
-                    }
-                }
-            }else{
-                binding.btnPauseAndResume.text = "Resume"
-                // TODO: do something when pause
-                isPaused = true
-                lifecycleScope.launch {
-                    mutex.withLock {
-                        // TODO: do something when pause
-                        runSessionViewModel.fetchAndUpdateStats()
-                        runSessionViewModel.pauseRunSession()
-                        gpsTrackViewModel.stopGPSTrack()
-                    }
+        binding.btnPause.setOnClickListener {
+            binding.btnPause.visibility = View.INVISIBLE
+            binding.btnResume.visibility = View.VISIBLE
+            // TODO: PAUSE
+            lifecycleScope.launch {
+                mutex.withLock {
+                    // TODO: do something when pause
+                    runSessionViewModel.fetchAndUpdateStats()
+                    runSessionViewModel.pauseRunSession()
+                    pauseTracking()
+                    gpsTrackViewModel.stopGPSTrack()
                 }
             }
         }
 
-        binding.btnStopTracking.setOnClickListener {
-            binding.btnPauseAndResume.visibility = View.GONE
-            isPaused = true
-            binding.btnStopTracking.visibility = View.GONE
-            binding.btnStartTracking.visibility = View.VISIBLE
-            // TODO: Do something when stop
+        binding.btnResume.setOnClickListener {
+            binding.btnResume.visibility = View.INVISIBLE
+            binding.btnPause.visibility = View.VISIBLE
+            // TODO: RESUME
+             lifecycleScope.launch {
+                 mutex.withLock {
+                     // TODO: do something when resume
+                     runSessionViewModel.setRunSessionStartTime()
+                     runSessionViewModel.fetchAndUpdateStats()
+                     resumeTracking()
+                     gpsTrackViewModel.resumeGPSTrack()
+                 }
+             }
+        }
+
+        binding.btnStop.setOnClickListener {
+            it.findNavController().navigate(R.id.action_runFragment_to_runResultFragment)
+            // TODO: STOP
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: stop gps tracking
                     runSessionViewModel.fetchAndUpdateStats()
                     gpsTrackViewModel.stopGPSTrack()
+                    stopTracking()
                     runSessionViewModel.finishRunSession()
                 }
             }
         }
+
+//            }else{
+//                binding.btnPauseAndResume.text = "Resume"
+//                // TODO: do something when pause
+//                isPaused = true
+//            }
     }
+
+//        binding.btn{
+//            // TODO: Do something when stop
+//        }
 
     @SuppressLint("InlinedApi")
     private fun setupPermission() {
@@ -171,17 +190,18 @@ class RunFragment : Fragment() {
             requestPermissionsLauncher.launch(permissions)
         }
     }
+
     private fun initArrowAction() {
-        binding.icArrowUp.setOnClickListener {
-            binding.icArrowDown.visibility = View.VISIBLE
-            binding.icArrowUp.visibility = View.GONE
-            binding.layoutMetric.root.visibility = View.GONE
-        }
-        binding.icArrowDown.setOnClickListener {
-            binding.icArrowUp.visibility = View.VISIBLE
-            binding.icArrowDown.visibility = View.GONE
-            binding.layoutMetric.root.visibility = View.VISIBLE
-        }
+//    binding.icArrowUp.setOnClickListener {
+//        binding.icArrowDown.visibility = View.VISIBLE
+//        binding.icArrowUp.visibility = View.GONE
+//        binding.layoutMetric.root.visibility = View.GONE
+//    }
+//    binding.icArrowDown.setOnClickListener {
+//        binding.icArrowUp.visibility = View.VISIBLE
+//        binding.icArrowDown.visibility = View.GONE
+//        binding.layoutMetric.root.visibility = View.VISIBLE
+//    }
     }
 
     private fun initMapAndLocation() {
@@ -217,10 +237,43 @@ class RunFragment : Fragment() {
     }
 
     private fun startTracking() {
+        lifecycleScope.launch {
+            if (!isTracking) {
+                isTracking = true
+                // Clear previous route coordinates if restarting
+                routeCoordinates.clear()
+
+                // Set up the location listener for tracking
+                val locationComponentPlugin = mapView.location
+                locationComponentPlugin.updateSettings {
+                    this.enabled = true // Enable location updates
+                }
+                indicatorListener = OnIndicatorPositionChangedListener { point ->
+                    // TODO: Implement pause mechanism
+                    routeCoordinates.add(point)
+
+                    // TODO: Save <<point>> to database
+                    Log.d("Longitude", point.longitude().toString())
+                    Log.d("Latitude", point.latitude().toString())
+                    // Draw the route
+                    lifecycleScope.launch {
+                        gpsPointViewModel.insertGPSPoint(point.longitude(), point.latitude())
+                    }
+                    drawRoute()
+                }
+                // Add the listener to start tracking
+                indicatorListener?.let {
+                    locationComponentPlugin.addOnIndicatorPositionChangedListener(
+                        it
+                    )
+                }
+            }
+        }
+    }
+
+    private fun resumeTracking() {
         if (!isTracking) {
             isTracking = true
-            // Clear previous route coordinates if restarting
-            routeCoordinates.clear()
 
             // Set up the location listener for tracking
             val locationComponentPlugin = mapView.location
@@ -228,16 +281,24 @@ class RunFragment : Fragment() {
                 this.enabled = true // Enable location updates
             }
             indicatorListener = OnIndicatorPositionChangedListener { point ->
-            // TODO: Implement pause mechanism
+                // TODO: Implement pause mechanism
                 routeCoordinates.add(point)
 
                 // TODO: Save <<point>> to database
-
+                Log.d("Longitude", point.longitude().toString())
+                Log.d("Latitude", point.latitude().toString())
                 // Draw the route
+                lifecycleScope.launch {
+                    gpsPointViewModel.insertGPSPoint(point.longitude(), point.latitude())
+                }
                 drawRoute()
             }
             // Add the listener to start tracking
-            indicatorListener?.let { locationComponentPlugin.addOnIndicatorPositionChangedListener(it) }
+            indicatorListener?.let {
+                locationComponentPlugin.addOnIndicatorPositionChangedListener(
+                    it
+                )
+            }
         }
     }
 
@@ -255,6 +316,23 @@ class RunFragment : Fragment() {
 
             // Clear the route from the map
             polylineAnnotationManager.deleteAll()
+
+            // Clear the routeCoordinates list
+            routeCoordinates.clear()
+        }
+    }
+
+    private fun pauseTracking() {
+        if (isTracking) {
+            isTracking = false
+
+            // Remove the location listener
+            val locationComponentPlugin = mapView.location
+
+            indicatorListener?.let {
+                locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
+            }
+            indicatorListener = null // Clear the reference
 
             // Clear the routeCoordinates list
             routeCoordinates.clear()

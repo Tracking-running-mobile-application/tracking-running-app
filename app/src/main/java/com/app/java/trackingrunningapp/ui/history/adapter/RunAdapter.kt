@@ -28,7 +28,7 @@ class RunAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(itemRun: RunSession) {
-            runTime.text = StatsUtils.formatDuration(itemRun.duration)
+            runTime.text = StatsUtils.formatDuration(itemRun.duration ?: 0L)
             runDistance.text = itemRun.distance.toString() + " KM"
             icStar.setOnClickListener {
                 icStar.visibility = View.GONE

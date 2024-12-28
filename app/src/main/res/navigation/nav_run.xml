@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_runFragment_to_runningFragment"
             app:destination="@id/runningFragment" />
+        <action
+            android:id="@+id/action_runFragment_to_runResultFragment"
+            app:destination="@id/runResultFragment" />
     </fragment>
     <fragment
         android:id="@+id/runningFragment"
