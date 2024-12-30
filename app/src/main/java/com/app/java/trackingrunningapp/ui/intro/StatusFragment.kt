@@ -20,19 +20,14 @@ class StatusFragment : Fragment() {
     private lateinit var binding: FragmentStatusBinding
     private var isFtClicked = false
     private lateinit var userViewModel: UserViewModel
-
-
-    //    private val viewModel = UserViewModel(UserRepository())
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStatusBinding.inflate(inflater, container, false)
-
         val userFactory = UserViewModelFactory(InitDatabase.userRepository)
         userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
-
         return binding.root
     }
 

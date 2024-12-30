@@ -45,10 +45,9 @@ class UserViewModel(
             val user = userRepository.getUserInfo()
             if (user != null ) {
                 _userLiveData.postValue(user)
-                Log.d("User View Model", "${_userLiveData.value}")
-
+                Log.d("userViewmodel","${user.height}")
             }
-            Log.d("User View Model", "get user info")
+            Log.d("userViewmodel","user null")
         }
     }
 }

@@ -1,21 +1,24 @@
 package com.app.java.trackingrunningapp.ui
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 
 
 class IntroActivity : AppCompatActivity() {
     private lateinit var navController: NavController
-
-//    companion object {
-//        lateinit var runningDatabase: RunningDatabase
-//    }
+    private lateinit var userViewModel: UserViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,11 +29,15 @@ class IntroActivity : AppCompatActivity() {
             insets
         }
         initNavHost()
-//        runningDatabase = Room.databaseBuilder(
-//            applicationContext,
-//            RunningDatabase::class.java,
-//            "running_database"
-//        ).build()
+        val userFactory = UserViewModelFactory(InitDatabase.userRepository)
+        userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
+        userViewModel.fetchUserInfo()
+        userViewModel.userLiveData.observe(this){user->
+            if(user != null){
+                startActivity(Intent(this,MainActivity::class.java))
+                Log.d("user","$user")
+            }
+        }
     }
 
     private fun initNavHost() {
