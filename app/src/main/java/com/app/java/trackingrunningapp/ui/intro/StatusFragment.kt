@@ -18,20 +18,16 @@ import kotlinx.coroutines.launch
 
 class StatusFragment : Fragment() {
     private lateinit var binding: FragmentStatusBinding
+    private var isFtClicked = false
     private lateinit var userViewModel: UserViewModel
-
-
-    //    private val viewModel = UserViewModel(UserRepository())
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStatusBinding.inflate(inflater, container, false)
-
         val userFactory = UserViewModelFactory(InitDatabase.userRepository)
         userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
-
         return binding.root
     }
 
@@ -39,7 +35,6 @@ class StatusFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setUpToggle()
         setupConfirm()
-
     }
 
     private fun setupConfirm() {
@@ -51,7 +46,7 @@ class StatusFragment : Fragment() {
                 age = ageStr.toInt()
             }
             var userHeight: Float = binding.edtHeight.text.toString().toFloat()
-            if (binding.btnFt.performClick()) {
+            if (isFtClicked) {
                 val heightFt = binding.edtHeight.text.toString().toFloat()
                 userHeight = (heightFt * 30.48).toFloat()
             } else if (binding.btnCm.performClick()) {
@@ -86,12 +81,14 @@ class StatusFragment : Fragment() {
         //ft
         btnFt.setOnClickListener {
             hintHeight.text = getString(R.string.text_ft)
+            isFtClicked = true
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
         //cm
         btnCm.setOnClickListener {
             hintHeight.text = getString(R.string.text_cm)
+            isFtClicked = false
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_gray))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
         }

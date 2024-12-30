@@ -13,11 +13,22 @@
         <action
             android:id="@+id/action_introFragment_to_statusFragment"
             app:destination="@id/statusFragment" />
+        <action
+            android:id="@+id/action_introFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
     <fragment
         android:id="@+id/statusFragment"
         tools:layout="@layout/fragment_status"
         android:name="com.app.java.trackingrunningapp.ui.intro.StatusFragment"
         android:label="StatusFragment" >
+        <action
+            android:id="@+id/action_statusFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
     </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.app.java.trackingrunningapp.ui.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main" />
 </navigation>

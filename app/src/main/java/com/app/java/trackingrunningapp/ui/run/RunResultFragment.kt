@@ -23,6 +23,7 @@ class RunResultFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentRunResultBinding.inflate(inflater,container,false)
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         return binding.root
     }
 

@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,12 +40,14 @@ class UserViewModel(
         }
     }
 
-    private fun fetchUserInfo() {
+     fun fetchUserInfo() {
         viewModelScope.launch(Dispatchers.IO) {
             val user = userRepository.getUserInfo()
             if (user != null ) {
                 _userLiveData.postValue(user)
+                Log.d("userViewmodel","${user.height}")
             }
+            Log.d("userViewmodel","user null")
         }
     }
 }
