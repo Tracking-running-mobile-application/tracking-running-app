@@ -1,6 +1,7 @@
 package com.app.java.trackingrunningapp.ui.history.adapter
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,21 +16,25 @@ import com.app.java.trackingrunningapp.utils.StatsUtils
 
 class RunAdapter(
     private val runs: List<RunSession>,
+    private val context:Context,
     private val listener: OnItemHistoryRunClickListener
 ) : RecyclerView.Adapter<RunAdapter.RunViewHolder>() {
     inner class RunViewHolder(
         itemView: View,
+        private val context:Context,
         private val listener: OnItemHistoryRunClickListener
     ) : RecyclerView.ViewHolder(itemView) {
         private val runTime: TextView = itemView.findViewById(R.id.runTime)
         private val runDistance: TextView = itemView.findViewById(R.id.runDistance)
+        private val runDate:TextView = itemView.findViewById(R.id.text_rundate_history)
         private val icStar = itemView.findViewById<ImageButton>(R.id.ic_star)
         private val icStarSelected = itemView.findViewById<ImageButton>(R.id.ic_star_selected)
 
         @SuppressLint("SetTextI18n")
         fun bind(itemRun: RunSession) {
             runTime.text = StatsUtils.formatDuration(itemRun.duration ?: 0L)
-            runDistance.text = itemRun.distance.toString() + " KM"
+            runDistance.text = context.getString(R.string.text_distance_metric,itemRun.distance)
+            runDate.text = itemRun.runDate
             icStar.setOnClickListener {
                 icStar.visibility = View.GONE
                 icStarSelected.visibility = View.VISIBLE
@@ -56,7 +61,7 @@ class RunAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RunViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_history_run, parent, false)
-        return RunViewHolder(view, listener)
+        return RunViewHolder(view, context,listener)
     }
 
     override fun onBindViewHolder(holder: RunViewHolder, position: Int) {

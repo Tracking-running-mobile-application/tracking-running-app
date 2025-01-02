@@ -66,7 +66,7 @@ class HistoryFragment : Fragment() {
 
     private fun setupAdapter(runs: List<RunSession>) {
         containerLayout = binding.containerLayoutHistory
-        runDateAdapter = RunAdapter(runs, object : OnItemHistoryRunClickListener {
+        runDateAdapter = RunAdapter(runs, requireContext(),object : OnItemHistoryRunClickListener {
             override fun onItemClick(itemRun: RunSession) {
                 findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment)
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =

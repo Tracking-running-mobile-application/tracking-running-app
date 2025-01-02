@@ -8,8 +8,10 @@ import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.data.repository.TrainingPlanRepository
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import androidx.lifecycle.ViewModelProvider
+import com.app.java.trackingrunningapp.data.repository.PersonalGoalRepository
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
@@ -30,6 +32,8 @@ class InitDatabase : Application() {
         lateinit var trainingPlanViewModel: TrainingPlanViewModel
         lateinit var userRepository: UserRepository
         lateinit var userViewModel: UserViewModel
+        lateinit var personalGoalRepository: PersonalGoalRepository
+        lateinit var personalGoalViewModel: PersonalGoalViewModel
     }
 
     override fun onCreate() {
@@ -45,11 +49,14 @@ class InitDatabase : Application() {
             trainingPlanRepository = TrainingPlanRepository()
             runSessionRepository = RunSessionRepository(gpsPointRepository)
             userRepository = UserRepository()
+            personalGoalRepository = PersonalGoalRepository()
             // init viewmodel
             runSessionViewModel = RunSessionViewModel(runSessionRepository)
             gpsTrackViewModel = GPSTrackViewModel(gpsTrackRepository)
             trainingPlanViewModel = TrainingPlanViewModel(trainingPlanRepository, notificationRepository, runSessionRepository)
             userViewModel = UserViewModel(userRepository)
+            personalGoalViewModel = PersonalGoalViewModel(personalGoalRepository,
+                runSessionRepository)
 
             try {
                 val records = runningDatabase.runSessionDao().getAllRunSessions(20, 20)

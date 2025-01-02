@@ -11,18 +11,33 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentPersonalGoalBinding
+import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class PersonalGoalFragment : Fragment() {
     private lateinit var binding: FragmentPersonalGoalBinding
+    private lateinit var personalGoalViewModel: PersonalGoalViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // init personal goal viewmodel
+        val personalGoalViewModelFactory = PersonalGoalViewModelFactory(
+            InitDatabase.personalGoalRepository,
+            InitDatabase.runSessionRepository
+        )
+        personalGoalViewModel = ViewModelProvider(
+            requireActivity(),
+            personalGoalViewModelFactory
+        )[PersonalGoalViewModel::class.java]
+
         binding = FragmentPersonalGoalBinding.inflate(inflater, container, false)
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
         requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = "Personal Goal"

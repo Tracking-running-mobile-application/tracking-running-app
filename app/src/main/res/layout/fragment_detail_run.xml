@@ -5,7 +5,7 @@
     android:id="@+id/container_run_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.run.DetailRunFragment">
+    tools:context=".ui.history.DetailRunFragment">
 
 
     <include

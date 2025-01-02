@@ -16,6 +16,8 @@ import com.app.java.trackingrunningapp.data.model.dataclass.home.TrainingPlan
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
 import com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment
 import com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalAdapter
+import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -24,6 +26,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var trainingPlanViewModel: TrainingPlanViewModel
+    private lateinit var personalGoalViewModel: PersonalGoalViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,6 +43,10 @@ class HomeFragment : Fragment() {
 
         // fetch data
         trainingPlanViewModel.fetchRecommendedPlans()
+        // init personal goal viewmodel
+        val personalGoalViewModelFactory = PersonalGoalViewModelFactory(InitDatabase.personalGoalRepository,InitDatabase.runSessionRepository)
+        personalGoalViewModel = ViewModelProvider(requireActivity(),personalGoalViewModelFactory)[PersonalGoalViewModel::class.java]
+
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }

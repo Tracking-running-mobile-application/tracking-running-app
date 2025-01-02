@@ -5,6 +5,7 @@ import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
+import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,6 +21,7 @@ class PersonalGoalRepository {
     private val personalGoalDao: PersonalGoalDao = db.personalGoalDao()
     private val runSessionDao: RunSessionDao = db.runSessionDao()
 
+    private val notificationRepository: NotificationRepository = InitDatabase.notificationRepository
     private var updateJob: Job? = null
 
     private suspend fun getCurrentSessionOrThrow(): RunSession {
@@ -125,9 +127,15 @@ class PersonalGoalRepository {
 
         personalGoalDao.updateGoalProgress(personalGoal.goalId, progress)
 
+        /*
+        if (progress >= 50.0) {
+            // TODO: Notification
+        }
+        */
         if (progress >= 100.0) {
             personalGoalDao.markGoalAchieved(personalGoal.goalId)
         }
+        // TODO: Notification
     }
 
     suspend fun getAllPersonalGoals(): List<PersonalGoal> {

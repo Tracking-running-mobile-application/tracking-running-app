@@ -19,7 +19,6 @@ class PersonalGoalViewModel(
 ): ViewModel() {
 
     private val _personalGoals = MutableStateFlow<List<PersonalGoal>>(emptyList())
-
     val personalGoalsLiveData = _personalGoals.asLiveData()
 
     private val _goalProgress = MutableStateFlow<Double?>(null)

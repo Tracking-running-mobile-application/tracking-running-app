@@ -1,4 +1,4 @@
-package com.app.java.trackingrunningapp.ui.run
+package com.app.java.trackingrunningapp.ui.history
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.databinding.FragmentDetailRunBinding
-import com.app.java.trackingrunningapp.databinding.ItemHistoryRunDetailBinding
-import com.app.java.trackingrunningapp.databinding.ItemProfileLayoutBinding
 
 
 class DetailRunFragment : Fragment() {
@@ -31,5 +29,7 @@ class DetailRunFragment : Fragment() {
         textCalo.text = getString(R.string.text_calorie_metric,353.4)
     }
 
-
+    companion object{
+        const val EXTRA_HISTORY_ID = "EXTRA_HISTORY_ID"
+    }
 }

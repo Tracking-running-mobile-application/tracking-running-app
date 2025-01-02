@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailRunFragment"
-        android:name="com.app.java.trackingrunningapp.ui.run.DetailRunFragment"
+        android:name="com.app.java.trackingrunningapp.ui.history.DetailRunFragment"
         android:label="fragment_detail_run"
         tools:layout="@layout/fragment_detail_run" />
 
