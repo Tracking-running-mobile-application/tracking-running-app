@@ -33,10 +33,6 @@ class GPSTrackRepository {
                 gpsSessionId = currentRunSession.sessionId,
                 isPaused = false
             )
-            Log.d(
-                "GPS Track Repo",
-                "${newGPSTrack.gpsSessionId}, ${newGPSTrack.isPaused}, GPS Track ID: ${newGPSTrack.gpsTrackId}"
-            )
             gpsTrackDao.createGPSTrack(newGPSTrack)
             delay(100)
             val gpsTrackId = gpsTrackDao.getGPSTrackIdBySessionId(newGPSTrack.gpsSessionId)
