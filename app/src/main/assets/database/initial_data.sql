@@ -20,10 +20,10 @@ CREATE TABLE IF NOT EXISTS "TrainingPlan" (
 CREATE TABLE IF NOT EXISTS "RunSession" (
 	"sessionId"	INTEGER NOT NULL,
 	"runDate"	TEXT NOT NULL,
-	"distance"	REAL NOT NULL DEFAULT 0.0,
-	"duration"	INTEGER NOT NULL DEFAULT 0,
-	"pace"	REAL NOT NULL DEFAULT 0.0,
-	"caloriesBurned"	REAL NOT NULL DEFAULT 0.0,
+	"distance"	REAL DEFAULT 0.0,
+	"duration"	INTEGER DEFAULT 0,
+	"pace"	REAL DEFAULT 0.0,
+	"caloriesBurned"	REAL DEFAULT 0.0,
 	"isActive"	INTEGER DEFAULT 0,
 	"dateAddInFavorite"	TEXT DEFAULT NULL,
 	"isFavorite"	INTEGER NOT NULL DEFAULT 0,
@@ -42,8 +42,8 @@ CREATE TABLE IF NOT EXISTS "GPSTrack" (
 	"gpsTrackId"	INTEGER NOT NULL,
 	"gpsSessionId"	INTEGER NOT NULL,
 	"isPaused"	INTEGER NOT NULL DEFAULT 0 CHECK("isPaused" IN (0, 1)),
-	FOREIGN KEY("gpsSessionId") REFERENCES "RunSession"("sessionId") ON DELETE CASCADE,
-	PRIMARY KEY("gpsTrackId" AUTOINCREMENT)
+	PRIMARY KEY("gpsTrackId" AUTOINCREMENT),
+	FOREIGN KEY("gpsSessionId") REFERENCES "RunSession"("sessionId") ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS "MonthlyStats" (
 	"monthStatsKey"	TEXT NOT NULL,

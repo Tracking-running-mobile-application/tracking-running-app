@@ -2,6 +2,7 @@ package com.app.java.trackingrunningapp.data.dao
 
 import androidx.room.Dao
 import androidx.room.Embedded
+import androidx.room.Insert
 import androidx.room.Query
 import com.app.java.trackingrunningapp.data.model.entity.GPSPoint
 import com.app.java.trackingrunningapp.data.model.entity.GPSTrack
@@ -33,32 +34,17 @@ interface RunSessionDao {
     )
     suspend fun getAllFavoriteRunSessions(): List<RunSession>
 
-    @Query("SELECT * FROM RunSession WHERE isActive = TRUE LIMIT 1")
+    @Query("SELECT * FROM RunSession WHERE isActive = TRUE ORDER BY runDate DESC LIMIT 1")
     suspend fun getCurrentRunSession(): RunSession?
 
     @Query("SELECT * FROM RUNSESSION WHERE sessionId = :sessionId")
     suspend fun getRunSessionById(sessionId: Int): RunSession?
 
-    /***
-     * TODO: Change this to update stats!
-     * ***/
-    @Query("UPDATE RunSession SET caloriesBurned = :caloriesBurned WHERE sessionId =:sessionId")
-    suspend fun updateCaloriesBurnedSession(sessionId: Int, caloriesBurned: Double)
-
-    @Query("UPDATE RunSession SET pace = :pace WHERE sessionId =:sessionId")
-    suspend fun updatePaceSession(sessionId: Int, pace: Double)
-
-    @Query("UPDATE RunSession SET duration = :duration WHERE sessionId =:sessionId")
-    suspend fun updateDurationSession(sessionId: Int, duration: Long)
-
-    @Query("UPDATE RunSession SET distance = :distance WHERE sessionId =:sessionId")
-    suspend fun updateDistanceSession(sessionId: Int, distance: Double)
-
     @Query("UPDATE RunSession SET distance = :distance, duration = :duration, caloriesBurned = :caloriesBurned, pace = :pace WHERE sessionId = :sessionId")
     suspend fun updateStatsSession(sessionId: Int, distance: Double, duration: Long, caloriesBurned: Double, pace: Double)
 
-    @Query("UPDATE RunSession SET isActive = TRUE, runDate = :runDate WHERE sessionId = :sessionId")
-    suspend fun initiateRunSession(sessionId: Int, runDate: String)
+    @Insert
+    suspend fun initiateRunSession(runSession: RunSession)
 
     @Query("UPDATE RunSession SET isActive = FALSE WHERE sessionId = :sessionId")
     suspend fun setRunSessionInactive(sessionId: Int)
@@ -95,6 +81,9 @@ interface RunSessionDao {
         WHERE rs.sessionId = :sessionId
     """)
     suspend fun getCompleteSessionData(sessionId: Int): List<CompleteSessionData>
+
+    @Query("SELECT COUNT(*) FROM RunSession")
+    suspend fun getNumberOfSessions(): Int
 
     data class CompleteSessionData (
         @Embedded val runSession: RunSession,

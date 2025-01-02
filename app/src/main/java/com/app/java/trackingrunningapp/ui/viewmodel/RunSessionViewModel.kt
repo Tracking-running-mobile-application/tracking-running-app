@@ -8,14 +8,19 @@ import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.utils.StatsUtils
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlin.coroutines.cancellation.CancellationException
 
 class RunSessionViewModel(
     private val runSessionRepository: RunSessionRepository,
@@ -38,6 +43,9 @@ class RunSessionViewModel(
     val statsFlow: StateFlow<StatsSession?> = _statsFlow
 
     private var statsUpdateJob: Job? = null
+    private var fetchStatsJob: Job? = null
+
+    private var jobMutex = Mutex()
 
     init {
         fetchRunSessions()
@@ -75,47 +83,42 @@ class RunSessionViewModel(
         }
     }
 
-    fun initiateRunSession() {
+    suspend fun initiateRunSession() {
+        try {
+            runSessionRepository.resetStatsValue()
+            runSessionRepository.startRunSession()
+        } catch(e: Exception) {
+            println("Error starting session: ${e.message}")
+        }
+    }
+
+    fun setRunSessionStartTime() {
         viewModelScope.launch(Dispatchers.IO) {
-            try {
-                runSessionRepository.startRunSession()
-                startStatsUpdate()
-                fetchStatsCurrentSession()
-            } catch(e: Exception) {
-                println("Error starting session: ${e.message}")
-            }
+            runSessionRepository.setRunSessionStartTime()
         }
     }
 
-    private fun startStatsUpdate() {
-        statsUpdateJob?.cancel()
-        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
-            while (isActive) {
-                try {
-                    updateStats()
-                    delay(5000)
-                } catch (e: Exception) {
-                    println("Error updating stats: ${e.message}")
-                }
-            }
-        }
+    suspend fun pauseRunSession() {
+        statsUpdateJob?.cancelAndJoin()
+        fetchStatsJob?.cancelAndJoin()
+        runSessionRepository.stopUpdatingStats()
     }
 
-    fun pauseRunSession() {
-        statsUpdateJob?.cancel()
-    }
-
-    suspend fun resumeRunSession() {
-        startStatsUpdate()
+    suspend fun fetchAndUpdateStats() {
+        updateStats()
         fetchStatsCurrentSession()
     }
 
     fun finishRunSession() {
-        viewModelScope.launch(Dispatchers.IO) {
-            updateStats()
-            fetchStatsCurrentSession()
-            statsUpdateJob?.cancel()
-            runSessionRepository.setRunSessionInactive()
+        viewModelScope.launch() {
+            jobMutex.withLock {
+                runSessionRepository.stopUpdatingStats()
+                statsUpdateJob?.cancelAndJoin()
+                fetchStatsJob?.cancelAndJoin()
+                runSessionRepository.resetStatsValue()
+                runSessionRepository.setRunSessionInactive()
+                Log.d("StatsUpdate", "Stats update finished in finishRunSession")
+            }
         }
     }
 
@@ -140,13 +143,16 @@ class RunSessionViewModel(
     }
 
     private suspend fun fetchStatsCurrentSession() {
-        statsUpdateJob?.cancel()
-        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+        fetchStatsJob?.cancelAndJoin()
+        fetchStatsJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
                 try {
                     val stats = runSessionRepository.fetchStatsSession()
                     _statsFlow.emit(stats)
                     delay(5000)
+                } catch (e: CancellationException) {
+                    Log.d("fetchStatsCurrentSession()", "Job canceled during execution ${e.message}")
+                    throw e
                 } catch (e: Exception) {
                     println("Error updating stats: ${e.message}")
                 }
@@ -155,27 +161,34 @@ class RunSessionViewModel(
     }
 
     private suspend fun updateStats() {
-        statsUpdateJob?.cancel()
+        statsUpdateJob?.cancelAndJoin()
         statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
             while (isActive) {
-                runSessionRepository.calcDuration()
-                runSessionRepository.calcPace()
-                runSessionRepository.calcCaloriesBurned()
-                runSessionRepository.calcDistance()
-                val newPace = runSessionRepository.pace.value
+                try {
+                    runSessionRepository.calcDuration()
+                    runSessionRepository.calcPace()
+                    runSessionRepository.calcCaloriesBurned()
+                    runSessionRepository.calcDistance()
 
-                val newCaloriesBurned = runSessionRepository.caloriesBurned.value
+                    val newPace = runSessionRepository.pace.value
+                    val newCaloriesBurned = runSessionRepository.caloriesBurned.value
+                    val newDistance = runSessionRepository.distance.value
+                    val newDuration = runSessionRepository.duration.value
 
-                val newDistance = runSessionRepository.distance.value
-                val newDuration = StatsUtils.durationToSeconds(runSessionRepository.duration.value)
+                    runSessionRepository.updateStatsSession(
+                        newDistance,
+                        newDuration,
+                        newCaloriesBurned,
+                        newPace
+                    )
 
-                runSessionRepository.updateStatsSession(
-                    newDistance,
-                    newDuration,
-                    newCaloriesBurned,
-                    newPace
-                )
+                    delay(1000)
+                } catch (e: CancellationException) {
+                    Log.d("StatsUpdate", "Job canceled during execution")
+                    throw e
+                }
             }
+            Log.d("StatsUpdate", "Coroutine completed in updateStats")
         }
     }
 

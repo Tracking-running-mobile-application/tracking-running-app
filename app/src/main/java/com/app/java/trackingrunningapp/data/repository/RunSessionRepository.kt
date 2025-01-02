@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.data.repository
 
+import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.dao.UserDao
 import com.app.java.trackingrunningapp.utils.LocalTimeConverter
@@ -9,25 +10,23 @@ import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
 import com.app.java.trackingrunningapp.utils.StatsUtils
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
+import java.util.Date
 
 class RunSessionRepository(
     private val gpsPointRepository: GPSPointRepository
 ) {
     val db = InitDatabase.runningDatabase
-
-    val repoScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-
-    private var statsJob: Job? = null
 
     private val runSessionDao: RunSessionDao = db.runSessionDao()
     private val userDao: UserDao = db.userDao()
@@ -40,8 +39,11 @@ class RunSessionRepository(
 
     private var offset: Int = 0
 
-    private val _duration = MutableStateFlow("00:00")
-    val duration: StateFlow<String> = _duration
+    private val _duration = MutableStateFlow(0L)
+    val duration: StateFlow<Long> = _duration
+
+    private var cumulativeDurationSeconds: Long = 0L
+    private var totalDurationSeconds: Long = 0L
 
     private val _pace = MutableStateFlow(0.0)
     val pace: StateFlow<Double> = _pace
@@ -52,19 +54,43 @@ class RunSessionRepository(
     private val _distance = MutableStateFlow<Double>(0.0)
     val distance: StateFlow<Double> = _distance
 
-    private var runSessionStartTime: Instant = DateTimeUtils.getCurrentInstant()
+    private lateinit var runSessionStartTime: Instant
+
+    private var repoScope = CoroutineScope(Job() + Dispatchers.IO)
 
     private fun getCurrentSessionOrThrow(): RunSession {
-        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null!")
+        return currentRunSession.value ?: throw IllegalStateException("Value of current run session is null! (RunSession Repository)")
     }
 
-    private suspend fun setCurrentRunSession() {
+    private suspend fun setCurrentRunSession(): RunSession? {
         val currentRunSession = runSessionDao.getCurrentRunSession()
         if (currentRunSession != null) {
             _currentRunSession.emit(currentRunSession)
+            return currentRunSession
         } else {
             println("No run session to initialize with!")
+            return null
         }
+    }
+
+    private fun ensureRepoScope() {
+        if (!repoScope.isActive) {
+            repoScope = CoroutineScope(Job() + Dispatchers.IO)
+        }
+    }
+
+    fun resetStatsValue() {
+        _duration.value = 0L
+        _distance.value = 0.0
+        _pace.value = 0.0
+        _caloriesBurned.value = 0.0
+        cumulativeDurationSeconds = 0L
+        totalDurationSeconds = 0L
+        runSessionStartTime = DateTimeUtils.getCurrentInstant()
+    }
+
+    fun stopUpdatingStats() {
+        repoScope.cancel()
     }
 
     suspend fun filterRunningSessionByDay(startDate: String, endDate: String): List<RunSession> {
@@ -106,10 +132,30 @@ class RunSessionRepository(
          runSessionDao.deleteRunSession(sessionId)
     }
 
+    fun setRunSessionStartTime() {
+        val currentTime = DateTimeUtils.getCurrentInstant()
+        val elapsedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
+
+        cumulativeDurationSeconds += elapsedDuration
+
+        runSessionStartTime = currentTime
+    }
+
     suspend fun startRunSession() {
         val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())
-        runSessionDao.initiateRunSession(0, runDate)
 
+        val newRunSession = RunSession(
+            runDate = runDate,
+            distance = 0.0,
+            duration = 0L,
+            pace = 0.0,
+            caloriesBurned = 0.0,
+            isActive = true,
+            dateAddInFavorite = null,
+            isFavorite = false
+        )
+
+        runSessionDao.initiateRunSession(newRunSession)
         setCurrentRunSession()
     }
 
@@ -134,25 +180,30 @@ class RunSessionRepository(
         return runSessionDao.fetchStatsSession(currentSession.sessionId)
     }
 
-    suspend fun calcPace(): Double {
-        val currentSession = getCurrentSessionOrThrow()
+    suspend fun calcPace() {
+        ensureRepoScope()
+        repoScope.launch {
+            try {
+                val userUnitPreference = userInfo?.unit
 
-        val userUnitPreference = userInfo?.unit
+                val durationInMinutes = _duration.value.div(60)
+                val adjustedDistance: Double = when (userUnitPreference) {
+                    User.UNIT_MILE -> _distance.value.times(0.621371f)
+                    else -> _distance.value
+                }
 
-        val durationInMinutes = currentSession.duration / 60
+                val pace: Double = if (adjustedDistance > 0) {
+                    durationInMinutes.div(adjustedDistance)
+                } else {
+                    0.0
+                }
 
-        val adjustedDistance: Double = when (userUnitPreference) {
-            User.UNIT_MILE -> currentSession.distance * 0.621371f
-            else -> currentSession.distance
+                _pace.emit(pace)
+                delay(100)
+            } catch (ce: CancellationException) {
+                println("calcPace runSessionRepo: ${ce.message} ")
+            }
         }
-
-        val pace: Double = if (adjustedDistance > 0) {
-            durationInMinutes / adjustedDistance
-        } else {
-            0.0
-        }
-
-        return pace
     }
 
     /*add in the viewmodel in the future to see run session detail*/
@@ -160,65 +211,94 @@ class RunSessionRepository(
         return runSessionDao.getRunSessionById(sessionId)
     }
 
-    suspend fun calcCaloriesBurned(): Double {
-        val userMetricPreference: String? = userInfo?.metricPreference
-        val unit: String? = userInfo?.unit
+    suspend fun calcCaloriesBurned() {
+        ensureRepoScope()
+        repoScope.launch {
+            try {
+                val userMetricPreference: String? = userInfo?.metricPreference
+                val unit: String? = userInfo?.unit
 
-        val currentSession = getCurrentSessionOrThrow()
+                val adjustedWeight = when (userMetricPreference) {
+                    User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
+                    else -> userInfo?.weight ?: 50.0
+                }
 
-        val adjustedWeight = when (userMetricPreference) {
-            User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
-            else -> userInfo?.weight ?: 50.0
+                val adjustedPace: Double = when (unit) {
+                    User.UNIT_MILE -> _pace.value.div(1.609344)
+                    else -> _pace.value
+                }
+
+                val speedMetersPerSec: Double = if (adjustedPace > 0) {
+                    1000.0 / (adjustedPace * 60.0)
+                } else {
+                    0.0
+                }
+
+                val durationInHours = _duration.value.div(3600.0)
+
+                val MET = when {
+                    speedMetersPerSec == 0.0 -> 0.0
+                    speedMetersPerSec < 2.0 -> 0.5 + (speedMetersPerSec * 0.3)
+                    speedMetersPerSec >= 2.0 -> 1.0 + (speedMetersPerSec * 0.9)
+                    else -> 0.0
+                }
+
+                val caloriesBurnedPerHour = MET * adjustedWeight
+
+                val caloriesBurned: Double = if (durationInHours > 0) {
+                    caloriesBurnedPerHour * durationInHours
+                } else {
+                    0.0
+                }
+                _caloriesBurned.value = caloriesBurned
+
+                delay(100)
+            } catch (ce: CancellationException) {
+                println("calc CaloriesBurned runSessionRepo ${ce.message}")
+            }
         }
-
-        val adjustedPace: Double = when (unit) {
-            User.UNIT_MILE -> currentSession.pace / 1.609344
-            else -> currentSession.pace
-        }
-
-        val speedMetersPerSec: Double = 1000.0 / (adjustedPace * 60.0)
-
-        val durationInHours = currentSession.duration / 3600.0
-
-        val MET = when {
-            speedMetersPerSec < 2.0 -> 0.5 + (speedMetersPerSec * 0.3)
-            speedMetersPerSec >= 2.0 -> 1.0 + (speedMetersPerSec * 0.9)
-            else -> 0.0
-        }
-
-        val caloriesBurnedPerHour = MET * adjustedWeight.toDouble()
-        val caloriesBurned = caloriesBurnedPerHour * durationInHours
-
-        return caloriesBurned
     }
 
     suspend fun calcDuration() {
-         val currentRunSession = getCurrentSessionOrThrow()
-         repoScope.launch {
-            while (currentRunSession.isActive != false) {
+        ensureRepoScope()
+        repoScope.launch {
+            while (isActive) {
                 try {
                     val currentTime = DateTimeUtils.getCurrentInstant()
-                    val formattedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
-                    _duration.emit(formattedDuration)
+                    val currentDuration =
+                        StatsUtils.calculateDuration(runSessionStartTime, currentTime)
+                    totalDurationSeconds = cumulativeDurationSeconds + currentDuration
+                    _duration.emit(totalDurationSeconds)
 
                     delay(1000)
+                } catch (ce: CancellationException) {
+                    println("Cancel Duration update ${ce.message}")
                 } catch (e: Exception) {
-                    println("Error updating duration: ${e.message}")
+                    println(" calcDuration RunSessionRepo ${e.message}")
                 }
             }
         }
     }
 
-    suspend fun calcDistance() = coroutineScope {
-        val latestLocationsFlow = gpsPointRepository.fetchTwoLatestLocation()
+    suspend fun calcDistance() {
+        ensureRepoScope()
+        repoScope.launch {
+            try {
+                val latestLocationsFlow = gpsPointRepository.fetchTwoLatestLocation()
 
-        latestLocationsFlow.collect { latestLocations ->
-            if (latestLocations.size == 2) {
-                val (location1, location2) = latestLocations
+                latestLocationsFlow.collect { latestLocations ->
+                    if (latestLocations.size == 2) {
+                        val (location1, location2) = latestLocations
+                        Log.d("calc distance", "location 1: $location1, location 2: $location2")
 
-                val distance = StatsUtils.haversineFormula(location1, location2)
+                        val distance = StatsUtils.haversineFormula(location1, location2)
+                        _distance.emit(distance)
 
-                _distance.value = distance
+                        delay(100)
+                    }
+                }
+            } catch (ce: CancellationException) {
+                println("calcDistance runSessionRepo ${ce.message}")
             }
         }
     }

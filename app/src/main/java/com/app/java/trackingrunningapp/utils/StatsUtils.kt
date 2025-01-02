@@ -9,9 +9,9 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 object StatsUtils {
-    fun calculateDuration(startTime: Instant, endTime: Instant = Clock.System.now()): String {
+    fun calculateDuration(startTime: Instant, endTime: Instant = Clock.System.now()): Long {
         val durationInSeconds = endTime.epochSeconds - startTime.epochSeconds
-        return formatDuration(durationInSeconds)
+        return durationInSeconds
     }
 
     fun formatDuration(seconds: Long): String {

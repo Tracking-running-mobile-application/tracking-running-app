@@ -1,18 +1,19 @@
 package com.app.java.trackingrunningapp.data.repository
 
+import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.GPSTrack
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class GPSTrackRepository {
     val db = InitDatabase.runningDatabase
 
     private val gpsTrackDao = db.GPSTrackDao()
     private val runSessionDao: RunSessionDao = db.runSessionDao()
-
-    private val gpsTrackMutex = Mutex()
 
     private suspend fun getCurrentRunSessionOrThrow(): RunSession {
         val currentRunSession = runSessionDao.getCurrentRunSession()
@@ -21,25 +22,31 @@ class GPSTrackRepository {
 
     private suspend fun getCurrentGPSTrackIDOrThrow(): Int {
         val currentRunSession = getCurrentRunSessionOrThrow()
-        return gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId) ?: throw java.lang.IllegalStateException("No GPS Track ID is attached with the current run session! (GPS Point)")
+        return gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId) ?: throw java.lang.IllegalStateException("No GPS Track ID is attached with the current run session! (GPS Track)")
     }
 
     suspend fun createGPSTrack() {
-        val currentRunSession = getCurrentRunSessionOrThrow()
+        withContext(Dispatchers.IO) {
+            val currentRunSession = getCurrentRunSessionOrThrow()
 
-        gpsTrackMutex.withLock {
-            gpsTrackDao.createGPSTrack(
-                gpsTrackId = 0,
-                gpsSessionId = currentRunSession.sessionId
+            val newGPSTrack = GPSTrack(
+                gpsSessionId = currentRunSession.sessionId,
+                isPaused = false
             )
+            Log.d(
+                "GPS Track Repo",
+                "${newGPSTrack.gpsSessionId}, ${newGPSTrack.isPaused}, GPS Track ID: ${newGPSTrack.gpsTrackId}"
+            )
+            gpsTrackDao.createGPSTrack(newGPSTrack)
+            delay(100)
+            val gpsTrackId = gpsTrackDao.getGPSTrackIdBySessionId(newGPSTrack.gpsSessionId)
+                ?: throw IllegalStateException("GPS Track insertion was not successful.")
         }
     }
 
-    suspend fun startGPSTrack() {
-        gpsTrackMutex.withLock {
-            val currentGpsTrackId = getCurrentGPSTrackIDOrThrow()
-            gpsTrackDao.setGPSTrackActive(currentGpsTrackId)
-        }
+    suspend fun resumeGPSTrack() {
+        val currentGpsTrackId = getCurrentGPSTrackIDOrThrow()
+        gpsTrackDao.setGPSTrackActive(currentGpsTrackId)
     }
 
     suspend fun stopGPSTrack() {

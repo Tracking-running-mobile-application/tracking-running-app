@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.data.repository
 
+import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.GPSPointDao
 import com.app.java.trackingrunningapp.data.dao.GPSTrackDao
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
@@ -14,13 +15,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import java.lang.IllegalStateException
 
 class GPSPointRepository(
 ) {
     val db = InitDatabase.runningDatabase
-
-    private var fetchingJob: Job? = null
 
     private val gpsPointDao: GPSPointDao = db.GPSPointDao()
     private val gpsTrackDao: GPSTrackDao = db.GPSTrackDao()
@@ -33,9 +33,14 @@ class GPSPointRepository(
     }
 
     private suspend fun getCurrentGPSTrackIDOrThrow(): Int {
-        val currentRunSession = getCurrentSessionOrThrow()
-        return gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
-            ?: throw IllegalStateException("No GPS Track ID is attached with the current run session! (GPS Point)")
+        return withContext(Dispatchers.IO) {
+            val currentRunSession = getCurrentSessionOrThrow()
+            Log.d("GPS Point", "${currentRunSession.sessionId}, ${currentRunSession.isActive}")
+            val trackId = gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
+            Log.d("GPS Point Repo", "Fetched Track ID: $trackId")
+            gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
+                ?: throw IllegalStateException("No GPS Track ID is attached with the current run session! (GPS Point)")
+        }
     }
 
     suspend fun insertGPSPoint(
@@ -46,7 +51,6 @@ class GPSPointRepository(
         val currentGPSTrackId = getCurrentGPSTrackIDOrThrow()
 
         val newGPSPoint = GPSPoint(
-            gpsPointId = 0,
             trackId = currentGPSTrackId,
             longitude = longitude,
             latitude = latitude,
@@ -58,13 +62,12 @@ class GPSPointRepository(
 
     suspend fun fetchTwoLatestLocation(): Flow<List<Location>> = flow {
         val gpsTrackID = getCurrentGPSTrackIDOrThrow()
-
-        while (gpsTrackDao.pauseOrContinueGPSTrack(gpsTrackID)) {
+        while (!gpsTrackDao.pauseOrContinueGPSTrack(gpsTrackID)) {
             try {
                 val latestLocations = gpsPointDao.getTwoLatestLocation(gpsTrackID)
                 emit(latestLocations)
             } catch (e: Exception) {
-                println("Error fetching location ${e.message}")
+                println("Error fetching location (GPS Point) ${e.message}")
             }
             delay(3000)
         }

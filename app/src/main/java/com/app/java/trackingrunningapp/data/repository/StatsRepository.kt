@@ -21,7 +21,6 @@ import kotlinx.datetime.plus
 
 class StatsRepository(
     private val coroutineScope: CoroutineScope
-
 ) {
     val db = InitDatabase.runningDatabase
 

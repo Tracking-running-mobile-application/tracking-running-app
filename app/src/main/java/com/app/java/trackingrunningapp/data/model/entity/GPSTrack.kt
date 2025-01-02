@@ -19,7 +19,7 @@ import androidx.room.PrimaryKey
 )
 data class GPSTrack(
     @PrimaryKey(autoGenerate = true)
-    val gpsTrackId: Int,
+    val gpsTrackId: Int = 0,
     val gpsSessionId: Int,
     @ColumnInfo(name = "isPaused", defaultValue = "0") var isPaused: Boolean = false,
 )

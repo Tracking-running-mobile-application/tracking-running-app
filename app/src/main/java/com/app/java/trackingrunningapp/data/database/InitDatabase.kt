@@ -7,6 +7,7 @@ import com.app.java.trackingrunningapp.data.repository.GPSTrackRepository
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.data.repository.TrainingPlanRepository
 import com.app.java.trackingrunningapp.data.repository.UserRepository
+import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel

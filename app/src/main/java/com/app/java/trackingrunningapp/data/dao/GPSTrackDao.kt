@@ -1,7 +1,9 @@
 package com.app.java.trackingrunningapp.data.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
+import com.app.java.trackingrunningapp.data.model.entity.GPSTrack
 
 @Dao
 interface GPSTrackDao {
@@ -17,8 +19,8 @@ interface GPSTrackDao {
     @Query("DELETE FROM GPSTrack WHERE gpsTrackId = :gpsTrackId")
     suspend fun deleteGPSTrack(gpsTrackId: Int)
 
-    @Query("UPDATE GPSTrack SET gpsSessionId = :gpsSessionId WHERE gpsTrackId = :gpsTrackId")
-    suspend fun createGPSTrack(gpsTrackId: Int, gpsSessionId: Int)
+    @Insert
+    suspend fun createGPSTrack(gpsTrack: GPSTrack)
 
     @Query("SELECT gpsTrackId FROM GPSTrack WHERE gpsSessionId = :sessionId")
     suspend fun getGPSTrackIdBySessionId(sessionId: Int): Int?
