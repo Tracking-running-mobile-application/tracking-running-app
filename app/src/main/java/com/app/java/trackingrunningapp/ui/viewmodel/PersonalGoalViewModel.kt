@@ -26,10 +26,6 @@ class PersonalGoalViewModel(
 
     private var goalProgressJob: Job? = null
 
-    init {
-        loadPersonalGoals()
-    }
-
     fun deletePersonalGoal(goalId: Int) {
         viewModelScope.launch {
             personalGoalRepository.deletePersonalGoal(goalId)

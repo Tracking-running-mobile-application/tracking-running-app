@@ -34,7 +34,7 @@ class PersonalGoalFragment : Fragment() {
             InitDatabase.runSessionRepository
         )
         personalGoalViewModel = ViewModelProvider(
-            requireActivity(),
+            this,
             personalGoalViewModelFactory
         )[PersonalGoalViewModel::class.java]
 
