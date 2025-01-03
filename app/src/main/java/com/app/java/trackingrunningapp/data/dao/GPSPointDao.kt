@@ -19,4 +19,12 @@ interface GPSPointDao {
         LIMIT 2
     """)
     suspend fun getTwoLatestLocation(trackId: Int): List<Location>
+
+    @Query("""
+        SELECT longitude, latitude
+        FROM GPSPoint
+        WHERE trackId = :trackId
+        ORDER BY timeStamp DESC
+    """)
+    suspend fun getGPSPointByTrackId(trackId: Int): List<Location>
 }

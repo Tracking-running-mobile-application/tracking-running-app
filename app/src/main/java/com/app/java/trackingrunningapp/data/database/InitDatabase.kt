@@ -42,12 +42,12 @@ class InitDatabase : Application() {
             runningDatabase = RunningDatabase.getInstance(this@InitDatabase)
             Log.d("Database operation", "Database initialized successfully")
 
-            notificationRepository = NotificationRepository()
+            notificationRepository = NotificationRepository(application = Application())
             // init run session repo
             gpsPointRepository = GPSPointRepository()
             gpsTrackRepository = GPSTrackRepository()
             trainingPlanRepository = TrainingPlanRepository()
-            runSessionRepository = RunSessionRepository(gpsPointRepository)
+            runSessionRepository = RunSessionRepository()
             userRepository = UserRepository()
             personalGoalRepository = PersonalGoalRepository()
             // init viewmodel

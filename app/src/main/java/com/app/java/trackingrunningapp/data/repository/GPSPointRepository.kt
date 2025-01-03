@@ -74,5 +74,7 @@ class GPSPointRepository(
 
     }.flowOn(Dispatchers.IO)
 
-
+    suspend fun fetchGPSPointList(trackId: Int): List<Location> {
+        return gpsPointDao.getGPSPointByTrackId(trackId = trackId)
+    }
 }

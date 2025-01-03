@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
+import java.util.Locale
 
 class StatsViewModel(
     private val statsRepository: StatsRepository
@@ -24,22 +25,44 @@ class StatsViewModel(
 
     val currentWeekStats: LiveData<List<WeeklyStats>> = weeklyStats.map { map ->
         val currentWeek = DateTimeUtils.getFirstDayOfCurrentWeek()
-        val lastDayOfWeek = currentWeek.plus(6, DateTimeUnit.DAY)
-        map.filter { (key, _) ->
-            val date = LocalDate.parse(key)
-            date in currentWeek..lastDayOfWeek
-        }.values.toList()
+
+        (0..6).map { dayOffset ->
+            val currentDay = currentWeek.plus(dayOffset, DateTimeUnit.DAY).toString()
+            map[currentDay] ?: WeeklyStats(
+                weeklyStatsKey = currentDay,
+                totalDistance = 0.0,
+                totalDuration = 0L,
+                totalCaloriesBurned = 0.0,
+
+            )
+        }
     }
 
     val currentMonthStats: LiveData<List<MonthlyStats>> = monthlyStats.map { map ->
-        val firstDayOfWeek = DateTimeUtils.getFirstDayOfCurrentWeek().toString()
-        map.filterKeys { it == firstDayOfWeek }.values.toList()
+        val firstDayOfWeek = DateTimeUtils.getEveryFirstDayOfWeekInCurrentMonth()
+        firstDayOfWeek.map { monthKey ->
+            map[monthKey] ?: MonthlyStats(
+                monthStatsKey = monthKey,
+                totalDistance = 0.0,
+                totalDuration = 0L,
+                totalCaloriesBurned = 0.0,
+                totalAvgPace = 0.0
+            )
+        }
     }
 
     val currentYearStats: LiveData<List<YearlyStats>> = yearlyStats.map { map ->
-        val today = DateTimeUtils.getCurrentDate().toString()
-        val currentYear = DateTimeUtils.extractMonthYearFromDate(today)
-        map.filterKeys { it == currentYear }.values.toList()
+        val currentYear = DateTimeUtils.getCurrentDate().year.toString()
+        (1..12).map { month ->
+            val monthYearKey = String.format(Locale.US, "%02d%s", month, currentYear)
+            map[monthYearKey] ?: YearlyStats(
+                yearlyStatsKey = monthYearKey,
+                totalDistance = 0.0,
+                totalDuration = 0L,
+                totalCaloriesBurned = 0.0,
+                totalAvgPace = 0.0
+            )
+        }
     }
 
     private fun refreshWeeklyStats() = viewModelScope.launch {

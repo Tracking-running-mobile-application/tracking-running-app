@@ -1,5 +1,7 @@
 package com.app.java.trackingrunningapp.data.repository
 
+import android.app.Application
+import android.content.Context
 import com.app.java.trackingrunningapp.data.dao.PersonalGoalDao
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
@@ -127,15 +129,15 @@ class PersonalGoalRepository {
 
         personalGoalDao.updateGoalProgress(personalGoal.goalId, progress)
 
-        /*
         if (progress >= 50.0) {
-            // TODO: Notification
+            notificationRepository.triggerNotification("HALF")
         }
-        */
+
         if (progress >= 100.0) {
             personalGoalDao.markGoalAchieved(personalGoal.goalId)
+            notificationRepository.triggerNotification("COMPLETE")
+            stopUpdatingGoalProgress()
         }
-        // TODO: Notification
     }
 
     suspend fun getAllPersonalGoals(): List<PersonalGoal> {

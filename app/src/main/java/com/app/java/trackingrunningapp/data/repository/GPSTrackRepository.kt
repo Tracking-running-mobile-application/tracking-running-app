@@ -15,6 +15,8 @@ class GPSTrackRepository {
     private val gpsTrackDao = db.GPSTrackDao()
     private val runSessionDao: RunSessionDao = db.runSessionDao()
 
+    private val gpsPointRepository: GPSPointRepository = InitDatabase.gpsPointRepository
+
     private suspend fun getCurrentRunSessionOrThrow(): RunSession {
         val currentRunSession = runSessionDao.getCurrentRunSession()
         return currentRunSession ?: throw IllegalStateException("Value of current run session is null! (GPS Track)")
@@ -48,5 +50,14 @@ class GPSTrackRepository {
     suspend fun stopGPSTrack() {
         val currentGpsTrackId = getCurrentGPSTrackIDOrThrow()
         gpsTrackDao.setGPSTrackInactive(currentGpsTrackId)
+    }
+
+    suspend fun fetchGPSPointOfSession(sessionId: Int) {
+        val gpsTrackId = gpsTrackDao.getGPSTrackIdBySessionId(sessionId)
+        if (gpsTrackId != null) {
+            gpsPointRepository.fetchGPSPointList(gpsTrackId)
+        } else {
+            println("No session ID attached with that GPS Track ID! (GPS Track Repository)")
+        }
     }
 }
