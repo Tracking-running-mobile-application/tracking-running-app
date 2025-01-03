@@ -8,6 +8,7 @@ import com.app.java.trackingrunningapp.data.model.entity.MonthlyStats
 import com.app.java.trackingrunningapp.data.model.entity.WeeklyStats
 import com.app.java.trackingrunningapp.data.model.entity.YearlyStats
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
+import com.app.java.trackingrunningapp.utils.StatsUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,22 +16,19 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 
-class StatsRepository(
-    private val coroutineScope: CoroutineScope
-) {
+class StatsRepository {
     val db = InitDatabase.runningDatabase
 
     private val yearlyStatsDao: YearlyStatsDao = db.yearlyStatsDao()
     private val monthlyStatsDao: MonthlyStatsDao = db.monthlyStatsDao()
     private val weeklyStatsDao: WeeklyStatsDao = db.weeklyStatsDao()
 
-    private val weeklyKeys = mutableSetOf<String>()
-    private val monthlyKeys = mutableSetOf<String>()
-    private val yearlyKeys = mutableSetOf<String>()
+    private val runSessionRepository: RunSessionRepository = InitDatabase.runSessionRepository
 
     private val _weeklyStatsMap = MutableStateFlow<Map<String, WeeklyStats>>(emptyMap())
     val weeklyStatsMap: StateFlow<Map<String, WeeklyStats>> = _weeklyStatsMap
@@ -41,78 +39,175 @@ class StatsRepository(
     private val _yearlyStatsMap = MutableStateFlow<Map<String, YearlyStats>>(emptyMap())
     val yearlyStatsMap: StateFlow<Map<String, YearlyStats>> = _yearlyStatsMap
 
-    suspend fun addStatsMultipleWeeks(weeklyStats: List<WeeklyStats>) {
-        weeklyStats.forEach { stats ->
-            weeklyStatsDao.upsertWeeklyStats(stats)
-            _weeklyStatsMap.value = _weeklyStatsMap.value.toMutableMap().apply {
-                this[stats.weeklyStatsKey] = stats
+    private suspend fun addStatsWeekly(stats: WeeklyStats) {
+        val updatedWeeklyMap = _weeklyStatsMap.value.toMutableMap()
+        val weeklyKey = DateTimeUtils.getCurrentDate().toString()
+
+        updatedWeeklyMap[weeklyKey] = updatedWeeklyMap[weeklyKey]?.let { existingStats ->
+            existingStats.apply {
+                totalDistance = (totalDistance ?: 0.0) + (stats.totalDistance ?: 0.0)
+                totalDuration = (totalDuration ?: 0L) + (stats.totalDuration ?: 0L)
+                totalCaloriesBurned = (totalCaloriesBurned ?: 0.0) + (stats.totalCaloriesBurned ?: 0.0)
+                totalAvgPace = if (totalDistance != 0.0) {
+                    (totalDuration ?: 0L) / 60.0 / (totalDistance ?: 1.0)
+                } else {
+                    0.0
+                }
             }
+        } ?: stats
+
+
+        if (updatedWeeklyMap.size > 365) {
+            val oldestKeys = updatedWeeklyMap.keys.sorted().take(updatedWeeklyMap.size - 365)
+            oldestKeys.forEach { updatedWeeklyMap.remove(it) }
         }
+
+        _weeklyStatsMap.value = updatedWeeklyMap
+        weeklyStatsDao.upsertWeeklyStats(stats)
     }
 
-    suspend fun addStatsMultipleMonths(monthlyStats: List<MonthlyStats>) {
-        monthlyStats.forEach { stats ->
-            monthlyStatsDao.upsertMonthlyStats(stats)
-            _monthlyStatsMap.value = _monthlyStatsMap.value.toMutableMap().apply {
-                this[stats.monthStatsKey] = stats
+    private suspend fun addStatsMonthly(stats: MonthlyStats) {
+        val updatedMonthlyMap = _monthlyStatsMap.value.toMutableMap()
+        val monthlyKey = DateTimeUtils.getFirstDayOfCurrentWeek().toString()
+
+        updatedMonthlyMap[monthlyKey] = updatedMonthlyMap[monthlyKey]?.let { existingStats ->
+            existingStats.apply {
+                totalDistance = (totalDistance ?: 0.0) + (stats.totalDistance ?: 0.0)
+                totalDuration = (totalDuration ?: 0L) + (stats.totalDuration ?: 0L)
+                totalCaloriesBurned = (totalCaloriesBurned ?: 0.0) + (stats.totalCaloriesBurned ?: 0.0)
+                totalAvgPace = if (totalDistance != 0.0) {
+                    (totalDuration ?: 0L) / 60.0 / (totalDistance ?: 1.0)
+                } else {
+                    0.0
+                }
             }
+        } ?: stats
+
+        if (updatedMonthlyMap.size > 52) {
+            val oldestKeys = updatedMonthlyMap.keys.sorted().take(updatedMonthlyMap.size - 12)
+            oldestKeys.forEach { updatedMonthlyMap.remove(it) }
         }
+
+        _monthlyStatsMap.value = updatedMonthlyMap
+        monthlyStatsDao.upsertMonthlyStats(stats)
     }
 
-    suspend fun addStatsMultipleYears(yearlyStats: List<YearlyStats>) {
-        yearlyStats.forEach { stats ->
-            yearlyStatsDao.upsertYearlyStats(stats)
-            _yearlyStatsMap.value = _yearlyStatsMap.value.toMutableMap().apply {
-                this[stats.yearlyStatsKey] = stats
-            }
-        }
-    }
-
-    private fun updateWeekKey(currentWeekKey: MutableSet<String>): Set<String> {
+    private suspend fun addStatsYearly(stats: YearlyStats) {
+        val updatedYearlyMap = _yearlyStatsMap.value.toMutableMap()
         val today = DateTimeUtils.getCurrentDate().toString()
-        if (!currentWeekKey.contains(today)) {
-            currentWeekKey.add(today)
+        val yearlyKey = DateTimeUtils.extractMonthYearFromDate(today)
+
+        updatedYearlyMap[yearlyKey] = updatedYearlyMap[yearlyKey]?.let { existingStats ->
+            existingStats.apply {
+                totalDistance = (totalDistance ?: 0.0) + (stats.totalDistance ?: 0.0)
+                totalDuration = (totalDuration ?: 0L) + (stats.totalDuration ?: 0L)
+                totalCaloriesBurned = (totalCaloriesBurned ?: 0.0) + (stats.totalCaloriesBurned ?: 0.0)
+                totalAvgPace = if (totalDistance != 0.0) {
+                    (totalDuration ?: 0L) / 60.0 / (totalDistance ?: 1.0)
+                } else {
+                    0.0
+                }
+            }
+        } ?: stats
+
+        if (updatedYearlyMap.size > 12) {
+            val oldestKeys = updatedYearlyMap.keys.sorted().take(updatedYearlyMap.size - 12)
+            oldestKeys.forEach { updatedYearlyMap.remove(it) }
         }
-        return currentWeekKey
+
+        _yearlyStatsMap.value = updatedYearlyMap
+        yearlyStatsDao.upsertYearlyStats(stats)
     }
 
-    private fun updateMonthKey(currentMonthKey: MutableSet<String>): Set<String> {
-        val firstDayOfWeek = DateTimeUtils.getFirstDayOfCurrentWeek().toString()
-        if (!currentMonthKey.contains(firstDayOfWeek)) {
-            currentMonthKey.add(firstDayOfWeek)
+    suspend fun calculateWeeklyStats() {
+        val today = DateTimeUtils.getCurrentDate().toString()
+        val sessions = runSessionRepository.filterRunningSessionByDay(today, today)
+
+        val totalDistance = sessions.sumOf { it.distance ?: 0.0 }
+        val totalDuration = sessions.sumOf { it.duration ?: 0L }
+        val totalCaloriesBurned = sessions.sumOf { it.caloriesBurned ?: 0.0 }
+        val totalAvgPace = if (totalDistance > 0) {
+            (totalDuration / 60.0) / totalDistance
+        } else {
+            0.0
         }
-        return currentMonthKey
+
+        addStatsWeekly(
+            WeeklyStats(
+                weeklyStatsKey = today,
+                totalDistance = totalDistance,
+                totalDuration = totalDuration,
+                totalCaloriesBurned = totalCaloriesBurned,
+                totalAvgPace = totalAvgPace
+            )
+        )
     }
 
-    private fun updateYearKey(currentYearKey: MutableSet<String>): Set<String> {
-        val year = DateTimeUtils.getCurrentDate().year.toString()
-        if (!currentYearKey.contains(year)) {
-            currentYearKey.add(year)
+    suspend fun calculateMonthlyStats() {
+        val monthlyStatsKey = DateTimeUtils.getFirstDayOfCurrentWeek().toString()
+        val weeklyMap = _weeklyStatsMap.value
+
+        val firstDayOfWeek = DateTimeUtils.getFirstDayOfCurrentWeek()
+        val lastDayOfWeek = firstDayOfWeek.plus(6, DateTimeUnit.DAY)
+
+        val filteredSessions = weeklyMap.filter { (weekKey, _) ->
+            val weekDate = LocalDate.parse(weekKey)
+            weekDate in firstDayOfWeek..lastDayOfWeek
         }
-        return currentYearKey
+
+        val totalDistance = filteredSessions.values.sumOf { it.totalDistance ?: 0.0 }
+        val totalDuration = filteredSessions.values.sumOf { it.totalDuration ?: 0L }
+        val totalCaloriesBurned = filteredSessions.values.sumOf { it.totalCaloriesBurned ?: 0.0 }
+        val totalAvgPace = if (totalDistance > 0) {
+            (totalDuration / 60.0) / totalDistance
+        } else {
+            0.0
+        }
+
+        addStatsMonthly(
+            MonthlyStats(
+                monthStatsKey = firstDayOfWeek.toString(),
+                totalDistance = totalDistance,
+                totalDuration = totalDuration,
+                totalCaloriesBurned = totalCaloriesBurned,
+                totalAvgPace = totalAvgPace
+            )
+        )
     }
 
+    suspend fun calculateYearlyStats() {
+        val monthlyMap = _monthlyStatsMap.value.toMutableMap()
 
-    private fun updateKeys() {
-        updateWeekKey(weeklyKeys)
-        updateMonthKey(monthlyKeys)
-        updateYearKey(yearlyKeys)
-    }
+        val today = DateTimeUtils.getCurrentDate().toString()
+        val currentMonthYear = DateTimeUtils.extractMonthYearFromDate(today)
 
-    fun startUpdatingKeys() {
-        coroutineScope.launch {
-            while (isActive) {
-                val now = DateTimeUtils.getCurrentDateTime()
-                val nextMidnight = now.date.plus(1, DateTimeUnit.DAY)
-                    .atStartOfDayIn(TimeZone.currentSystemDefault())
+        var totalDistance = 0.0
+        var totalDuration = 0L
+        var totalCaloriesBurned = 0.0
+        var totalAvgPace = 0.0
+        var validWeekCount = 0
 
-                val nowInstant = DateTimeUtils.getCurrentInstant()
-                val delayUntilMidnight = nextMidnight.toEpochMilliseconds() - nowInstant.toEpochMilliseconds()
+        monthlyMap.forEach { (monthlyKeys, monthlyStats) ->
+            val monthYearInKey = DateTimeUtils.extractMonthYearFromDate(monthlyKeys)
 
-                delay(delayUntilMidnight)
-                updateKeys()
+            if (monthYearInKey == currentMonthYear) {
+                totalDistance += monthlyStats.totalDistance ?: 0.0
+                totalDuration += monthlyStats.totalDuration ?: 0L
+                totalCaloriesBurned += monthlyStats.totalCaloriesBurned ?: 0.0
+                totalAvgPace += monthlyStats.totalAvgPace ?: 0.0
+                validWeekCount++
             }
         }
-    }
+        val avgPace = if (validWeekCount > 0) totalAvgPace / validWeekCount else 0.0
 
+        addStatsYearly(
+            YearlyStats(
+                yearlyStatsKey = currentMonthYear,
+                totalDistance = totalDistance,
+                totalDuration = totalDuration,
+                totalCaloriesBurned = totalCaloriesBurned,
+                totalAvgPace = avgPace
+            )
+        )
+    }
 }

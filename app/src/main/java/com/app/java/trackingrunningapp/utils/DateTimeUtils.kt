@@ -8,9 +8,12 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import java.time.format.DateTimeFormatter
 
 object DateTimeUtils {
     fun getCurrentDate(): LocalDate {
@@ -72,5 +75,13 @@ object DateTimeUtils {
         val currentInstant = Clock.System.now()
         val userTimeZone = TimeZone.currentSystemDefault()
         return currentInstant.toLocalDateTime(userTimeZone).time
+    }
+
+    fun extractMonthYearFromDate(dateString: String): String {
+        val date = LocalDate.parse(dateString)
+        val month = date.month.toString().padStart(2, '0')
+        val year = date.year.toString()
+
+        return "$month$year"
     }
 }
