@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.model.repositories
 
+import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -10,15 +11,17 @@ import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.Notification
 import kotlinx.coroutines.launch
 
-class NotificationRepository {
+class NotificationRepository(
+    private val application: Application
+) {
     val db = InitDatabase.runningDatabase
 
     private val notificationDao: NotificationDao = db.notificationDao()
 
-    suspend fun triggerNotification(type: String, context: Context) {
+    suspend fun triggerNotification(type: String) {
         val notification = notificationDao.getRandomNotificationByType(type)
 
-        sendNotification(notification, context)
+        sendNotification(notification, application)
     }
 
     private fun sendNotification(notification: Notification, context: Context) {
