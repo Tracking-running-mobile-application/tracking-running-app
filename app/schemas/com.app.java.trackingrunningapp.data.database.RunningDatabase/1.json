@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "614576703c73601dfa1e4c4be4494352",
+    "identityHash": "aac0981002b60302f3e10915adb02156",
     "entities": [
       {
         "tableName": "User",
@@ -383,7 +383,7 @@
       },
       {
         "tableName": "TrainingPlan",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`planId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `planSessionId` INTEGER, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `estimatedTime` REAL NOT NULL, `targetDistance` REAL DEFAULT 0.0, `targetDuration` REAL DEFAULT 0.0, `targetCaloriesBurned` REAL DEFAULT 0.0, `goalProgress` REAL DEFAULT 0.0, `exerciseType` TEXT NOT NULL, `imagePath` TEXT DEFAULT NULL, `difficulty` TEXT NOT NULL, `lastRecommendedDate` TEXT DEFAULT NULL, `isFinished` INTEGER DEFAULT 0, FOREIGN KEY(`planSessionId`) REFERENCES `RunSession`(`sessionId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`planId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `planSessionId` INTEGER, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `estimatedTime` REAL NOT NULL, `targetDistance` REAL DEFAULT 0.0, `targetDuration` REAL DEFAULT 0.0, `targetCaloriesBurned` REAL DEFAULT 0.0, `goalProgress` REAL DEFAULT 0.0, `exerciseType` TEXT NOT NULL, `difficulty` TEXT NOT NULL, `lastRecommendedDate` TEXT DEFAULT NULL, `isFinished` INTEGER DEFAULT 0, FOREIGN KEY(`planSessionId`) REFERENCES `RunSession`(`sessionId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "planId",
@@ -448,13 +448,6 @@
             "columnName": "exerciseType",
             "affinity": "TEXT",
             "notNull": true
-          },
-          {
-            "fieldPath": "imagePath",
-            "columnName": "imagePath",
-            "affinity": "TEXT",
-            "notNull": false,
-            "defaultValue": "NULL"
           },
           {
             "fieldPath": "difficulty",
@@ -671,7 +664,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '614576703c73601dfa1e4c4be4494352')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aac0981002b60302f3e10915adb02156')"
     ]
   }
 }
