@@ -214,6 +214,7 @@ INSERT INTO "Notification" VALUES (27,'Recharge!','Take a moment to rest and rej
 INSERT INTO "Notification" VALUES (28,'Breathe!','Catch your breath. It’s break time.','BREAK');
 INSERT INTO "Notification" VALUES (29,'Refresh!','Time to relax. You’ve earned it.','BREAK');
 INSERT INTO "Notification" VALUES (30,'Recover!','Take a well-deserved break and get ready to go again.','BREAK');
+INSERT INTO "Notification" VALUES (31,'Caution!','Your speed is unusually high! Proceed at your own risk!','EXCESSIVE_PACE');
 CREATE INDEX IF NOT EXISTS "index_GPSPoint_trackId" ON "GPSPoint" (
 	"trackId"
 );
