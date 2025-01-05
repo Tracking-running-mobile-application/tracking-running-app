@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.model.dataclass.home.PersonalGoal
@@ -22,6 +23,7 @@ class PersonalGoalAdapter(
         private val taskImage: ImageView = itemView.findViewById(R.id.taskImage)
         private val taskTitle: TextView = itemView.findViewById(R.id.text_task_title)
         private val taskCheckbox: ImageView = itemView.findViewById(R.id.taskCheckbox)
+        private val icEditGoal = itemView.findViewById<ImageView>(R.id.ic_edit_goal)
 
         fun bind(dailyTask: PersonalGoal){
             taskTitle.text = dailyTask.title
@@ -35,6 +37,9 @@ class PersonalGoalAdapter(
                 }else{
                     taskCheckbox.visibility = View.INVISIBLE
                 }
+            }
+            icEditGoal.setOnClickListener {
+                it.findNavController().navigate(R.id.action_homeFragment_to_personalGoalFragment)
             }
         }
     }

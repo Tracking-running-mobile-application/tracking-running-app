@@ -29,7 +29,7 @@
     <string name="text_home">Home</string>
     <string name="text_profile">Profile</string>
     <string name="text_run">Run</string>
-    <string name="text_statistics">Statistics</string>
+    <string name="text_statistics">STATISTICS</string>
     <string name="text_history">History</string>
     <string name="favourite_runs">Favourite Runs</string>
     <string name="no_favourite_text">You are currently having\nno favorite runs</string>

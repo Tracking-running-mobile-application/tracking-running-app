@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentStatusBinding
 import com.app.java.trackingrunningapp.ui.MainActivity
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
@@ -26,7 +26,9 @@ class StatusFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentStatusBinding.inflate(inflater, container, false)
-        val userFactory = UserViewModelFactory(InitDatabase.userRepository)
+        val userRepository = UserRepository()
+//        val userFactory = UserViewModelFactory(InitDatabase.userRepository)
+        val userFactory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
         return binding.root
     }

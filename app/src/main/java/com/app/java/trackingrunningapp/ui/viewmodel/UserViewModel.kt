@@ -47,7 +47,6 @@ class UserViewModel(
                 _userLiveData.postValue(user)
                 Log.d("userViewmodel","${user.height}")
             }
-            Log.d("userViewmodel","user null")
         }
     }
 }

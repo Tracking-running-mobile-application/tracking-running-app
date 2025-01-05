@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
 import com.app.java.trackingrunningapp.data.repository.PersonalGoalRepository
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +43,7 @@ class PersonalGoalViewModel(
     }
 
     fun loadPersonalGoals() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val personalGoals = personalGoalRepository.getAllPersonalGoals()
             _personalGoals.value = personalGoals
         }
@@ -55,7 +56,7 @@ class PersonalGoalViewModel(
                 try {
                     val progress = personalGoalRepository.getGoalProgress()
                     _goalProgress.value = progress
-                    delay(7000)
+                    delay(5000)
                 } catch (e: Exception) {
                     println("Error fetching goal progress: ${e.message}")
                 }
@@ -66,6 +67,7 @@ class PersonalGoalViewModel(
     fun upsertPersonalGoal(
         goalId: Int? = null,
         sessionId: Int? = null,
+        name: String? = null,
         targetDistance: Double? = null,
         targetDuration: Double? = null,
         targetCaloriesBurned: Double? = null
@@ -74,6 +76,7 @@ class PersonalGoalViewModel(
             val updatedGoal = personalGoalRepository.upsertPersonalGoal(
                 goalId = goalId,
                 sessionId = sessionId,
+                name = name,
                 targetDistance = targetDistance,
                 targetDuration = targetDuration,
                 targetCaloriesBurned = targetCaloriesBurned,

@@ -35,7 +35,7 @@ class RunResultFragment : Fragment() {
 
     private fun setUpAction() {
         binding.btnRunSave.setOnClickListener {
-            it.findNavController().navigate(R.id.action_global_runFragment)
+            it.findNavController().popBackStack(R.id.action_global_homeFragment,false)
             Toast.makeText(requireContext(),"Added Successful",Toast.LENGTH_SHORT).show()
         }
         binding.btnDiscard.setOnClickListener {

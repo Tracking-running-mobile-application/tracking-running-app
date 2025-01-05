@@ -6,10 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentTrainingPlansBinding
@@ -60,26 +62,38 @@ class TrainingPlanFragment : Fragment() {
                     binding.textPlanDescription.text = plan.description
                     binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
                     binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    binding.btnLiveStats.setOnClickListener {
+                        // TODO:  
+                    }
                 }
             }
         }
-        trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner){beginnerPlans ->
-            for (plan in beginnerPlans){
+        trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner){intermediatePlans ->
+            for (plan in intermediatePlans){
                 if(plan.title.trim().compareTo(planTitle.trim()) == 0){
                     binding.planTitle.text = plan.title
                     binding.textPlanDescription.text = plan.description
                     binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
                     binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    binding.btnLiveStats.setOnClickListener {
+                        // TODO:  
+                    }
                 }
             }
         }
-        trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner){beginnerPlans ->
-            for (plan in beginnerPlans){
+        trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner){advancedPlans ->
+            for (plan in advancedPlans){
                 if(plan.title.trim().compareTo(planTitle.trim()) == 0){
                     binding.planTitle.text = plan.title
                     binding.textPlanDescription.text = plan.description
                     binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
                     binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    binding.btnLiveStats.setOnClickListener {
+//                        it.findNavController().navigate(R.id.action_trainingPlanFragment_to_nav_run)
+                        // TODO:
+                        requireActivity().findViewById<Button>(R.id.btn_start_tracking)
+                        it.findNavController().navigate(R.id.action_trainingPlanFragment_to_nav_run)
+                    }
                 }
             }
         }

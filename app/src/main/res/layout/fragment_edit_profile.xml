@@ -36,7 +36,8 @@
             android:layout_height="@dimen/size_toggle_button"
             android:backgroundTint="@color/main_yellow"
             android:text="@string/text_cm"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_ft"
@@ -44,7 +45,8 @@
             android:layout_height="@dimen/size_toggle_button"
             android:backgroundTint="@color/main_gray"
             android:text="@string/text_ft"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            tools:ignore="TouchTargetSizeCheck" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -63,7 +65,8 @@
             android:layout_height="@dimen/size_toggle_button"
             android:backgroundTint="@color/main_yellow"
             android:text="@string/text_kg"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_lbs"
@@ -71,7 +74,8 @@
             android:layout_height="@dimen/size_toggle_button"
             android:backgroundTint="@color/main_gray"
             android:text="@string/text_lbs"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            tools:ignore="TouchTargetSizeCheck" />
 
     </com.google.android.material.button.MaterialButtonToggleGroup>
 
@@ -85,7 +89,7 @@
         android:textSize="@dimen/text_size_title"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@+id/text_gender"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_gender" />
+        app:layout_constraintTop_toBottomOf="@+id/edt_name" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/edt_age"
@@ -189,36 +193,25 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="VisualLintButtonSize" />
 
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_input_layout_gender"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/edt_name"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/height_edit_text"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        app:hintEnabled="false"
+        android:background="@drawable/background_edit_text_profile"
+        android:drawableStart="@drawable/ic_gender"
+        android:drawablePadding="@dimen/drawable_padding"
+        android:hint="Your Name"
+        android:textColor="@color/color_edit_text"
+        android:textColorHint="@color/color_hint_edit_text"
+        android:textSize="@dimen/size_edit_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_gender">
-
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/tv_select_gender"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/height_edit_text"
-            android:background="@drawable/background_edit_text_profile"
-            android:drawableStart="@drawable/ic_gender"
-            android:drawablePadding="@dimen/drawable_padding"
-            android:hint="@string/hint_gender"
-            android:inputType="none"
-            android:textColor="@color/color_edit_text"
-            android:textColorHint="@color/color_hint_edit_text"
-            android:textSize="@dimen/size_edit_text"
-            app:simpleItems="@array/gender_options"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck,VisualLintTextFieldSize" />
-
-    </com.google.android.material.textfield.TextInputLayout>
+        app:layout_constraintTop_toBottomOf="@+id/text_gender"
+        tools:ignore="HardcodedText,VisualLintTextFieldSize" />
 
     <TextView
         android:id="@+id/text_hint_height_unit"
@@ -230,7 +223,8 @@
         android:textSize="@dimen/size_edit_text"
         app:layout_constraintBottom_toBottomOf="@+id/edt_height"
         app:layout_constraintEnd_toEndOf="@+id/edt_height"
-        app:layout_constraintTop_toTopOf="@+id/edt_height" />
+        app:layout_constraintTop_toTopOf="@+id/edt_height"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/text_hint_weight_unit"
@@ -242,6 +236,7 @@
         android:textSize="@dimen/size_edit_text"
         app:layout_constraintBottom_toBottomOf="@+id/edt_weight"
         app:layout_constraintEnd_toEndOf="@+id/edt_weight"
-        app:layout_constraintTop_toTopOf="@+id/edt_weight" />
+        app:layout_constraintTop_toTopOf="@+id/edt_weight"
+        tools:ignore="TextContrastCheck" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
