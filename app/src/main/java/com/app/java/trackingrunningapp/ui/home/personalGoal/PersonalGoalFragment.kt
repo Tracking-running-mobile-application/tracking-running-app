@@ -61,20 +61,25 @@ class PersonalGoalFragment : Fragment() {
         }
         binding.btnGoalSave.setOnClickListener {
             // TODO: Save plan
-
             if (isDistanceClicked) {
                 personalGoalViewModel.upsertPersonalGoal(
                     name = binding.editCustomNamePlan.text.toString(),
-                    targetDistance = binding.objectiveBox.text.toString().toDouble()
+                    targetDistance = binding.objectiveBox.text.toString().toDouble(),
+                    targetDuration = 0.0,
+                    targetCaloriesBurned = 0.0
                 )
             } else if (isDurationClicked) {
                 personalGoalViewModel.upsertPersonalGoal(
                     name = binding.editCustomNamePlan.text.toString(),
-                    targetDuration = binding.objectiveBox.text.toString().toDouble()
+                    targetDistance = 0.0,
+                    targetDuration = binding.objectiveBox.text.toString().toDouble(),
+                    targetCaloriesBurned = 0.0
                 )
             } else if (isCaloClicked) {
                 personalGoalViewModel.upsertPersonalGoal(
                     name = binding.editCustomNamePlan.text.toString(),
+                    targetDistance = 0.0,
+                    targetDuration = 0.0,
                     targetCaloriesBurned = binding.objectiveBox.text.toString().toDouble()
                 )
             }
