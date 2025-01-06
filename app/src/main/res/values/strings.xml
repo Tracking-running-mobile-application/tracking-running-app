@@ -4,7 +4,7 @@
     <string name="text_get_started">GET STARTED\t</string>
     <string name="text_your_details">YOUR DETAILS</string>
     <string name="image_male">image_male</string>
-    <string name="gender">Select Gender</string>
+    <string name="input_user_name">Name</string>
     <string-array name="gender_options">
         <item>Male</item>
         <item>Female</item>
@@ -73,4 +73,7 @@
     <string name="objective">Objective</string>
     <string name="text_pause">Pause</string>
     <string name="user_name">Hi, %s</string>
+    <string name="profile_weight">%.2f kg</string>
+    <string name="edit_weight">%.2f</string>
+    <string name="profile_height">%.2f</string>
 </resources>

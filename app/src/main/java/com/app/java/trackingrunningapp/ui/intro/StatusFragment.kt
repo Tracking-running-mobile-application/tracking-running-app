@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 class StatusFragment : Fragment() {
     private lateinit var binding: FragmentStatusBinding
     private var isFtClicked = false
+    private var isLbsClicked = false
     private lateinit var userViewModel: UserViewModel
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -27,7 +28,6 @@ class StatusFragment : Fragment() {
     ): View {
         binding = FragmentStatusBinding.inflate(inflater, container, false)
         val userRepository = UserRepository()
-//        val userFactory = UserViewModelFactory(InitDatabase.userRepository)
         val userFactory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
         return binding.root
@@ -42,6 +42,7 @@ class StatusFragment : Fragment() {
     private fun setupConfirm() {
         binding.btnConfirm.setOnClickListener {
             val intent = Intent(requireContext(), MainActivity::class.java)
+            val userName = binding.edtName.text.toString()
             val ageStr = binding.edtAge.text.toString()
             var age: Int = 1
             if (ageStr.isNotEmpty()) {
@@ -52,16 +53,22 @@ class StatusFragment : Fragment() {
                 val heightFt = binding.edtHeight.text.toString().toFloat()
                 userHeight = (heightFt * 30.48).toFloat()
             } else if (binding.btnCm.performClick()) {
-                 userHeight = binding.edtHeight.text.toString().toFloat()
+                userHeight = binding.edtHeight.text.toString().toFloat()
             }
-
-            val weight = binding.edtWeight.text.toString().toDouble()
+            // weight
+            var userWeight :Double = binding.edtWeight.text.toString().toDouble()
+            if (isLbsClicked) {
+                val weightLbs = binding.edtWeight.text.toString().toDouble()
+                userWeight = weightLbs.times(0.453592)
+            }else if(binding.btnKg.performClick()){
+                userWeight = binding.edtWeight.text.toString().toDouble()
+            }
             lifecycleScope.launch {
                 userViewModel.upsertUserInfo(
-                    name = "Thang",
+                    name = userName,
                     age = age,
                     height = userHeight,
-                    weight = weight,
+                    weight = userWeight,
                     metricPreference = "kg",
                     unit = "km"
                 )
@@ -96,12 +103,14 @@ class StatusFragment : Fragment() {
         }
         //kg
         btnKg.setOnClickListener {
+            isLbsClicked = false
             hintWeight.text = getString(R.string.text_kg)
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
         //lbs
         btnLbs.setOnClickListener {
+            isLbsClicked = true
             hintWeight.text = getString(R.string.text_lbs)
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
