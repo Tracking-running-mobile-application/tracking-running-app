@@ -16,6 +16,15 @@ import kotlinx.datetime.toLocalDateTime
 import java.time.format.DateTimeFormatter
 
 object DateTimeUtils {
+    private const val DATE_FORMAT = "dd/MM/yyyy"
+
+    fun formatDateString(value: String): String {
+        val inputDate = DateTimeFormatter.ofPattern("yyyyMMdd")
+        val date = java.time.LocalDate.parse(value,inputDate)
+        val outputDate = DateTimeFormatter.ofPattern(DATE_FORMAT)
+        return date.format(outputDate)
+    }
+
     fun getCurrentDate(): LocalDate {
         val currentInstant = System.now()
         val userTimeZone = TimeZone.currentSystemDefault()
@@ -70,7 +79,6 @@ object DateTimeUtils {
         return (this % 4 == 0 && this % 100 != 0) || (this % 400 == 0)
     }
 
-
     fun getCurrentTime(): LocalTime {
         val currentInstant = Clock.System.now()
         val userTimeZone = TimeZone.currentSystemDefault()
@@ -81,7 +89,6 @@ object DateTimeUtils {
         val date = LocalDate.parse(dateString)
         val month = date.month.toString().padStart(2, '0')
         val year = date.year.toString()
-
         return "$month$year"
     }
 }

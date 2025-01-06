@@ -72,7 +72,6 @@ class HistoryFragment : Fragment() {
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
                     View.GONE
             }
-
             override fun onAddFavouriteClick(action: Int) {
                 if (action == RunAdapter.FAVOURITE_ADD) {
                     Snackbar.make(
@@ -116,7 +115,6 @@ class HistoryFragment : Fragment() {
     }
 
     private fun setupRecyclerHistory() {
-        setupRunDate()
         setUpRefreshing()
     }
 
@@ -128,9 +126,6 @@ class HistoryFragment : Fragment() {
             // Stop the refresh indicator
             binding.swipeRefreshLayout.isRefreshing = false
         }
-    }
-
-    private fun setupRunDate() {
     }
 
     private fun showCalendar() {
@@ -149,27 +144,6 @@ class HistoryFragment : Fragment() {
         }
         dateRangePicker.show(requireActivity().supportFragmentManager, "calendar")
     }
-
-//    private fun generateSampleData(): List<RunDate> {
-////        val octoberRuns = listOf(
-//            Run("00:30:10", "12KM"),
-//            Run("00:30:10", "20KM")
-//        )
-//        val septemberRuns = listOf(
-//            Run("00:30:10", "12KM"),
-//            Run("00:30:10", "12KM")
-//        )
-//        val augustRuns = listOf(
-//            Run("00:30:10", "12KM"),
-//            Run("00:30:10", "12KM")
-////        )
-//
-//        return listOf(
-//            RunDate("OCTOBER 2024", octoberRuns),
-//            RunDate("SEPTEMBER 2024", septemberRuns),
-//            RunDate("AUGUST 2024", augustRuns)
-//        )
-//    }
 
     override fun onStop() {
         super.onStop()
