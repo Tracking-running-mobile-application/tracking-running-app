@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 
@@ -29,15 +30,18 @@ class IntroActivity : AppCompatActivity() {
             insets
         }
         initNavHost()
-        val userFactory = UserViewModelFactory(InitDatabase.userRepository)
-        userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
-        userViewModel.fetchUserInfo()
-        userViewModel.userLiveData.observe(this){user->
-            if(user != null){
-                startActivity(Intent(this,MainActivity::class.java))
-                Log.d("user","$user")
-            }
-        }
+//        val userRepository = UserRepository()
+////        val userFactory = UserViewModelFactory(InitDatabase.userRepository)
+//        val userFactory = UserViewModelFactory(userRepository)
+//        userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
+//        userViewModel.fetchUserInfo()
+//        userViewModel.userLiveData.observe(this){user->
+//            Log.d("userIntro","$user")
+//            if(user != null){
+//                startActivity(Intent(this,MainActivity::class.java))
+//                Log.d("user","$user")
+//            }
+//        }
     }
 
     private fun initNavHost() {

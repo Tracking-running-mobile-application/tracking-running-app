@@ -2,6 +2,7 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fav_run_fragment"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -28,6 +29,7 @@
             android:padding="8dp">
 
             <!-- Image on the left -->
+
             <androidx.cardview.widget.CardView
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -40,35 +42,38 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    android:src="@drawable/img_beginner" />
+                    android:src="@drawable/img_beginner"
+                    tools:ignore="ContentDescription" />
             </androidx.cardview.widget.CardView>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="10"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_task_title"
+                    android:id="@+id/text_goal_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
-                    android:text="Task Title"
+                    android:text="Plan Name"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/text_task_description"
+                    android:id="@+id/text_goal_target"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:gravity="center_vertical"
                     android:text="Duration"
                     android:textColor="@color/white"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    tools:ignore="HardcodedText" />
 
             </LinearLayout>
 
@@ -78,8 +83,19 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:visibility="invisible"
-                app:srcCompat="@drawable/ic_check_circle" /> <!-- replace with your icon -->
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_check_circle"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/ic_edit_goal"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:srcCompat="@drawable/ic_edit_plan_24"
+                tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" /> <!-- replace with your icon -->
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

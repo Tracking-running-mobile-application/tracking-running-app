@@ -12,12 +12,12 @@
         layout="@layout/item_history_run_detail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_discard"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView18" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <com.mapbox.maps.MapView
         android:id="@+id/mapView"
@@ -37,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.45" />
+        app:layout_constraintGuide_percent="0.53" />
 
 
     <com.google.android.material.card.MaterialCardView
@@ -70,11 +70,12 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/margin_16"
+                android:textStyle="bold"
                 android:layout_marginEnd="@dimen/margin_16"
                 android:gravity="center_vertical"
                 android:text="CONGRATULATIONS!"
                 android:textColor="@color/text_shadow_white"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
@@ -83,11 +84,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center_vertical"
-        android:text="Your Stats"
+        android:text="YOUR STATS"
         android:textColor="@color/text_shadow_white"
-        android:textSize="@dimen/margin_16"
-        app:drawableStartCompat="@drawable/ic_bar_chart"
+        android:textSize="24sp"
+        app:drawableStartCompat="@drawable/baseline_bar_chart_32"
+        app:layout_constraintBottom_toTopOf="@id/layout_result"
         app:layout_constraintEnd_toEndOf="@+id/materialCardView"
         app:layout_constraintStart_toStartOf="@+id/materialCardView"
         app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
@@ -98,18 +101,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/black"
         android:text="Discard"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline17"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/layout_result" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -122,7 +123,7 @@
         android:backgroundTint="@color/main_yellow"
         android:text="Save"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/btn_discard"
         app:layout_constraintEnd_toEndOf="parent"
@@ -135,4 +136,5 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

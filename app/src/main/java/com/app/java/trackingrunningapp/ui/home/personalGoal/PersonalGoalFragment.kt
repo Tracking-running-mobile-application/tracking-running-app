@@ -19,10 +19,14 @@ import com.app.java.trackingrunningapp.databinding.FragmentPersonalGoalBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.mapbox.maps.extension.style.expressions.dsl.generated.distance
 
 class PersonalGoalFragment : Fragment() {
     private lateinit var binding: FragmentPersonalGoalBinding
     private lateinit var personalGoalViewModel: PersonalGoalViewModel
+    private var isDistanceClicked: Boolean = false
+    private var isDurationClicked: Boolean = false
+    private var isCaloClicked: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +61,28 @@ class PersonalGoalFragment : Fragment() {
         }
         binding.btnGoalSave.setOnClickListener {
             // TODO: Save plan
+            if (isDistanceClicked) {
+                personalGoalViewModel.upsertPersonalGoal(
+                    name = binding.editCustomNamePlan.text.toString(),
+                    targetDistance = binding.objectiveBox.text.toString().toDouble(),
+                    targetDuration = 0.0,
+                    targetCaloriesBurned = 0.0
+                )
+            } else if (isDurationClicked) {
+                personalGoalViewModel.upsertPersonalGoal(
+                    name = binding.editCustomNamePlan.text.toString(),
+                    targetDistance = 0.0,
+                    targetDuration = binding.objectiveBox.text.toString().toDouble(),
+                    targetCaloriesBurned = 0.0
+                )
+            } else if (isCaloClicked) {
+                personalGoalViewModel.upsertPersonalGoal(
+                    name = binding.editCustomNamePlan.text.toString(),
+                    targetDistance = 0.0,
+                    targetDuration = 0.0,
+                    targetCaloriesBurned = binding.objectiveBox.text.toString().toDouble()
+                )
+            }
             // back to home
             it.findNavController().navigate(R.id.action_global_homeFragment)
         }
@@ -71,6 +97,9 @@ class PersonalGoalFragment : Fragment() {
         val unitText = binding.unitText
         //button
         buttonDistance.setOnClickListener {
+            isDistanceClicked = true
+            isDurationClicked = false
+            isCaloClicked = false
             chooseObjective(
                 objectiveBar,
                 unitText,
@@ -79,8 +108,11 @@ class PersonalGoalFragment : Fragment() {
                 buttonCalo
             )
         }
-        buttonDistance.performClick()
+//        buttonDistance.performClick()
         buttonDuration.setOnClickListener {
+            isDistanceClicked = false
+            isDurationClicked = true
+            isCaloClicked = false
             chooseObjective(
                 objectiveBar,
                 unitText,
@@ -90,6 +122,9 @@ class PersonalGoalFragment : Fragment() {
             )
         }
         buttonCalo.setOnClickListener {
+            isDistanceClicked = false
+            isDurationClicked = false
+            isCaloClicked = true
             chooseObjective(
                 objectiveBar,
                 unitText,

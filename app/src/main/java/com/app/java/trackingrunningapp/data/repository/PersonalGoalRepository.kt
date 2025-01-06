@@ -44,6 +44,7 @@ class PersonalGoalRepository {
     suspend fun upsertPersonalGoal(
         goalId: Int? = null,
         sessionId: Int? = null,
+        name: String? = null,
         targetDistance: Double?,
         targetDuration: Double?,
         targetCaloriesBurned: Double?,
@@ -57,12 +58,14 @@ class PersonalGoalRepository {
 
         val personalGoal = existingGoal?.copy(
             goalSessionId = sessionId ?: existingGoal.goalSessionId,
+            name = name ?: existingGoal.name,
             targetDistance = targetDistance ?: existingGoal.targetDistance,
             targetDuration = targetDuration ?: existingGoal.targetDuration,
             targetCaloriesBurned = targetCaloriesBurned ?: existingGoal.targetCaloriesBurned,
             dateCreated = currentDateString
         ) ?: PersonalGoal(
             goalId = 0,
+            name = name,
             goalSessionId = sessionId,
             targetDistance = targetDistance,
             targetDuration = targetDuration,

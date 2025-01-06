@@ -4,7 +4,7 @@
     <string name="text_get_started">GET STARTED\t</string>
     <string name="text_your_details">YOUR DETAILS</string>
     <string name="image_male">image_male</string>
-    <string name="gender">Select Gender</string>
+    <string name="input_user_name">Name</string>
     <string-array name="gender_options">
         <item>Male</item>
         <item>Female</item>
@@ -29,7 +29,7 @@
     <string name="text_home">Home</string>
     <string name="text_profile">Profile</string>
     <string name="text_run">Run</string>
-    <string name="text_statistics">Statistics</string>
+    <string name="text_statistics">STATISTICS</string>
     <string name="text_history">History</string>
     <string name="favourite_runs">Favourite Runs</string>
     <string name="no_favourite_text">You are currently having\nno favorite runs</string>
@@ -67,9 +67,13 @@
     <string name="text_calories_burned">Calories Burned</string>
     <string name="text_calorie_metric">%.2f cal</string>
     <string name="objective_amount">%s • %s</string>
-    <string name="text_estimate_time">%.2f hour</string>
+    <string name="text_estimate_time">%.2f minute</string>
     <string name="text_target_distance">%.2f km</string>
     <string name="enter_plan_here">Plan here</string>
     <string name="objective">Objective</string>
     <string name="text_pause">Pause</string>
+    <string name="user_name">Hi, %s</string>
+    <string name="profile_weight">%.2f kg</string>
+    <string name="edit_weight">%.2f</string>
+    <string name="profile_height">%.2f</string>
 </resources>

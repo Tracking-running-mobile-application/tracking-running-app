@@ -70,7 +70,6 @@ abstract class RunningDatabase : RoomDatabase() {
                     "running_database"
                 )
                     .createFromAsset("database/initial_data.db")
-                    .fallbackToDestructiveMigration()
                     .build().also { INSTANCE = it }
             }
     }

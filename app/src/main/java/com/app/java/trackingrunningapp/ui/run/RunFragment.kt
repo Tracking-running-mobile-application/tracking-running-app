@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +25,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
@@ -102,6 +104,7 @@ class RunFragment : Fragment() {
             binding.btnStartTracking.visibility = View.INVISIBLE
             binding.btnPause.visibility = View.VISIBLE
             binding.btnStop.visibility = View.VISIBLE
+            requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
 
             // TODO: START
             lifecycleScope.launch {
@@ -136,15 +139,15 @@ class RunFragment : Fragment() {
             binding.btnResume.visibility = View.INVISIBLE
             binding.btnPause.visibility = View.VISIBLE
             // TODO: RESUME
-             lifecycleScope.launch {
-                 mutex.withLock {
-                     // TODO: do something when resume
-                     runSessionViewModel.setRunSessionStartTime()
-                     runSessionViewModel.fetchAndUpdateStats()
-                     resumeTracking()
-                     gpsTrackViewModel.resumeGPSTrack()
-                 }
-             }
+            lifecycleScope.launch {
+                mutex.withLock {
+                    // TODO: do something when resume
+                    runSessionViewModel.setRunSessionStartTime()
+                    runSessionViewModel.fetchAndUpdateStats()
+                    resumeTracking()
+                    gpsTrackViewModel.resumeGPSTrack()
+                }
+            }
         }
 
         binding.btnStop.setOnClickListener {
@@ -160,17 +163,7 @@ class RunFragment : Fragment() {
                 }
             }
         }
-
-//            }else{
-//                binding.btnPauseAndResume.text = "Resume"
-//                // TODO: do something when pause
-//                isPaused = true
-//            }
     }
-
-//        binding.btn{
-//            // TODO: Do something when stop
-//        }
 
     @SuppressLint("InlinedApi")
     private fun setupPermission() {
