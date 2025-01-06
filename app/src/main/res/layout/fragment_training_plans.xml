@@ -182,17 +182,15 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <androidx.appcompat.widget.AppCompatSeekBar
+    <ProgressBar
         android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="0dp"
-        android:layout_height="24dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:max="20"
         android:progressDrawable="@drawable/custom_progress_bar"
-        android:splitTrack="false"
-        android:thumb="@drawable/custom_thumb"
         app:layout_constraintBottom_toTopOf="@+id/tv_progress_desc"
         app:layout_constraintEnd_toEndOf="@+id/cardView3"
         app:layout_constraintStart_toStartOf="@+id/cardView2"
@@ -250,11 +248,33 @@
         android:id="@+id/tv_percentage"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:text="0%"
+        android:text="(0%)"
         android:textColor="@color/text_shadow_white"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/progressBar"
-        app:layout_constraintStart_toStartOf="@+id/progressBar"
-        app:layout_constraintTop_toTopOf="@+id/progressBar" />
+        app:layout_constraintBottom_toBottomOf="@+id/textView4"
+        app:layout_constraintEnd_toEndOf="@+id/progressBar" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="Progress"
+        android:textColor="@color/text_shadow_white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
+        app:layout_constraintStart_toStartOf="@+id/progressBar" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="11/22 km"
+        android:textColor="@color/text_shadow_white"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_percentage"
+        app:layout_constraintEnd_toStartOf="@+id/tv_percentage"
+        app:layout_constraintTop_toTopOf="@+id/tv_percentage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

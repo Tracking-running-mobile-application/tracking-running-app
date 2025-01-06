@@ -136,7 +136,7 @@ class TrainingPlanFragment : Fragment() {
         binding.btnCancelPlan.setOnClickListener {
             // reset progress
             binding.progressBar.progress = 0
-            binding.tvPercentage.visibility = View.INVISIBLE
+//            binding.tvPercentage.visibility = View.INVISIBLE
             binding.btnCancelPlan.visibility = View.INVISIBLE
             binding.btnLiveStats.visibility = View.INVISIBLE
             binding.btnStartTraining.visibility = View.VISIBLE
