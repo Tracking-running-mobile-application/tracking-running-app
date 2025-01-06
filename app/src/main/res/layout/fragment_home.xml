@@ -37,11 +37,12 @@
             </androidx.cardview.widget.CardView>
 
             <TextView
+                android:id="@+id/text_home_user_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="50dp"
-                android:text="Vu Nguyen"
+                android:text="@string/user_name"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 tools:ignore="HardcodedText" />
@@ -123,15 +124,29 @@
             tools:ignore="DuplicateSpeakableTextCheck,HardcodedText,TouchTargetSizeCheck" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_daily_task"
+            android:id="@+id/rv_personal_goal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintEnd_toEndOf="@+id/rv_training_plans"
             app:layout_constraintStart_toStartOf="@+id/rv_training_plans"
             app:layout_constraintTop_toBottomOf="@id/tv_daily_task"
             tools:listitem="@layout/item_personal_goal" />
+
+        <ImageView
+            android:id="@+id/img_no_goal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/tv_daily_task"
+            app:layout_constraintTop_toBottomOf="@+id/tv_daily_task"
+            app:srcCompat="@drawable/img_no_task_here" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

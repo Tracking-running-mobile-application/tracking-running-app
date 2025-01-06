@@ -54,18 +54,18 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/text_task_title"
+                    android:id="@+id/text_goal_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:gravity="center_vertical"
-                    android:text="Task Title"
+                    android:text="Plan Name"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     tools:ignore="HardcodedText" />
 
                 <TextView
-                    android:id="@+id/text_task_description"
+                    android:id="@+id/text_goal_target"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"

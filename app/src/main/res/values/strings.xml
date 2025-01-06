@@ -67,9 +67,10 @@
     <string name="text_calories_burned">Calories Burned</string>
     <string name="text_calorie_metric">%.2f cal</string>
     <string name="objective_amount">%s • %s</string>
-    <string name="text_estimate_time">%.2f hour</string>
+    <string name="text_estimate_time">%.2f minute</string>
     <string name="text_target_distance">%.2f km</string>
     <string name="enter_plan_here">Plan here</string>
     <string name="objective">Objective</string>
     <string name="text_pause">Pause</string>
+    <string name="user_name">Hi, %s</string>
 </resources>

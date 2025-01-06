@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.ui.home.personalGoal
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,38 +9,46 @@ import android.widget.TextView
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
-import com.app.java.trackingrunningapp.data.model.dataclass.home.PersonalGoal
+import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
 
 
 class PersonalGoalAdapter(
-    private val taskList: List<PersonalGoal>,
+    private val personalGoals: List<PersonalGoal>,
+    private val context: Context,
     private val listener: OnItemPersonalGoalListener
 ) : RecyclerView.Adapter<PersonalGoalAdapter.PersonalGoalViewHolder>() {
 
     class PersonalGoalViewHolder(
         itemView: View,
+        private val context: Context,
         private val listener: OnItemPersonalGoalListener
     ) : RecyclerView.ViewHolder(itemView) {
         private val taskImage: ImageView = itemView.findViewById(R.id.taskImage)
-        private val taskTitle: TextView = itemView.findViewById(R.id.text_task_title)
+        private val goalName: TextView = itemView.findViewById(R.id.text_goal_name)
+        private val goalTarget: TextView = itemView.findViewById(R.id.text_goal_target)
         private val taskCheckbox: ImageView = itemView.findViewById(R.id.taskCheckbox)
         private val icEditGoal = itemView.findViewById<ImageView>(R.id.ic_edit_goal)
 
-        fun bind(dailyTask: PersonalGoal){
-            taskTitle.text = dailyTask.title
-            taskImage.setImageResource(dailyTask.imageResId)
+        fun bind(goal: PersonalGoal) {
+            goalName.text = goal.name
+            // target
+            if (goal.targetDistance != 0.0 && goal.targetDistance != null) {
+                goalTarget.text =
+                    context.getString(R.string.text_target_distance, goal.targetDistance)
+            } else if (goal.targetDuration != 0.0 && goal.targetDuration != null) {
+                goalTarget.text =
+                    context.getString(R.string.text_estimate_time, goal.targetDuration)
+            } else if (goal.targetCaloriesBurned != 0.0 && goal.targetCaloriesBurned != null) {
+                goalTarget.text =
+                    context.getString(R.string.text_calorie_metric, goal.targetCaloriesBurned)
+            }
             // TODO: handle check box
             itemView.setOnClickListener {
-                listener.onClick(dailyTask)
-                if (dailyTask.isClicked % 2 == 0){
-                    taskCheckbox.setImageResource(R.drawable.ic_check_circle)
-                    taskCheckbox.visibility = View.VISIBLE
-                }else{
-                    taskCheckbox.visibility = View.INVISIBLE
-                }
+                listener.onClick(goal)
             }
             icEditGoal.setOnClickListener {
-                it.findNavController().navigate(R.id.action_homeFragment_to_personalGoalFragment)
+                it.findNavController()
+                    .navigate(R.id.action_homeFragment_to_personalGoalFragment)
             }
         }
     }
@@ -47,25 +56,19 @@ class PersonalGoalAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonalGoalViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_personal_goal, parent, false)
-        return PersonalGoalViewHolder(view,listener)
+        return PersonalGoalViewHolder(view, context, listener)
     }
 
     override fun onBindViewHolder(holder: PersonalGoalViewHolder, position: Int) {
-        val task = taskList[position]
-        holder.bind(task)
-        // Set the checkbox based on `isChecked` value
-//        if (task.isChecked) {
-//            holder.taskCheckbox.setImageResource(R.drawable.ic_check_circle)  // Replace with actual checked icon resource
-//            holder.taskCheckbox.visibility = View.VISIBLE
-//        } else {
-//            holder.taskCheckbox.visibility = View.GONE  // Hide the checkbox if not checked
-//        }
+        val goal = personalGoals[position]
+        holder.bind(goal)
     }
 
     override fun getItemCount(): Int {
-        return taskList.size
+        return personalGoals.size
     }
-    interface OnItemPersonalGoalListener{
-        fun onClick(dailyTask: PersonalGoal)
+
+    interface OnItemPersonalGoalListener {
+        fun onClick(personalGoal: PersonalGoal)
     }
 }

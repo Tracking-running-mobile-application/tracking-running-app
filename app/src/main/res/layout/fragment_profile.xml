@@ -85,7 +85,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:cardCornerRadius="16dp"
+        app:cardCornerRadius="@dimen/margin_8"
         app:layout_constraintEnd_toEndOf="@+id/cardView5"
         app:layout_constraintStart_toStartOf="@+id/cardView4"
         app:layout_constraintTop_toBottomOf="@+id/textView14">
@@ -112,7 +112,7 @@
                 tools:ignore="MissingClass" />
 
             <TextView
-                android:id="@+id/textView4"
+                android:id="@+id/text_profile_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20sp"
@@ -125,7 +125,7 @@
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
-                android:id="@+id/textView6"
+                android:id="@+id/text_profile_age"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -133,8 +133,8 @@
                 android:textColor="@color/text_shadow_white"
                 android:textSize="@dimen/text_size_profile"
                 android:textStyle="bold"
-                app:layout_constraintStart_toStartOf="@+id/textView4"
-                app:layout_constraintTop_toBottomOf="@+id/textView4"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_name"
+                app:layout_constraintTop_toBottomOf="@+id/text_profile_name"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
@@ -144,13 +144,13 @@
                 android:text="Age"
                 android:textColor="@color/main_gray"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="@+id/textView6"
-                app:layout_constraintStart_toStartOf="@+id/textView6"
-                app:layout_constraintTop_toBottomOf="@+id/textView6"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_age"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_age"
+                app:layout_constraintTop_toBottomOf="@+id/text_profile_age"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/text_profile_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -158,9 +158,9 @@
                 android:textColor="@color/text_shadow_white"
                 android:textSize="@dimen/text_size_profile"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/textView6"
-                app:layout_constraintStart_toEndOf="@+id/textView6"
-                app:layout_constraintTop_toTopOf="@+id/textView6"
+                app:layout_constraintBottom_toBottomOf="@+id/text_profile_age"
+                app:layout_constraintStart_toEndOf="@+id/text_profile_age"
+                app:layout_constraintTop_toTopOf="@+id/text_profile_age"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
@@ -171,13 +171,13 @@
                 android:textColor="@color/main_gray"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView7"
-                app:layout_constraintEnd_toEndOf="@+id/textView16"
-                app:layout_constraintStart_toStartOf="@+id/textView16"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_weight"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_weight"
                 app:layout_constraintTop_toTopOf="@+id/textView7"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
-                android:id="@+id/textView19"
+                android:id="@+id/text_profile_height"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -185,9 +185,9 @@
                 android:textColor="@color/text_shadow_white"
                 android:textSize="@dimen/text_size_profile"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/textView16"
-                app:layout_constraintStart_toEndOf="@+id/textView16"
-                app:layout_constraintTop_toTopOf="@+id/textView16"
+                app:layout_constraintBottom_toBottomOf="@+id/text_profile_weight"
+                app:layout_constraintStart_toEndOf="@+id/text_profile_weight"
+                app:layout_constraintTop_toTopOf="@+id/text_profile_weight"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
@@ -198,8 +198,8 @@
                 android:textColor="@color/main_gray"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/textView17"
-                app:layout_constraintEnd_toEndOf="@+id/textView19"
-                app:layout_constraintStart_toStartOf="@+id/textView19"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_height"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_height"
                 app:layout_constraintTop_toTopOf="@+id/textView17"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
