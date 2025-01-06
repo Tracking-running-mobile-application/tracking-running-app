@@ -23,13 +23,14 @@ class PersonalGoalAdapter(
         private val context: Context,
         private val listener: OnItemPersonalGoalListener
     ) : RecyclerView.ViewHolder(itemView) {
-        private val taskImage: ImageView = itemView.findViewById(R.id.taskImage)
+        private val progress: TextView = itemView.findViewById(R.id.text_percent)
         private val goalName: TextView = itemView.findViewById(R.id.text_goal_name)
         private val goalTarget: TextView = itemView.findViewById(R.id.text_goal_target)
         private val taskCheckbox: ImageView = itemView.findViewById(R.id.taskCheckbox)
         private val icEditGoal = itemView.findViewById<ImageView>(R.id.ic_edit_goal)
 
         fun bind(goal: PersonalGoal) {
+            progress.text = context.getString(R.string.goal_progress,goal.goalProgress)
             goalName.text = goal.name
             // target
             if (goal.targetDistance != 0.0 && goal.targetDistance != null) {
