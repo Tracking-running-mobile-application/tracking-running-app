@@ -40,7 +40,7 @@ class RunSessionViewModel(
     val currentSession = runSessionRepository.currentRunSession
 
     private val _statsFlow = MutableStateFlow<StatsSession?>(null)
-    val statsFlow: StateFlow<StatsSession?> = _statsFlow
+    val statsFlow= _statsFlow.asLiveData()
 
     private var statsUpdateJob: Job? = null
     private var fetchStatsJob: Job? = null

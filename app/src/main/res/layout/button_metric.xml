@@ -33,7 +33,7 @@
                 android:textSize="@dimen/text_size_30" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/text_run_calo_metric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -77,6 +77,7 @@
                 android:textSize="@dimen/text_size_30" />
 
             <TextView
+                android:id="@+id/text_run_duration_metric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -118,6 +119,7 @@
                 android:textSize="@dimen/text_size_30" />
 
             <TextView
+                android:id="@+id/text_run_distance_metric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -133,7 +135,6 @@
         android:id="@+id/cv_pace"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:backgroundTint="@color/gray_button"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -158,6 +159,7 @@
                 android:textSize="@dimen/text_size_30" />
 
             <TextView
+                android:id="@+id/text_run_pace_metric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
