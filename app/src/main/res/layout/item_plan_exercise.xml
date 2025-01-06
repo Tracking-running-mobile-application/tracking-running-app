@@ -17,8 +17,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_8"
             android:orientation="horizontal">
 
@@ -26,11 +26,12 @@
                 style="@style/CardView"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
+                android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/margin_16"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeWidth="2dp"
-                app:strokeColor="@color/main_yellow">
+                app:strokeColor="@color/main_yellow"
+                app:strokeWidth="2dp">
 
                 <ImageView
                     android:id="@+id/item_exercise_image"
@@ -41,8 +42,9 @@
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:orientation="vertical">
 
                 <TextView
@@ -50,7 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="@dimen/margin_16"
+                    android:layout_marginTop="@dimen/margin_8"
                     android:layout_marginBottom="@dimen/margin_8"
                     android:gravity="center_vertical"
                     android:text="Run Name"
@@ -62,8 +64,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="@dimen/margin_8"
+                    android:ellipsize="end"
                     android:gravity="center_vertical"
                     android:text="@string/objective_amount"
                     android:textColor="@color/text_shadow_white"

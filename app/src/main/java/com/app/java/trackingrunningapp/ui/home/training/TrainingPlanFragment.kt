@@ -111,19 +111,6 @@ class TrainingPlanFragment : Fragment() {
             // Tính phần trăm
             val percentage = (progressCounter.toDouble() / 20 * 100).toInt()
             binding.tvPercentage.text = "$percentage%"
-
-            // Di chuyển TextView theo tiến trình
-            binding.progressBar.post {
-                val progressBarWidth = binding.progressBar.width
-                val progressBarPadding = binding.progressBar.paddingLeft + binding.progressBar.paddingRight
-                val actualWidth = progressBarWidth - progressBarPadding // Chiều rộng thực
-
-                val progressPosition = (actualWidth * progressCounter / 20)
-                val textWidth = binding.tvPercentage.width
-                val offset = progressPosition - (textWidth / 2) + 48
-                binding.tvPercentage.translationX = offset.toFloat()
-            }
-
         }
     }
 
