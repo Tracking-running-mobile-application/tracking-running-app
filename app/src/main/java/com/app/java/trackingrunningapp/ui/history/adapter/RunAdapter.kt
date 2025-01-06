@@ -12,6 +12,7 @@ import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.model.dataclass.history.Run
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.ui.history.OnItemHistoryRunClickListener
+import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.app.java.trackingrunningapp.utils.StatsUtils
 
 class RunAdapter(
@@ -34,9 +35,9 @@ class RunAdapter(
         fun bind(itemRun: RunSession) {
             runTime.text = StatsUtils.formatDuration(itemRun.duration ?: 0L)
             runDistance.text = context.getString(R.string.text_distance_metric,itemRun.distance)
-            runDate.text = itemRun.runDate
+            runDate.text = DateTimeUtils.formatDateString(itemRun.runDate)
             icStar.setOnClickListener {
-                icStar.visibility = View.GONE
+                icStar.visibility = View.INVISIBLE
                 icStarSelected.visibility = View.VISIBLE
                 listener.onAddFavouriteClick(FAVOURITE_ADD)
             }
