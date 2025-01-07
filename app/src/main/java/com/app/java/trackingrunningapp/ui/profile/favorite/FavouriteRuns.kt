@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.databinding.FragmentFavouriteRunsBinding
 
 class FavouriteRuns : Fragment() {
+    private lateinit var binding:FragmentFavouriteRunsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -25,7 +25,6 @@ import com.google.android.material.snackbar.Snackbar
 
 class HistoryFragment : Fragment() {
     private lateinit var binding: FragmentHistoryBinding
-    private lateinit var runDateAdapter: RunAdapter
     private lateinit var runAdapter: RunAdapter
     private lateinit var containerLayout: View
     private lateinit var runSessionViewModel: RunSessionViewModel
@@ -66,8 +65,9 @@ class HistoryFragment : Fragment() {
 
     private fun setupAdapter(runs: List<RunSession>) {
         containerLayout = binding.containerLayoutHistory
-        runDateAdapter = RunAdapter(runs, requireContext(),object : OnItemHistoryRunClickListener {
+        runAdapter = RunAdapter(runs, requireContext(),object : OnItemHistoryRunClickListener {
             override fun onItemClick(itemRun: RunSession) {
+                runSessionViewModel.addAndRemoveFavoriteSession(itemRun)
                 findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment)
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
                     View.GONE
@@ -91,7 +91,7 @@ class HistoryFragment : Fragment() {
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
             View.VISIBLE
 //        runDateAdapter.updateRunDate(runDates)
-        binding.rvHistoryDate.adapter = runDateAdapter
+        binding.rvHistoryDate.adapter = runAdapter
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
