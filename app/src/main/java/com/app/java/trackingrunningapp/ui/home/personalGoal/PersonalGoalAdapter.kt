@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.ui.home.personalGoal
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -13,11 +14,11 @@ import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
 
 
 class PersonalGoalAdapter(
-    private val personalGoals: List<PersonalGoal>,
+    private val personalGoals: MutableList<PersonalGoal>,
     private val context: Context,
     private val listener: OnItemPersonalGoalListener
 ) : RecyclerView.Adapter<PersonalGoalAdapter.PersonalGoalViewHolder>() {
-
+    val listGoal = personalGoals
     class PersonalGoalViewHolder(
         itemView: View,
         private val context: Context,
@@ -54,6 +55,12 @@ class PersonalGoalAdapter(
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun updatePersonalGoal(goals:List<PersonalGoal>){
+        personalGoals.clear()
+        personalGoals.addAll(goals)
+        notifyDataSetChanged()
+    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PersonalGoalViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_personal_goal, parent, false)

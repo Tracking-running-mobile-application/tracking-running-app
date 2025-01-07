@@ -115,27 +115,6 @@ class RunFragment : Fragment() {
                     runSessionViewModel.initiateRunSession()
                     gpsTrackViewModel.initiateGPSTrack()
                     runSessionViewModel.setRunSessionStartTime()
-                    val runDuration = binding.layoutMetric.textRunDurationMetric
-                    val runDistance = binding.layoutMetric.textRunDistanceMetric
-                    val runPace = binding.layoutMetric.textRunPaceMetric
-                    val runCalo = binding.layoutMetric.textRunCaloMetric
-
-                    runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
-                        runDuration.text = it?.duration.toString()
-                        Log.d("run_time","${it?.duration}")
-                        runDistance.text = it?.distance.toString()
-                        runPace.text = it?.pace.toString()
-                        runCalo.text = it?.caloriesBurned.toString()
-                    }
-//                    repeatOnLifecycle(Lifecycle.State.STARTED){
-//                        runSessionViewModel.currentSession.collect{
-//                            Log.d("run_time","${it?.duration}")
-//                            runDuration.text = it?.duration.toString()
-//                            runDistance.text = it?.distance.toString()
-//                            runPace.text = it?.pace.toString()
-//                            runCalo.text = it?.caloriesBurned.toString()
-//                        }
-//                    }
                         // TODO: insert start tracking and sending gps function
                         startTracking()
                         runSessionViewModel.fetchAndUpdateStats()
@@ -222,17 +201,18 @@ class RunFragment : Fragment() {
                 binding.containerArrowDown.visibility = View.GONE
                 binding.containerMetric.visibility = View.VISIBLE
             }
-//        val runDuration = binding.layoutMetric.textRunDurationMetric
-//        val runDistance = binding.layoutMetric.textRunDistanceMetric
-//        val runPace = binding.layoutMetric.textRunPaceMetric
-//        val runCalo = binding.layoutMetric.textRunCaloMetric
-//
-//        runSessionViewModel.currentSession.observe(viewLifecycleOwner){
-//            runDuration.text = it?.duration.toString()
-//            runDistance.text = it?.distance.toString()
-//            runPace.text = it?.pace.toString()
-//            runCalo.text = it?.caloriesBurned.toString()
-//        }
+            val runDuration = binding.layoutMetric.textRunDurationMetric
+            val runDistance = binding.layoutMetric.textRunDistanceMetric
+            val runPace = binding.layoutMetric.textRunPaceMetric
+            val runCalo = binding.layoutMetric.textRunCaloMetric
+
+            runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
+                runDuration.text = getString(R.string.text_duration_metric,it?.duration)
+                Log.d("run_time", "${it?.duration}")
+                runDistance.text = getString(R.string.text_distance_metric,it?.distance)
+                runPace.text = getString(R.string.text_pace_metric,it?.pace)
+                runCalo.text = getString(R.string.text_calorie_metric,it?.caloriesBurned)
+            }
         }
 
         private fun initMapAndLocation() {
