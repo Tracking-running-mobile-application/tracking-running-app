@@ -6,18 +6,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentProfileBinding
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var userViewModel: UserViewModel
+    private lateinit var runSessionViewModel: RunSessionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -26,6 +36,10 @@ class ProfileFragment : Fragment() {
         val userFactory = UserViewModelFactory(UserRepository())
         userViewModel = ViewModelProvider(requireActivity(), userFactory)[UserViewModel::class.java]
         userViewModel.fetchUserInfo()
+        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+        runSessionViewModel =
+            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,8 +57,18 @@ class ProfileFragment : Fragment() {
     }
 
     private fun navigateToFavourite() {
-        binding.cvFavoriteRun.setOnClickListener {
-            it.findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED){
+                runSessionViewModel.favoriteRunSessions.collect{favouriteRuns->
+                    binding.cvFavoriteRun.setOnClickListener {
+                        if(favouriteRuns.isEmpty()){
+                            findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
+                        }else{
+                            findNavController().navigate(R.id.action_profileFragment_to_favouriteRuns)
+                        }
+                    }
+                }
+            }
         }
     }
 

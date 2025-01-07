@@ -349,7 +349,7 @@
                 tools:layout_editor_absoluteX="8dp" />
 
             <TextView
-                android:id="@+id/textView29"
+                android:id="@+id/text_favourite_run"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_8"
