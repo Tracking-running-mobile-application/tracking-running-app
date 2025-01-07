@@ -14,8 +14,7 @@
         android:layout_marginBottom="@dimen/margin_16"
         android:backgroundTint="@color/primary_gray"
         android:foreground="?attr/selectableItemBackground"
-        app:cardCornerRadius="@dimen/margin_8"
-        app:cardElevation="4dp"
+        app:cardCornerRadius="@dimen/margin_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,10 +32,9 @@
             <androidx.cardview.widget.CardView
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="@dimen/margin_16"
                 android:backgroundTint="@color/black"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
+                app:cardCornerRadius="16dp">
 
                 <TextView
                     android:id="@+id/text_percent"
@@ -45,7 +43,7 @@
                     android:layout_gravity="center"
                     android:text="22%"
                     android:textColor="@color/main_yellow"
-                    android:textSize="24sp"
+                    android:textSize="20sp"
                     android:textStyle="bold" />
 
             </androidx.cardview.widget.CardView>
@@ -93,8 +91,8 @@
 
             <ImageView
                 android:id="@+id/ic_edit_goal"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground"

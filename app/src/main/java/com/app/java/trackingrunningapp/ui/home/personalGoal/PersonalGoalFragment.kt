@@ -50,6 +50,20 @@ class PersonalGoalFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+//        personalGoalViewModel.personalGoalsLiveData.observe(viewLifecycleOwner){goals->
+//            val currentGoal = goals[goals.size-1]
+//            binding.editCustomNamePlan.setText(currentGoal.name)
+//            if(currentGoal.targetDuration != 0.0){
+//                binding.btnObjectDuration.performClick()
+//                binding.objectiveBox.setText(currentGoal.targetDuration.toString())
+//            }else if(currentGoal.targetDistance != 0.0) {
+//                binding.btnObjectDistance.performClick()
+//                binding.objectiveBox.setText(currentGoal.targetDistance.toString())
+//            }else if(currentGoal.targetCaloriesBurned != 0.0) {
+//                binding.btnObjectCalo.performClick()
+//                binding.objectiveBox.setText(currentGoal.targetCaloriesBurned.toString())
+//            }
+//        }
         setupView()
         handleClickEvent()
     }
@@ -57,7 +71,7 @@ class PersonalGoalFragment : Fragment() {
     private fun handleClickEvent() {
         binding.btnGoalDiscard.setOnClickListener {
             // back to home
-            it.findNavController().navigate(R.id.action_global_homeFragment)
+            it.findNavController().popBackStack(R.id.homeFragment,false)
         }
         binding.btnGoalSave.setOnClickListener {
             // TODO: Save plan
@@ -84,7 +98,7 @@ class PersonalGoalFragment : Fragment() {
                 )
             }
             // back to home
-            it.findNavController().navigate(R.id.action_global_homeFragment)
+            it.findNavController().popBackStack(R.id.homeFragment,false)
         }
     }
 

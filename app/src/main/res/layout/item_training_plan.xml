@@ -8,11 +8,11 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:backgroundTint="@color/primary_gray"
         android:layout_marginEnd="16dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
+        android:backgroundTint="@color/primary_gray"
         android:foreground="?attr/selectableItemBackground"
+        app:cardCornerRadius="@dimen/margin_16"
+        app:cardElevation="4dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,21 +21,20 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/margin_8"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="8dp">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginEnd="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp">
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_marginEnd="@dimen/margin_16"
+                app:cardCornerRadius="16dp">
 
                 <ImageView
                     android:id="@+id/item_plan_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
+                    android:scaleType="fitXY"
                     android:src="@drawable/img_beginner" />
             </androidx.cardview.widget.CardView>
 
@@ -45,8 +44,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="50dp"
-                android:textColor="@color/white"
                 android:text="Beginner Run"
+                android:textColor="@color/white"
                 android:textSize="16sp" />
         </LinearLayout>
 

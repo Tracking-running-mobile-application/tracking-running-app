@@ -105,7 +105,7 @@ class TrainingPlanFragment : Fragment() {
             setupProgressAction()
             progressCounter += 5
             if(progressCounter > 20) progressCounter = 20
-            binding.progressBar.progress += progressCounter
+            binding.progressBar.progress += progressCounter // assign percent
             binding.tvProgressDesc.text = "You have run ${progressCounter}km! Keep it up!"
             // Tính phần trăm
             val percentage = (progressCounter.toDouble() / 20 * 100).toInt()

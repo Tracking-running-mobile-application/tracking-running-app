@@ -94,6 +94,9 @@ class HomeFragment : Fragment() {
         binding.icAddGoal.setOnClickListener {
             it.findNavController().navigate(R.id.action_homeFragment_to_personalGoalFragment)
         }
+        binding.imgNoGoal.setOnClickListener {
+            it.findNavController().navigate(R.id.action_homeFragment_to_personalGoalFragment)
+        }
         personalGoalViewModel.personalGoalsLiveData.observe(viewLifecycleOwner) { goals ->
             if (goals.isNotEmpty()) {
                 binding.imgNoGoal.visibility = View.GONE
@@ -112,6 +115,7 @@ class HomeFragment : Fragment() {
             personalGoalAdapter = PersonalGoalAdapter(personalGoals, requireContext(),
                 object : PersonalGoalAdapter.OnItemPersonalGoalListener {
                     override fun onClick(personalGoal: PersonalGoal) {
+                        // TODO: Bundle  
                         findNavController().navigate(R.id.action_homeFragment_to_runGoalFragment)
                     }
                 }
