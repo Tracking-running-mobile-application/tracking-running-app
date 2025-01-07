@@ -75,8 +75,6 @@ class StatisticWeeklyFragment : Fragment() {
             "Fri" to weekData[4].toFloat(),
             "Sat" to weekData[5].toFloat(),
             "Sun" to weekData[6].toFloat(),
-
-
         )
         val barChart = binding.barchart
         barChart.animate(barSet)

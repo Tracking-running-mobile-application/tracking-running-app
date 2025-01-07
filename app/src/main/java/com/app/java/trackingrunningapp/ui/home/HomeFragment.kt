@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.dataclass.home.TrainingPlan
@@ -25,6 +27,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
 
 class HomeFragment : Fragment() {
@@ -32,6 +35,7 @@ class HomeFragment : Fragment() {
     private lateinit var trainingPlanViewModel: TrainingPlanViewModel
     private lateinit var personalGoalViewModel: PersonalGoalViewModel
     private lateinit var userViewModel: UserViewModel
+    private lateinit var personalGoalAdapter: PersonalGoalAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,9 +82,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        userViewModel.userLiveData.observe(viewLifecycleOwner){
-            Log.d("user_home","$it")
-            binding.textHomeUserName.text = getString(R.string.user_name,it?.name)
+        userViewModel.userLiveData.observe(viewLifecycleOwner) {
+            Log.d("user_home", "$it")
+            binding.textHomeUserName.text = getString(R.string.user_name, it?.name)
         }
         setUpTrainingPlanRecycler()
         setUpPersonalGoal()
@@ -90,7 +94,6 @@ class HomeFragment : Fragment() {
         binding.icAddGoal.setOnClickListener {
             it.findNavController().navigate(R.id.action_homeFragment_to_personalGoalFragment)
         }
-        // Create a list of DailyTask objects
         personalGoalViewModel.personalGoalsLiveData.observe(viewLifecycleOwner) { goals ->
             if (goals.isNotEmpty()) {
                 binding.imgNoGoal.visibility = View.GONE
@@ -106,14 +109,51 @@ class HomeFragment : Fragment() {
                 )
                 personalGoals.add(personalGoal)
             }
-            binding.rvPersonalGoal.adapter = PersonalGoalAdapter(personalGoals, requireContext(),
+            personalGoalAdapter = PersonalGoalAdapter(personalGoals, requireContext(),
                 object : PersonalGoalAdapter.OnItemPersonalGoalListener {
                     override fun onClick(personalGoal: PersonalGoal) {
-                        TODO("Not yet implemented")
+                        findNavController().navigate(R.id.action_homeFragment_to_runGoalFragment)
                     }
                 }
             )
+            personalGoalAdapter.updatePersonalGoal(goals)
+            binding.rvPersonalGoal.adapter = personalGoalAdapter
+            setUpSwipeActions()
         }
+    }
+
+    private fun setUpSwipeActions() {
+        val touchHelper = ItemTouchHelper(
+            object : ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.DOWN or ItemTouchHelper.UP,
+                ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+            ) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val deletePosition = viewHolder.layoutPosition
+                    val deleteGoal = personalGoalAdapter.listGoal[deletePosition]
+                    personalGoalViewModel.deletePersonalGoal(deleteGoal.goalId)
+                    personalGoalViewModel.personalGoalsLiveData.observe(viewLifecycleOwner) { goals ->
+                        personalGoalAdapter.updatePersonalGoal(goals)
+                        personalGoalAdapter.notifyItemRemoved(deletePosition)
+                        if (goals.isNullOrEmpty()) {
+                            binding.imgNoGoal.visibility = View.VISIBLE
+                            binding.rvPersonalGoal.visibility = View.GONE
+                        }
+                        val message = getString(R.string.goal_removed,deleteGoal.name)
+                        Snackbar.make(binding.root,message,Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        )
+        touchHelper.attachToRecyclerView(binding.rvPersonalGoal)
     }
 
     private fun setUpTrainingPlanRecycler() {

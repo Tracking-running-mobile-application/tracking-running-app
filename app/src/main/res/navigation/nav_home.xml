@@ -20,6 +20,9 @@
         <action
             android:id="@+id/action_homeFragment_to_personalGoalFragment"
             app:destination="@id/personalGoalFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_runGoalFragment"
+            app:destination="@id/runGoalFragment" />
 
     </fragment>
     <fragment
@@ -39,26 +42,30 @@
     <fragment
         android:id="@+id/trainingPlanFragment"
         android:name="com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment"
-        tools:layout="@layout/fragment_training_plans"
-        android:label="TrainingPlanFragment" >
+        android:label="TrainingPlanFragment"
+        tools:layout="@layout/fragment_training_plans">
         <action
-            android:id="@+id/action_trainingPlanFragment_to_nav_run"
-            app:destination="@id/nav_run" />
-        <action
-            android:id="@+id/action_trainingPlanFragment_to_runFragment2"
-            app:destination="@id/runFragment" />
+            android:id="@+id/action_trainingPlanFragment_to_runPlanFragment"
+            app:destination="@id/runPlanFragment" />
     </fragment>
     <fragment
         android:id="@+id/personalGoalFragment"
-        tools:layout="@layout/fragment_personal_goal"
         android:name="com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalFragment"
-        android:label="PersonalGoalFragment" /><action android:id="@+id/action_global_homeFragment" app:destination="@id/homeFragment"/>
-    <include app:graph="@navigation/nav_run" />
+        android:label="PersonalGoalFragment"
+        tools:layout="@layout/fragment_personal_goal" />
+    <action
+        android:id="@+id/action_global_homeFragment"
+        app:destination="@id/homeFragment" />
     <fragment
-        android:id="@+id/runFragment"
-        android:name="com.app.java.trackingrunningapp.ui.run.RunFragment"
-        tools:layout="@layout/fragment_run"
-        android:label="RunFragment" />
+        android:id="@+id/runPlanFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.training.RunPlanFragment"
+        android:label="fragment_run_plan"
+        tools:layout="@layout/fragment_run_plan" />
+    <fragment
+        android:id="@+id/runGoalFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.personalGoal.RunGoalFragment"
+        android:label="fragment_run_goal"
+        tools:layout="@layout/fragment_run_goal" />
 
 
 </navigation>

@@ -61,9 +61,9 @@
     <string name="text_distance">Distance</string>
     <string name="text_distance_metric">%.2f km</string>
     <string name="text_pace">Avg Pace</string>
-    <string name="text_pace_metric">10:03 /km</string>
+    <string name="text_pace_metric">%.2f min/km</string>
     <string name="text_duration">Duration</string>
-    <string name="text_duration_metric">38:31</string>
+    <string name="text_duration_metric">%.0f s</string>
     <string name="text_calories_burned">Calories Burned</string>
     <string name="text_calorie_metric">%.2f cal</string>
     <string name="objective_amount">%s • %s</string>
@@ -77,4 +77,6 @@
     <string name="edit_weight">%.2f</string>
     <string name="profile_height">%.2f</string>
     <string name="goal_progress">%.1f%%</string>
+    <string name="goal_removed">%s was removed</string>
+    <string name="action_undo">Undo</string>
 </resources>

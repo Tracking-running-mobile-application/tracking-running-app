@@ -63,7 +63,8 @@ class TrainingPlanFragment : Fragment() {
                     binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
                     binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
                     binding.btnLiveStats.setOnClickListener {
-                        // TODO:  
+                        // TODO:
+                        it.findNavController().navigate(R.id.action_trainingPlanFragment_to_runPlanFragment)
                     }
                 }
             }
@@ -91,8 +92,6 @@ class TrainingPlanFragment : Fragment() {
                     binding.btnLiveStats.setOnClickListener {
 //                        it.findNavController().navigate(R.id.action_trainingPlanFragment_to_nav_run)
                         // TODO:
-                        requireActivity().findViewById<Button>(R.id.btn_start_tracking)
-                        it.findNavController().navigate(R.id.action_trainingPlanFragment_to_nav_run)
                     }
                 }
             }
