@@ -42,7 +42,7 @@ class InitDatabase : Application() {
             runningDatabase = RunningDatabase.getInstance(this@InitDatabase)
             Log.d("Database operation", "Database initialized successfully")
 
-            notificationRepository = NotificationRepository(application = Application())
+            notificationRepository = NotificationRepository(applicationContext)
             // init run session repo
             gpsPointRepository = GPSPointRepository()
             gpsTrackRepository = GPSTrackRepository()

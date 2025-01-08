@@ -12,7 +12,7 @@ import com.app.java.trackingrunningapp.data.model.entity.Notification
 import kotlinx.coroutines.launch
 
 class NotificationRepository(
-    private val application: Application
+    private val context: Context
 ) {
     val db = InitDatabase.runningDatabase
 
@@ -21,7 +21,7 @@ class NotificationRepository(
     suspend fun triggerNotification(type: String) {
         val notification = notificationDao.getRandomNotificationByType(type)
 
-        sendNotification(notification, application)
+        sendNotification(notification, context)
     }
 
     private fun sendNotification(notification: Notification, context: Context) {

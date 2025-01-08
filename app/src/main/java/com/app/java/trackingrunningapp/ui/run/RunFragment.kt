@@ -21,6 +21,7 @@ import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
+import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
