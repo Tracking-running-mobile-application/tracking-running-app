@@ -136,13 +136,14 @@ class RunSessionRepository {
     }
 
     fun setRunSessionStartTime() {
+        runSessionStartTime = DateTimeUtils.getCurrentInstant()
+    }
+    fun pauseSession() {
         val currentTime = DateTimeUtils.getCurrentInstant()
         val elapsedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
-
         cumulativeDurationSeconds += elapsedDuration
-
-        runSessionStartTime = currentTime
     }
+
 
     suspend fun startRunSession() {
         val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())

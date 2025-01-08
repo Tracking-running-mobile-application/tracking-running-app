@@ -161,7 +161,6 @@ class RunFragment : Fragment() {
                 lifecycleScope.launch {
                     mutex.withLock {
                         // TODO: do something when pause
-                        runSessionViewModel.setRunSessionStartTime()
                         runSessionViewModel.fetchAndUpdateStats()
                         runSessionViewModel.pauseRunSession()
                         pauseTracking()

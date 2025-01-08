@@ -100,6 +100,7 @@ class RunSessionViewModel(
         statsUpdateJob?.cancelAndJoin()
         fetchStatsJob?.cancelAndJoin()
         runSessionRepository.stopUpdatingStats()
+        runSessionRepository.pauseSession()
     }
 
     suspend fun fetchAndUpdateStats() {
