@@ -8,6 +8,7 @@ import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
+import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.utils.StatsUtils
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import kotlinx.coroutines.CancellationException
@@ -23,13 +24,15 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import java.util.Date
 
-class RunSessionRepository(
-    private val gpsPointRepository: GPSPointRepository
-) {
+class RunSessionRepository {
     val db = InitDatabase.runningDatabase
 
     private val runSessionDao: RunSessionDao = db.runSessionDao()
     private val userDao: UserDao = db.userDao()
+
+    private val gpsPointRepository: GPSPointRepository = InitDatabase.gpsPointRepository
+    private val notificationRepository: NotificationRepository = InitDatabase.notificationRepository
+
     private val convert = LocalTimeConverter()
 
     private val userInfo = userDao.getUserInfo()
@@ -186,16 +189,25 @@ class RunSessionRepository(
             try {
                 val userUnitPreference = userInfo?.unit
 
-                val durationInMinutes = _duration.value.div(60)
+                val durationInHour = _duration.value.div(3600.0)
                 val adjustedDistance: Double = when (userUnitPreference) {
-                    User.UNIT_MILE -> _distance.value.times(0.621371f)
+                    User.UNIT_MILE -> _distance.value.times(0.621371)
                     else -> _distance.value
                 }
 
-                val pace: Double = if (adjustedDistance > 0) {
-                    durationInMinutes.div(adjustedDistance)
+                val pace: Double = if (durationInHour > 0) {
+                    adjustedDistance.div(durationInHour)
                 } else {
                     0.0
+                }
+
+                val excessivePace = when (userUnitPreference) {
+                    User.UNIT_MILE -> pace > 25.0
+                    else -> pace > 45.0
+                }
+
+                if (excessivePace) {
+                    notificationRepository.triggerNotification("EXCESSIVE_PACE")
                 }
 
                 _pace.emit(pace)
@@ -270,6 +282,9 @@ class RunSessionRepository(
                     totalDurationSeconds = cumulativeDurationSeconds + currentDuration
                     _duration.emit(totalDurationSeconds)
 
+                    if (totalDurationSeconds > 2*60*60) {
+                        notificationRepository.triggerNotification("BREAK")
+                    }
                     delay(1000)
                 } catch (ce: CancellationException) {
                     println("Cancel Duration update ${ce.message}")
@@ -290,6 +305,16 @@ class RunSessionRepository(
                     if (latestLocations.size == 2) {
                         val (location1, location2) = latestLocations
                         Log.d("calc distance", "location 1: $location1, location 2: $location2")
+
+                        val userUnitPreference = userInfo?.metricPreference
+                        val isTooSlow = when (userUnitPreference) {
+                            User.UNIT_MILE -> _pace.value < 1.0
+                            else -> _pace.value < 2.0
+                        }
+
+                        if (isTooSlow) {
+                            return@collect
+                        }
 
                         val distance = StatsUtils.haversineFormula(location1, location2)
                         _distance.emit(distance)

@@ -144,7 +144,6 @@ class StatsRepository {
     }
 
     suspend fun calculateMonthlyStats() {
-        val monthlyStatsKey = DateTimeUtils.getFirstDayOfCurrentWeek().toString()
         val weeklyMap = _weeklyStatsMap.value
 
         val firstDayOfWeek = DateTimeUtils.getFirstDayOfCurrentWeek()

@@ -27,4 +27,10 @@ class GPSTrackViewModel (
             gpsTrackRepository.stopGPSTrack()
         }
     }
+
+    fun fetchGPSPoints(sessionId: Int) {
+        viewModelScope.launch {
+            gpsTrackRepository.fetchGPSPointOfSession(sessionId)
+        }
+    }
 }
