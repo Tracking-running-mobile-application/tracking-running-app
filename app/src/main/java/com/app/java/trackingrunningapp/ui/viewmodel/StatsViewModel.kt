@@ -33,7 +33,6 @@ class StatsViewModel(
                 totalDistance = 0.0,
                 totalDuration = 0L,
                 totalCaloriesBurned = 0.0,
-
             )
         }
     }
