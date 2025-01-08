@@ -189,7 +189,7 @@ class RunSessionRepository {
             try {
                 val userUnitPreference = userInfo?.unit
 
-                val durationInHour = _duration.value.div(3600.0)
+                val durationInHour = _duration.value.div(60.0)
                 val adjustedDistance: Double = when (userUnitPreference) {
                     User.UNIT_MILE -> _distance.value.times(0.621371)
                     else -> _distance.value
