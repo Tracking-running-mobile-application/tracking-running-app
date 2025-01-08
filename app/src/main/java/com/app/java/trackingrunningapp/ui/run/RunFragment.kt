@@ -146,9 +146,9 @@ class RunFragment : Fragment() {
                     runSessionViewModel.initiateRunSession()
                     gpsTrackViewModel.initiateGPSTrack()
                     runSessionViewModel.setRunSessionStartTime()
-                        // TODO: insert start tracking and sending gps function
-                        startTracking()
-                        runSessionViewModel.fetchAndUpdateStats()
+                    // TODO: insert start tracking and sending gps function
+                    startTracking()
+                    runSessionViewModel.fetchAndUpdateStats()
 
                     }
                 }
@@ -161,6 +161,7 @@ class RunFragment : Fragment() {
                 lifecycleScope.launch {
                     mutex.withLock {
                         // TODO: do something when pause
+                        runSessionViewModel.setRunSessionStartTime()
                         runSessionViewModel.fetchAndUpdateStats()
                         runSessionViewModel.pauseRunSession()
                         pauseTracking()

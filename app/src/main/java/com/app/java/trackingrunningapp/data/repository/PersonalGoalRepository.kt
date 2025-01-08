@@ -137,7 +137,6 @@ class PersonalGoalRepository {
         }
 
         if (progress >= 100.0) {
-            personalGoalDao.markGoalAchieved(personalGoal.goalId)
             notificationRepository.triggerNotification("COMPLETE")
             stopUpdatingGoalProgress()
         }

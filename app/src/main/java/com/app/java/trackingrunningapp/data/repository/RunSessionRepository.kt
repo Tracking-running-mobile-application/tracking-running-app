@@ -316,12 +316,15 @@ class RunSessionRepository {
                             return@collect
                         }
 
-                        val distance = StatsUtils.haversineFormula(location1, location2)
+                        val distance = when (userUnitPreference) {
+                            User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
+                            else -> StatsUtils.haversineFormula(location1, location2) / 1609.34
+                        }
                         _distance.emit(distance)
 
                         delay(100)
+                        }
                     }
-                }
             } catch (ce: CancellationException) {
                 println("calcDistance runSessionRepo ${ce.message}")
             }

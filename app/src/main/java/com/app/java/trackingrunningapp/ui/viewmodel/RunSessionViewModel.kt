@@ -147,6 +147,7 @@ class RunSessionViewModel(
                 try {
                     val stats = runSessionRepository.fetchStatsSession()
                     _statsFlow.emit(stats)
+                    Log.d("Run Session VM", "Pace: ${stats.pace}, Duration: ${stats.duration}, Distance: ${stats.distance}, Calories ${stats.caloriesBurned}")
                     delay(1000)
                 } catch (e: CancellationException) {
                     Log.d("fetchStatsCurrentSession()", "Job canceled during execution ${e.message}")

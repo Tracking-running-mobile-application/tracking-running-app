@@ -10,9 +10,6 @@ interface TrainingPlanDao {
     @Query("DELETE FROM TrainingPlan WHERE planId = :planId")
     suspend fun deleteTrainingPlan(planId: Int)
 
-    @Query("UPDATE TrainingPlan SET isFinished = TRUE WHERE planId = :planId")
-    suspend fun finishTrainingPlan(planId: Int)
-
     @Query("SELECT goalProgress FROM TrainingPlan WHERE planId = :planId")
     suspend fun getGoalProgress(planId: Int): Double
 
