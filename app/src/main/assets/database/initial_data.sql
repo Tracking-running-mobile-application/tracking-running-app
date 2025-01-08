@@ -204,6 +204,7 @@ INSERT INTO "RunSession" VALUES (73,'20240108',4.6,1700,6.3,330.0,0,NULL,0);
 INSERT INTO "RunSession" VALUES (74,'20240108',5.1,1850,6.7,365.0,0,NULL,0);
 INSERT INTO "RunSession" VALUES (75,'20240108',3.4,1450,5.6,265.0,0,NULL,0);
 INSERT INTO "RunSession" VALUES (76,'20240108',4.9,1800,6.5,350.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (77,'20240108',4.9,1800,6.5,350.0,0,NULL,0);
 
 INSERT INTO "Notification" VALUES (1,'Halfway There!','You are halfway through your goal. Keep going!','HALF');
 INSERT INTO "Notification" VALUES (2,'Keep Pushing!','Halfway to your goal. Stay strong!','HALF');
