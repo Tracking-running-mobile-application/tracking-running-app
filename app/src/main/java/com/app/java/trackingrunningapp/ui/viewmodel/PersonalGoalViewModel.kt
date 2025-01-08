@@ -37,9 +37,8 @@ class PersonalGoalViewModel(
 
     suspend fun initiatePersonalGoal() {
         viewModelScope.launch {
-            observeRunSession()
-            fetchGoalProgress()
             personalGoalRepository.assignSessionToPersonalGoal()
+            observeRunSession()
         }
     }
 
@@ -57,7 +56,7 @@ class PersonalGoalViewModel(
                 try {
                     val progress = personalGoalRepository.getGoalProgress()
                     _goalProgress.value = progress
-                    delay(5000)
+                    delay(1500)
                 } catch (e: Exception) {
                     println("Error fetching goal progress: ${e.message}")
                 }

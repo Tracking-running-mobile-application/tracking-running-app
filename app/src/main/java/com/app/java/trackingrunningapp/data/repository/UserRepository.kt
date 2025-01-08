@@ -13,8 +13,9 @@ class UserRepository {
     suspend fun upsertUserInfo(user: User) {
         userDao.upsertUserInfo(user)
     }
-     fun getUserInfo(): User? {
+
+    fun getUserInfo(): User? {
         return userDao.getUserInfo()
-         Log.d("User Repository", "get user info")
+        Log.d("User Repository", "get user info")
     }
 }
