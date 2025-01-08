@@ -163,7 +163,6 @@ class RunFragment : Fragment() {
             }
 
             binding.btnStop.setOnClickListener {
-                it.findNavController().navigate(R.id.action_runFragment_to_runResultFragment)
                 // TODO: STOP
                 lifecycleScope.launch {
                     mutex.withLock {
@@ -174,6 +173,7 @@ class RunFragment : Fragment() {
                         runSessionViewModel.finishRunSession()
                     }
                 }
+                it.findNavController().navigate(R.id.action_runFragment_to_runResultFragment)
             }
         }
 
