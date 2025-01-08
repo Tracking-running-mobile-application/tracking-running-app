@@ -15,9 +15,6 @@ interface PersonalGoalDao {
         """)
     fun getAllPersonalGoals(): List<PersonalGoal>
 
-    @Query("UPDATE PersonalGoal SET isAchieved = TRUE WHERE goalId = :goalId")
-    suspend fun markGoalAchieved(goalId: Int)
-
     @Query("SELECT goalProgress FROM PersonalGoal WHERE goalId = :goalId")
     suspend fun getGoalProgress(goalId: Int): Double
 

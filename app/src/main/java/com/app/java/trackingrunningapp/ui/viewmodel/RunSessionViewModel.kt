@@ -37,8 +37,6 @@ class RunSessionViewModel(
     private val _favoriteRunSessions = MutableStateFlow<List<RunSession?>>(emptyList())
     val favoriteRunSessions : StateFlow<List<RunSession?>> = _favoriteRunSessions
 
-    val currentSession = runSessionRepository.currentRunSession
-
     private val _statsFlow = MutableStateFlow<StatsSession?>(null)
     val statsFlow= _statsFlow.asLiveData()
 
@@ -102,6 +100,7 @@ class RunSessionViewModel(
         statsUpdateJob?.cancelAndJoin()
         fetchStatsJob?.cancelAndJoin()
         runSessionRepository.stopUpdatingStats()
+        runSessionRepository.pauseSession()
     }
 
     suspend fun fetchAndUpdateStats() {
@@ -149,7 +148,8 @@ class RunSessionViewModel(
                 try {
                     val stats = runSessionRepository.fetchStatsSession()
                     _statsFlow.emit(stats)
-                    delay(5000)
+                    Log.d("Run Session VM", "Pace: ${stats.pace}, Duration: ${stats.duration}, Distance: ${stats.distance}, Calories ${stats.caloriesBurned}")
+                    delay(1000)
                 } catch (e: CancellationException) {
                     Log.d("fetchStatsCurrentSession()", "Job canceled during execution ${e.message}")
                     throw e
@@ -182,7 +182,7 @@ class RunSessionViewModel(
                         newPace
                     )
 
-                    delay(1000)
+                    delay(500)
                 } catch (e: CancellationException) {
                     Log.d("StatsUpdate", "Job canceled during execution")
                     throw e
