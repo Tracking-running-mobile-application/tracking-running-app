@@ -42,8 +42,9 @@ class HistoryFragment : Fragment() {
         //IMPORTANT: fetchMore should be false initially,
         //it should only be true when the user click show more !!
 
+//        runSessionViewModel.fetchRunSessions(fetchMore = false)
+//        setUpRefreshing()
         runSessionViewModel.fetchRunSessions(fetchMore = false)
-
         runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
             setupAdapter(sessions)
         }
