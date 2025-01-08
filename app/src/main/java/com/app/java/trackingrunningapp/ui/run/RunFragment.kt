@@ -47,6 +47,8 @@ import kotlinx.coroutines.sync.withLock
 class RunFragment : Fragment() {
     private lateinit var binding: FragmentRunBinding
     private var isTracking: Boolean = false
+    private var lastUpdateTime: Long = 0L
+    private val updateInterval: Long = 1000L
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
@@ -261,17 +263,22 @@ class RunFragment : Fragment() {
                         this.enabled = true // Enable location updates
                     }
                     indicatorListener = OnIndicatorPositionChangedListener { point ->
-                        // TODO: Implement pause mechanism
-                        routeCoordinates.add(point)
+                        val currentTime = System.currentTimeMillis()
 
-                        // TODO: Save <<point>> to database
-                        Log.d("Longitude", point.longitude().toString())
-                        Log.d("Latitude", point.latitude().toString())
-                        // Draw the route
-                        lifecycleScope.launch {
-                            gpsPointViewModel.insertGPSPoint(point.longitude(), point.latitude())
+                        if (currentTime - lastUpdateTime >= updateInterval) {
+                            lastUpdateTime = currentTime
+                            // TODO: Implement pause mechanism
+                            routeCoordinates.add(point)
+
+                            // TODO: Save <<point>> to database
+                            Log.d("Longitude", point.longitude().toString())
+                            Log.d("Latitude", point.latitude().toString())
+                            // Draw the route
+                            lifecycleScope.launch {
+                                gpsPointViewModel.insertGPSPoint(point.longitude(), point.latitude())
+                            }
+                            drawRoute()
                         }
-                        drawRoute()
                     }
                     // Add the listener to start tracking
                     indicatorListener?.let {
