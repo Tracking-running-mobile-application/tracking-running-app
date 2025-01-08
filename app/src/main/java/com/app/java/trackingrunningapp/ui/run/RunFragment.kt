@@ -171,9 +171,14 @@ class RunFragment : Fragment() {
                         gpsTrackViewModel.stopGPSTrack()
                         stopTracking()
                         runSessionViewModel.finishRunSession()
+                        runSessionViewModel.runSessions.observe(viewLifecycleOwner){sessions->
+                            val bundle = Bundle().apply {
+                                putInt(RunResultFragment.EXTRA_RUN_ID_RESULT,sessions[sessions.size-1].sessionId)
+                            }
+                            it.findNavController().navigate(R.id.action_runFragment_to_runResultFragment,bundle)
+                        }
                     }
                 }
-                it.findNavController().navigate(R.id.action_runFragment_to_runResultFragment)
             }
         }
 

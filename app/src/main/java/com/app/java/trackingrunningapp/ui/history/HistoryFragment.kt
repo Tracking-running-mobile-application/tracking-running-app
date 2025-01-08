@@ -71,7 +71,10 @@ class HistoryFragment : Fragment() {
         containerLayout = binding.containerLayoutHistory
         runAdapter = RunAdapter(runs, requireContext(),object : OnItemHistoryRunClickListener {
             override fun onItemClick(itemRun: RunSession) {
-                findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment)
+                val bundle = Bundle().apply {
+                    putInt(DetailRunFragment.EXTRA_HISTORY_RUN_ID,itemRun.sessionId)
+                }
+                findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment,bundle)
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
                     View.GONE
             }

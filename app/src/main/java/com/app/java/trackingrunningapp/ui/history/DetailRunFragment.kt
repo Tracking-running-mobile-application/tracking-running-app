@@ -6,30 +6,49 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentDetailRunBinding
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.utils.StatsUtils
 
 
 class DetailRunFragment : Fragment() {
     private lateinit var binding: FragmentDetailRunBinding
+    private lateinit var runSessionViewModel: RunSessionViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentDetailRunBinding.inflate(inflater,container,false)
+        binding = FragmentDetailRunBinding.inflate(inflater, container, false)
+        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+        runSessionViewModel =
+            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val textDistance = view.findViewById<TextView>(R.id.text_distance_metric)
-        textDistance.text = getString(R.string.text_distance_metric,3.38)
-
-        val textCalo = view.findViewById<TextView>(R.id.text_calorie_metric)
-        textCalo.text = getString(R.string.text_calorie_metric,353.4)
+        val runSessionId = arguments?.getInt(EXTRA_HISTORY_RUN_ID, 0)
+        runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
+            for (session in sessions) {
+                if (session.sessionId == runSessionId) {
+                    binding.historyRunDetail.textDistanceMetric.text =
+                        getString(R.string.text_distance_metric, session.distance)
+                    binding.historyRunDetail.textDurationMetric.text =
+                        StatsUtils.formatDuration(session.duration!!)
+                    binding.historyRunDetail.textPaceMetric.text =
+                        getString(R.string.text_pace_metric,session.pace)
+                    binding.historyRunDetail.textCalorieMetric.text =
+                        getString(R.string.text_calorie_metric,session.caloriesBurned)
+                }
+            }
+        }
     }
 
-    companion object{
-        const val EXTRA_HISTORY_ID = "EXTRA_HISTORY_ID"
+    companion object {
+        const val EXTRA_HISTORY_RUN_ID = "EXTRA_HISTORY_RUN_ID"
     }
 }
