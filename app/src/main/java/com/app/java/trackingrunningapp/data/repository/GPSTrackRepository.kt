@@ -3,6 +3,7 @@ package com.app.java.trackingrunningapp.data.repository
 import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.dataclass.location.Location
 import com.app.java.trackingrunningapp.data.model.entity.GPSTrack
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import kotlinx.coroutines.Dispatchers
@@ -52,12 +53,12 @@ class GPSTrackRepository {
         gpsTrackDao.setGPSTrackInactive(currentGpsTrackId)
     }
 
-    suspend fun fetchGPSPointOfSession(sessionId: Int) {
+    suspend fun fetchGPSPointOfSession(sessionId: Int): List<Location> {
         val gpsTrackId = gpsTrackDao.getGPSTrackIdBySessionId(sessionId)
-        if (gpsTrackId != null) {
+        return if (gpsTrackId != null) {
             gpsPointRepository.fetchGPSPointList(gpsTrackId)
         } else {
-            println("No session ID attached with that GPS Track ID! (GPS Track Repository)")
+            emptyList()
         }
     }
 }
