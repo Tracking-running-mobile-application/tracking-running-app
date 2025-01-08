@@ -84,6 +84,7 @@ class StatisticWeeklyFragment : Fragment() {
                     barChart.animate(barSet)
                 }
 
+
                 override fun onTabUnselected(tab: TabLayout.Tab?) {
                     barChart.animate(barSet)
                 }

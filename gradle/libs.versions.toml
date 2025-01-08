@@ -55,7 +55,6 @@ room-kotlin = { group = "androidx.room", name = "room-ktx", version.ref = "roomd
 # viewmodel,livedata
 androidx-lifecycle-viewmodel-ktx = {group = "androidx.lifecycle",name="lifecycle-viewmodel-ktx",version.ref="lifecycle-ktx"}
 androidx-lifecycle-livedata-ktx = {group = "androidx.lifecycle",name="lifecycle-livedata-ktx",version.ref="lifecycle-ktx"}
-
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
