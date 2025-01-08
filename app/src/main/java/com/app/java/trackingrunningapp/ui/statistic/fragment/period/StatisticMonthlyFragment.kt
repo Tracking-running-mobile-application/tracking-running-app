@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.MonthlyStats
 import com.app.java.trackingrunningapp.data.model.entity.YearlyStats
 import com.app.java.trackingrunningapp.databinding.FragmentStatisticWeeklyBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
@@ -49,15 +50,15 @@ class StatisticMonthlyFragment : Fragment() {
 //        val weekData: MutableList<Double> = mutableListOf()
 //        val days: List<String> = getPreviousDays(6).reversed()
 //        val daySums: MutableList<Double> = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-        statsViewModel.currentYearStats.observe(viewLifecycleOwner) { sessions ->
-            Log.d("current_year","${sessions}")
+        statsViewModel.currentMonthStats.observe(viewLifecycleOwner) { sessions ->
+            Log.d("current_month","${sessions}")
             setupBarChart(sessions)
         }
         statsViewModel.refreshStats()
     }
 
 
-    private fun setupBarChart(monthData: List<YearlyStats>) {
+    private fun setupBarChart(monthData: List<MonthlyStats>) {
         val barSet = listOf(
             "1" to monthData[0].totalDistance!!.toFloat(),
             "2" to monthData[1].totalDistance!!.toFloat(),
