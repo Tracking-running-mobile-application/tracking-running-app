@@ -64,7 +64,7 @@ class TrainingPlanViewModel(
                 try {
                     val progress = trainingPlanRepository.getGoalProgress()
                     _goalProgress.value = progress
-                    delay(7000)
+                    delay(1500)
                 } catch (e: Exception) {
                     println("Error fetching goal progress: ${e.message}")
                 }
@@ -81,9 +81,8 @@ class TrainingPlanViewModel(
     /*trigger runSession start before this!!*/
     fun initiateTrainingPlan() {
         viewModelScope.launch {
-            observeRunSession()
-            fetchGoalProgress()
             trainingPlanRepository.assignSessionToTrainingPlan()
+            observeRunSession()
         }
     }
 

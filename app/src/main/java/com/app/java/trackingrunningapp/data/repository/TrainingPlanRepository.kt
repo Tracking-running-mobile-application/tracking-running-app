@@ -3,9 +3,9 @@ package com.app.java.trackingrunningapp.data.repository
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.dao.TrainingPlanDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.database.InitDatabase.Companion.notificationRepository
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
-import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -18,8 +18,6 @@ class TrainingPlanRepository {
 
     private val trainingPlanDao: TrainingPlanDao = db.trainingPlanDao()
     private val runSessionDao: RunSessionDao = db.runSessionDao()
-
-    private var lastFetchDate = DateTimeUtils.getCurrentDate()
 
     private var updateJob: Job? = null
 
@@ -112,9 +110,14 @@ class TrainingPlanRepository {
 
         trainingPlanDao.updateGoalProgress(currentTrainingPlan.planId, progress)
 
+        if (progress >= 50.0) {
+            notificationRepository.triggerNotification("HALF")
+        }
+
         if ( progress >= 100.0 ) {
             trainingPlanDao.finishTrainingPlan(currentTrainingPlan.planId)
-            /*noti after finish?*/
+            notificationRepository.triggerNotification("COMPLETE")
+            stopUpdatingGoalProgress()
         }
     }
 }
