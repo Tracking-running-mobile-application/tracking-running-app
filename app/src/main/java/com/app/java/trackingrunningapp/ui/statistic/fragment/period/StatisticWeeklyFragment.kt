@@ -9,9 +9,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.WeeklyStats
 import com.app.java.trackingrunningapp.databinding.FragmentStatisticWeeklyBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModelFactory
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.app.java.trackingrunningapp.utils.LocalTimeConverter
 import com.google.android.material.tabs.TabLayout
@@ -22,6 +25,7 @@ import java.time.format.DateTimeFormatter
 class StatisticWeeklyFragment : Fragment() {
     private lateinit var binding: FragmentStatisticWeeklyBinding
     private lateinit var runSessionViewModel: RunSessionViewModel
+    private lateinit var statsViewModel: StatsViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -36,45 +40,34 @@ class StatisticWeeklyFragment : Fragment() {
     }
 
     private fun setupViewmodel() {
-        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
-        runSessionViewModel =
-            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
-        val startDate = "20241123"
-        val endDate = "20241222"
-
-        runSessionViewModel.filterSessionsByDateRange(startDate, endDate)
-
-        val weekData: MutableList<Double> = mutableListOf()
-        val days: List<String> = getPreviousDays(6).reversed()
-        val daySums: MutableList<Double> = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-        runSessionViewModel.filteredSession.observe(viewLifecycleOwner) { sessions ->
-            if (sessions.isNotEmpty()) {
-                for (session in sessions) {
-                    val idx = days.indexOf(session.runDate)
-                    if(idx != -1) {
-                        daySums[idx] += session.distance ?: 0.0
-                    }
-                }
-                for (daySum in daySums) {
-                    weekData.add(daySum)
-                }
-                Log.d("Data by week: ", "$weekData")
-                setupBarChart(weekData)
-            } else {
-                Log.e("Error", "No session found in given dates")
-            }
+//        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+//        runSessionViewModel =
+//            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+//        val startDate = "20241123"
+//        val endDate = "20241222"
+//
+//        runSessionViewModel.filterSessionsByDateRange(startDate, endDate)
+        val statsFactory = StatsViewModelFactory(InitDatabase.statsRepository)
+        statsViewModel =
+            ViewModelProvider(requireActivity(), statsFactory)[StatsViewModel::class.java]
+//        val weekData: MutableList<Double> = mutableListOf()
+//        val days: List<String> = getPreviousDays(6).reversed()
+//        val daySums: MutableList<Double> = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        statsViewModel.currentWeekStats.observe(viewLifecycleOwner) { sessions ->
+            Log.d("week_stats_day","${sessions[0]}")
+            setupBarChart(sessions)
         }
     }
 
-    private fun setupBarChart(weekData: MutableList<Double>) {
+    private fun setupBarChart(weekData: List<WeeklyStats>) {
         val barSet = listOf(
-            "Mon" to weekData[0].toFloat(),
-            "Tue" to weekData[1].toFloat(),
-            "Wed" to weekData[2].toFloat(),
-            "Thu" to weekData[3].toFloat(),
-            "Fri" to weekData[4].toFloat(),
-            "Sat" to weekData[5].toFloat(),
-            "Sun" to weekData[6].toFloat(),
+            "Mon" to weekData[0].totalDistance!!.toFloat(),
+            "Tue" to weekData[1].totalDistance!!.toFloat(),
+            "Wed" to weekData[2].totalDistance!!.toFloat(),
+            "Thu" to weekData[3].totalDistance!!.toFloat(),
+            "Fri" to weekData[4].totalDistance!!.toFloat(),
+            "Sat" to weekData[5].totalDistance!!.toFloat(),
+            "Sun" to weekData[6].totalDistance!!.toFloat(),
         )
         val barChart = binding.barchart
         barChart.animate(barSet)
@@ -97,6 +90,7 @@ class StatisticWeeklyFragment : Fragment() {
                 }
             })
     }
+
     fun getPreviousDays(currentDayIndex: Int): List<String> {
         val today = LocalDate.now()
         val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")

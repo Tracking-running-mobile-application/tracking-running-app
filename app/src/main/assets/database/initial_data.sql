@@ -184,6 +184,27 @@ INSERT INTO "RunSession" VALUES (53,'20251021',5.1,2000,6.2,340.0,0,NULL,0);
 INSERT INTO "RunSession" VALUES (54,'20251117',4.6,1800,6.1,310.0,0,NULL,0);
 INSERT INTO "RunSession" VALUES (55,'20251209',7.0,2400,6.5,380.0,0,NULL,0);
 INSERT INTO "RunSession" VALUES (56,'20251228',3.5,1500,5.9,280.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (57,'20240108',4.2,1600,6.1,300.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (58,'20240108',5.0,1800,6.5,350.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (59,'20240108',3.8,1500,6.0,280.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (60,'20240108',4.5,1700,6.3,320.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (61,'20240108',5.5,2000,6.7,400.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (62,'20240108',3.2,1400,5.7,260.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (63,'20240108',4.0,1600,6.0,290.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (64,'20240108',4.8,1750,6.4,340.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (65,'20240108',3.6,1550,5.9,280.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (66,'20240108',5.2,1900,6.6,370.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (67,'20240108',4.3,1650,6.2,310.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (68,'20240108',3.9,1500,6.1,285.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (69,'20240108',4.7,1725,6.4,335.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (70,'20240108',5.3,1950,6.8,380.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (71,'20240108',4.1,1625,6.1,300.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (72,'20240108',3.7,1525,5.8,275.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (73,'20240108',4.6,1700,6.3,330.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (74,'20240108',5.1,1850,6.7,365.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (75,'20240108',3.4,1450,5.6,265.0,0,NULL,0);
+INSERT INTO "RunSession" VALUES (76,'20240108',4.9,1800,6.5,350.0,0,NULL,0);
+
 INSERT INTO "Notification" VALUES (1,'Halfway There!','You are halfway through your goal. Keep going!','HALF');
 INSERT INTO "Notification" VALUES (2,'Keep Pushing!','Halfway to your goal. Stay strong!','HALF');
 INSERT INTO "Notification" VALUES (3,'Midway Success!','You’re halfway done. Finish strong!','HALF');
@@ -214,6 +235,7 @@ INSERT INTO "Notification" VALUES (27,'Recharge!','Take a moment to rest and rej
 INSERT INTO "Notification" VALUES (28,'Breathe!','Catch your breath. It’s break time.','BREAK');
 INSERT INTO "Notification" VALUES (29,'Refresh!','Time to relax. You’ve earned it.','BREAK');
 INSERT INTO "Notification" VALUES (30,'Recover!','Take a well-deserved break and get ready to go again.','BREAK');
+INSERT INTO "Notification" VALUES (31,'Caution!','Your speed is unusually high! Proceed at your own risk!','EXCESSIVE_PACE');
 CREATE INDEX IF NOT EXISTS "index_GPSPoint_trackId" ON "GPSPoint" (
 	"trackId"
 );

@@ -125,6 +125,7 @@ class HistoryFragment : Fragment() {
             // update
             //   runDateAdapter.updateRunDate(newRunDates)
             // Stop the refresh indicator
+            runSessionViewModel.fetchRunSessions(fetchMore = true)
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }

@@ -14,7 +14,6 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.plus
-import java.util.Locale
 
 class StatsViewModel(
     private val statsRepository: StatsRepository
@@ -33,7 +32,6 @@ class StatsViewModel(
                 totalDistance = 0.0,
                 totalDuration = 0L,
                 totalCaloriesBurned = 0.0,
-
             )
         }
     }
