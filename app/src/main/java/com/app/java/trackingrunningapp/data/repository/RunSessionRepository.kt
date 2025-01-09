@@ -234,15 +234,22 @@ class RunSessionRepository {
                 val userMetricPreference: String? = userInfo?.metricPreference
                 val unit: String? = userInfo?.unit
 
+                val isTooSlow = when (userMetricPreference) {
+                    User.UNIT_MILE -> _pace.value > 20.0
+                    else -> _pace.value > 33.0
+                }
+
+                if(isTooSlow) {
+                    return@launch
+                }
+
                 val adjustedWeight = when (userMetricPreference) {
                     User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
                     else -> userInfo?.weight ?: 50.0
                 }
 
-                val adjustedPace: Double = when (unit) {
-                    User.UNIT_MILE -> _pace.value.div(1.609344)
-                    else -> _pace.value
-                }
+                val adjustedPace: Double = if (unit == User.UNIT_MILE)
+                    _pace.value else _pace.value * 1.609344
 
                 val speedMetersPerSec: Double = if (adjustedPace > 0) {
                     1000.0 / (adjustedPace * 60.0)
@@ -266,7 +273,8 @@ class RunSessionRepository {
                 } else {
                     0.0
                 }
-                _caloriesBurned.value = caloriesBurned
+                val newCaloriesBurned = caloriesBurned + _caloriesBurned.value
+                _caloriesBurned.value = newCaloriesBurned
 
                 delay(100)
             } catch (ce: CancellationException) {
@@ -325,7 +333,8 @@ class RunSessionRepository {
                             User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
                             else -> StatsUtils.haversineFormula(location1, location2) / 1609.34
                         }
-                        _distance.emit(distance)
+                        val newDistance = _distance.value + distance
+                        _distance.emit(newDistance)
 
                         delay(100)
                         }
