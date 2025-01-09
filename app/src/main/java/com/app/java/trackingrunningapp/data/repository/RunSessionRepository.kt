@@ -273,6 +273,7 @@ class RunSessionRepository {
                 } else {
                     0.0
                 }
+                Log.d("Calories", "${caloriesBurned}")
                 val newCaloriesBurned = caloriesBurned + _caloriesBurned.value
                 _caloriesBurned.value = newCaloriesBurned
 
@@ -331,7 +332,11 @@ class RunSessionRepository {
 
                         val distance = when (userUnitPreference) {
                             User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
-                            else -> StatsUtils.haversineFormula(location1, location2) / 1609.34
+                            else -> StatsUtils.haversineFormula(location1, location2) / 1000
+                        }
+                        Log.d("RunSessionRepo", "${distance}")
+                        if (distance<0.005) {
+                            return@collect
                         }
                         val newDistance = _distance.value + distance
                         _distance.emit(newDistance)
