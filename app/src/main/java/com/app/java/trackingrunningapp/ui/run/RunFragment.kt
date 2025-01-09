@@ -198,6 +198,7 @@ class RunFragment : Fragment() {
                     runSessionViewModel.finishRunSession()
                 }
             }
+
             runSessionViewModel.fetchRunSessions()
             runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
                 if(sessions.isNotEmpty()){

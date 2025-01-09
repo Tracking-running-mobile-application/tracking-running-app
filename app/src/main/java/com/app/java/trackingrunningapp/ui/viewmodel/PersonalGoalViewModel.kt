@@ -1,6 +1,7 @@
 package com.app.java.trackingrunningapp.ui.viewmodel
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -14,6 +15,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class PersonalGoalViewModel(
     private val personalGoalRepository: PersonalGoalRepository,
@@ -28,6 +31,8 @@ class PersonalGoalViewModel(
 
     private var goalProgressJob: Job? = null
 
+    private var jobMutex = Mutex()
+
     fun deletePersonalGoal(goalId: Int) {
         viewModelScope.launch {
             personalGoalRepository.deletePersonalGoal(goalId)
@@ -35,10 +40,13 @@ class PersonalGoalViewModel(
         }
     }
 
-    suspend fun initiatePersonalGoal() {
-        viewModelScope.launch {
-            personalGoalRepository.assignSessionToPersonalGoal()
-            observeRunSession()
+    suspend fun initiatePersonalGoal(goalId: Int) {
+        jobMutex.withLock {
+
+            Log.d("PersonalGoal", "3")
+            personalGoalRepository.assignSessionToPersonalGoal(goalId)
+
+            Log.d("PersonalGoal", "4")
         }
     }
 
@@ -73,37 +81,29 @@ class PersonalGoalViewModel(
         targetCaloriesBurned: Double? = null
     ) {
         viewModelScope.launch {
-            val updatedGoal = personalGoalRepository.upsertPersonalGoal(
+           personalGoalRepository.upsertPersonalGoal(
                 goalId = goalId,
                 sessionId = sessionId,
                 name = name,
                 targetDistance = targetDistance,
                 targetDuration = targetDuration,
                 targetCaloriesBurned = targetCaloriesBurned,
-                existingGoals = _personalGoals.value
             )
-
-            _personalGoals.value = _personalGoals.value.map {
-                if (it.goalId == updatedGoal.goalId) updatedGoal else it
-            } + if (_personalGoals.value.none { it.goalId == updatedGoal.goalId }) listOf(updatedGoal) else emptyList()
         }
     }
 
-     fun observeRunSession() {
-        viewModelScope.launch {
-            runSessionRepository.currentRunSession.collect { session ->
-                if (session == null) {
-                    personalGoalRepository.updateGoalProgress()
-                    val progress = personalGoalRepository.getGoalProgress()
-                    _goalProgress.value = progress
-                    personalGoalRepository.stopUpdatingGoalProgress()
-                    goalProgressJob?.cancel()
-                } else {
-                    personalGoalRepository.startUpdatingGoalProgress()
-                    fetchGoalProgress()
-                }
+     suspend fun observeRunSession() {
+        runSessionRepository.currentRunSession.collect { session ->
+            if (session == null) {
+                personalGoalRepository.updateGoalProgress()
+                val progress = personalGoalRepository.getGoalProgress()
+                _goalProgress.value = progress
+                personalGoalRepository.stopUpdatingGoalProgress()
+                goalProgressJob?.cancel()
+            } else {
+                personalGoalRepository.startUpdatingGoalProgress()
+                fetchGoalProgress()
             }
         }
     }
-
 }

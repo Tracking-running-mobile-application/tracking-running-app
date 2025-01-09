@@ -129,10 +129,10 @@ class RunGoalFragment : Fragment() {
     private fun initProgress() {
         val goalId = arguments?.getInt(EXTRA_GOAL_ID, 0)
         // TODO: setup progress  
-        personalGoalViewModel.fetchGoalProgress()
         personalGoalViewModel.goalProgress.observe(viewLifecycleOwner) { progress ->
             binding.progressBarGoal.progress = progress?.toInt() ?: 0
             binding.textRunPercent.text = progress.toString()
+            Log.d("RunGoalFragment", "${progress}")
         }
     }
 
@@ -146,13 +146,18 @@ class RunGoalFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     runSessionViewModel.initiateRunSession()
+                    Log.d("PersonalGoal", "7")
                     gpsTrackViewModel.initiateGPSTrack()
                     runSessionViewModel.setRunSessionStartTime()
+
                     // TODO: insert start tracking and sending gps function
                     startTracking()
+                    Log.d("PersonalGoal", "6")
                     runSessionViewModel.fetchAndUpdateStats()
-                    // TODO: observe 
-                    personalGoalViewModel.observeRunSession()
+                    Log.d("PersonalGoal", "1")
+                    personalGoalViewModel.initiatePersonalGoal(goalId = )
+                    Log.d("PersonalGoal", "2")
+                    // TODO: observe
                 }
             }
         }
