@@ -16,7 +16,6 @@ import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModelFactory
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
-import com.app.java.trackingrunningapp.utils.LocalTimeConverter
 import com.google.android.material.tabs.TabLayout
 import com.mapbox.maps.extension.style.expressions.dsl.generated.sum
 import java.time.LocalDate

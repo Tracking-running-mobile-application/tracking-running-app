@@ -21,6 +21,9 @@ class TrainingPlanRepository {
 
     private var updateJob: Job? = null
 
+    private var halfNotiTriggered: Boolean = false
+    private var finishNotiTriggered: Boolean = false
+
     private suspend fun getCurrentSessionOrThrow(): RunSession {
         val currentRunSession = runSessionDao.getCurrentRunSession()
         return currentRunSession ?: throw IllegalStateException("There is not any current run session ! (Training Plan Repository)")
@@ -50,6 +53,8 @@ class TrainingPlanRepository {
         val existingPlan = getCurrentTrainingPlanOrThrow()
         val currentSession = getCurrentSessionOrThrow()
         trainingPlanDao.upsertTrainingPlan(existingPlan.copy(planSessionId = currentSession.sessionId))
+        halfNotiTriggered = false
+        finishNotiTriggered = false
     }
 
     suspend fun deleteTrainingPlan(planId: Int) {
@@ -99,12 +104,14 @@ class TrainingPlanRepository {
 
         trainingPlanDao.updateGoalProgress(currentTrainingPlan.planId, progress)
 
-        if (progress >= 50.0) {
+        if (progress >= 50 && !halfNotiTriggered) {
             notificationRepository.triggerNotification("HALF")
+            halfNotiTriggered = true
         }
 
-        if ( progress >= 100.0 ) {
+        if ( progress >= 100.0 && !finishNotiTriggered) {
             notificationRepository.triggerNotification("COMPLETE")
+            finishNotiTriggered = true
             stopUpdatingGoalProgress()
         }
     }
