@@ -234,6 +234,9 @@ INSERT INTO "Notification" VALUES (28,'Breathe!','Catch your breath. It’s brea
 INSERT INTO "Notification" VALUES (29,'Refresh!','Time to relax. You’ve earned it.','BREAK');
 INSERT INTO "Notification" VALUES (30,'Recover!','Take a well-deserved break and get ready to go again.','BREAK');
 INSERT INTO "Notification" VALUES (31,'Caution!','Your speed is unusually high! Proceed at your own risk!','EXCESSIVE_PACE');
+INSERT INTO "Notification" VALUES (32,'Enable Internet for Better Tracking', 'For accurate location tracking and route drawing, please turn on your internet.', 'NO_NETWORK');
+INSERT INTO "Notification" VALUES (33,'Internet Needed for Route Map', 'Ensure your internet is enabled to get the best route drawing experience for your running sessions.', 'NO_NETWORK');
+
 CREATE INDEX IF NOT EXISTS "index_GPSPoint_trackId" ON "GPSPoint" (
 	"trackId"
 );
