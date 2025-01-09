@@ -192,6 +192,7 @@ class RunSessionViewModel(
     fun deleteRunSession(sessionId: Int) {
         viewModelScope.launch {
             runSessionRepository.deleteRunSession(sessionId)
+            fetchRunSessions(fetchMore = false)
         }
     }
 
