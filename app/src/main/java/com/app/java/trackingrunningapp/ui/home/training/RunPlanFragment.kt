@@ -200,11 +200,11 @@ class RunPlanFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun initArrowAction() {
-        binding.icArrowUp.setOnClickListener {
-            binding.containerArrowDown.visibility = View.VISIBLE
-            binding.containerArrowUp.visibility = View.GONE
-            binding.containerMetric.visibility = View.GONE
-        }
+//        binding.icArrowUp.setOnClickListener {
+//            binding.containerArrowDown.visibility = View.VISIBLE
+//            binding.containerArrowUp.visibility = View.GONE
+//            binding.containerMetric.visibility = View.GONE
+//        }
         binding.icArrowDown.setOnClickListener {
             binding.containerArrowUp.visibility = View.VISIBLE
             binding.containerArrowDown.visibility = View.GONE

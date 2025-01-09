@@ -89,7 +89,7 @@ class PersonalGoalViewModel(
         }
     }
 
-    private fun observeRunSession() {
+     fun observeRunSession() {
         viewModelScope.launch {
             runSessionRepository.currentRunSession.collect { session ->
                 if (session == null) {

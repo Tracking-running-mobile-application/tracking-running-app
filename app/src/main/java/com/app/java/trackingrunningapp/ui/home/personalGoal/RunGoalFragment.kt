@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -26,6 +27,8 @@ import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
@@ -58,6 +61,7 @@ class RunGoalFragment : Fragment() {
     private lateinit var gpsTrackViewModel: GPSTrackViewModel
     private lateinit var gpsPointViewModel: GPSPointViewModel
     private lateinit var userViewModel: UserViewModel
+    private lateinit var personalGoalViewModel: PersonalGoalViewModel
 
     private var mutex = Mutex()
 
@@ -100,12 +104,21 @@ class RunGoalFragment : Fragment() {
         val userFactory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
 
+        val personalGoalFactory = PersonalGoalViewModelFactory(
+            InitDatabase.personalGoalRepository,
+            InitDatabase.runSessionRepository
+        )
+        personalGoalViewModel = ViewModelProvider(
+            requireActivity(),
+            personalGoalFactory
+        )[PersonalGoalViewModel::class.java]
         binding = FragmentRunGoalBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = getString(R.string.personal_goal)
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
         setupPermission()
         setupActionRun()
@@ -114,7 +127,13 @@ class RunGoalFragment : Fragment() {
     }
 
     private fun initProgress() {
-        binding.progressBar.progress = 10
+        val goalId = arguments?.getInt(EXTRA_GOAL_ID, 0)
+        // TODO: setup progress  
+        personalGoalViewModel.fetchGoalProgress()
+        personalGoalViewModel.goalProgress.observe(viewLifecycleOwner) { progress ->
+            binding.progressBarGoal.progress = progress?.toInt() ?: 0
+            binding.textRunPercent.text = progress.toString()
+        }
     }
 
     private fun setupActionRun() {
@@ -123,7 +142,6 @@ class RunGoalFragment : Fragment() {
             binding.btnPause.visibility = View.VISIBLE
             binding.btnStop.visibility = View.VISIBLE
             requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
-
             // TODO: START
             lifecycleScope.launch {
                 mutex.withLock {
@@ -133,7 +151,8 @@ class RunGoalFragment : Fragment() {
                     // TODO: insert start tracking and sending gps function
                     startTracking()
                     runSessionViewModel.fetchAndUpdateStats()
-
+                    // TODO: observe 
+                    personalGoalViewModel.observeRunSession()
                 }
             }
         }
@@ -223,7 +242,7 @@ class RunGoalFragment : Fragment() {
         val runCalo = binding.layoutMetric.textRunCaloMetric
 
         runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
-            runDuration.text = getString(R.string.text_duration_metric, it?.duration?:0.0)
+            runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
             userViewModel.fetchUserInfo()
             userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
                 if (user?.unit == User.UNIT_KM) {
@@ -386,5 +405,9 @@ class RunGoalFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = true
+    }
+
+    companion object {
+        const val EXTRA_GOAL_ID = "EXTRA_GOAL_ID"
     }
 }
