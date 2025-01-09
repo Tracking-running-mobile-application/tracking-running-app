@@ -18,7 +18,6 @@ import com.app.java.trackingrunningapp.data.dao.TrainingPlanDao
 import com.app.java.trackingrunningapp.data.dao.UserDao
 import com.app.java.trackingrunningapp.data.dao.WeeklyStatsDao
 import com.app.java.trackingrunningapp.data.dao.YearlyStatsDao
-import com.app.java.trackingrunningapp.utils.LocalTimeConverter
 import com.app.java.trackingrunningapp.data.model.entity.GPSPoint
 import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.model.entity.WeeklyStats
@@ -44,7 +43,6 @@ import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
     version = 1,
     exportSchema = true
 )
-@TypeConverters(LocalTimeConverter::class)
 abstract class RunningDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
     abstract fun personalGoalDao(): PersonalGoalDao

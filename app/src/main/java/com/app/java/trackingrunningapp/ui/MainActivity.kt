@@ -27,12 +27,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private var notificationRepository: NotificationRepository = InitDatabase.notificationRepository
+    private var errorNoti: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val language = LocaleUtils.getLanguagePreference(this)
         LocaleUtils.setLocale(this, language)
+        errorNoti = false
 
         setContentView(binding.root)
         initNavHost()
@@ -41,8 +43,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpNetwork() {
         lifecycleScope.launch {
-            if (!isOnline()) {
+            if (!isOnline() && !errorNoti) {
                 notificationRepository.triggerNotification(type = "NO_NETWORK")
+                errorNoti = true
             }
         }
     }

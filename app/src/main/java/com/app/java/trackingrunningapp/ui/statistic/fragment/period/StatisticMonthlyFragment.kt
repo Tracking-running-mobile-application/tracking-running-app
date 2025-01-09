@@ -37,24 +37,15 @@ class StatisticMonthlyFragment : Fragment() {
     }
 
     private fun setupViewmodel() {
-//        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
-//        runSessionViewModel =
-//            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
-//        val startDate = "20241123"
-//        val endDate = "20241222"
-//
-//        runSessionViewModel.filterSessionsByDateRange(startDate, endDate)
         val statsFactory = StatsViewModelFactory(InitDatabase.statsRepository)
         statsViewModel =
             ViewModelProvider(requireActivity(), statsFactory)[StatsViewModel::class.java]
-//        val weekData: MutableList<Double> = mutableListOf()
-//        val days: List<String> = getPreviousDays(6).reversed()
-//        val daySums: MutableList<Double> = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        statsViewModel.refreshStats()
         statsViewModel.currentMonthStats.observe(viewLifecycleOwner) { sessions ->
-            Log.d("current_month","${sessions}")
+            Log.d("current_month", "${sessions}")
             setupBarChart(sessions)
         }
-        statsViewModel.refreshStats()
+//        statsViewModel.refreshStats()
     }
 
 

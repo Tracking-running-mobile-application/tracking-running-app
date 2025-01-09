@@ -50,12 +50,6 @@ object DateTimeUtils {
         return today.minus(daysFromMonday, DateTimeUnit.DAY)
     }
 
-    fun getLastDayOfCurrentWeek(): LocalDate {
-        val today = getCurrentDate()
-        val daysToSunday = 7 - today.dayOfWeek.ordinal - 1
-        return today.plus(daysToSunday, DateTimeUnit.DAY)
-    }
-
     fun getEveryFirstDayOfWeekInCurrentMonth(): List<String> {
         val firstDayOfWeek = mutableListOf<String>()
         val currentMonth = getCurrentDate().month.value
@@ -74,12 +68,6 @@ object DateTimeUtils {
         return LocalDate(today.year, today.month, 1)
     }
 
-    fun getLastDayOfCurrentMonth(): LocalDate {
-        val today = getCurrentDate()
-        val lastDay = today.month.length(today.year.isLeapYear())
-        return LocalDate(today.year, today.month, lastDay)
-    }
-
     private fun Int.isLeapYear(): Boolean {
         return (this % 4 == 0 && this % 100 != 0) || (this % 400 == 0)
     }
@@ -91,10 +79,26 @@ object DateTimeUtils {
     }
 
     fun extractMonthYearFromDate(dateString: String): String {
-        val date = LocalDate.parse(dateString)
-        val month = date.month.toString().padStart(2, '0')
-        val year = date.year.toString()
-        return "$month$year"
+        val year = dateString.substring(0, 4)
+        val month = dateString.substring(4, 6)
+
+        return "$month-$year"
+    }
+
+    fun getFirstDaysOfMonth(): List<String> {
+        val currentDate = getCurrentDate()
+        return (1..12).map { month ->
+            val firstDay = LocalDate(currentDate.year, month, 1)
+            firstDay.toString().replace("-", "")
+        }
+    }
+
+    fun getLastDaysOfMonth(): List<String> {
+        val currentDate = getCurrentDate()
+        return (1..12).map { month ->
+            val lastDay = LocalDate(currentDate.year, month, 1).plus(1, DateTimeUnit.MONTH).minus(1, DateTimeUnit.DAY)
+            lastDay.toString().replace("-", "")
+        }
     }
 
     fun getEveryMonthOfYear(): List<String> {

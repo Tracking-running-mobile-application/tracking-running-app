@@ -3,7 +3,6 @@ package com.app.java.trackingrunningapp.data.repository
 import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.dao.UserDao
-import com.app.java.trackingrunningapp.utils.LocalTimeConverter
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.entity.User
@@ -32,14 +31,15 @@ class RunSessionRepository {
     private val gpsPointRepository: GPSPointRepository = InitDatabase.gpsPointRepository
     private val notificationRepository: NotificationRepository = InitDatabase.notificationRepository
 
-    private val convert = LocalTimeConverter()
-
     private val userInfo = userDao.getUserInfo()
 
     private val _currentRunSession = MutableStateFlow<RunSession?>(null)
     val currentRunSession: StateFlow<RunSession?> = _currentRunSession
 
     private var offset: Int = 0
+
+    private var durationNotification: Boolean = false
+    private var paceNotification: Boolean = false
 
     private val _duration = MutableStateFlow(0L)
     val duration: StateFlow<Long> = _duration
@@ -88,6 +88,9 @@ class RunSessionRepository {
         _caloriesBurned.value = 0.0
         cumulativeDurationSeconds = 0L
         totalDurationSeconds = 0L
+        durationNotification = false
+        paceNotification = false
+        _currentRunSession.value = null
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
     }
 
@@ -145,7 +148,7 @@ class RunSessionRepository {
 
 
     suspend fun startRunSession() {
-        val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())
+        val runDate = DateTimeUtils.getCurrentDate().toString()
 
         val newRunSession = RunSession(
             runDate = runDate,
@@ -189,25 +192,26 @@ class RunSessionRepository {
             try {
                 val userUnitPreference = userInfo?.unit
 
-                val durationInHour = _duration.value.div(60.0)
+                val durationInMinutes = _duration.value.div(60.0)
                 val adjustedDistance: Double = when (userUnitPreference) {
                     User.UNIT_MILE -> _distance.value.times(0.621371)
                     else -> _distance.value
                 }
 
-                val pace: Double = if (durationInHour > 0) {
-                    adjustedDistance.div(durationInHour)
+                val pace: Double = if (durationInMinutes > 0) {
+                    adjustedDistance.div(durationInMinutes)
                 } else {
                     0.0
                 }
 
                 val excessivePace = when (userUnitPreference) {
-                    User.UNIT_MILE -> pace > 25.0
-                    else -> pace > 45.0
+                    User.UNIT_MILE -> pace > 2.2
+                    else -> pace > 1.5
                 }
 
-                if (excessivePace) {
+                if (excessivePace && !paceNotification) {
                     notificationRepository.triggerNotification("EXCESSIVE_PACE")
+                    paceNotification = true
                 }
 
                 _pace.emit(pace)
@@ -230,15 +234,22 @@ class RunSessionRepository {
                 val userMetricPreference: String? = userInfo?.metricPreference
                 val unit: String? = userInfo?.unit
 
+                val isTooSlow = when (userMetricPreference) {
+                    User.UNIT_MILE -> _pace.value > 20.0
+                    else -> _pace.value > 33.0
+                }
+
+                if(isTooSlow) {
+                    return@launch
+                }
+
                 val adjustedWeight = when (userMetricPreference) {
                     User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
                     else -> userInfo?.weight ?: 50.0
                 }
 
-                val adjustedPace: Double = when (unit) {
-                    User.UNIT_MILE -> _pace.value.div(1.609344)
-                    else -> _pace.value
-                }
+                val adjustedPace: Double = if (unit == User.UNIT_MILE)
+                    _pace.value else _pace.value * 1.609344
 
                 val speedMetersPerSec: Double = if (adjustedPace > 0) {
                     1000.0 / (adjustedPace * 60.0)
@@ -262,7 +273,8 @@ class RunSessionRepository {
                 } else {
                     0.0
                 }
-                _caloriesBurned.value = caloriesBurned
+                val newCaloriesBurned = caloriesBurned + _caloriesBurned.value
+                _caloriesBurned.value = newCaloriesBurned
 
                 delay(100)
             } catch (ce: CancellationException) {
@@ -282,8 +294,9 @@ class RunSessionRepository {
                     totalDurationSeconds = cumulativeDurationSeconds + currentDuration
                     _duration.emit(totalDurationSeconds)
 
-                    if (totalDurationSeconds > 2*60*60) {
+                    if (totalDurationSeconds > 2*60*60 && !durationNotification) {
                         notificationRepository.triggerNotification("BREAK")
+                        durationNotification = true
                     }
                     delay(1000)
                 } catch (ce: CancellationException) {
@@ -308,8 +321,8 @@ class RunSessionRepository {
 
                         val userUnitPreference = userInfo?.metricPreference
                         val isTooSlow = when (userUnitPreference) {
-                            User.UNIT_MILE -> _pace.value < 1.0
-                            else -> _pace.value < 2.0
+                            User.UNIT_MILE -> _pace.value > 20.0
+                            else -> _pace.value > 33.0
                         }
 
                         if (isTooSlow) {
@@ -320,7 +333,8 @@ class RunSessionRepository {
                             User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
                             else -> StatsUtils.haversineFormula(location1, location2) / 1609.34
                         }
-                        _distance.emit(distance)
+                        val newDistance = _distance.value + distance
+                        _distance.emit(newDistance)
 
                         delay(100)
                         }

@@ -122,6 +122,7 @@ class HistoryFragment : Fragment() {
             override fun onAddFavouriteClick(action: Int,itemRun: RunSession) {
                 if (action == RunAdapter.FAVOURITE_ADD) {
                     runSessionViewModel.addAndRemoveFavoriteSession(itemRun)
+                    Log.d("isFav","${itemRun.isFavorite}")
                     Log.d("isHistoryFavourite", "${itemRun.isFavorite}")
                     Snackbar.make(
                         containerLayout,

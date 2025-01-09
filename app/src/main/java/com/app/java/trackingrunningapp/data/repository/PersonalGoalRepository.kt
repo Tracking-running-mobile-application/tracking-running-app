@@ -26,6 +26,9 @@ class PersonalGoalRepository {
     private val notificationRepository: NotificationRepository = InitDatabase.notificationRepository
     private var updateJob: Job? = null
 
+    private var halfNotiTriggered: Boolean = false
+    private var finishNotiTriggered: Boolean = false
+
     private suspend fun getCurrentSessionOrThrow(): RunSession {
         val currentRunSession = runSessionDao.getCurrentRunSession()
         return currentRunSession ?: throw IllegalStateException("Value of current run session is null! (Personal Goal Repository)")
@@ -41,6 +44,9 @@ class PersonalGoalRepository {
         val existingGoal = getCurrentPersonalGoalOrThrow()
         val currentSession = getCurrentSessionOrThrow()
         personalGoalDao.upsertPersonalGoal(existingGoal.copy(goalSessionId = currentSession.sessionId))
+
+        halfNotiTriggered = false
+        finishNotiTriggered = false
     }
 
     suspend fun upsertPersonalGoal(
@@ -132,13 +138,15 @@ class PersonalGoalRepository {
 
         personalGoalDao.updateGoalProgress(personalGoal.goalId, progress)
 
-        if (progress >= 50.0) {
+        if (progress >= 50 && !halfNotiTriggered) {
             notificationRepository.triggerNotification("HALF")
+            halfNotiTriggered = true
         }
 
-        if (progress >= 100.0) {
+        if (progress >= 100.0 && !finishNotiTriggered) {
             notificationRepository.triggerNotification("COMPLETE")
             stopUpdatingGoalProgress()
+            finishNotiTriggered = true
         }
     }
 
