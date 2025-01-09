@@ -124,190 +124,160 @@ class RunFragment : Fragment() {
                     runSessionViewModel.initiateRunSession()
                     gpsTrackViewModel.initiateGPSTrack()
                     runSessionViewModel.setRunSessionStartTime()
-                        // TODO: insert start tracking and sending gps function
-                        startTracking()
-                        runSessionViewModel.fetchAndUpdateStats()
+                    // TODO: insert start tracking and sending gps function
+                    startTracking()
+                    runSessionViewModel.fetchAndUpdateStats()
 
-                    }
-                }
-            }
-
-            binding.btnPause.setOnClickListener {
-                binding.btnPause.visibility = View.INVISIBLE
-                binding.btnResume.visibility = View.VISIBLE
-                // TODO: PAUSE
-                lifecycleScope.launch {
-                    mutex.withLock {
-                        // TODO: do something when pause
-                        runSessionViewModel.fetchAndUpdateStats()
-                        runSessionViewModel.pauseRunSession()
-                        pauseTracking()
-                        gpsTrackViewModel.stopGPSTrack()
-                    }
-                }
-            }
-
-            binding.btnResume.setOnClickListener {
-                binding.btnResume.visibility = View.INVISIBLE
-                binding.btnPause.visibility = View.VISIBLE
-                // TODO: RESUME
-                lifecycleScope.launch {
-                    mutex.withLock {
-                        // TODO: do something when resume
-                        runSessionViewModel.setRunSessionStartTime()
-                        runSessionViewModel.fetchAndUpdateStats()
-                        resumeTracking()
-                        gpsTrackViewModel.resumeGPSTrack()
-                    }
-                }
-            }
-
-            binding.btnStop.setOnClickListener {
-                // TODO: STOP
-                lifecycleScope.launch {
-                    mutex.withLock {
-                        // TODO: stop gps tracking
-                        runSessionViewModel.fetchAndUpdateStats()
-                        gpsTrackViewModel.stopGPSTrack()
-                        stopTracking()
-                        runSessionViewModel.finishRunSession()
-                        runSessionViewModel.runSessions.observe(viewLifecycleOwner){sessions->
-                            val bundle = Bundle().apply {
-                                putInt(RunResultFragment.EXTRA_RUN_ID_RESULT,sessions[sessions.size-1].sessionId)
-                            }
-                            it.findNavController().navigate(R.id.action_runFragment_to_runResultFragment,bundle)
-                        }
-                    }
                 }
             }
         }
 
-        @SuppressLint("InlinedApi")
-        private fun setupPermission() {
-            val permissions = arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.POST_NOTIFICATIONS
-            )
-            // Check if all permissions are granted
-            if (permissions.all {// false if 1 permission is denied
-                    ContextCompat
-                        .checkSelfPermission(
-                            requireContext(),
-                            it
-                        ) == PackageManager.PERMISSION_GRANTED
-                }) {
-                initMapAndLocation()
-            } else {
-                // Request missing permissions
-                requestPermissionsLauncher.launch(permissions)
-            }
-        }
-
-        private fun initArrowAction() {
-            binding.icArrowUp.setOnClickListener {
-                binding.containerArrowDown.visibility = View.VISIBLE
-                binding.containerArrowUp.visibility = View.GONE
-                binding.containerMetric.visibility = View.GONE
-            }
-            binding.icArrowDown.setOnClickListener {
-                binding.containerArrowUp.visibility = View.VISIBLE
-                binding.containerArrowDown.visibility = View.GONE
-                binding.containerMetric.visibility = View.VISIBLE
-            }
-            val runDuration = binding.layoutMetric.textRunDurationMetric
-            val runDistance = binding.layoutMetric.textRunDistanceMetric
-            val runPace = binding.layoutMetric.textRunPaceMetric
-            val runCalo = binding.layoutMetric.textRunCaloMetric
-
-
-            runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
-                runDuration.text = getString(R.string.text_duration_metric,it?.duration)
-                Log.d("run_time", "${it?.duration}")
-                userViewModel.fetchUserInfo()
-                userViewModel.userLiveData.observe(viewLifecycleOwner){user->
-                    if(user?.unit == User.UNIT_KM){
-                        runDistance.text = getString(R.string.text_distance_metric,it?.distance)
-                    }else if(user?.unit == User.UNIT_MILE){
-                        runDistance.text = getString(R.string.text_distance_metric_mile,it?.distance)
-                    }
-                }
-
-                runPace.text = getString(R.string.text_pace_metric,it?.pace)
-                runCalo.text = getString(R.string.text_calorie_metric,it?.caloriesBurned)
-            }
-        }
-
-        private fun initMapAndLocation() {
-            // Setup route drawing
-            mapView = binding.mapView
-            annotationApi = mapView.annotations
-            polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
-            // Setup map
-            mapView.mapboxMap.loadStyle(Style.STANDARD) {
-                // Init location
-                val locationComponentPlugin = mapView.location
-                locationComponentPlugin.updateSettings {
-                    this.enabled = true
-                }
-
-                // Listen for the first location update to zoom in but don't track yet
-                locationComponentPlugin.addOnIndicatorPositionChangedListener(object :
-                    OnIndicatorPositionChangedListener {
-                    override fun onIndicatorPositionChanged(point: Point) {
-                        // Zoom to the initial position
-                        mapView.mapboxMap.setCamera(
-                            CameraOptions.Builder()
-                                .center(point) // Set initial camera position
-                                .zoom(15.0) // Zoom level
-                                .build()
-                        )
-
-                        // Remove the listener after the initial zoom
-                        locationComponentPlugin.removeOnIndicatorPositionChangedListener(this)
-                    }
-                })
-            }
-        }
-
-        private fun startTracking() {
+        binding.btnPause.setOnClickListener {
+            binding.btnPause.visibility = View.INVISIBLE
+            binding.btnResume.visibility = View.VISIBLE
+            // TODO: PAUSE
             lifecycleScope.launch {
-                if (!isTracking) {
-                    isTracking = true
-                    // Clear previous route coordinates if restarting
-                    routeCoordinates.clear()
-
-                    // Set up the location listener for tracking
-                    val locationComponentPlugin = mapView.location
-                    locationComponentPlugin.updateSettings {
-                        this.enabled = true // Enable location updates
-                    }
-                    indicatorListener = OnIndicatorPositionChangedListener { point ->
-                        // TODO: Implement pause mechanism
-                        routeCoordinates.add(point)
-
-                        // TODO: Save <<point>> to database
-                        Log.d("Longitude", point.longitude().toString())
-                        Log.d("Latitude", point.latitude().toString())
-                        // Draw the route
-                        lifecycleScope.launch {
-                            gpsPointViewModel.insertGPSPoint(point.longitude(), point.latitude())
-                        }
-                        drawRoute()
-                    }
-                    // Add the listener to start tracking
-                    indicatorListener?.let {
-                        locationComponentPlugin.addOnIndicatorPositionChangedListener(
-                            it
-                        )
-                    }
+                mutex.withLock {
+                    // TODO: do something when pause
+                    runSessionViewModel.fetchAndUpdateStats()
+                    runSessionViewModel.pauseRunSession()
+                    pauseTracking()
+                    gpsTrackViewModel.stopGPSTrack()
                 }
             }
         }
 
-        private fun resumeTracking() {
+        binding.btnResume.setOnClickListener {
+            binding.btnResume.visibility = View.INVISIBLE
+            binding.btnPause.visibility = View.VISIBLE
+            // TODO: RESUME
+            lifecycleScope.launch {
+                mutex.withLock {
+                    // TODO: do something when resume
+                    runSessionViewModel.setRunSessionStartTime()
+                    runSessionViewModel.fetchAndUpdateStats()
+                    resumeTracking()
+                    gpsTrackViewModel.resumeGPSTrack()
+                }
+            }
+        }
+
+        binding.btnStop.setOnClickListener {
+            // TODO: STOP
+            lifecycleScope.launch {
+                mutex.withLock {
+                    // TODO: stop gps tracking
+                    runSessionViewModel.fetchAndUpdateStats()
+                    gpsTrackViewModel.stopGPSTrack()
+                    stopTracking()
+                    runSessionViewModel.finishRunSession()
+                    val runId = runSessionViewModel.currentSession.value?.sessionId
+                    Log.d("RunIDD", "$runId")
+                    val bundle = Bundle().apply {
+                        putInt(RunResultFragment.EXTRA_RUN_ID_RESULT, runId ?: 0)
+                    }
+                    // send current run session id to Run Result
+                    it.findNavController()
+                        .navigate(R.id.action_runFragment_to_runResultFragment, bundle)
+                }
+            }
+        }
+    }
+
+    @SuppressLint("InlinedApi")
+    private fun setupPermission() {
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.POST_NOTIFICATIONS
+        )
+        // Check if all permissions are granted
+        if (permissions.all {// false if 1 permission is denied
+                ContextCompat
+                    .checkSelfPermission(
+                        requireContext(),
+                        it
+                    ) == PackageManager.PERMISSION_GRANTED
+            }) {
+            initMapAndLocation()
+        } else {
+            // Request missing permissions
+            requestPermissionsLauncher.launch(permissions)
+        }
+    }
+
+    private fun initArrowAction() {
+        binding.icArrowUp.setOnClickListener {
+            binding.containerArrowDown.visibility = View.VISIBLE
+            binding.containerArrowUp.visibility = View.GONE
+            binding.containerMetric.visibility = View.GONE
+        }
+        binding.icArrowDown.setOnClickListener {
+            binding.containerArrowUp.visibility = View.VISIBLE
+            binding.containerArrowDown.visibility = View.GONE
+            binding.containerMetric.visibility = View.VISIBLE
+        }
+        val runDuration = binding.layoutMetric.textRunDurationMetric
+        val runDistance = binding.layoutMetric.textRunDistanceMetric
+        val runPace = binding.layoutMetric.textRunPaceMetric
+        val runCalo = binding.layoutMetric.textRunCaloMetric
+
+
+        runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
+            runDuration.text = getString(R.string.text_duration_metric, it?.duration?:0.0)
+            userViewModel.fetchUserInfo()
+            userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
+                if (user?.unit == User.UNIT_KM) {
+                    runDistance.text = getString(R.string.text_distance_metric, it?.distance ?: 0.0)
+                } else if (user?.unit == User.UNIT_MILE) {
+                    runDistance.text =
+                        getString(R.string.text_distance_metric_mile, it?.distance ?: 0.0)
+                }
+            }
+
+            runPace.text = getString(R.string.text_pace_metric, it?.pace ?: 0.0)
+            runCalo.text = getString(R.string.text_calorie_metric, it?.caloriesBurned ?: 0.0)
+        }
+    }
+
+    private fun initMapAndLocation() {
+        // Setup route drawing
+        mapView = binding.mapView
+        annotationApi = mapView.annotations
+        polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
+        // Setup map
+        mapView.mapboxMap.loadStyle(Style.STANDARD) {
+            // Init location
+            val locationComponentPlugin = mapView.location
+            locationComponentPlugin.updateSettings {
+                this.enabled = true
+            }
+
+            // Listen for the first location update to zoom in but don't track yet
+            locationComponentPlugin.addOnIndicatorPositionChangedListener(object :
+                OnIndicatorPositionChangedListener {
+                override fun onIndicatorPositionChanged(point: Point) {
+                    // Zoom to the initial position
+                    mapView.mapboxMap.setCamera(
+                        CameraOptions.Builder()
+                            .center(point) // Set initial camera position
+                            .zoom(15.0) // Zoom level
+                            .build()
+                    )
+
+                    // Remove the listener after the initial zoom
+                    locationComponentPlugin.removeOnIndicatorPositionChangedListener(this)
+                }
+            })
+        }
+    }
+
+    private fun startTracking() {
+        lifecycleScope.launch {
             if (!isTracking) {
                 isTracking = true
+                // Clear previous route coordinates if restarting
+                routeCoordinates.clear()
 
                 // Set up the location listener for tracking
                 val locationComponentPlugin = mapView.location
@@ -335,50 +305,82 @@ class RunFragment : Fragment() {
                 }
             }
         }
+    }
 
-        private fun stopTracking() {
-            if (isTracking) {
-                isTracking = false
+    private fun resumeTracking() {
+        if (!isTracking) {
+            isTracking = true
 
-                // Remove the location listener
-                val locationComponentPlugin = mapView.location
-
-                indicatorListener?.let {
-                    locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
-                }
-                indicatorListener = null // Clear the reference
-
-                // Clear the route from the map
-                polylineAnnotationManager.deleteAll()
-
-                // Clear the routeCoordinates list
-                routeCoordinates.clear()
+            // Set up the location listener for tracking
+            val locationComponentPlugin = mapView.location
+            locationComponentPlugin.updateSettings {
+                this.enabled = true // Enable location updates
             }
-        }
+            indicatorListener = OnIndicatorPositionChangedListener { point ->
+                // TODO: Implement pause mechanism
+                routeCoordinates.add(point)
 
-        private fun pauseTracking() {
-            if (isTracking) {
-                isTracking = false
-
-                // Remove the location listener
-                val locationComponentPlugin = mapView.location
-
-                indicatorListener?.let {
-                    locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
+                // TODO: Save <<point>> to database
+                Log.d("Longitude", point.longitude().toString())
+                Log.d("Latitude", point.latitude().toString())
+                // Draw the route
+                lifecycleScope.launch {
+                    gpsPointViewModel.insertGPSPoint(point.longitude(), point.latitude())
                 }
-                indicatorListener = null // Clear the reference
-
-                // Clear the routeCoordinates list
-                routeCoordinates.clear()
+                drawRoute()
             }
-        }
-
-        private fun drawRoute() {
-            polylineAnnotationManager.deleteAll()
-            val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
-                .withPoints(routeCoordinates)
-                .withLineColor("#FF0000")
-                .withLineWidth(5.0)
-            polylineAnnotationManager.create(polylineAnnotationOptions)
+            // Add the listener to start tracking
+            indicatorListener?.let {
+                locationComponentPlugin.addOnIndicatorPositionChangedListener(
+                    it
+                )
+            }
         }
     }
+
+    private fun stopTracking() {
+        if (isTracking) {
+            isTracking = false
+
+            // Remove the location listener
+            val locationComponentPlugin = mapView.location
+
+            indicatorListener?.let {
+                locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
+            }
+            indicatorListener = null // Clear the reference
+
+            // Clear the route from the map
+            polylineAnnotationManager.deleteAll()
+
+            // Clear the routeCoordinates list
+            routeCoordinates.clear()
+        }
+    }
+
+    private fun pauseTracking() {
+        if (isTracking) {
+            isTracking = false
+
+            // Remove the location listener
+            val locationComponentPlugin = mapView.location
+
+            indicatorListener?.let {
+                locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
+            }
+            indicatorListener = null // Clear the reference
+
+            // Clear the routeCoordinates list
+            routeCoordinates.clear()
+        }
+    }
+
+    private fun drawRoute() {
+        polylineAnnotationManager.deleteAll()
+        val polylineAnnotationOptions: PolylineAnnotationOptions = PolylineAnnotationOptions()
+            .withPoints(routeCoordinates)
+            .withLineColor("#FF0000")
+            .withLineWidth(5.0)
+        polylineAnnotationManager.create(polylineAnnotationOptions)
+    }
+}

@@ -100,7 +100,7 @@ class TrainingPlanFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun setupProgressBar() {
-        var progressCounter = 0
+        var progressCounter = 10
         binding.btnStartTraining.setOnClickListener {
             setupProgressAction()
             progressCounter += 5
