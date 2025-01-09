@@ -37,6 +37,7 @@ class StatisticYearlyFragment : Fragment() {
         val yearData: MutableList<Double> = mutableListOf()
         val yearSums: MutableList<Double> = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         runSessionViewModel.filteredSession.observe(viewLifecycleOwner) { sessions ->
+            Log.d("RunSessionVM", "${sessions.size}")
             if (sessions.isNotEmpty()) {
                 for (session in sessions) {
                     val date = session.runDate

@@ -46,6 +46,9 @@ class HistoryFragment : Fragment() {
 //        setUpRefreshing()
         runSessionViewModel.fetchRunSessions(fetchMore = false)
         runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
+            binding.textShowMore.setOnClickListener{
+                runSessionViewModel.fetchRunSessions(true)
+            }
             setupAdapter(sessions)
         }
 
@@ -68,13 +71,14 @@ class HistoryFragment : Fragment() {
         containerLayout = binding.containerLayoutHistory
         runAdapter = RunAdapter(runs, requireContext(),object : OnItemHistoryRunClickListener {
             override fun onItemClick(itemRun: RunSession) {
-                runSessionViewModel.addAndRemoveFavoriteSession(itemRun)
                 findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment)
                 requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
                     View.GONE
             }
-            override fun onAddFavouriteClick(action: Int) {
+            override fun onAddFavouriteClick(action: Int,itemRun: RunSession) {
                 if (action == RunAdapter.FAVOURITE_ADD) {
+                    runSessionViewModel.addAndRemoveFavoriteSession(itemRun)
+                    Log.d("isHistoryFavourite", "${itemRun.isFavorite}")
                     Snackbar.make(
                         containerLayout,
                         "Successfully Added To Favourite",
@@ -97,7 +101,6 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupRecyclerHistory()
         setupToolbarHistory()
     }
 
@@ -112,20 +115,6 @@ class HistoryFragment : Fragment() {
         itemFilter.setOnMenuItemClickListener {
             showCalendar()
             true
-        }
-    }
-
-    private fun setupRecyclerHistory() {
-        setUpRefreshing()
-    }
-
-    private fun setUpRefreshing() {
-        binding.swipeRefreshLayout.setOnRefreshListener {
-            // val newRunDates = generateSampleData() // Replace with API or database fetch logic
-            // update
-            //   runDateAdapter.updateRunDate(newRunDates)
-            // Stop the refresh indicator
-            binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 

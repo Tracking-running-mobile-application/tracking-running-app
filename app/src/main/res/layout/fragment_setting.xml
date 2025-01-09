@@ -8,31 +8,34 @@
     tools:context=".ui.setting.SettingFragment">
 
     <TextView
-        android:id="@+id/textView8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
-        android:text="Themes"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_size_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.047"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
         android:id="@+id/textView23"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
         android:text="Unit of Measurements"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_input_layout_theme" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/btn_confirm_setting"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:backgroundTint="@color/main_yellow"
+        android:text="@string/text_confirm"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView25"
@@ -45,37 +48,6 @@
         android:textSize="@dimen/text_size_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_input_layout_unit" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/text_input_layout_theme"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        app:endIconTint="@color/main_yellow"
-        app:hintEnabled="false"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView8">
-
-        <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/tv_select_theme"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/height_edit_text"
-            android:background="@drawable/background_setting_spinner"
-            android:hint="Themes"
-            android:inputType="none"
-            android:textColor="@color/white"
-            android:textColorHint="@color/white"
-            android:textSize="@dimen/size_edit_text"
-            app:simpleItems="@array/theme_options"
-            tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck,VisualLintTextFieldSize"
-            tools:layout_editor_absoluteX="5dp"
-            tools:layout_editor_absoluteY="330dp" />
-    </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/text_input_layout_unit"
@@ -97,7 +69,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_edit_text"
             android:background="@drawable/background_setting_spinner"
-            android:hint="Unit of Measurements"
+            android:hint="@string/text_unit"
             android:inputType="none"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
@@ -130,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/height_edit_text"
             android:background="@drawable/background_setting_spinner"
-            android:hint="Language"
+            android:hint="@string/text_language"
             android:inputType="none"
             android:textColor="@color/white"
             android:textColorHint="@color/white"

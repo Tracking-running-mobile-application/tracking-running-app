@@ -9,10 +9,12 @@ import com.app.java.trackingrunningapp.data.repository.TrainingPlanRepository
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.data.repository.PersonalGoalRepository
+import com.app.java.trackingrunningapp.data.repository.StatsRepository
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +36,8 @@ class InitDatabase : Application() {
         lateinit var userViewModel: UserViewModel
         lateinit var personalGoalRepository: PersonalGoalRepository
         lateinit var personalGoalViewModel: PersonalGoalViewModel
+        lateinit var statsRepository: StatsRepository
+        lateinit var statsViewModel: StatsViewModel
     }
 
     override fun onCreate() {
@@ -50,6 +54,7 @@ class InitDatabase : Application() {
             runSessionRepository = RunSessionRepository()
             userRepository = UserRepository()
             personalGoalRepository = PersonalGoalRepository()
+            statsRepository = StatsRepository()
             // init viewmodel
             runSessionViewModel = RunSessionViewModel(runSessionRepository)
             gpsTrackViewModel = GPSTrackViewModel(gpsTrackRepository)
@@ -57,6 +62,7 @@ class InitDatabase : Application() {
             userViewModel = UserViewModel(userRepository)
             personalGoalViewModel = PersonalGoalViewModel(personalGoalRepository,
                 runSessionRepository)
+            statsViewModel = StatsViewModel(statsRepository)
 
             try {
                 val records = runningDatabase.runSessionDao().getAllRunSessions(20, 20)

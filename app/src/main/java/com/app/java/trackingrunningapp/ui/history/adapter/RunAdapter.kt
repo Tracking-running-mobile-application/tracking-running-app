@@ -36,15 +36,18 @@ class RunAdapter(
             runTime.text = StatsUtils.formatDuration(itemRun.duration ?: 0L)
             runDistance.text = context.getString(R.string.text_distance_metric,itemRun.distance)
             runDate.text = DateTimeUtils.formatDateString(itemRun.runDate)
+            if(itemRun.isFavorite){
+                icStarSelected.visibility = View.VISIBLE
+            }
             icStar.setOnClickListener {
                 icStar.visibility = View.INVISIBLE
                 icStarSelected.visibility = View.VISIBLE
-                listener.onAddFavouriteClick(FAVOURITE_ADD)
+                listener.onAddFavouriteClick(FAVOURITE_ADD,itemRun)
             }
             icStarSelected.setOnClickListener {
                 icStar.visibility = View.VISIBLE
                 icStarSelected.visibility = View.GONE
-                listener.onAddFavouriteClick(FAVOURITE_REMOVE)
+                listener.onAddFavouriteClick(FAVOURITE_REMOVE,itemRun)
             }
             itemView.setOnClickListener {
                 listener.onItemClick(itemRun)

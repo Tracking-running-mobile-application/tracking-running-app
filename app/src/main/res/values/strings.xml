@@ -79,4 +79,14 @@
     <string name="goal_progress">%.1f%%</string>
     <string name="goal_removed">%s was removed</string>
     <string name="action_undo">Undo</string>
+
+
+    <string name="theme_header">App theme</string>
+    <string name="dark_mode_title">Dark mode</string>
+    <string name="languages_header">Language</string>
+    <string name="language_title">Application language</string>
+    <string name="text_unit">Unit of Measurements</string>
+    <string name="text_language">Language</string>
+    <string name="text_distance_metric_mile">%.2f mile</string>
+    <string name="text_show_more">Show More</string>
 </resources>

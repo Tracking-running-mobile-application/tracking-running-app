@@ -1,5 +1,8 @@
 package com.app.java.trackingrunningapp.ui
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
@@ -23,8 +26,29 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        val language = LocaleUtils.getLanguagePreference(this)
+        LocaleUtils.setLocale(this, language)
+
         setContentView(binding.root)
         initNavHost()
+        setUpNetwork()
+    }
+
+    private fun setUpNetwork() {
+        if(isOnline()){
+            // TODO: Push notification (have internet)
+        }else{
+            // TODO: Push notification (no internet)
+        }
+    }
+
+    private fun isOnline(): Boolean {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val capabilities = cm.getNetworkCapabilities(cm.activeNetwork)
+        return capabilities != null &&
+                (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET))
     }
 
     private fun initNavHost() {
@@ -36,8 +60,10 @@ class MainActivity : AppCompatActivity() {
         val bottomNav = binding.bottomNav
         bottomNav.setupWithNavController(navController)
         appBarConfiguration = AppBarConfiguration(
-            setOf(R.id.homeFragment, R.id.profileFragment, R.id.statisticFragment,
-                R.id.profileFragment,R.id.historyFragment)
+            setOf(
+                R.id.homeFragment, R.id.profileFragment, R.id.statisticFragment,
+                R.id.profileFragment, R.id.historyFragment
+            )
         )
         handleNavigation()
     }
@@ -62,12 +88,13 @@ class MainActivity : AppCompatActivity() {
                         Toast.makeText(this, "Notification", Toast.LENGTH_SHORT).show()
                     }
                     // navigate to setting
-                    icSettings.setOnMenuItemClickListener{
+                    icSettings.setOnMenuItemClickListener {
                         navController.navigate(R.id.action_homeFragment_to_settingFragment2)
                         true
                     }
                     binding.bottomNav.isVisible = true
                 }
+
                 R.id.profileFragment -> {
                     tvTitle.text = getString(R.string.text_profile)
                     icEdit.isVisible = true
@@ -77,16 +104,19 @@ class MainActivity : AppCompatActivity() {
                     }
                     binding.bottomNav.isVisible = true
                 }
+
                 R.id.runFragment -> {
                     icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_run)
                     binding.bottomNav.isVisible = true
                 }
+
                 R.id.statisticFragment -> {
                     icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_statistics)
                     binding.bottomNav.isVisible = true
                 }
+
                 R.id.historyFragment -> {
                     tvTitle.text = getString(R.string.text_history)
                     icFilter.isVisible = true
@@ -95,6 +125,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()

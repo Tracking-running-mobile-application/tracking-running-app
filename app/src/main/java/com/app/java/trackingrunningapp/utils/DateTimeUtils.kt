@@ -25,6 +25,11 @@ object DateTimeUtils {
         return date.format(outputDate)
     }
 
+    fun formatDateStringRemoveHyphen(date: String): String {
+        return date.replace("-", "")
+    }
+
+
     fun getCurrentDate(): LocalDate {
         val currentInstant = System.now()
         val userTimeZone = TimeZone.currentSystemDefault()
@@ -90,5 +95,12 @@ object DateTimeUtils {
         val month = date.month.toString().padStart(2, '0')
         val year = date.year.toString()
         return "$month$year"
+    }
+
+    fun getEveryMonthOfYear(): List<String> {
+        val currentYear = getCurrentDate().year
+        return (1..12).map { month ->
+            "%02d%04d".format(month, currentYear)
+        }
     }
 }

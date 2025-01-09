@@ -1,0 +1,90 @@
+<resources>
+    <string name="app_name">Ứng Dụng Chạy Bộ</string>
+    <string name="intro_title">Ứng Dụng\nChạy Bộ</string>
+    <string name="text_get_started">BẮT ĐẦU\t</string>
+    <string name="text_your_details">THÔNG TIN CỦA BẠN</string>
+    <string name="image_male">hình ảnh nam</string>
+    <string name="input_user_name">Tên</string>
+    <string-array name="gender_options">
+        <item>Nam</item>
+        <item>Nữ</item>
+    </string-array>
+    <string-array name="theme_options">
+        <item>Chủ đề tối</item>
+        <item>Chủ đề sáng</item>
+    </string-array>
+    <string-array name="unit_options">
+        <item>Ki-lô-mét (km)</item>
+        <item>Dặm (ml)</item>
+    </string-array>
+    <string-array name="language_options">
+        <item>Tiếng Anh</item>
+        <item>Tiếng Việt</item>
+    </string-array>
+    <string name="text_cm">cm</string>
+    <string name="text_ft">ft</string>
+    <string name="text_kg">kg</string>
+    <string name="text_lbs">lbs</string>
+    <!-- TODO: Xóa hoặc thay đổi văn bản chỗ này -->
+    <string name="text_home">Trang Chủ</string>
+    <string name="text_profile">Hồ Sơ</string>
+    <string name="text_run">Chạy</string>
+    <string name="text_statistics">THỐNG KÊ</string>
+    <string name="text_history">Lịch Sử</string>
+    <string name="favourite_runs">Các Chặng Chạy Yêu Thích</string>
+    <string name="no_favourite_text">Hiện tại bạn không có\nchặng chạy yêu thích nào</string>
+    <string name="toggle_overlay">Chuyển Đổi Lớp Phủ</string>
+    <string name="run">Chạy</string>
+    <string name="back_button">nút quay lại</string>
+    <string name="training_plans">Kế Hoạch Luyện Tập</string>
+    <string name="daily_tasks">Nhiệm Vụ Hàng Ngày</string>
+    <string name="beginner_guide">HƯỚNG DẪN CHO NGƯỜI MỚI</string>
+    <string name="training_duration">1 tuần</string>
+    <string name="training_diff">Dành Cho Người Mới</string>
+    <string name="training_button">BẮT ĐẦU</string>
+    <!-- TODO: Xóa hoặc thay đổi văn bản chỗ này -->
+    <string name="hello_blank_fragment">Chào mảnh trống</string>
+    <string name="text_statistic_week">Tuần Thứ 4</string>
+    <string name="text_statistic_today">Hôm nay, 3 Tháng 11</string>
+    <string name="text_statistic_month">Tháng 11</string>
+    <string name="icon_week">Biểu Tượng Tuần</string>
+    <string name="hint_gender">Giới Tính</string>
+    <string name="text_info_title">Thông Tin</string>
+    <string name="hint_age">Tuổi</string>
+    <string name="hint_height">Chiều Cao</string>
+    <string name="hint_weight">Cân Nặng</string>
+    <string name="text_confirm">Xác Nhận</string>
+    <string name="text_btn_save">Lưu</string>
+    <string name="text_live_stats">Thống Kê\nTheo Thời Gian Thực</string>
+    <string name="add_more"><u>Thêm nữa!</u></string>
+    <string name="text_favourite_run">Chặng Chạy Yêu Thích</string>
+    <string name="text_distance">Quãng Đường</string>
+    <string name="text_distance_metric">%.2f km</string>
+    <string name="text_pace">Tốc Độ Trung Bình</string>
+    <string name="text_pace_metric">%.2f phút/km</string>
+    <string name="text_duration">Thời Gian</string>
+    <string name="text_duration_metric">%.0f giây</string>
+    <string name="text_calories_burned">Lượng Calo Đã Tiêu Hao</string>
+    <string name="text_calorie_metric">%.2f calo</string>
+    <string name="objective_amount">%s • %s</string>
+    <string name="text_estimate_time">%.2f phút</string>
+    <string name="text_target_distance">%.2f km</string>
+    <string name="enter_plan_here">Kế hoạch tại đây</string>
+    <string name="objective">Mục Tiêu</string>
+    <string name="text_pause">Tạm Dừng</string>
+    <string name="user_name">Xin chào, %s</string>
+    <string name="profile_weight">%.2f</string>
+    <string name="edit_weight">%.2f</string>
+    <string name="profile_height">%.2f</string>
+    <string name="goal_progress">%.1f%%</string>
+    <string name="goal_removed">%s đã bị xóa</string>
+    <string name="action_undo">Hoàn Tác</string>
+    <string name="theme_header">Chủ đề ứng dụng</string>
+    <string name="dark_mode_title">Chế độ tối</string>
+    <string name="languages_header">Ngôn ngữ</string>
+    <string name="language_title">Ngôn ngữ ứng dụng</string>
+    <string name="text_unit">Đơn vị đo lường</string>
+    <string name="text_language">Ngôn ngữ</string>
+    <string name="text_distance_metric_mile">%.2f dặm</string>
+    <string name="text_show_more">Xem thêm</string>
+</resources>
