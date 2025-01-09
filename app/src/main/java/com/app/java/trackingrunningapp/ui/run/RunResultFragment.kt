@@ -92,14 +92,12 @@ class RunResultFragment : Fragment() {
         polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
 //        TODO: Load points of this session with proper sessionId
         lifecycleScope.launch {
-            val locations = withContext(Dispatchers.IO) {
-                gpsTrackViewModel.fetchGPSPoints(77)
+             withContext(Dispatchers.IO) {
+                 val locations =  gpsTrackViewModel.fetchGPSPoints(77)
+                 for (location in locations) {
+                     routeCoordinates.add(Point.fromLngLat(location.longitude, location.latitude))
+                 }
             }
-
-            for (location in locations) {
-                routeCoordinates.add(Point.fromLngLat(location.longitude, location.latitude))
-            }
-
             drawRoute()
         }
 
