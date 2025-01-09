@@ -9,15 +9,20 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.MonthlyStats
+import com.app.java.trackingrunningapp.data.model.entity.YearlyStats
 import com.app.java.trackingrunningapp.databinding.FragmentStatisticWeeklyBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModelFactory
 import com.db.williamchart.view.BarChartView
 import com.google.android.material.tabs.TabLayout
 
 class StatisticMonthlyFragment : Fragment() {
     private lateinit var binding: FragmentStatisticWeeklyBinding
     private lateinit var runSessionViewModel: RunSessionViewModel
+    private lateinit var statsViewModel: StatsViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,44 +37,33 @@ class StatisticMonthlyFragment : Fragment() {
     }
 
     private fun setupViewmodel() {
-        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
-        runSessionViewModel =
-            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
-        val startDate = "20241123"
-        val endDate = "20241222"
-
-        runSessionViewModel.filterSessionsByDateRange(startDate, endDate)
-
-        val monthData: MutableList<Double> = mutableListOf()
-        val endWeeks: List<String> = listOf("20241129","20241206","20241212","20241218", "20241224")
-
-        runSessionViewModel.filteredSession.observe(viewLifecycleOwner) { sessions ->
-            if (sessions.isNotEmpty()) {
-                var sumDay = 0.0
-                var week = 0
-                for (session in sessions) {
-                    sumDay += session.distance ?: 0.0
-                    if (session.runDate > endWeeks[week]) {
-                        monthData.add(sumDay)
-                        sumDay = 0.0
-                        week++
-                    }
-                }
-                Log.d("Data by month: ", "$monthData")
-                setupBarChart(monthData)
-            } else {
-                Log.e("Error", "No session found in given dates")
-            }
+//        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+//        runSessionViewModel =
+//            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+//        val startDate = "20241123"
+//        val endDate = "20241222"
+//
+//        runSessionViewModel.filterSessionsByDateRange(startDate, endDate)
+        val statsFactory = StatsViewModelFactory(InitDatabase.statsRepository)
+        statsViewModel =
+            ViewModelProvider(requireActivity(), statsFactory)[StatsViewModel::class.java]
+//        val weekData: MutableList<Double> = mutableListOf()
+//        val days: List<String> = getPreviousDays(6).reversed()
+//        val daySums: MutableList<Double> = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        statsViewModel.currentMonthStats.observe(viewLifecycleOwner) { sessions ->
+            Log.d("current_month","${sessions}")
+            setupBarChart(sessions)
         }
+        statsViewModel.refreshStats()
     }
 
 
-    private fun setupBarChart(monthData: MutableList<Double>) {
+    private fun setupBarChart(monthData: List<MonthlyStats>) {
         val barSet = listOf(
-            "1" to monthData[0].toFloat(),
-            "2" to monthData[1].toFloat(),
-            "3" to monthData[2].toFloat(),
-            "4" to monthData[3].toFloat()
+            "1" to monthData[0].totalDistance!!.toFloat(),
+            "2" to monthData[1].totalDistance!!.toFloat(),
+            "3" to monthData[2].totalDistance!!.toFloat(),
+            "4" to monthData[3].totalDistance!!.toFloat()
         )
         val barChart = binding.barchart
         barChart.animate(barSet)

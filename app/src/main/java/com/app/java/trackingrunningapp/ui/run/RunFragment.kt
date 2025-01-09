@@ -21,6 +21,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.User
+import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentRunBinding
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModel
@@ -29,6 +31,8 @@ import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -63,6 +67,7 @@ class RunFragment : Fragment() {
     private lateinit var runSessionViewModel: RunSessionViewModel
     private lateinit var gpsTrackViewModel: GPSTrackViewModel
     private lateinit var gpsPointViewModel: GPSPointViewModel
+    private lateinit var userViewModel: UserViewModel
 
     private var mutex = Mutex()
 
@@ -102,6 +107,9 @@ class RunFragment : Fragment() {
         gpsPointViewModel =
             ViewModelProvider(this, gpsPointFactory).get(GPSPointViewModel::class.java)
 
+        val userRepository = UserRepository()
+        val userFactory = UserViewModelFactory(userRepository)
+        userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
         binding = FragmentRunBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -161,7 +169,6 @@ class RunFragment : Fragment() {
                 lifecycleScope.launch {
                     mutex.withLock {
                         // TODO: do something when pause
-                        runSessionViewModel.fetchAndUpdateStats()
                         runSessionViewModel.pauseRunSession()
                         pauseTracking()
                         gpsTrackViewModel.stopGPSTrack()
@@ -177,25 +184,24 @@ class RunFragment : Fragment() {
                     mutex.withLock {
                         // TODO: do something when resume
                         runSessionViewModel.setRunSessionStartTime()
-                        runSessionViewModel.fetchAndUpdateStats()
                         resumeTracking()
                         gpsTrackViewModel.resumeGPSTrack()
+                        runSessionViewModel.fetchAndUpdateStats()
                     }
                 }
             }
 
             binding.btnStop.setOnClickListener {
-                it.findNavController().navigate(R.id.action_runFragment_to_runResultFragment)
                 // TODO: STOP
                 lifecycleScope.launch {
                     mutex.withLock {
                         // TODO: stop gps tracking
-                        runSessionViewModel.fetchAndUpdateStats()
                         gpsTrackViewModel.stopGPSTrack()
                         stopTracking()
                         runSessionViewModel.finishRunSession()
                     }
                 }
+                it.findNavController().navigate(R.id.action_runFragment_to_runResultFragment)
             }
         }
 
@@ -237,10 +243,19 @@ class RunFragment : Fragment() {
             val runPace = binding.layoutMetric.textRunPaceMetric
             val runCalo = binding.layoutMetric.textRunCaloMetric
 
+
             runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
                 runDuration.text = getString(R.string.text_duration_metric,it?.duration)
                 Log.d("run_time", "${it?.duration}")
-                runDistance.text = getString(R.string.text_distance_metric,it?.distance)
+                userViewModel.fetchUserInfo()
+                userViewModel.userLiveData.observe(viewLifecycleOwner){user->
+                    if(user?.unit == User.UNIT_KM){
+                        runDistance.text = getString(R.string.text_distance_metric,it?.distance)
+                    }else if(user?.unit == User.UNIT_MILE){
+                        runDistance.text = getString(R.string.text_distance_metric_mile,it?.distance)
+                    }
+                }
+
                 runPace.text = getString(R.string.text_pace_metric,it?.pace)
                 runCalo.text = getString(R.string.text_calorie_metric,it?.caloriesBurned)
             }
