@@ -5,49 +5,59 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.databinding.FragmentFavouriteRunsBinding
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.utils.DateTimeUtils
+import com.app.java.trackingrunningapp.utils.StatsUtils
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class FavouriteRuns : Fragment() {
-    private lateinit var binding:FragmentFavouriteRunsBinding
+    private lateinit var binding: FragmentFavouriteRunsBinding
+    private lateinit var runSessionViewModel: RunSessionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_favourite_runs, container, false)
+    ): View {
+        binding = FragmentFavouriteRunsBinding.inflate(inflater, container, false)
+        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+        runSessionViewModel =
+            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+        val toolbarTitle = requireActivity().findViewById<TextView>(R.id.tv_toolbar_title)
+        toolbarTitle.text = getString(R.string.text_favourite_run)
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
+            val runList = mutableListOf<RunItem>()
+            for (session in sessions) {
+                if (session.isFavorite) {
+                    val runFavourite = RunItem(
+                        StatsUtils.formatDuration(session.duration ?: 0L),
+                        getString(R.string.text_distance_metric,session.distance ?: 0.0),
+                        DateTimeUtils.formatDateString(session.runDate)
+                    )
+                    runList.add(runFavourite)
+                }
+            }
+            binding.rvFavouriteRun.adapter = FavouriteRunAdapter(runList)
+        }
+    }
 
-        val runList = mutableListOf(
-            RunItem("Normal Run", "12KM", "22/10/2024"),
-            RunItem("Normal Run", "12KM", "2/9/2024"),
-            RunItem("Morning Run", "8KM", "1/8/2024"),
-            RunItem("Evening Sprint", "5KM", "15/7/2024"),
-            RunItem("Marathon Prep", "20KM", "10/7/2024"),
-            RunItem("Trail Adventure", "15KM", "5/6/2024"),
-            RunItem("Casual Jog", "6KM", "1/5/2024"),
-            RunItem("City Run", "10KM", "25/4/2024"),
-            RunItem("Weekend Dash", "7KM", "20/4/2024"),
-            RunItem("Quick Run", "3KM", "18/4/2024"),
-            RunItem("Challenge Run", "13KM", "15/4/2024"),
-            RunItem("Sunset Run", "9KM", "10/4/2024"),
-            RunItem("Morning Run", "8KM", "1/8/2024"),
-            RunItem("Trail Adventure", "14KM", "22/3/2024"),
-            RunItem("Hill Run", "10KM", "10/3/2024"),
-            RunItem("Fitness Run", "11KM", "1/3/2024"),
-            RunItem("Fun Run", "5KM", "20/2/2024"),
-            RunItem("Marathon Race", "42KM", "15/2/2024"),
-            RunItem("Light Jog", "4KM", "5/2/2024"),
-            RunItem("Intense Sprint", "2KM", "25/1/2024")
-        )
-
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = FavouriteRunAdapter(runList)
+    override fun onStop() {
+        super.onStop()
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
     }
 }

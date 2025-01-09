@@ -7,24 +7,22 @@ import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
-import com.app.java.trackingrunningapp.utils.StatsUtils
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 class RunSessionViewModel(
     private val runSessionRepository: RunSessionRepository,
-): ViewModel() {
+) : ViewModel() {
     private val _filteredSessions = MutableStateFlow<List<RunSession>>(emptyList())
     val filteredSession = _filteredSessions.asLiveData()
 
@@ -35,12 +33,10 @@ class RunSessionViewModel(
     val hasMoreData = _hasMoreData.asLiveData()
 
     private val _favoriteRunSessions = MutableStateFlow<List<RunSession?>>(emptyList())
-    val favoriteRunSessions : StateFlow<List<RunSession?>> = _favoriteRunSessions
-
-    val currentSession = runSessionRepository.currentRunSession
+    val favoriteRunSessions: StateFlow<List<RunSession?>> = _favoriteRunSessions
 
     private val _statsFlow = MutableStateFlow<StatsSession?>(null)
-    val statsFlow= _statsFlow.asLiveData()
+    val statsFlow = _statsFlow.asLiveData()
 
     private var statsUpdateJob: Job? = null
     private var fetchStatsJob: Job? = null
@@ -55,9 +51,9 @@ class RunSessionViewModel(
     fun filterSessionsByDateRange(startDate: String, endDate: String) {
         viewModelScope.launch {
             try {
-                val sessions= runSessionRepository.filterRunningSessionByDay(startDate, endDate)
+                val sessions = runSessionRepository.filterRunningSessionByDay(startDate, endDate)
                 _filteredSessions.value = sessions
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 println("Error filtering sessions: ${e.message}")
             }
         }
@@ -87,7 +83,7 @@ class RunSessionViewModel(
         try {
             runSessionRepository.resetStatsValue()
             runSessionRepository.startRunSession()
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             println("Error starting session: ${e.message}")
         }
     }
@@ -102,6 +98,7 @@ class RunSessionViewModel(
         statsUpdateJob?.cancelAndJoin()
         fetchStatsJob?.cancelAndJoin()
         runSessionRepository.stopUpdatingStats()
+        runSessionRepository.pauseDuration()
     }
 
     suspend fun fetchAndUpdateStats() {
@@ -149,9 +146,16 @@ class RunSessionViewModel(
                 try {
                     val stats = runSessionRepository.fetchStatsSession()
                     _statsFlow.emit(stats)
-                    delay(5000)
+                    Log.d(
+                        "Run Session VM",
+                        "Pace: ${stats.pace}, Duration: ${stats.duration}, Distance: ${stats.distance}, Calories ${stats.caloriesBurned}"
+                    )
+                    delay(1000)
                 } catch (e: CancellationException) {
-                    Log.d("fetchStatsCurrentSession()", "Job canceled during execution ${e.message}")
+                    Log.d(
+                        "fetchStatsCurrentSession()",
+                        "Job canceled during execution ${e.message}"
+                    )
                     throw e
                 } catch (e: Exception) {
                     println("Error updating stats: ${e.message}")
@@ -182,7 +186,7 @@ class RunSessionViewModel(
                         newPace
                     )
 
-                    delay(1000)
+                    delay(500)
                 } catch (e: CancellationException) {
                     Log.d("StatsUpdate", "Job canceled during execution")
                     throw e
@@ -195,6 +199,7 @@ class RunSessionViewModel(
     fun deleteRunSession(sessionId: Int) {
         viewModelScope.launch {
             runSessionRepository.deleteRunSession(sessionId)
+            fetchRunSessions(fetchMore = false)
         }
     }
 

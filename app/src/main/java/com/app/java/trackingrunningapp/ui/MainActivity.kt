@@ -10,18 +10,23 @@ import androidx.activity.OnBackPressedCallback
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.ActivityMainBinding
+import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
+    private var notificationRepository: NotificationRepository = InitDatabase.notificationRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +40,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUpNetwork() {
-        if(isOnline()){
-            // TODO: Push notification (have internet)
-        }else{
-            // TODO: Push notification (no internet)
+        lifecycleScope.launch {
+            if (!isOnline()) {
+                notificationRepository.triggerNotification(type = "NO_NETWORK")
+            }
         }
     }
 

@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
-import java.util.Date
 
 class RunSessionRepository {
     val db = InitDatabase.runningDatabase
@@ -136,13 +135,14 @@ class RunSessionRepository {
     }
 
     fun setRunSessionStartTime() {
+        runSessionStartTime = DateTimeUtils.getCurrentInstant()
+    }
+    fun pauseDuration() {
         val currentTime = DateTimeUtils.getCurrentInstant()
         val elapsedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
-
         cumulativeDurationSeconds += elapsedDuration
-
-        runSessionStartTime = currentTime
     }
+
 
     suspend fun startRunSession() {
         val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())
@@ -189,7 +189,7 @@ class RunSessionRepository {
             try {
                 val userUnitPreference = userInfo?.unit
 
-                val durationInHour = _duration.value.div(3600.0)
+                val durationInHour = _duration.value.div(60.0)
                 val adjustedDistance: Double = when (userUnitPreference) {
                     User.UNIT_MILE -> _distance.value.times(0.621371)
                     else -> _distance.value
@@ -316,12 +316,15 @@ class RunSessionRepository {
                             return@collect
                         }
 
-                        val distance = StatsUtils.haversineFormula(location1, location2)
+                        val distance = when (userUnitPreference) {
+                            User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
+                            else -> StatsUtils.haversineFormula(location1, location2) / 1609.34
+                        }
                         _distance.emit(distance)
 
                         delay(100)
+                        }
                     }
-                }
             } catch (ce: CancellationException) {
                 println("calcDistance runSessionRepo ${ce.message}")
             }

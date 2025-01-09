@@ -60,18 +60,36 @@ class ProfileFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun navigateToFavourite() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED){
-                runSessionViewModel.favoriteRunSessions.collect{favouriteRuns->
-                    binding.textFavouriteRun.text = favouriteRuns.size.toString()
-                    Log.d("Favourite","$favouriteRuns")
-                    binding.cvFavoriteRun.setOnClickListener {
-                        if(favouriteRuns.isEmpty()){
-                            findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
-                        }else{
-                            findNavController().navigate(R.id.action_profileFragment_to_favouriteRuns)
-                        }
-                    }
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            repeatOnLifecycle(Lifecycle.State.STARTED){
+//                runSessionViewModel.fetchRunSessions()
+//                runSessionViewModel.favoriteRunSessions.collect{favouriteRuns->
+//                    binding.textFavouriteRun.text = favouriteRuns.size.toString()
+//                    Log.d("Favourite","${favouriteRuns.size}")
+//                    binding.cvFavoriteRun.setOnClickListener {
+//                        if(favouriteRuns.isEmpty()){
+//                            findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
+//                        }else{
+//                            findNavController().navigate(R.id.action_profileFragment_to_favouriteRuns)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+        runSessionViewModel.fetchRunSessions()
+        runSessionViewModel.runSessions.observe(viewLifecycleOwner){sessions->
+            var favouritesRun = 0
+            for (session in sessions){
+                if(session.isFavorite){
+                    favouritesRun++
+                }
+            }
+            binding.textFavouriteRun.text = favouritesRun.toString()
+            binding.cvFavoriteRun.setOnClickListener {
+                if(favouritesRun == 0){
+                    findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
+                }else{
+                    findNavController().navigate(R.id.action_profileFragment_to_favouriteRuns)
                 }
             }
         }

@@ -52,17 +52,6 @@ class TrainingPlanRepository {
         trainingPlanDao.upsertTrainingPlan(existingPlan.copy(planSessionId = currentSession.sessionId))
     }
 
-    suspend fun assignLastDateToTrainingPlan(planId: Int, lastRecommendedDate: String) {
-        val existingPlan = trainingPlanDao.getTrainingPlanByPlanId(planId)
-        if (existingPlan != null) {
-            val updatedPlan = existingPlan.copy(lastRecommendedDate = lastRecommendedDate)
-            trainingPlanDao.upsertTrainingPlan(updatedPlan)
-        } else {
-            println("The plan with this id doesn't exist!")
-        }
-    }
-
-
     suspend fun deleteTrainingPlan(planId: Int) {
         trainingPlanDao.deleteTrainingPlan(planId)
     }
@@ -115,7 +104,6 @@ class TrainingPlanRepository {
         }
 
         if ( progress >= 100.0 ) {
-            trainingPlanDao.finishTrainingPlan(currentTrainingPlan.planId)
             notificationRepository.triggerNotification("COMPLETE")
             stopUpdatingGoalProgress()
         }

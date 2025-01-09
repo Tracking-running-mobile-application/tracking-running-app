@@ -22,6 +22,9 @@ import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class HistoryFragment : Fragment() {
     private lateinit var binding: FragmentHistoryBinding
@@ -39,20 +42,6 @@ class HistoryFragment : Fragment() {
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
 
-        //IMPORTANT: fetchMore should be false initially,
-        //it should only be true when the user click show more !!
-
-//        runSessionViewModel.fetchRunSessions(fetchMore = false)
-//        setUpRefreshing()
-        runSessionViewModel.fetchRunSessions(fetchMore = false)
-        runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
-            binding.textShowMore.setOnClickListener{
-                runSessionViewModel.fetchRunSessions(true)
-            }
-            setupAdapter(sessions)
-        }
-
-        // hasMoreData == true then show more option appears, else disappear
         runSessionViewModel.hasMoreData.observe(viewLifecycleOwner) { hasMoreData ->
             if (hasMoreData) {
                 Log.d(
@@ -67,43 +56,15 @@ class HistoryFragment : Fragment() {
         return binding.root
     }
 
-    private fun setupAdapter(runs: List<RunSession>) {
-        containerLayout = binding.containerLayoutHistory
-        runAdapter = RunAdapter(runs, requireContext(),object : OnItemHistoryRunClickListener {
-            override fun onItemClick(itemRun: RunSession) {
-                val bundle = Bundle().apply {
-                    putInt(DetailRunFragment.EXTRA_HISTORY_RUN_ID,itemRun.sessionId)
-                }
-                findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment,bundle)
-                requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
-                    View.GONE
-            }
-            override fun onAddFavouriteClick(action: Int,itemRun: RunSession) {
-                if (action == RunAdapter.FAVOURITE_ADD) {
-                    runSessionViewModel.addAndRemoveFavoriteSession(itemRun)
-                    Log.d("isHistoryFavourite", "${itemRun.isFavorite}")
-                    Snackbar.make(
-                        containerLayout,
-                        "Successfully Added To Favourite",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                } else if (action == RunAdapter.FAVOURITE_REMOVE) {
-                    Snackbar.make(
-                        containerLayout,
-                        "Successfully Removed From Favourite",
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        })
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
-            View.VISIBLE
-//        runDateAdapter.updateRunDate(runDates)
-        binding.rvHistoryDate.adapter = runAdapter
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        runSessionViewModel.fetchRunSessions(fetchMore = false)
+        runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
+            binding.textShowMore.setOnClickListener{
+                runSessionViewModel.fetchRunSessions(true)
+            }
+            setupAdapter(sessions)
+        }
         setupToolbarHistory()
     }
 
@@ -132,10 +93,55 @@ class HistoryFragment : Fragment() {
                         MaterialDatePicker.todayInUtcMilliseconds()
                     )
                 ).build()
-        dateRangePicker.addOnPositiveButtonClickListener {
-            // TODO: Do something when select start, end date 
+        dateRangePicker.addOnPositiveButtonClickListener { selection ->
+            // TODO: Do something when select start, end date
+            val startDate = selection.first // epoch milliseconds
+            val endDate = selection.second // epoch milliseconds
+
+            val dateFormatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+            val formattedStartDate = dateFormatter.format(Date(startDate))
+            val formattedEndDate = dateFormatter.format(Date(endDate))
+            runSessionViewModel.filterSessionsByDateRange(formattedStartDate,formattedEndDate)
+            runSessionViewModel.filteredSession.observe(viewLifecycleOwner){
+                setupAdapter(it)
+            }
         }
         dateRangePicker.show(requireActivity().supportFragmentManager, "calendar")
+    }
+    private fun setupAdapter(runs: List<RunSession>) {
+        containerLayout = binding.containerLayoutHistory
+        runAdapter = RunAdapter(runs, requireContext(),object : OnItemHistoryRunClickListener {
+            override fun onItemClick(itemRun: RunSession) {
+                val bundle = Bundle().apply {
+                    putInt(DetailRunFragment.EXTRA_HISTORY_RUN_ID,itemRun.sessionId)
+                }
+                findNavController().navigate(R.id.action_historyFragment_to_detailRunFragment,bundle)
+                requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
+                    View.GONE
+            }
+            override fun onAddFavouriteClick(action: Int,itemRun: RunSession) {
+                if (action == RunAdapter.FAVOURITE_ADD) {
+                    runSessionViewModel.addAndRemoveFavoriteSession(itemRun)
+                    Log.d("isHistoryFavourite", "${itemRun.isFavorite}")
+                    Snackbar.make(
+                        containerLayout,
+                        "Successfully Added To Favourite",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                } else if (action == RunAdapter.FAVOURITE_REMOVE) {
+                    runSessionViewModel.addAndRemoveFavoriteSession(itemRun)
+                    Snackbar.make(
+                        containerLayout,
+                        "Successfully Removed From Favourite",
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
+            View.VISIBLE
+//        runDateAdapter.updateRunDate(runDates)
+        binding.rvHistoryDate.adapter = runAdapter
     }
 
     override fun onStop() {

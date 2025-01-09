@@ -8,11 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 
-data class RunItem(val title: String, val distance: String, val date: String)
+data class RunItem(val runTime: String, val distance: String, val date: String)
 
 class FavouriteRunAdapter(private val runList: MutableList<RunItem>) : RecyclerView.Adapter<FavouriteRunAdapter.RunViewHolder>() {
     inner class RunViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val titleText: TextView = itemView.findViewById(R.id.titleText)
+        val runTime: TextView = itemView.findViewById(R.id.titleText)
         val distanceText: TextView = itemView.findViewById(R.id.distanceText)
         val dateText: TextView = itemView.findViewById(R.id.dateText)
         val starIcon: ImageView = itemView.findViewById(R.id.starIcon)
@@ -25,7 +25,7 @@ class FavouriteRunAdapter(private val runList: MutableList<RunItem>) : RecyclerV
 
     override fun onBindViewHolder(holder: RunViewHolder, position: Int) {
         val runItem = runList[position]
-        holder.titleText.text = runItem.title
+        holder.runTime.text = runItem.runTime
         holder.distanceText.text = runItem.distance
         holder.dateText.text = runItem.date
 

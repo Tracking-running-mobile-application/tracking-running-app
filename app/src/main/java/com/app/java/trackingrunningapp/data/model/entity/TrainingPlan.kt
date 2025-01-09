@@ -29,6 +29,4 @@ data class TrainingPlan(
     @ColumnInfo(name = "goalProgress", defaultValue = "0.0") var goalProgress: Double? = 0.0,
     var exerciseType: String,
     var difficulty: String,
-    @ColumnInfo(name = "lastRecommendedDate", defaultValue = "NULL") var lastRecommendedDate: String? = null,
-    @ColumnInfo(name = "isFinished", defaultValue = "0") var isFinished: Boolean? = false
 )
