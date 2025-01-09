@@ -22,7 +22,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
-import java.util.Date
 
 class RunSessionRepository {
     val db = InitDatabase.runningDatabase
@@ -138,7 +137,7 @@ class RunSessionRepository {
     fun setRunSessionStartTime() {
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
     }
-    fun pauseSession() {
+    fun pauseDuration() {
         val currentTime = DateTimeUtils.getCurrentInstant()
         val elapsedDuration = StatsUtils.calculateDuration(runSessionStartTime, currentTime)
         cumulativeDurationSeconds += elapsedDuration

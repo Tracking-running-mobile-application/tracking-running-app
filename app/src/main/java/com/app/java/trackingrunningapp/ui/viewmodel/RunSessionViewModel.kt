@@ -7,15 +7,12 @@ import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
-import com.app.java.trackingrunningapp.utils.StatsUtils
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
@@ -100,7 +97,7 @@ class RunSessionViewModel(
         statsUpdateJob?.cancelAndJoin()
         fetchStatsJob?.cancelAndJoin()
         runSessionRepository.stopUpdatingStats()
-        runSessionRepository.pauseSession()
+        runSessionRepository.pauseDuration()
     }
 
     suspend fun fetchAndUpdateStats() {
