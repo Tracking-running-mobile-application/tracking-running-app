@@ -10,6 +10,8 @@ import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.dataclass.history.Run
@@ -60,14 +62,45 @@ class HistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         runSessionViewModel.fetchRunSessions(fetchMore = false)
         runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
+            val mutableList: MutableList<RunSession> = sessions.toMutableList()
             binding.textShowMore.setOnClickListener{
                 runSessionViewModel.fetchRunSessions(true)
             }
-            setupAdapter(sessions)
+            setupAdapter(mutableList)
         }
         setupToolbarHistory()
+        setUpSwipeActions()
     }
 
+    private fun setUpSwipeActions() {
+        val touchHelper = ItemTouchHelper(
+            object : ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.DOWN or ItemTouchHelper.UP,
+                ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+            ) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val deletePosition = viewHolder.layoutPosition
+                    val deleteRun = runAdapter.listRuns[deletePosition]
+                    runSessionViewModel.deleteRunSession(deleteRun.sessionId)
+                    runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
+                        runAdapter.updateRunHistory(sessions)
+                        runAdapter.notifyItemRemoved(deletePosition)
+                        val message = "Removed"
+                        Snackbar.make(binding.root,message,Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        )
+        touchHelper.attachToRecyclerView(binding.rvHistoryDate)
+    }
     private fun setupToolbarHistory() {
         // hide setting, show filter
         val toolbar = requireActivity()
@@ -102,13 +135,14 @@ class HistoryFragment : Fragment() {
             val formattedStartDate = dateFormatter.format(Date(startDate))
             val formattedEndDate = dateFormatter.format(Date(endDate))
             runSessionViewModel.filterSessionsByDateRange(formattedStartDate,formattedEndDate)
-            runSessionViewModel.filteredSession.observe(viewLifecycleOwner){
-                setupAdapter(it)
+            runSessionViewModel.filteredSession.observe(viewLifecycleOwner) { sessionList ->
+                val mutableList: MutableList<RunSession> = sessionList.toMutableList()
+                setupAdapter(mutableList)
             }
         }
         dateRangePicker.show(requireActivity().supportFragmentManager, "calendar")
     }
-    private fun setupAdapter(runs: List<RunSession>) {
+    private fun setupAdapter(runs: MutableList<RunSession>) {
         containerLayout = binding.containerLayoutHistory
         runAdapter = RunAdapter(runs, requireContext(),object : OnItemHistoryRunClickListener {
             override fun onItemClick(itemRun: RunSession) {

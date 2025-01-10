@@ -16,10 +16,11 @@ import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.app.java.trackingrunningapp.utils.StatsUtils
 
 class RunAdapter(
-    private val runs: List<RunSession>,
+    private val runs: MutableList<RunSession>,
     private val context:Context,
     private val listener: OnItemHistoryRunClickListener
 ) : RecyclerView.Adapter<RunAdapter.RunViewHolder>() {
+    val listRuns = runs
     inner class RunViewHolder(
         itemView: View,
         private val context:Context,
@@ -55,12 +56,12 @@ class RunAdapter(
         }
     }
 
-//    @SuppressLint("NotifyDataSetChanged")
-//    fun updateRunHistory(listRun: MutableList<Run>) {
-//        runs.clear()
-//        runs.addAll(listRun)
-//        notifyDataSetChanged()
-//    }
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateRunHistory(listRun: List<RunSession>) {
+        runs.clear()
+        runs.addAll(listRun)
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RunViewHolder {
         val view = LayoutInflater.from(parent.context)

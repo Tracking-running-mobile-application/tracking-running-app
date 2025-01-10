@@ -198,7 +198,7 @@ class RunFragment : Fragment() {
                     runSessionViewModel.finishRunSession()
                 }
             }
-            runSessionViewModel.fetchRunSessions()
+//            runSessionViewModel.fetchRunSessions()
             runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
                 if(sessions.isNotEmpty()){
                     val runId = sessions[0].sessionId

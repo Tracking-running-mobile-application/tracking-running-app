@@ -90,7 +90,6 @@ class RunSessionRepository {
         totalDurationSeconds = 0L
         durationNotification = false
         paceNotification = false
-        _currentRunSession.value = null
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
     }
 
