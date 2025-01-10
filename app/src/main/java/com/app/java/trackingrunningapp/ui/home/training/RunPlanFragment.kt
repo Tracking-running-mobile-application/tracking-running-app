@@ -154,31 +154,22 @@ class RunPlanFragment : Fragment() {
             binding.btnPause.visibility = View.VISIBLE
             // TODO: RESUME
             lifecycleScope.launch {
-                mutex.withLock {
-                    // TODO: do something when resume
-                    try {
-                        mutex.withLock {
-                            try {
-                                Log.d("RunPlanFragment Resume", "1")
-                                runSessionViewModel.setRunSessionStartTime()
-                            } catch (e: Exception) {
-                                Log.e("RunPlanFragment Stop", "Error in stopGPSTrack: ${e.message}")
-                            }
-
-                            try {
-                                Log.d("RunPlanFragment Resume", "2")
-                                resumeTracking()
-                                gpsTrackViewModel.resumeGPSTrack()
-                                runSessionViewModel.fetchAndUpdateStats()
-                            } catch (e: Exception) {
-                                Log.e("RunPlanFragment Resume", "Error in stopTracking: ${e.message}")
-                            }
-                            Log.d("RunPlanFragment Resume", "Stop Sequence Complete")
-                        }
-                    } catch (e: Exception) {
-                        Log.e("RunPlanFragment Resume", "Error in lifecycleScope: ${e.message}")
-                    }
+                try {
+                    Log.d("RunPlanFragment Resume", "1")
+                    runSessionViewModel.setRunSessionStartTime()
+                } catch (e: Exception) {
+                    Log.e("RunPlanFragment Stop", "Error in stopGPSTrack: ${e.message}")
                 }
+
+                try {
+                    Log.d("RunPlanFragment Resume", "2")
+                    resumeTracking()
+                    gpsTrackViewModel.resumeGPSTrack()
+                    runSessionViewModel.fetchAndUpdateStats()
+                } catch (e: Exception) {
+                    Log.e("RunPlanFragment Resume", "Error in stopTracking: ${e.message}")
+                }
+                Log.d("RunPlanFragment Resume", "Stop Sequence Complete")
             }
         }
 
