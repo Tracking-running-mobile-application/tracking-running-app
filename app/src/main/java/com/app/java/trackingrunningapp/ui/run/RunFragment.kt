@@ -28,6 +28,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -198,21 +199,8 @@ class RunFragment : Fragment() {
                     runSessionViewModel.finishRunSession()
                 }
             }
-//            runSessionViewModel.fetchRunSessions()
-            runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
-                if(sessions.isNotEmpty()){
-                    val runId = sessions[0].sessionId
-                    Log.d("RunIDD", "$runId")
-                    val bundle = Bundle().apply {
-                        putInt(RunResultFragment.EXTRA_RUN_ID_RESULT, runId ?: 0)
-                    }
-                    // send current run session id to Run Result
-                    it.findNavController()
-                        .navigate(R.id.action_runFragment_to_runResultFragment, bundle)
-                }else{
-                    Log.d("EmptyList","$sessions")
-                }
-            }
+            it.findNavController()
+                        .navigate(R.id.action_runFragment_to_runResultFragment)
         }
 
 

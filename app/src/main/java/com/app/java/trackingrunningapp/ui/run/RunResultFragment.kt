@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.databinding.FragmentRunResultBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
@@ -43,6 +44,7 @@ class RunResultFragment : Fragment() {
     private lateinit var annotationApi: AnnotationPlugin
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var gpsTrackViewModel: GPSTrackViewModel
+    private lateinit var runSessionRepository: RunSessionRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,6 +58,8 @@ class RunResultFragment : Fragment() {
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+
+        runSessionRepository = InitDatabase.runSessionRepository
         return binding.root
     }
 
@@ -68,21 +72,15 @@ class RunResultFragment : Fragment() {
     }
 
     private fun setupView() {
-        val runSessionId = arguments?.getInt(EXTRA_RUN_ID_RESULT,0)
-        Log.d("RunIdResult","$runSessionId")
-        runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
-            for (session in sessions) {
-                if (session.sessionId == runSessionId) {
-                    binding.layoutResult.textDistanceMetric.text =
-                        getString(R.string.text_distance_metric, session.distance)
-                    binding.layoutResult.textDurationMetric.text =
-                        StatsUtils.formatDuration(session.duration!!)
-                    binding.layoutResult.textPaceMetric.text =
-                        getString(R.string.text_pace_metric,session.pace)
-                    binding.layoutResult.textCalorieMetric.text =
-                        getString(R.string.text_calorie_metric,session.caloriesBurned)
-                }
-            }
+        lifecycleScope.launch {
+                binding.layoutResult.textDistanceMetric.text =
+                    getString(R.string.text_distance_metric, runSessionRepository.distance.value)
+                binding.layoutResult.textDurationMetric.text =
+                    StatsUtils.formatDuration(runSessionRepository.duration.value)
+                binding.layoutResult.textPaceMetric.text =
+                    getString(R.string.text_pace_metric, runSessionRepository.pace.value)
+                binding.layoutResult.textCalorieMetric.text =
+                    getString(R.string.text_calorie_metric, runSessionRepository.caloriesBurned.value)
         }
     }
 

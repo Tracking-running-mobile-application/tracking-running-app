@@ -113,7 +113,6 @@ class RunSessionViewModel(
                 statsUpdateJob?.cancelAndJoin()
                 fetchStatsJob?.cancelAndJoin()
                 runSessionRepository.resetStatsValue()
-                runSessionRepository.setRunSessionInactive()
                 Log.d("StatsUpdate", "Stats update finished in finishRunSession")
             }
         }
