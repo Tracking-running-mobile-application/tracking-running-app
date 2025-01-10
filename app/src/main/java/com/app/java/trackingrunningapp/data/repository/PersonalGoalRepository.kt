@@ -108,25 +108,25 @@ class PersonalGoalRepository {
         }
     }
 
-    private fun calcGoalProgress(runSession: RunSession, goal: PersonalGoal): Double {
+    private suspend fun calcGoalProgress(goal: PersonalGoal): Double {
+        val stats = runSessionRepository.fetchStatsSession()
         return when {
             goal.targetDistance != null -> goal.targetDistance?.let {
-                (runSession.distance?.div(it))?.times(100)
+                (stats.distance?.div(it))?.times(100)
             } ?: 0.0
             goal.targetDuration != null -> goal.targetDuration?.let {
-                (runSession.duration?.div(it))?.times(100)
+                (stats.duration?.div(it))?.times(100)
             } ?: 0.0
             goal.targetCaloriesBurned != null -> goal.targetCaloriesBurned?.let {
-                (runSession.caloriesBurned?.div(it))?.times(100)
+                (stats.caloriesBurned?.div(it))?.times(100)
             } ?: 0.0
             else -> 0.0
         }
     }
 
     suspend fun updateGoalProgress() {
-        val currentSession = getCurrentSessionOrThrow()
         val personalGoal = getCurrentPersonalGoalOrThrow()
-        val progress = calcGoalProgress(currentSession, personalGoal)
+        val progress = calcGoalProgress(personalGoal)
 
         personalGoalDao.updateGoalProgress(personalGoal.goalId, progress)
 

@@ -42,7 +42,7 @@ class PersonalGoalViewModel(
 
     suspend fun initiatePersonalGoal(goalId: Int) {
         jobMutex.withLock {
-
+            _goalProgress.value = 0.0
             Log.d("PersonalGoal", "3")
             personalGoalRepository.assignSessionToPersonalGoal(goalId)
 
@@ -60,6 +60,7 @@ class PersonalGoalViewModel(
     fun fetchGoalProgress() {
         goalProgressJob?.cancel()
         goalProgressJob = viewModelScope.launch {
+            Log.d("FetchgoalProgress", "Update goal progress")
             while (isActive) {
                 try {
                     val progress = personalGoalRepository.getGoalProgress()
@@ -93,7 +94,9 @@ class PersonalGoalViewModel(
     }
 
      suspend fun observeRunSession() {
+         Log.d("ObserveRunSession", "Something")
         runSessionRepository.currentRunSession.collect { session ->
+            Log.d("ObserveRunSession", "Stop")
             if (session == null) {
                 personalGoalRepository.updateGoalProgress()
                 val progress = personalGoalRepository.getGoalProgress()
@@ -101,6 +104,8 @@ class PersonalGoalViewModel(
                 personalGoalRepository.stopUpdatingGoalProgress()
                 goalProgressJob?.cancel()
             } else {
+
+                Log.d("ObserveRunSession", "Start")
                 personalGoalRepository.startUpdatingGoalProgress()
                 fetchGoalProgress()
             }
