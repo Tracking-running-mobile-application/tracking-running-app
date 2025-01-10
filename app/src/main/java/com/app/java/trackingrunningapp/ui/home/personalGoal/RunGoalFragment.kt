@@ -157,6 +157,7 @@ class RunGoalFragment : Fragment() {
                     Log.d("PersonalGoal", "1")
                     val goalId = arguments?.getInt(EXTRA_GOAL_ID, 0)!!
                     personalGoalViewModel.initiatePersonalGoal(goalId = goalId )
+                    personalGoalViewModel.observeRunSession()
                     Log.d("PersonalGoal", "2")
                     // TODO: observe
                 }
