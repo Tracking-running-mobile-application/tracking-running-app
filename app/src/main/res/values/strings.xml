@@ -90,4 +90,17 @@
     <string name="text_distance_metric_mile">%.2f mile</string>
     <string name="text_show_more">Show More</string>
     <string name="personal_goal">Personal Goal</string>
+    <string name="personal_goals_upper_case">PERSONAL GOALS</string>
+    <string name="training_plans_upper_case">TRAINING PLANS</string>
+    <string name="text_total_time">Total time</string>
+    <string name="text_total_distance">Distance</string>
+    <string name="this_week_upper_case">THIS WEEK</string>
+    <string name="favourite_runs_upper_case">FAVOURITE RUNS</string>
+    <string name="duration">Duration</string>
+    <string name="distance">Distance</string>
+    <string name="pace">Pace</string>
+    <string name="calories">Calories</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
 </resources>

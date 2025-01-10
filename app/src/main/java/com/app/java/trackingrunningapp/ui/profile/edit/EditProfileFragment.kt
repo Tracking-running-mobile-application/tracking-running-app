@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -54,34 +55,47 @@ class EditProfileFragment:Fragment() {
         binding.btnSave.setOnClickListener {
             val userName = binding.edtName.text.toString()
             val ageStr = binding.edtAge.text.toString()
-            var age: Int = 1
-            if (ageStr.isNotEmpty()) {
-                age = ageStr.toInt()
+            val heightStr = binding.edtHeight.text.toString()
+            val weightStr = binding.edtWeight.text.toString()
+            // check if string is empty
+            if (userName.isEmpty() || ageStr.isEmpty() || heightStr.isEmpty() || weightStr.isEmpty()) {
+                Toast.makeText(
+                    requireContext(),
+                    "Please enter all user information",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             }
-            var userHeight: Float = binding.edtHeight.text.toString().toFloat()
+
+            val age = ageStr.toIntOrNull() ?: 1
+            var userHeight = heightStr.toFloatOrNull() ?: 0.0f
+            var userWeight = weightStr.toDoubleOrNull() ?: 0.0
             if (isFtClicked) {
-                val heightFt = binding.edtHeight.text.toString().toFloat()
+                val heightFt = heightStr.toFloatOrNull() ?: 0.0f
                 userHeight = (heightFt * 30.48).toFloat()
-            } else if (binding.btnCm.performClick()) {
-                userHeight = binding.edtHeight.text.toString().toFloat()
             }
-            // weight
-            var userWeight :Double = binding.edtWeight.text.toString().toDouble()
             if (isLbsClicked) {
-                val weightLbs = binding.edtWeight.text.toString().toDouble()
-                userWeight = weightLbs.times(0.453592)
-            }else if(binding.btnKg.performClick()){
-                userWeight = binding.edtWeight.text.toString().toDouble()
+                val weightLbs = weightStr.toDoubleOrNull() ?: 0.0
+                userWeight = weightLbs * 0.453592
             }
-            lifecycleScope.launch {
-                userViewModel.upsertUserInfo(
-                    name = userName,
-                    age = age,
-                    height = userHeight,
-                    weight = userWeight,
-                    metricPreference = "kg",
-                    unit = "km"
-                )
+            if (userHeight == 0.0f || userWeight == 0.0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Invalid height or weight entered",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
+            } else {
+                lifecycleScope.launch {
+                    userViewModel.upsertUserInfo(
+                        name = userName,
+                        age = age,
+                        height = userHeight,
+                        weight = userWeight,
+                        metricPreference = "kg",
+                        unit = "km"
+                    )
+                }
             }
             requireActivity().onBackPressedDispatcher.onBackPressed()
         }

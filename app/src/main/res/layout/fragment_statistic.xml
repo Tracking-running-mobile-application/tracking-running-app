@@ -54,7 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="Statistic"
+        android:text="@string/text_statistics"
         android:textColor="@color/white"
         android:textSize="20sp"
         android:textStyle="bold"
@@ -82,9 +82,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
                 android:layout_marginTop="4dp"
-                android:text="Calories"
+                android:text="@string/calories"
                 android:textColor="@color/white"
-                android:textSize="32sp" />
+                android:textSize="@dimen/text_size_30" />
 
             <TextView
                 android:id="@+id/text_run_calo_metric"
@@ -119,9 +119,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
                 android:layout_marginTop="4dp"
-                android:text="Duration"
+                android:text="@string/duration"
                 android:textColor="@color/white"
-                android:textSize="32sp" />
+                android:textSize="@dimen/text_size_30" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -156,9 +156,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
                 android:layout_marginTop="4dp"
-                android:text="Distance"
+                android:ellipsize="marquee"
+                android:maxLines="1"
+                android:text="@string/distance"
                 android:textColor="@color/white"
-                android:textSize="32sp" />
+                android:textSize="@dimen/text_size_30" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -191,9 +193,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/margin_8"
                 android:layout_marginTop="4dp"
-                android:text="Pace"
+                android:text="@string/pace"
                 android:textColor="@color/white"
-                android:textSize="32sp" />
+                android:textSize="@dimen/text_size_30" />
 
             <TextView
                 android:layout_width="match_parent"

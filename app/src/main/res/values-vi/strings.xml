@@ -87,4 +87,19 @@
     <string name="text_language">Ngôn ngữ</string>
     <string name="text_distance_metric_mile">%.2f dặm</string>
     <string name="text_show_more">Xem thêm</string>
+    <string name="personal_goal">Personal Goal</string>
+    <string name="personal_goals_upper_case">MỤC TIÊU CÁ NHÂN</string>
+    <string name="training_plans_upper_case">KẾ HOẠCH LUYỆN TẬP</string>
+    <string name="text_total_time">Tổng thời gian</string>
+    <string name="text_total_distance">Quãng đường</string>
+    <string name="this_week_upper_case">TUẦN NÀY</string>
+    <string name="favourite_runs_upper_case">CHẠY ƯA THÍCH</string>
+    <string name="duration">Thời lượng</string>
+    <string name="distance">Quãng đường</string>
+    <string name="pace">Tốc độ</string>
+    <string name="calories">Calo</string>
+    <string name="weekly">Hàng tuần</string>
+    <string name="monthly">Hàng tháng</string>
+    <string name="yearly">Hàng năm</string>
+
 </resources>
