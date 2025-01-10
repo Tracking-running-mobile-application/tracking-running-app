@@ -37,6 +37,7 @@ import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -157,11 +158,32 @@ class RunPlanFragment : Fragment() {
             it.findNavController().popBackStack(R.id.trainingPlanFragment,false)
             // TODO: STOP
             lifecycleScope.launch {
-                mutex.withLock {
-                    runSessionViewModel.fetchAndUpdateStats()
-                    gpsTrackViewModel.stopGPSTrack()
-                    stopTracking()
-                    runSessionViewModel.finishRunSession()
+                try {
+                    mutex.withLock {
+                        try {
+                            runSessionViewModel.fetchAndUpdateStats()
+                        } catch (e: Exception) {
+                            Log.e("RunPlanFragment Stop", "Error in fetchAndUpdateStats: ${e.message}")
+                        }
+                        try {
+                            gpsTrackViewModel.stopGPSTrack()
+                        } catch (e: Exception) {
+                            Log.e("RunPlanFragment Stop", "Error in stopGPSTrack: ${e.message}")
+                        }
+                        try {
+                            stopTracking()
+                        } catch (e: Exception) {
+                            Log.e("RunPlanFragment Stop", "Error in stopTracking: ${e.message}")
+                        }
+                        try {
+                            runSessionViewModel.finishRunSession()
+                        } catch (e: Exception) {
+                            Log.e("RunPlanFragment Stop", "Error in finishRunSession: ${e.message}")
+                        }
+                        Log.d("RunPlanFragment Stop", "Stop Sequence Complete")
+                    }
+                } catch (e: Exception) {
+                    Log.e("RunPlanFragment Stop", "Error in lifecycleScope: ${e.message}")
                 }
             }
         }
