@@ -153,10 +153,33 @@ class RunPlanFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: do something when resume
-                    runSessionViewModel.setRunSessionStartTime()
-                    runSessionViewModel.fetchAndUpdateStats()
-                    resumeTracking()
-                    gpsTrackViewModel.resumeGPSTrack()
+                    try {
+                        mutex.withLock {
+                            try {
+                                Log.d("RunPlanFragment Stop", "2 - stopGPSTrack")
+                                gpsTrackViewModel.stopGPSTrack()
+                            } catch (e: Exception) {
+                                Log.e("RunPlanFragment Stop", "Error in stopGPSTrack: ${e.message}")
+                            }
+
+                            try {
+                                Log.d("RunPlanFragment Stop", "3 - stopTracking")
+                                stopTracking()
+                            } catch (e: Exception) {
+                                Log.e("RunPlanFragment Stop", "Error in stopTracking: ${e.message}")
+                            }
+
+                            try {
+                                Log.d("RunPlanFragment Stop", "4 - finishRunSession")
+                                runSessionViewModel.finishRunSession()
+                            } catch (e: Exception) {
+                                Log.e("RunPlanFragment Stop", "Error in finishRunSession: ${e.message}")
+                            }
+                            Log.d("RunPlanFragment Stop", "Stop Sequence Complete")
+                        }
+                    } catch (e: Exception) {
+                        Log.e("RunPlanFragment Stop", "Error in lifecycleScope: ${e.message}")
+                    }
                 }
             }
         }
