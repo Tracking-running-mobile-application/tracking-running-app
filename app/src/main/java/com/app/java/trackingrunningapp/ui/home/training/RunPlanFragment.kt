@@ -158,7 +158,6 @@ class RunPlanFragment : Fragment() {
             // TODO: STOP
             lifecycleScope.launch {
                 mutex.withLock {
-                    // TODO: stop gps tracking
                     runSessionViewModel.fetchAndUpdateStats()
                     gpsTrackViewModel.stopGPSTrack()
                     stopTracking()
@@ -315,6 +314,7 @@ class RunPlanFragment : Fragment() {
     }
 
     private fun stopTracking() {
+        Log.d("RunPlanFragment Stop", "stopTracking")
         if (isTracking) {
             isTracking = false
 

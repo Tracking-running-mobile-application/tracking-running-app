@@ -163,7 +163,9 @@ class RunSessionRepository {
     }
 
     suspend fun setRunSessionInactive() {
+        Log.d("RunPlanFragment Stop", "Do something in RunSessionRepo")
         val currentSession = getCurrentSessionOrThrow()
+        Log.d("RunPlanFragment Stop", "RunSessionRepo: ${currentSession}")
         runSessionDao.setRunSessionInactive(currentSession.sessionId)
 
         _currentRunSession.emit(null)

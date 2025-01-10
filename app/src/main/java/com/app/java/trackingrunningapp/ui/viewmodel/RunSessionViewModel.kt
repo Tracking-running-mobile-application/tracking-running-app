@@ -20,6 +20,7 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 class RunSessionViewModel(
@@ -104,14 +105,16 @@ class RunSessionViewModel(
         runSessionRepository.stopUpdatingStats()
     }
 
-    suspend fun fetchAndUpdateStats() {
+    suspend fun fetchAndUpdateStats() = withContext(Dispatchers.IO){
+        Log.d("RunPlanFragment Stop", "fetchAndUpdate")
         updateStats()
         fetchStatsCurrentSession()
     }
 
     fun finishRunSession() {
-        viewModelScope.launch() {
+        CoroutineScope(Dispatchers.IO).launch {
             jobMutex.withLock {
+                Log.d("RunPlanFragment Stop", "Do something in VM")
                 runSessionRepository.stopUpdatingStats()
                 statsUpdateJob?.cancelAndJoin()
                 fetchStatsJob?.cancelAndJoin()
@@ -149,7 +152,7 @@ class RunSessionViewModel(
                 try {
                     val stats = runSessionRepository.fetchStatsSession()
                     _statsFlow.emit(stats)
-                    delay(5000)
+                    delay(1000)
                 } catch (e: CancellationException) {
                     Log.d("fetchStatsCurrentSession()", "Job canceled during execution ${e.message}")
                     throw e
