@@ -90,7 +90,6 @@ class RunSessionRepository {
         totalDurationSeconds = 0L
         durationNotification = false
         paceNotification = false
-        _currentRunSession.value = null
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
     }
 
@@ -166,8 +165,8 @@ class RunSessionRepository {
     }
 
     suspend fun setRunSessionInactive() {
-        val currentSession = getCurrentSessionOrThrow()
-        runSessionDao.setRunSessionInactive(currentSession.sessionId)
+        Log.d("RunSessionRepo", "Set Run Session Inactive")
+        _currentRunSession.value?.let { runSessionDao.setRunSessionInactive(it.sessionId) }
 
         _currentRunSession.emit(null)
     }

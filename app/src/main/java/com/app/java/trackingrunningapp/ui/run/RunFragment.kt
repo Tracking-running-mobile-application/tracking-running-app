@@ -197,8 +197,13 @@ class RunFragment : Fragment() {
                     mutex.withLock {
                         // TODO: stop gps tracking
                         gpsTrackViewModel.stopGPSTrack()
+                        Log.d("RunFragment Stop", "1")
                         stopTracking()
+
+                        Log.d("RunFragment Stop", "2")
                         runSessionViewModel.finishRunSession()
+
+                        Log.d("RunFragment Stop", "3")
                     }
                 }
                 it.findNavController().navigate(R.id.action_runFragment_to_runResultFragment)

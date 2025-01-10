@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -106,13 +107,19 @@ class RunSessionViewModel(
     }
 
     fun finishRunSession() {
-        viewModelScope.launch() {
+        CoroutineScope(Dispatchers.IO).launch() {
             jobMutex.withLock {
+                Log.d("RunSessionVM", "1")
                 runSessionRepository.stopUpdatingStats()
+                Log.d("RunSessionVM", "2")
                 statsUpdateJob?.cancelAndJoin()
+                Log.d("RunSessionVM", "3")
                 fetchStatsJob?.cancelAndJoin()
+                Log.d("RunSessionVM", "4")
                 runSessionRepository.resetStatsValue()
+                Log.d("RunSessionVM", "5")
                 runSessionRepository.setRunSessionInactive()
+                Log.d("RunSessionVM", "6")
                 Log.d("StatsUpdate", "Stats update finished in finishRunSession")
             }
         }
@@ -140,7 +147,7 @@ class RunSessionViewModel(
 
     private suspend fun fetchStatsCurrentSession() {
         fetchStatsJob?.cancelAndJoin()
-        fetchStatsJob = viewModelScope.launch(Dispatchers.IO) {
+        fetchStatsJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 try {
                     val stats = runSessionRepository.fetchStatsSession()

@@ -58,7 +58,7 @@ class RunResultFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initMap()
+        //initMap()
         setUpToolbar()
         setUpAction()
     }

@@ -34,7 +34,7 @@ interface RunSessionDao {
     )
     suspend fun getAllFavoriteRunSessions(): List<RunSession>
 
-    @Query("SELECT * FROM RunSession WHERE isActive = TRUE ORDER BY runDate DESC LIMIT 1")
+    @Query("SELECT * FROM RunSession WHERE isActive = TRUE ORDER BY sessionId DESC LIMIT 1")
     suspend fun getCurrentRunSession(): RunSession?
 
     @Query("SELECT * FROM RUNSESSION WHERE sessionId = :sessionId")
