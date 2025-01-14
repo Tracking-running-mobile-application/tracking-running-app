@@ -138,7 +138,6 @@ class RunPlanFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: do something when pause
-                    runSessionViewModel.fetchAndUpdateStats()
                     runSessionViewModel.pauseRunSession()
                     pauseTracking()
                     gpsTrackViewModel.stopGPSTrack()
@@ -157,23 +156,18 @@ class RunPlanFragment : Fragment() {
                         mutex.withLock {
                             try {
                                 Log.d("RunPlanFragment Stop", "2 - stopGPSTrack")
-                                gpsTrackViewModel.stopGPSTrack()
+                                runSessionViewModel.setRunSessionStartTime()
                             } catch (e: Exception) {
                                 Log.e("RunPlanFragment Stop", "Error in stopGPSTrack: ${e.message}")
                             }
 
                             try {
                                 Log.d("RunPlanFragment Stop", "3 - stopTracking")
-                                stopTracking()
+                                resumeTracking()
+                                gpsTrackViewModel.resumeGPSTrack()
+                                runSessionViewModel.fetchAndUpdateStats()
                             } catch (e: Exception) {
                                 Log.e("RunPlanFragment Stop", "Error in stopTracking: ${e.message}")
-                            }
-
-                            try {
-                                Log.d("RunPlanFragment Stop", "4 - finishRunSession")
-                                runSessionViewModel.finishRunSession()
-                            } catch (e: Exception) {
-                                Log.e("RunPlanFragment Stop", "Error in finishRunSession: ${e.message}")
                             }
                             Log.d("RunPlanFragment Stop", "Stop Sequence Complete")
                         }
@@ -190,7 +184,6 @@ class RunPlanFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: stop gps tracking
-                    runSessionViewModel.fetchAndUpdateStats()
                     gpsTrackViewModel.stopGPSTrack()
                     stopTracking()
                     runSessionViewModel.finishRunSession()

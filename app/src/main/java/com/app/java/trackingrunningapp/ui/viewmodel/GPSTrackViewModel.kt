@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.dataclass.location.Location
 import com.app.java.trackingrunningapp.data.repository.GPSTrackRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -18,13 +19,13 @@ class GPSTrackViewModel (
     }
 
     fun resumeGPSTrack() {
-        viewModelScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             gpsTrackRepository.resumeGPSTrack()
         }
     }
 
     fun stopGPSTrack() {
-        viewModelScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             gpsTrackRepository.stopGPSTrack()
         }
     }
