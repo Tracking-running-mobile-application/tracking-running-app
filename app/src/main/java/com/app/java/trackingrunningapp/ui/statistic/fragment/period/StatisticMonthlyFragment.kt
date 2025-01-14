@@ -16,6 +16,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModelFactory
+import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.db.williamchart.view.BarChartView
 import com.google.android.material.tabs.TabLayout
 
@@ -51,10 +52,11 @@ class StatisticMonthlyFragment : Fragment() {
 
     private fun setupBarChart(monthData: List<MonthlyStats>) {
         val barSet = listOf(
-            "1" to monthData[0].totalDistance!!.toFloat(),
-            "2" to monthData[1].totalDistance!!.toFloat(),
-            "3" to monthData[2].totalDistance!!.toFloat(),
-            "4" to monthData[3].totalDistance!!.toFloat()
+            DateTimeUtils.formatDate(monthData[0].monthStatsKey) to monthData[0].totalDistance!!.toFloat(),
+            DateTimeUtils.formatDate(monthData[1].monthStatsKey) to monthData[1].totalDistance!!.toFloat(),
+            DateTimeUtils.formatDate(monthData[2].monthStatsKey) to monthData[2].totalDistance!!.toFloat(),
+            DateTimeUtils.formatDate(monthData[3].monthStatsKey) to monthData[3].totalDistance!!.toFloat(),
+            DateTimeUtils.formatDate(monthData[4].monthStatsKey) to monthData[4].totalDistance!!.toFloat()
         )
         val barChart = binding.barchart
         barChart.animate(barSet)

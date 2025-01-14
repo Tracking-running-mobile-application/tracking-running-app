@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
@@ -24,6 +25,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.app.java.trackingrunningapp.utils.StatsUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
 class FavouriteRuns : Fragment() {
@@ -46,38 +48,23 @@ class FavouriteRuns : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        runSessionViewModel.favoriteRunSessions.observe(viewLifecycleOwner) { sessions ->
-//            val runList = mutableListOf<RunItem>()
-//            for (session in sessions) {
-//                if (session.isFavorite) {
-//                    val runFavourite = RunItem(
-//                        StatsUtils.formatDuration(session.duration ?: 0L),
-//                        getString(R.string.text_distance_metric,session.distance ?: 0.0),
-//                        DateTimeUtils.formatDateString(session.runDate)
-//                    )
-//                    runList.add(runFavourite)
-//                }
-//            }
-//            binding.rvFavouriteRun.adapter = FavouriteRunAdapter(runList)
-//        }
+        setUpFavouriteRun()
+    }
 
+    private fun setUpFavouriteRun() {
         runSessionViewModel.loadFavoriteSessions()
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 runSessionViewModel.fetchRunSessions()
-                runSessionViewModel.favoriteRunSessions.collect{sessions->
-                    val runList = mutableListOf<RunItem>()
-                    for (session in sessions) {
-                        if (session?.isFavorite!!) {
-                            val runFavourite = RunItem(
-                                StatsUtils.formatDuration(session.duration ?: 0L),
-                                getString(R.string.text_distance_metric,session.distance ?: 0.0),
-                                DateTimeUtils.formatDateString(session.runDate)
-                            )
-                            runList.add(runFavourite)
+                runSessionViewModel.favoriteRunSessions.collect { sessions ->
+                    val mutableList: MutableList<RunSession?> = sessions.toMutableList()
+                    binding.rvFavouriteRun.adapter = FavouriteRunAdapter(mutableList,requireContext(),
+                        object : FavouriteRunAdapter.OnStarClickListener {
+                            override fun onDeleteFavourite(itemRun: RunSession?) {
+                                runSessionViewModel.addAndRemoveFavoriteSession(itemRun!!)
+                            }
                         }
-                    }
-                    binding.rvFavouriteRun.adapter = FavouriteRunAdapter(runList)
+                    )
                 }
             }
         }
@@ -85,6 +72,7 @@ class FavouriteRuns : Fragment() {
 
     override fun onStop() {
         super.onStop()
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
+            View.VISIBLE
     }
 }

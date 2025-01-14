@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -18,8 +19,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.ActivityMainBinding
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
+import com.app.java.trackingrunningapp.ui.setting.SettingFragment
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -35,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         val language = LocaleUtils.getLanguagePreference(this)
         LocaleUtils.setLocale(this, language)
         errorNoti = false
-
         setContentView(binding.root)
         initNavHost()
         setUpNetwork()

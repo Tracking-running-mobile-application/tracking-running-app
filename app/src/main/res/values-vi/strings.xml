@@ -101,5 +101,10 @@
     <string name="weekly">Hàng tuần</string>
     <string name="monthly">Hàng tháng</string>
     <string name="yearly">Hàng năm</string>
+    <string name="km">Ki-lô-mét(km)</string>
+    <string name="mile">Dặm(mile)</string>
+    <string name="text_settings">Cài đặt</string>
+    <string name="text_english">Tiếng Anh</string>
+    <string name="text_vietnamese">Tiếng Việt</string>
 
 </resources>

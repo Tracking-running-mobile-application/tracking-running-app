@@ -49,8 +49,7 @@ class PersonalGoalAdapter(
                 listener.onClick(goal)
             }
             icEditGoal.setOnClickListener {
-                it.findNavController()
-                    .navigate(R.id.action_homeFragment_to_personalGoalFragment)
+                listener.onEditClick(goal)
             }
         }
     }
@@ -78,5 +77,6 @@ class PersonalGoalAdapter(
 
     interface OnItemPersonalGoalListener {
         fun onClick(personalGoal: PersonalGoal)
+        fun onEditClick(personalGoal: PersonalGoal)
     }
 }

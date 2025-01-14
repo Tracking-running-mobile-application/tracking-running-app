@@ -37,19 +37,7 @@ class StatsRepository {
     private suspend fun addStatsWeekly(stats: WeeklyStats) {
         val updatedWeeklyMap = _weeklyStatsMap.value.toMutableMap()
 
-        updatedWeeklyMap[stats.weeklyStatsKey] = updatedWeeklyMap[stats.weeklyStatsKey]?.let { existingStats ->
-            existingStats.apply {
-                totalDistance = (totalDistance ?: 0.0) + (stats.totalDistance ?: 0.0)
-                totalDuration = (totalDuration ?: 0L) + (stats.totalDuration ?: 0L)
-                totalCaloriesBurned = (totalCaloriesBurned ?: 0.0) + (stats.totalCaloriesBurned ?: 0.0)
-                totalAvgPace = if (totalDistance != 0.0) {
-                    (totalDuration ?: 0L) / 60.0 / (totalDistance ?: 1.0)
-                } else {
-                    0.0
-                }
-            }
-        } ?: stats
-
+        updatedWeeklyMap[stats.weeklyStatsKey] = stats
 
         if (updatedWeeklyMap.size > 365) {
             val oldestKeys = updatedWeeklyMap.keys.sorted().take(updatedWeeklyMap.size - 365)
@@ -63,18 +51,7 @@ class StatsRepository {
     private suspend fun addStatsMonthly(stats: MonthlyStats) {
         val updatedMonthlyMap = _monthlyStatsMap.value.toMutableMap()
 
-        updatedMonthlyMap[stats.monthStatsKey] = updatedMonthlyMap[stats.monthStatsKey]?.let { existingStats ->
-            existingStats.apply {
-                totalDistance = (totalDistance ?: 0.0) + (stats.totalDistance ?: 0.0)
-                totalDuration = (totalDuration ?: 0L) + (stats.totalDuration ?: 0L)
-                totalCaloriesBurned = (totalCaloriesBurned ?: 0.0) + (stats.totalCaloriesBurned ?: 0.0)
-                totalAvgPace = if (totalDistance != 0.0) {
-                    (totalDuration ?: 0L) / 60.0 / (totalDistance ?: 1.0)
-                } else {
-                    0.0
-                }
-            }
-        } ?: stats
+        updatedMonthlyMap[stats.monthStatsKey] = stats
 
         if (updatedMonthlyMap.size > 52) {
             val oldestKeys = updatedMonthlyMap.keys.sorted().take(updatedMonthlyMap.size - 12)
@@ -88,18 +65,7 @@ class StatsRepository {
     private suspend fun addStatsYearly(stats: YearlyStats) {
         val updatedYearlyMap = _yearlyStatsMap.value.toMutableMap()
 
-        updatedYearlyMap[stats.yearlyStatsKey] = updatedYearlyMap[stats.yearlyStatsKey]?.let { existingStats ->
-            existingStats.apply {
-                totalDistance = (totalDistance ?: 0.0) + (stats.totalDistance ?: 0.0)
-                totalDuration = (totalDuration ?: 0L) + (stats.totalDuration ?: 0L)
-                totalCaloriesBurned = (totalCaloriesBurned ?: 0.0) + (stats.totalCaloriesBurned ?: 0.0)
-                totalAvgPace = if (totalDistance != 0.0) {
-                    (totalDuration ?: 0L) / 60.0 / (totalDistance ?: 1.0)
-                } else {
-                    0.0
-                }
-            }
-        } ?: stats
+        updatedYearlyMap[stats.yearlyStatsKey] = stats
 
         if (updatedYearlyMap.size > 12) {
             val oldestKeys = updatedYearlyMap.keys.sorted().take(updatedYearlyMap.size - 12)

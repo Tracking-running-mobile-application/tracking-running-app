@@ -75,8 +75,10 @@ class PersonalGoalFragment : Fragment() {
         }
         binding.btnGoalSave.setOnClickListener {
             // TODO: Save plan
+            val goalId = arguments?.getInt(EXTRA_PERSONAL_GOAL_ID,0)
             if (isDistanceClicked) {
                 personalGoalViewModel.upsertPersonalGoal(
+                    goalId = goalId,
                     name = binding.editCustomNamePlan.text.toString(),
                     targetDistance = binding.objectiveBox.text.toString().toDouble(),
                     targetDuration = 0.0,
@@ -84,6 +86,7 @@ class PersonalGoalFragment : Fragment() {
                 )
             } else if (isDurationClicked) {
                 personalGoalViewModel.upsertPersonalGoal(
+                    goalId = goalId,
                     name = binding.editCustomNamePlan.text.toString(),
                     targetDistance = 0.0,
                     targetDuration = binding.objectiveBox.text.toString().toDouble(),
@@ -91,6 +94,7 @@ class PersonalGoalFragment : Fragment() {
                 )
             } else if (isCaloClicked) {
                 personalGoalViewModel.upsertPersonalGoal(
+                    goalId = goalId,
                     name = binding.editCustomNamePlan.text.toString(),
                     targetDistance = 0.0,
                     targetDuration = 0.0,
@@ -103,6 +107,7 @@ class PersonalGoalFragment : Fragment() {
     }
 
     private fun setupView() {
+        val goalId = arguments?.getInt(EXTRA_PERSONAL_GOAL_ID,0)
         //define section
         val buttonDistance = binding.btnObjectDistance
         val buttonDuration = binding.btnObjectDuration
@@ -183,5 +188,8 @@ class PersonalGoalFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = true
+    }
+    companion object{
+        const val EXTRA_PERSONAL_GOAL_ID = "EXTRA_PERSONAL_GOAL_ID"
     }
 }

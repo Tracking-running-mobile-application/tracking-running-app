@@ -47,26 +47,17 @@ class StatusFragment : Fragment() {
             val ageStr = binding.edtAge.text.toString()
             val heightStr = binding.edtHeight.text.toString()
             val weightStr = binding.edtWeight.text.toString()
-            // check if string is empty
-            if (userName.isEmpty() || ageStr.isEmpty() || heightStr.isEmpty() || weightStr.isEmpty()) {
-                Toast.makeText(
-                    requireContext(),
-                    "Please enter all user information",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return@setOnClickListener
-            }
-
-            val age = ageStr.toIntOrNull() ?: 1
-            var userHeight = heightStr.toFloatOrNull() ?: 0.0f
-            var userWeight = weightStr.toDoubleOrNull() ?: 0.0
+            
+            val age = ageStr.toIntOrNull()
+            var userHeight = heightStr.toFloatOrNull()
+            var userWeight = weightStr.toDoubleOrNull()
             if (isFtClicked) {
-                val heightFt = heightStr.toFloatOrNull() ?: 0.0f
-                userHeight = (heightFt * 30.48).toFloat()
+                val heightFt = heightStr.toFloatOrNull()
+                userHeight = (heightFt?.times(30.48))?.toFloat()
             }
             if (isLbsClicked) {
-                val weightLbs = weightStr.toDoubleOrNull() ?: 0.0
-                userWeight = weightLbs * 0.453592
+                val weightLbs = weightStr.toDoubleOrNull()
+                userWeight = weightLbs?.times(0.453592)
             }
             if (userHeight == 0.0f || userWeight == 0.0) {
                 Toast.makeText(
@@ -81,7 +72,7 @@ class StatusFragment : Fragment() {
                         name = userName,
                         age = age,
                         height = userHeight,
-                        weight = userWeight,
+                        weight = userWeight ?: 50.0,
                         metricPreference = "kg",
                         unit = "km"
                     )

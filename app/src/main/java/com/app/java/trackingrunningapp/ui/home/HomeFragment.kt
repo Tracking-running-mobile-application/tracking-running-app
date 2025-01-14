@@ -20,6 +20,7 @@ import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
 import com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalAdapter
+import com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalFragment
 import com.app.java.trackingrunningapp.ui.home.personalGoal.RunGoalFragment
 import com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment
 import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
@@ -121,6 +122,14 @@ class HomeFragment : Fragment() {
                             putInt(RunGoalFragment.EXTRA_GOAL_ID,personalGoal.goalId)
                         }
                         findNavController().navigate(R.id.action_homeFragment_to_runGoalFragment,bundle)
+                    }
+
+                    override fun onEditClick(personalGoal: PersonalGoal) {
+                        val bundle = Bundle().apply {
+                            putInt(PersonalGoalFragment.EXTRA_PERSONAL_GOAL_ID,personalGoal.goalId)
+                        }
+                        findNavController()
+                            .navigate(R.id.action_homeFragment_to_personalGoalFragment,bundle)
                     }
                 }
             )

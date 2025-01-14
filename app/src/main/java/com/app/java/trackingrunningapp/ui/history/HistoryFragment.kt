@@ -54,7 +54,6 @@ class HistoryFragment : Fragment() {
                 Log.e("Error", "No run sessions found in the database (hasMoreData)")
             }
         }
-
         return binding.root
     }
 
@@ -65,6 +64,13 @@ class HistoryFragment : Fragment() {
             val mutableList: MutableList<RunSession> = sessions.toMutableList()
             binding.textShowMore.setOnClickListener{
                 runSessionViewModel.fetchRunSessions(true)
+            }
+            runSessionViewModel.hasMoreData.observe(viewLifecycleOwner){hasMore->
+                if(hasMore == false){
+                    binding.textShowMore.visibility = View.GONE
+                }else{
+                    binding.textShowMore.visibility = View.VISIBLE
+                }
             }
             setupAdapter(mutableList)
         }
