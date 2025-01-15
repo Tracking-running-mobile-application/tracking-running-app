@@ -22,7 +22,6 @@ import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentRunGoalBinding
-import com.app.java.trackingrunningapp.databinding.FragmentRunPlanBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
@@ -156,8 +155,8 @@ class RunGoalFragment : Fragment() {
                     runSessionViewModel.fetchAndUpdateStats()
                     Log.d("PersonalGoal", "3")
                     val goalId = arguments?.getInt(EXTRA_GOAL_ID, 0)!!
-                    personalGoalViewModel.initiatePersonalGoal(goalId = goalId )
-                    //personalGoalViewModel.observeRunSession()
+                    personalGoalViewModel.initiatePersonalGoal(goalId = goalId)
+                    personalGoalViewModel.fetchAndUpdateGoalProgress()
                     Log.d("PersonalGoal", "2")
                     // TODO: observe
                 }
@@ -174,6 +173,7 @@ class RunGoalFragment : Fragment() {
                     runSessionViewModel.pauseRunSession()
                     pauseTracking()
                     gpsTrackViewModel.stopGPSTrack()
+                    personalGoalViewModel.stopUpdatingFetchingProgress()
                 }
             }
         }
@@ -197,6 +197,7 @@ class RunGoalFragment : Fragment() {
 
                         Log.d("RunGoalFragment Resume", "4: Resuming GPS Tracking")
                         gpsTrackViewModel.resumeGPSTrack()
+                        personalGoalViewModel.fetchAndUpdateGoalProgress()
 
                         Log.d("RunGoalFragment Resume", "All Resume Actions Completed")
                     } catch (e: Exception) {
@@ -215,6 +216,7 @@ class RunGoalFragment : Fragment() {
                     // TODO: stop gps tracking
                     gpsTrackViewModel.stopGPSTrack()
                     stopTracking()
+                    personalGoalViewModel.stopUpdatingFetchingProgress()
                     runSessionViewModel.finishRunSession()
                 }
             }

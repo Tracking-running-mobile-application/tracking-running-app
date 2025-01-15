@@ -1,6 +1,5 @@
 package com.app.java.trackingrunningapp.ui.viewmodel
 
-import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -9,14 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
 import com.app.java.trackingrunningapp.data.repository.PersonalGoalRepository
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 class PersonalGoalViewModel(
     private val personalGoalRepository: PersonalGoalRepository,
@@ -31,7 +29,6 @@ class PersonalGoalViewModel(
 
     private var goalProgressJob: Job? = null
 
-    private var jobMutex = Mutex()
 
     fun deletePersonalGoal(goalId: Int) {
         viewModelScope.launch {
@@ -40,14 +37,13 @@ class PersonalGoalViewModel(
         }
     }
 
-    suspend fun initiatePersonalGoal(goalId: Int) {
-        jobMutex.withLock {
-            _goalProgress.value = 0.0
-            Log.d("PersonalGoal", "3")
-            personalGoalRepository.assignSessionToPersonalGoal(goalId)
+    fun stopUpdatingFetchingProgress() {
+        goalProgressJob?.cancel()
+        personalGoalRepository.stopUpdatingGoalProgress()
+    }
 
-            Log.d("PersonalGoal", "4")
-        }
+    suspend fun initiatePersonalGoal(goalId: Int) {
+        personalGoalRepository.assignSessionToPersonalGoal(goalId)
     }
 
     fun loadPersonalGoals() {
@@ -59,12 +55,13 @@ class PersonalGoalViewModel(
 
     fun fetchGoalProgress() {
         goalProgressJob?.cancel()
-        goalProgressJob = viewModelScope.launch {
+        goalProgressJob = CoroutineScope(Dispatchers.IO).launch {
             Log.d("FetchgoalProgress", "Update goal progress")
             while (isActive) {
                 try {
                     val progress = personalGoalRepository.getGoalProgress()
                     _goalProgress.value = progress
+                    Log.d("FetchgoalProgress", "${_goalProgress.value}")
                     delay(1500)
                 } catch (e: Exception) {
                     println("Error fetching goal progress: ${e.message}")
@@ -93,21 +90,17 @@ class PersonalGoalViewModel(
         }
     }
 
-     suspend fun observeRunSession() {
-         Log.d("ObserveRunSession", "Something")
-        runSessionRepository.currentRunSession.collect { session ->
-            Log.d("ObserveRunSession", "Stop")
-            if (session == null) {
-                personalGoalRepository.updateGoalProgress()
-                val progress = personalGoalRepository.getGoalProgress()
-                _goalProgress.value = progress
-                personalGoalRepository.stopUpdatingGoalProgress()
-                goalProgressJob?.cancel()
-            } else {
-
-                Log.d("ObserveRunSession", "Start")
-                personalGoalRepository.startUpdatingGoalProgress()
-                fetchGoalProgress()
+     suspend fun fetchAndUpdateGoalProgress() {
+        Log.d("ObserveRunSession", "1")
+        goalProgressJob?.cancel()
+        goalProgressJob = CoroutineScope(Dispatchers.IO).launch {
+            while (isActive) {
+                try {
+                    personalGoalRepository.startUpdatingGoalProgress()
+                    fetchGoalProgress()
+                } catch (e: Exception) {
+                    println("Error updating and fetching goal: ${e.message}")
+                }
             }
         }
     }
