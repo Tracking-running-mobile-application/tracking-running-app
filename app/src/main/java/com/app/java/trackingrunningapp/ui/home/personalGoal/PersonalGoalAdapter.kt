@@ -11,12 +11,16 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
+import com.app.java.trackingrunningapp.data.model.entity.User
+import com.app.java.trackingrunningapp.data.repository.UserRepository
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 
 
 class PersonalGoalAdapter(
     private val personalGoals: MutableList<PersonalGoal>,
+    private val user: User?,
     private val context: Context,
-    private val listener: OnItemPersonalGoalListener
+    private val listener: OnItemPersonalGoalListener,
 ) : RecyclerView.Adapter<PersonalGoalAdapter.PersonalGoalViewHolder>() {
     val listGoal = personalGoals
     class PersonalGoalViewHolder(
@@ -30,13 +34,13 @@ class PersonalGoalAdapter(
         private val taskCheckbox: ImageView = itemView.findViewById(R.id.taskCheckbox)
         private val icEditGoal = itemView.findViewById<ImageView>(R.id.ic_edit_goal)
 
-        fun bind(goal: PersonalGoal) {
+        @SuppressLint("SetTextI18n")
+        fun bind(goal: PersonalGoal, user: User?) {
             progress.text = context.getString(R.string.goal_progress,goal.goalProgress)
             goalName.text = goal.name
             // target
             if (goal.targetDistance != 0.0 && goal.targetDistance != null) {
-                goalTarget.text =
-                    context.getString(R.string.text_target_distance, goal.targetDistance)
+                goalTarget.text = goal.targetDistance.toString() + " " + user?.unit
             } else if (goal.targetDuration != 0.0 && goal.targetDuration != null) {
                 goalTarget.text =
                     context.getString(R.string.text_estimate_time, goal.targetDuration)
@@ -68,7 +72,7 @@ class PersonalGoalAdapter(
 
     override fun onBindViewHolder(holder: PersonalGoalViewHolder, position: Int) {
         val goal = personalGoals[position]
-        holder.bind(goal)
+        holder.bind(goal,user)
     }
 
     override fun getItemCount(): Int {
