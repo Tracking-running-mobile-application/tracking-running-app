@@ -138,9 +138,13 @@ class RunPlanFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: do something when pause
+                    Log.d("RunPlanFragment Pause", "1")
                     runSessionViewModel.pauseRunSession()
+                    Log.d("RunPlanFragment Pause", "2")
                     pauseTracking()
+                    Log.d("RunPlanFragment Pause", "3")
                     gpsTrackViewModel.stopGPSTrack()
+                    Log.d("RunPlanFragment Pause", "4")
                 }
             }
         }
@@ -155,24 +159,24 @@ class RunPlanFragment : Fragment() {
                     try {
                         mutex.withLock {
                             try {
-                                Log.d("RunPlanFragment Stop", "2 - stopGPSTrack")
+                                Log.d("RunPlanFragment Resume", "1")
                                 runSessionViewModel.setRunSessionStartTime()
                             } catch (e: Exception) {
                                 Log.e("RunPlanFragment Stop", "Error in stopGPSTrack: ${e.message}")
                             }
 
                             try {
-                                Log.d("RunPlanFragment Stop", "3 - stopTracking")
+                                Log.d("RunPlanFragment Resume", "2")
                                 resumeTracking()
                                 gpsTrackViewModel.resumeGPSTrack()
                                 runSessionViewModel.fetchAndUpdateStats()
                             } catch (e: Exception) {
-                                Log.e("RunPlanFragment Stop", "Error in stopTracking: ${e.message}")
+                                Log.e("RunPlanFragment Resume", "Error in stopTracking: ${e.message}")
                             }
-                            Log.d("RunPlanFragment Stop", "Stop Sequence Complete")
+                            Log.d("RunPlanFragment Resume", "Stop Sequence Complete")
                         }
                     } catch (e: Exception) {
-                        Log.e("RunPlanFragment Stop", "Error in lifecycleScope: ${e.message}")
+                        Log.e("RunPlanFragment Resume", "Error in lifecycleScope: ${e.message}")
                     }
                 }
             }
