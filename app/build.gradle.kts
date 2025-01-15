@@ -10,6 +10,10 @@ android {
     namespace = "com.app.java.trackingrunningapp"
     compileSdk = 34
 
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
+
     defaultConfig {
         applicationId = "com.app.java.trackingrunningapp"
         minSdk = 30
@@ -17,6 +21,7 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
     // schema
     room {
@@ -53,6 +58,7 @@ dependencies {
     // room database
     implementation(libs.room.kotlin)
     implementation(libs.room.runtime)
+    implementation(libs.androidx.junit.ktx)
     // ksp
     ksp(libs.room.compiler)
     // lifecycle ktx
