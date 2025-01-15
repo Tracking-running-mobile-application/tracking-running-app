@@ -180,9 +180,20 @@ class RunPlanFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: stop gps tracking
-                    gpsTrackViewModel.stopGPSTrack()
-                    stopTracking()
-                    runSessionViewModel.finishRunSession()
+                    try {
+                        Log.d("RunPlanFragment Stop", "1: Stopping GPS Tracking")
+                        gpsTrackViewModel.stopGPSTrack()
+
+                        Log.d("RunPlanFragment Stop", "2: Stopping Tracking")
+                        stopTracking()
+
+                        Log.d("RunPlanFragment Stop", "3: Finishing Run Session")
+                        runSessionViewModel.finishRunSession()
+
+                        Log.d("RunPlanFragment Stop", "4: Completed All Stop Actions")
+                    } catch (e: Exception) {
+                        Log.e("RunPlanFragment Stop", "Error occurred: ${e.message}", e)
+                    }
                 }
             }
         }
