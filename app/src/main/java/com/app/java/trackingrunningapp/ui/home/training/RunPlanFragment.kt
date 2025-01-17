@@ -81,7 +81,6 @@ class RunPlanFragment : Fragment() {
         }
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -91,8 +90,13 @@ class RunPlanFragment : Fragment() {
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
 
-        val planFactory = TrainingPlanViewModelFactory(InitDatabase.trainingPlanRepository, InitDatabase.notificationRepository, InitDatabase.runSessionRepository)
-        trainingPlanViewModel = ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
+        val planFactory = TrainingPlanViewModelFactory(
+            InitDatabase.trainingPlanRepository,
+            InitDatabase.notificationRepository,
+            InitDatabase.runSessionRepository
+        )
+        trainingPlanViewModel =
+            ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
 
         val gpsTrackFactory = GPSTrackViewModelFactory(InitDatabase.gpsTrackRepository)
         gpsTrackViewModel =
@@ -118,12 +122,15 @@ class RunPlanFragment : Fragment() {
     }
 
     private fun setupActionRun() {
+        // PLAN ID
+        val planId = arguments?.getInt(EXTRA_PLAN_ID,0)
+        Log.d("plan_Idd","$planId")
+
         binding.btnStartTracking.setOnClickListener {
             binding.btnStartTracking.visibility = View.INVISIBLE
             binding.btnPause.visibility = View.VISIBLE
             binding.btnStop.visibility = View.VISIBLE
             requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
-
             // TODO: START
             lifecycleScope.launch {
                 mutex.withLock {
@@ -179,7 +186,7 @@ class RunPlanFragment : Fragment() {
         }
 
         binding.btnStop.setOnClickListener {
-            it.findNavController().popBackStack(R.id.trainingPlanFragment,false)
+            it.findNavController().popBackStack(R.id.trainingPlanFragment, false)
             // TODO: STOP
             lifecycleScope.launch {
                 mutex.withLock {
@@ -227,11 +234,6 @@ class RunPlanFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun initArrowAction() {
-//        binding.icArrowUp.setOnClickListener {
-//            binding.containerArrowDown.visibility = View.VISIBLE
-//            binding.containerArrowUp.visibility = View.GONE
-//            binding.containerMetric.visibility = View.GONE
-//        }
         binding.icArrowDown.setOnClickListener {
             binding.containerArrowUp.visibility = View.VISIBLE
             binding.containerArrowDown.visibility = View.GONE
@@ -243,7 +245,7 @@ class RunPlanFragment : Fragment() {
         val runCalo = binding.layoutMetric.textRunCaloMetric
 
         runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
-            runDuration.text = getString(R.string.text_duration_metric, it?.duration?:0.0)
+            runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
             userViewModel.fetchUserInfo()
             userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
                 if (user?.unit == User.UNIT_KM) {
@@ -403,4 +405,7 @@ class RunPlanFragment : Fragment() {
         polylineAnnotationManager.create(polylineAnnotationOptions)
     }
 
+    companion object {
+        const val EXTRA_PLAN_ID = "EXTRA_PLAN_ID"
+    }
 }
