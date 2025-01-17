@@ -129,11 +129,13 @@ class RunPlanFragment : Fragment() {
                 mutex.withLock {
                     runSessionViewModel.initiateRunSession()
                     gpsTrackViewModel.initiateGPSTrack()
-                    trainingPlanViewModel.initiateTrainingPlan()
+                    //TODO: Insert Training Plan ID in here
+                    //trainingPlanViewModel.initiateTrainingPlan(planId: Int)
                     runSessionViewModel.setRunSessionStartTime()
                     // TODO: insert start tracking and sending gps function
                     startTracking()
                     runSessionViewModel.fetchAndUpdateStats()
+                    trainingPlanViewModel.fetchAndUpdateGoalProgress()
 
                 }
             }

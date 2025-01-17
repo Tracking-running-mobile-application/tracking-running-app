@@ -83,14 +83,13 @@ class TrainingPlanViewModel(
     }
 
     /*trigger runSession start before this!!*/
-    fun initiateTrainingPlan() {
+    fun initiateTrainingPlan(planId: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-            trainingPlanRepository.assignSessionToTrainingPlan()
+            trainingPlanRepository.assignSessionToTrainingPlan(planId)
         }
     }
 
     fun fetchAndUpdateGoalProgress() {
-        Log.d("ObserveRunSession", "1")
         goalProgressJob?.cancel()
         goalProgressJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {

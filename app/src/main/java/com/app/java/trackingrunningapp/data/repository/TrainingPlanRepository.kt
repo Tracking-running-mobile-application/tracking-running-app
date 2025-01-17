@@ -37,10 +37,11 @@ class TrainingPlanRepository {
         return trainingPlanDao.getGoalProgress(currentTrainingPlan.planId)
     }
 
-    suspend fun assignSessionToTrainingPlan() {
-        val existingPlan = getCurrentTrainingPlanOrThrow()
+    suspend fun assignSessionToTrainingPlan(planId: Int) {
         val currentSessionId = runSessionRepository.currentRunSession.value?.sessionId
-        trainingPlanDao.upsertTrainingPlan(existingPlan.copy(planSessionId = currentSessionId))
+        if (currentSessionId != null) {
+            trainingPlanDao.assignSessionToPlan(planId = planId, sessionId = currentSessionId)
+        }
         halfNotiTriggered = false
         finishNotiTriggered = false
     }
