@@ -82,6 +82,8 @@ class TrainingPlanFragment : Fragment() {
                     binding.textPlanDescription.text = plan.description
                     binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
                     binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
+                    binding.tvPercentage.text = plan.goalProgress.toString() + "%"
                     binding.btnLiveStats.setOnClickListener {
                         // TODO:
                         val bundle = Bundle().apply {
@@ -99,6 +101,8 @@ class TrainingPlanFragment : Fragment() {
                     binding.textPlanDescription.text = plan.description
                     binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
                     binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
+                    binding.tvPercentage.text = plan.goalProgress.toString() + "%"
                     binding.btnLiveStats.setOnClickListener {
                         // TODO:
                         val bundle = Bundle().apply {
