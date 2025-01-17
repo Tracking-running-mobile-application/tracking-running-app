@@ -22,7 +22,6 @@ import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentRunGoalBinding
-import com.app.java.trackingrunningapp.databinding.FragmentRunPlanBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
@@ -146,18 +145,18 @@ class RunGoalFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     runSessionViewModel.initiateRunSession()
-                    Log.d("PersonalGoal", "7")
+                    Log.d("PersonalGoal", "1")
                     gpsTrackViewModel.initiateGPSTrack()
                     runSessionViewModel.setRunSessionStartTime()
 
                     // TODO: insert start tracking and sending gps function
                     startTracking()
-                    Log.d("PersonalGoal", "6")
+                    Log.d("PersonalGoal", "2")
                     runSessionViewModel.fetchAndUpdateStats()
-                    Log.d("PersonalGoal", "1")
+                    Log.d("PersonalGoal", "3")
                     val goalId = arguments?.getInt(EXTRA_GOAL_ID, 0)!!
-                    personalGoalViewModel.initiatePersonalGoal(goalId = goalId )
-                    personalGoalViewModel.observeRunSession()
+                    personalGoalViewModel.initiatePersonalGoal(goalId = goalId)
+                    personalGoalViewModel.fetchAndUpdateGoalProgress()
                     Log.d("PersonalGoal", "2")
                     // TODO: observe
                 }
@@ -171,10 +170,10 @@ class RunGoalFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: do something when pause
-                    runSessionViewModel.fetchAndUpdateStats()
                     runSessionViewModel.pauseRunSession()
                     pauseTracking()
                     gpsTrackViewModel.stopGPSTrack()
+                    personalGoalViewModel.stopUpdatingFetchingProgress()
                 }
             }
         }
@@ -186,10 +185,25 @@ class RunGoalFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: do something when resume
-                    runSessionViewModel.setRunSessionStartTime()
-                    runSessionViewModel.fetchAndUpdateStats()
-                    resumeTracking()
-                    gpsTrackViewModel.resumeGPSTrack()
+                    try {
+                        Log.d("RunGoalFragment Resume", "1: Setting Run Session Start Time")
+                        runSessionViewModel.setRunSessionStartTime()
+
+                        Log.d("RunGoalFragment Resume", "2: Fetching and Updating Stats")
+                        runSessionViewModel.fetchAndUpdateStats()
+
+                        Log.d("RunGoalFragment Resume", "3: Resuming Tracking")
+                        resumeTracking()
+
+                        Log.d("RunGoalFragment Resume", "4: Resuming GPS Tracking")
+                        gpsTrackViewModel.resumeGPSTrack()
+                        personalGoalViewModel.fetchAndUpdateGoalProgress()
+
+                        Log.d("RunGoalFragment Resume", "All Resume Actions Completed")
+                    } catch (e: Exception) {
+                        Log.e("RunGoalFragment Resume", "Error occurred: ${e.message}", e)
+                    }
+
                 }
             }
         }
@@ -200,9 +214,9 @@ class RunGoalFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: stop gps tracking
-                    runSessionViewModel.fetchAndUpdateStats()
                     gpsTrackViewModel.stopGPSTrack()
                     stopTracking()
+                    personalGoalViewModel.stopUpdatingFetchingProgress()
                     runSessionViewModel.finishRunSession()
                 }
             }

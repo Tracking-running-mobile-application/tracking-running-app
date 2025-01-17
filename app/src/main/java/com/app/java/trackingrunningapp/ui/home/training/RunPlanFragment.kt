@@ -27,6 +27,8 @@ import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -41,6 +43,7 @@ import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -54,6 +57,7 @@ class RunPlanFragment : Fragment() {
     private lateinit var annotationApi: AnnotationPlugin
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var runSessionViewModel: RunSessionViewModel
+    private lateinit var trainingPlanViewModel: TrainingPlanViewModel
     private lateinit var gpsTrackViewModel: GPSTrackViewModel
     private lateinit var gpsPointViewModel: GPSPointViewModel
     private lateinit var userViewModel: UserViewModel
@@ -86,6 +90,9 @@ class RunPlanFragment : Fragment() {
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+
+        val planFactory = TrainingPlanViewModelFactory(InitDatabase.trainingPlanRepository, InitDatabase.notificationRepository, InitDatabase.runSessionRepository)
+        trainingPlanViewModel = ViewModelProvider(this, planFactory).get(TrainingPlanViewModel::class.java)
 
         val gpsTrackFactory = GPSTrackViewModelFactory(InitDatabase.gpsTrackRepository)
         gpsTrackViewModel =
@@ -122,6 +129,7 @@ class RunPlanFragment : Fragment() {
                 mutex.withLock {
                     runSessionViewModel.initiateRunSession()
                     gpsTrackViewModel.initiateGPSTrack()
+                    trainingPlanViewModel.initiateTrainingPlan()
                     runSessionViewModel.setRunSessionStartTime()
                     // TODO: insert start tracking and sending gps function
                     startTracking()
@@ -138,10 +146,14 @@ class RunPlanFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: do something when pause
-                    runSessionViewModel.fetchAndUpdateStats()
+                    Log.d("RunPlanFragment Pause", "1")
                     runSessionViewModel.pauseRunSession()
+                    trainingPlanViewModel.stopUpdatingFetchingProgress()
+                    Log.d("RunPlanFragment Pause", "2")
                     pauseTracking()
+                    Log.d("RunPlanFragment Pause", "3")
                     gpsTrackViewModel.stopGPSTrack()
+                    Log.d("RunPlanFragment Pause", "4")
                 }
             }
         }
@@ -151,13 +163,16 @@ class RunPlanFragment : Fragment() {
             binding.btnPause.visibility = View.VISIBLE
             // TODO: RESUME
             lifecycleScope.launch {
-                mutex.withLock {
-                    // TODO: do something when resume
+                try {
                     runSessionViewModel.setRunSessionStartTime()
-                    runSessionViewModel.fetchAndUpdateStats()
+                    trainingPlanViewModel.fetchAndUpdateGoalProgress()
                     resumeTracking()
                     gpsTrackViewModel.resumeGPSTrack()
+                    runSessionViewModel.fetchAndUpdateStats()
+                } catch (e: Exception) {
+                    Log.e("RunPlanFragment Resume", "Error in stopTracking: ${e.message}")
                 }
+                Log.d("RunPlanFragment Resume", "Stop Sequence Complete")
             }
         }
 
@@ -167,10 +182,20 @@ class RunPlanFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: stop gps tracking
-                    runSessionViewModel.fetchAndUpdateStats()
-                    gpsTrackViewModel.stopGPSTrack()
-                    stopTracking()
-                    runSessionViewModel.finishRunSession()
+                    try {
+                        Log.d("RunPlanFragment Stop", "1: Stopping GPS Tracking")
+                        gpsTrackViewModel.stopGPSTrack()
+
+                        Log.d("RunPlanFragment Stop", "2: Stopping Tracking")
+                        stopTracking()
+                        trainingPlanViewModel.stopUpdatingFetchingProgress()
+                        Log.d("RunPlanFragment Stop", "3: Finishing Run Session")
+                        runSessionViewModel.finishRunSession()
+
+                        Log.d("RunPlanFragment Stop", "4: Completed All Stop Actions")
+                    } catch (e: Exception) {
+                        Log.e("RunPlanFragment Stop", "Error occurred: ${e.message}", e)
+                    }
                 }
             }
         }

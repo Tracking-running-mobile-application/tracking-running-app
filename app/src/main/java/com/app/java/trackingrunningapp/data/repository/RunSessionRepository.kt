@@ -165,8 +165,8 @@ class RunSessionRepository {
     }
 
     suspend fun setRunSessionInactive() {
-        val currentSession = getCurrentSessionOrThrow()
-        runSessionDao.setRunSessionInactive(currentSession.sessionId)
+        Log.d("RunSessionRepo", "Set Run Session Inactive")
+        _currentRunSession.value?.let { runSessionDao.setRunSessionInactive(it.sessionId) }
 
         _currentRunSession.emit(null)
     }

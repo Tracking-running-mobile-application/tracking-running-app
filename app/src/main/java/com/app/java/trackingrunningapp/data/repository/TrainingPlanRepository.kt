@@ -1,10 +1,8 @@
 package com.app.java.trackingrunningapp.data.repository
 
-import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.dao.TrainingPlanDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.database.InitDatabase.Companion.notificationRepository
-import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,27 +15,17 @@ class TrainingPlanRepository {
     val db = InitDatabase.runningDatabase
 
     private val trainingPlanDao: TrainingPlanDao = db.trainingPlanDao()
-    private val runSessionDao: RunSessionDao = db.runSessionDao()
+    private val runSessionRepository: RunSessionRepository = RunSessionRepository()
 
     private var updateJob: Job? = null
 
     private var halfNotiTriggered: Boolean = false
     private var finishNotiTriggered: Boolean = false
 
-    private suspend fun getCurrentSessionOrThrow(): RunSession {
-        val currentRunSession = runSessionDao.getCurrentRunSession()
-        return currentRunSession ?: throw IllegalStateException("There is not any current run session ! (Training Plan Repository)")
-    }
-
     private suspend fun getCurrentTrainingPlanOrThrow(): TrainingPlan {
-        val currentRunSession = getCurrentSessionOrThrow()
-        return trainingPlanDao.getTrainingPlanBySessionId(currentRunSession.sessionId)
+        val currentRunSessionId = runSessionRepository.currentRunSession.value?.sessionId
+        return currentRunSessionId?.let { trainingPlanDao.getTrainingPlanBySessionId(it) }
             ?: throw IllegalStateException("There is not any training plan attached with this run session ID! (Training Plan Repository)")
-    }
-
-    suspend fun activeTrainingPlan(): Boolean {
-        val currentRunSession = getCurrentSessionOrThrow()
-        return trainingPlanDao.getTrainingPlanBySessionId(currentRunSession.sessionId) != null
     }
 
     suspend fun getTrainingPlanByDifficulty(exerciseType: String): List<TrainingPlan> {
@@ -51,8 +39,8 @@ class TrainingPlanRepository {
 
     suspend fun assignSessionToTrainingPlan() {
         val existingPlan = getCurrentTrainingPlanOrThrow()
-        val currentSession = getCurrentSessionOrThrow()
-        trainingPlanDao.upsertTrainingPlan(existingPlan.copy(planSessionId = currentSession.sessionId))
+        val currentSessionId = runSessionRepository.currentRunSession.value?.sessionId
+        trainingPlanDao.upsertTrainingPlan(existingPlan.copy(planSessionId = currentSessionId))
         halfNotiTriggered = false
         finishNotiTriggered = false
     }
@@ -61,18 +49,35 @@ class TrainingPlanRepository {
         trainingPlanDao.deleteTrainingPlan(planId)
     }
 
-    private fun calcGoalProgress(runSession: RunSession, plan: TrainingPlan): Double {
+    private fun calcGoalProgress(plan: TrainingPlan): Double {
         return when {
-            plan.targetDistance != null -> plan.targetDistance?.let {
-                (runSession.distance?.div(it))?.times(100)
-            } ?: 0.0
-            plan.targetDuration != null -> plan.targetDuration?.let {
-                (runSession.duration?.div(it))?.times(100)
-            } ?: 0.0
-            plan.targetCaloriesBurned != null -> plan.targetCaloriesBurned?.let {
-                (runSession.caloriesBurned?.div(it))?.times(100)
-            } ?: 0.0
-            else -> 0.0
+            plan.targetDistance != null && plan.targetDistance!! > 0 -> {
+                val distance = runSessionRepository.distance.value
+                if (distance > 0) {
+                    (distance / plan.targetDistance!!) * 100
+                } else {
+                    0.0
+                }
+            }
+
+            plan.targetDuration != null && plan.targetDuration!! > 0 -> {
+                val durationInSeconds = runSessionRepository.duration.value
+                if (durationInSeconds > 0) {
+                    (durationInSeconds / (plan.targetDuration!! * 60)) * 100
+                } else {
+                    0.0
+                }
+            }
+
+            plan.targetCaloriesBurned != null && plan.targetCaloriesBurned!! > 0 -> {
+                val caloriesBurned = runSessionRepository.caloriesBurned.value
+                if (caloriesBurned > 0) {
+                    (caloriesBurned / plan.targetCaloriesBurned!!) * 100
+                } else {
+                    0.0
+                }
+            }
+            else -> -1.0
         }
     }
 
@@ -98,9 +103,8 @@ class TrainingPlanRepository {
     }
 
     suspend fun updateGoalProgress() {
-        val currentSession = getCurrentSessionOrThrow()
         val currentTrainingPlan = getCurrentTrainingPlanOrThrow()
-        val progress = calcGoalProgress(currentSession, currentTrainingPlan)
+        val progress = calcGoalProgress(currentTrainingPlan)
 
         trainingPlanDao.updateGoalProgress(currentTrainingPlan.planId, progress)
 

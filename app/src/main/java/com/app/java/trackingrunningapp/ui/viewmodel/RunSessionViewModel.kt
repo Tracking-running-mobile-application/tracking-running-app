@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.StatsSession
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancelAndJoin
@@ -89,7 +90,7 @@ class RunSessionViewModel(
     }
 
     fun setRunSessionStartTime() {
-        viewModelScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             runSessionRepository.setRunSessionStartTime()
         }
     }
@@ -107,12 +108,13 @@ class RunSessionViewModel(
     }
 
     fun finishRunSession() {
-        viewModelScope.launch() {
+        CoroutineScope(Dispatchers.IO).launch {
             jobMutex.withLock {
                 runSessionRepository.stopUpdatingStats()
                 statsUpdateJob?.cancelAndJoin()
                 fetchStatsJob?.cancelAndJoin()
                 runSessionRepository.resetStatsValue()
+                runSessionRepository.setRunSessionInactive()
                 Log.d("StatsUpdate", "Stats update finished in finishRunSession")
             }
         }
@@ -140,7 +142,7 @@ class RunSessionViewModel(
 
     private suspend fun fetchStatsCurrentSession() {
         fetchStatsJob?.cancelAndJoin()
-        fetchStatsJob = viewModelScope.launch(Dispatchers.IO) {
+        fetchStatsJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 try {
                     val stats = runSessionRepository.fetchStatsSession()
@@ -165,7 +167,7 @@ class RunSessionViewModel(
 
     private suspend fun updateStats() {
         statsUpdateJob?.cancelAndJoin()
-        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+        statsUpdateJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 try {
                     runSessionRepository.calcDuration()
