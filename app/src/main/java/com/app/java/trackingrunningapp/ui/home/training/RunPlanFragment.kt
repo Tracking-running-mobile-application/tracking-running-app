@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -119,13 +120,43 @@ class RunPlanFragment : Fragment() {
         setupPermission()
         setupActionRun()
         initArrowAction()
+        setupProgress()
     }
 
-    private fun setupActionRun() {
+    @SuppressLint("SetTextI18n")
+    private fun setupProgress() {
         // PLAN ID
         val planId = arguments?.getInt(EXTRA_PLAN_ID,0)
         Log.d("plan_Idd","$planId")
+        trainingPlanViewModel.fetchRecommendedPlans()
+        trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner){plans->
+            for(plan in plans){
+                if(plan.planId == planId){
+                    binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
+                    binding.textRunPercent.text = plan.goalProgress.toString() + "%"
+                }
+            }
+        }
+        trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner){plans->
+            for(plan in plans){
+                if(plan.planId == planId){
+                    binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
+                    binding.textRunPercent.text = plan.goalProgress.toString() + "%"
+                }
+            }
+        }
+        trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner){plans->
+            for(plan in plans){
+                if(plan.planId == planId){
+                    binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
+                    binding.textRunPercent.text = plan.goalProgress.toString() + "%"
+                }
+            }
+        }
+    }
 
+    @SuppressLint("SetTextI18n")
+    private fun setupActionRun() {
         binding.btnStartTracking.setOnClickListener {
             binding.btnStartTracking.visibility = View.INVISIBLE
             binding.btnPause.visibility = View.VISIBLE
@@ -186,7 +217,6 @@ class RunPlanFragment : Fragment() {
         }
 
         binding.btnStop.setOnClickListener {
-            it.findNavController().popBackStack(R.id.trainingPlanFragment, false)
             // TODO: STOP
             lifecycleScope.launch {
                 mutex.withLock {
@@ -207,6 +237,7 @@ class RunPlanFragment : Fragment() {
                     }
                 }
             }
+            it.findNavController().popBackStack(R.id.trainingPlanFragment, false)
         }
     }
 

@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.profileFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     tvTitle.text = getString(R.string.text_profile)
                     icEdit.isVisible = true
                     icEdit.setOnMenuItemClickListener {
@@ -118,18 +119,21 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.runFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_run)
                     binding.bottomNav.isVisible = true
                 }
 
                 R.id.statisticFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_statistics)
                     binding.bottomNav.isVisible = true
                 }
 
                 R.id.historyFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     tvTitle.text = getString(R.string.text_history)
                     icFilter.isVisible = true
                     binding.bottomNav.isVisible = true

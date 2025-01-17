@@ -126,17 +126,10 @@ class TrainingPlanFragment : Fragment() {
 //
 //                }
 //            }
-            trainingPlanViewModel.goalProgress.observe(viewLifecycleOwner){
-                binding.progressBar.progress = it?.toInt() ?: 0
-                binding.tvPercentage.text = it?.toString() + "%"
-            }
-//            progressCounter += 5
-//            if(progressCounter > 20) progressCounter = 20
-//            binding.progressBar.progress += progressCounter // assign percent
-//            binding.tvProgressDesc.text = "You have run ${progressCounter}km! Keep it up!"
-//            // Tính phần trăm
-//            val percentage = (progressCounter.toDouble() / 20 * 100).toInt()
-//            binding.tvPercentage.text = "$percentage%"
+//            trainingPlanViewModel.goalProgress.observe(viewLifecycleOwner){
+//                binding.progressBar.progress = it?.toInt() ?: 0
+//                binding.tvPercentage.text = it?.toString() + "%"
+//            }
         }
     }
 
