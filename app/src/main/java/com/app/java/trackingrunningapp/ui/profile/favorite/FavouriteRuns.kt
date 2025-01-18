@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
@@ -58,13 +59,19 @@ class FavouriteRuns : Fragment() {
                 runSessionViewModel.fetchRunSessions()
                 runSessionViewModel.favoriteRunSessions.collect { sessions ->
                     val mutableList: MutableList<RunSession?> = sessions.toMutableList()
-                    binding.rvFavouriteRun.adapter = FavouriteRunAdapter(mutableList,requireContext(),
-                        object : FavouriteRunAdapter.OnStarClickListener {
-                            override fun onDeleteFavourite(itemRun: RunSession?) {
-                                runSessionViewModel.addAndRemoveFavoriteSession(itemRun!!)
+                    binding.rvFavouriteRun.adapter =
+                        FavouriteRunAdapter(mutableList, requireContext(),
+                            object : FavouriteRunAdapter.OnStarClickListener {
+                                override fun onDeleteFavourite(itemRun: RunSession?) {
+                                    runSessionViewModel.addAndRemoveFavoriteSession(itemRun!!)
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Successfully removed from favourite",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
-                        }
-                    )
+                        )
                 }
             }
         }
