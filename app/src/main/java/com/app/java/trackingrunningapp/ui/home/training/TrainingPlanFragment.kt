@@ -70,7 +70,7 @@ class TrainingPlanFragment : Fragment() {
                         binding.textPlanTargetMetric.text = getString(R.string.text_target_distance,plan.targetDistance)
                     }
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
-                    binding.tvPercentage.text = plan.goalProgress.toString() + "%"
+                    binding.tvPercentage.text = getString(R.string.text_goal_progress,plan.goalProgress)
                     binding.btnLiveStats.setOnClickListener {
                         // TODO:
                         val bundle = Bundle().apply {
@@ -95,7 +95,7 @@ class TrainingPlanFragment : Fragment() {
                         binding.textPlanTargetMetric.text = getString(R.string.text_target_distance,plan.targetDistance)
                     }
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
-                    binding.tvPercentage.text = plan.goalProgress.toString() + "%"
+                    binding.tvPercentage.text = getString(R.string.text_goal_progress,plan.goalProgress)
                     binding.btnLiveStats.setOnClickListener {
                         // TODO:
                         val bundle = Bundle().apply {
@@ -120,7 +120,7 @@ class TrainingPlanFragment : Fragment() {
                         binding.textPlanTargetMetric.text = getString(R.string.text_target_distance,plan.targetDistance)
                     }
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
-                    binding.tvPercentage.text = plan.goalProgress.toString() + "%"
+                    binding.tvPercentage.text = getString(R.string.text_goal_progress,plan.goalProgress)
                     binding.btnLiveStats.setOnClickListener {
                         // TODO:
                         val bundle = Bundle().apply {

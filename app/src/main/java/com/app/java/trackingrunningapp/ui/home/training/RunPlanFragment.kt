@@ -132,7 +132,7 @@ class RunPlanFragment : Fragment() {
             for(plan in plans){
                 if(plan.planId == planId){
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
-                    binding.textRunPercent.text = plan.goalProgress.toString() + "%"
+                    binding.textRunPercent.text = getString(R.string.text_goal_progress,plan.goalProgress)
                 }
             }
         }

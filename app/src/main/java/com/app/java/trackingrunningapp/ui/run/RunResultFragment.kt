@@ -87,7 +87,6 @@ class RunResultFragment : Fragment() {
     private fun setUpAction() {
         binding.btnRunConfirm.setOnClickListener {
             it.findNavController().navigate(R.id.action_global_runFragment)
-            Toast.makeText(requireContext(),"Added Failure",Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -109,4 +109,5 @@
     <string name="text_english">English</string>
     <string name="text_vietnamese">Vietnamese</string>
     <string name="text_target_calo">%.2f cal</string>
+    <string name="text_goal_progress">%.2f%%</string>
 </resources>
