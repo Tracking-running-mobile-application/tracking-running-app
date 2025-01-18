@@ -106,5 +106,5 @@
     <string name="text_settings">Cài đặt</string>
     <string name="text_english">Tiếng Anh</string>
     <string name="text_vietnamese">Tiếng Việt</string>
-
+    <string name="text_target_calo">%.2f calo</string>
 </resources>

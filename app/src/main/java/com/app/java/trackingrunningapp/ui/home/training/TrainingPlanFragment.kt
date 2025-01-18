@@ -62,7 +62,13 @@ class TrainingPlanFragment : Fragment() {
                     binding.planTitle.text = plan.title
                     binding.textPlanDescription.text = plan.description
                     binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
-                    binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    if(plan.targetDistance == null){ // calo
+                        binding.textPlanTarget.text = "Calories"
+                        binding.textPlanTargetMetric.text = getString(R.string.text_target_calo,plan.targetCaloriesBurned)
+                    }else if(plan.targetCaloriesBurned == null){ // distance
+                        binding.textPlanTarget.text = "Distance"
+                        binding.textPlanTargetMetric.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    }
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
                     binding.tvPercentage.text = plan.goalProgress.toString() + "%"
                     binding.btnLiveStats.setOnClickListener {
@@ -81,7 +87,13 @@ class TrainingPlanFragment : Fragment() {
                     binding.planTitle.text = plan.title
                     binding.textPlanDescription.text = plan.description
                     binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
-                    binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    if(plan.targetDistance == null){ // calo
+                        binding.textPlanTarget.text = "Calories"
+                        binding.textPlanTargetMetric.text = getString(R.string.text_target_calo,plan.targetCaloriesBurned)
+                    }else if(plan.targetCaloriesBurned == null){ // distance
+                        binding.textPlanTarget.text = "Distance"
+                        binding.textPlanTargetMetric.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    }
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
                     binding.tvPercentage.text = plan.goalProgress.toString() + "%"
                     binding.btnLiveStats.setOnClickListener {
@@ -100,7 +112,13 @@ class TrainingPlanFragment : Fragment() {
                     binding.planTitle.text = plan.title
                     binding.textPlanDescription.text = plan.description
                     binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
-                    binding.textPlanTargetDistance.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    if(plan.targetDistance == null){ // calo
+                        binding.textPlanTarget.text = "Calories"
+                        binding.textPlanTargetMetric.text = getString(R.string.text_target_calo,plan.targetCaloriesBurned)
+                    }else if(plan.targetCaloriesBurned == null){ // distance
+                        binding.textPlanTarget.text = "Distance"
+                        binding.textPlanTargetMetric.text = getString(R.string.text_target_distance,plan.targetDistance)
+                    }
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
                     binding.tvPercentage.text = plan.goalProgress.toString() + "%"
                     binding.btnLiveStats.setOnClickListener {
