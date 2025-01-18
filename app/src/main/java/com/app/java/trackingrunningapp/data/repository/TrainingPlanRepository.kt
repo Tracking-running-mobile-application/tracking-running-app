@@ -18,7 +18,6 @@ class TrainingPlanRepository {
 
     private val trainingPlanDao: TrainingPlanDao = db.trainingPlanDao()
     private val runSessionDao: RunSessionDao = db.runSessionDao()
-    private val runSessionRepository: RunSessionRepository = RunSessionRepository()
 
     private var updateJob: Job? = null
 
@@ -55,11 +54,13 @@ class TrainingPlanRepository {
         trainingPlanDao.deleteTrainingPlan(planId)
     }
 
-    private fun calcGoalProgress(plan: TrainingPlan): Double {
+    private suspend fun calcGoalProgress(plan: TrainingPlan): Double {
+        val currentRunSessionId = runSessionDao.getCurrentRunSession()?.sessionId
+        val stats = currentRunSessionId?.let { runSessionDao.fetchStatsSession(it) }
         return when {
             plan.targetDistance != null && plan.targetDistance!! > 0 -> {
-                val distance = runSessionRepository.distance.value
-                if (distance > 0) {
+                val distance = stats?.distance
+                if (distance!! > 0) {
                     (distance / plan.targetDistance!!) * 100
                 } else {
                     0.0
@@ -67,7 +68,8 @@ class TrainingPlanRepository {
             }
 
             plan.targetDuration != null && plan.targetDuration!! > 0 -> {
-                val durationInSeconds = runSessionRepository.duration.value
+                val durationInSeconds = stats?.duration!!
+                Log.d("calcProgress", "$durationInSeconds")
                 if (durationInSeconds > 0) {
                     (durationInSeconds / (plan.targetDuration!! * 60)) * 100
                 } else {
@@ -76,7 +78,7 @@ class TrainingPlanRepository {
             }
 
             plan.targetCaloriesBurned != null && plan.targetCaloriesBurned!! > 0 -> {
-                val caloriesBurned = runSessionRepository.caloriesBurned.value
+                val caloriesBurned = stats?.caloriesBurned!!
                 if (caloriesBurned > 0) {
                     (caloriesBurned / plan.targetCaloriesBurned!!) * 100
                 } else {

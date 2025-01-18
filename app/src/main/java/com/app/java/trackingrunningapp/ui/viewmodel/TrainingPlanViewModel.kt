@@ -86,6 +86,7 @@ class TrainingPlanViewModel(
     suspend fun initiateTrainingPlan(planId: Int) {
         Log.d("TrainingPlanVM", "1")
         trainingPlanRepository.assignSessionToTrainingPlan(planId)
+        _goalProgress.value = 0.0
     }
 
     fun fetchAndUpdateGoalProgress() {

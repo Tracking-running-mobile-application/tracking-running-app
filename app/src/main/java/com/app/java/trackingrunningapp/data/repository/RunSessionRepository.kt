@@ -199,7 +199,7 @@ class RunSessionRepository {
                 }
 
                 val pace: Double = if (durationInMinutes > 0) {
-                    adjustedDistance.div(durationInMinutes)
+                    durationInMinutes.div(adjustedDistance)
                 } else {
                     0.0
                 }
@@ -273,8 +273,7 @@ class RunSessionRepository {
                 } else {
                     0.0
                 }
-                val newCaloriesBurned = caloriesBurned + _caloriesBurned.value
-                _caloriesBurned.value = newCaloriesBurned
+                _caloriesBurned.value = caloriesBurned
 
                 delay(100)
             } catch (ce: CancellationException) {

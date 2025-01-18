@@ -84,7 +84,6 @@ class RunSessionViewModel(
         try {
             runSessionRepository.resetStatsValue()
             runSessionRepository.startRunSession()
-            Log.d("RunSessionVM", "1")
         } catch (e: Exception) {
             println("Error starting session: ${e.message}")
         }
@@ -114,9 +113,7 @@ class RunSessionViewModel(
                 runSessionRepository.stopUpdatingStats()
                 statsUpdateJob?.cancelAndJoin()
                 fetchStatsJob?.cancelAndJoin()
-                runSessionRepository.resetStatsValue()
                 runSessionRepository.setRunSessionInactive()
-                Log.d("StatsUpdate", "Stats update finished in finishRunSession")
             }
         }
     }
