@@ -140,7 +140,7 @@ class RunPlanFragment : Fragment() {
             for(plan in plans){
                 if(plan.planId == planId){
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
-                    binding.textRunPercent.text = plan.goalProgress.toString() + "%"
+                    binding.textRunPercent.text =  getString(R.string.text_goal_progress,plan.goalProgress)
                 }
             }
         }
@@ -148,7 +148,7 @@ class RunPlanFragment : Fragment() {
             for(plan in plans){
                 if(plan.planId == planId){
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
-                    binding.textRunPercent.text = plan.goalProgress.toString() + "%"
+                    binding.textRunPercent.text =  getString(R.string.text_goal_progress,plan.goalProgress)
                 }
             }
         }
@@ -179,7 +179,6 @@ class RunPlanFragment : Fragment() {
                     trainingPlanViewModel.initiateTrainingPlan(planId = planId)
                     Log.d("Run Plan Fragment", "6")
                     trainingPlanViewModel.fetchAndUpdateGoalProgress()
-
                 }
             }
         }
@@ -223,6 +222,7 @@ class RunPlanFragment : Fragment() {
 
         binding.btnStop.setOnClickListener {
             // TODO: STOP
+            it.findNavController().popBackStack(R.id.trainingPlanFragment, false)
             lifecycleScope.launch {
 
                 mutex.withLock {
@@ -274,7 +274,6 @@ class RunPlanFragment : Fragment() {
 
                     }
                 }
-                it.findNavController().popBackStack(R.id.trainingPlanFragment, false)
             }
         }
     }

@@ -36,7 +36,16 @@ class PersonalGoalAdapter(
 
         @SuppressLint("SetTextI18n")
         fun bind(goal: PersonalGoal, user: User?) {
-            progress.text = context.getString(R.string.goal_progress,goal.goalProgress)
+            if(goal.goalProgress == 100.0){
+                progress.text = "100%"
+                taskCheckbox.visibility = View.VISIBLE
+                icEditGoal.visibility = View.INVISIBLE
+            }else{
+                progress.text = context.getString(R.string.goal_progress,goal.goalProgress)
+                taskCheckbox.visibility = View.INVISIBLE
+                icEditGoal.visibility = View.VISIBLE
+            }
+
             goalName.text = goal.name
             // target
             if (goal.targetDistance != 0.0 && goal.targetDistance != null) {

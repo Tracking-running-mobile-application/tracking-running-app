@@ -86,7 +86,7 @@
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
                 android:visibility="gone"
-                app:srcCompat="@drawable/ic_check_circle"
+                app:srcCompat="@drawable/baseline_check_circle_24"
                 tools:ignore="ContentDescription" />
 
             <ImageView
