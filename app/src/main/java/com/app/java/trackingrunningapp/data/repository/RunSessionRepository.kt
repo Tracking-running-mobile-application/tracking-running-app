@@ -198,7 +198,7 @@ class RunSessionRepository {
                     else -> _distance.value
                 }
 
-                val pace: Double = if (durationInMinutes > 0) {
+                val pace: Double = if (adjustedDistance > 0) {
                     durationInMinutes.div(adjustedDistance)
                 } else {
                     0.0
@@ -330,7 +330,7 @@ class RunSessionRepository {
 
                         val distance = when (userUnitPreference) {
                             User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
-                            else -> StatsUtils.haversineFormula(location1, location2) / 1609.34
+                            else -> StatsUtils.haversineFormula(location1, location2) / 1000
                         }
                         val newDistance = _distance.value + distance
                         _distance.emit(newDistance)
