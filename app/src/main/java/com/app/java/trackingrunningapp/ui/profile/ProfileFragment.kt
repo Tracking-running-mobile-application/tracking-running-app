@@ -1,6 +1,8 @@
 package com.app.java.trackingrunningapp.ui.profile
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -56,10 +58,15 @@ class ProfileFragment : Fragment() {
         navigateToFavourite()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun navigateToFavourite() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED){
+        runSessionViewModel.loadFavoriteSessions()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED){
+                runSessionViewModel.fetchRunSessions()
                 runSessionViewModel.favoriteRunSessions.collect{favouriteRuns->
+                    binding.textFavouriteRun.text = favouriteRuns.size.toString()
+                    Log.d("Favourite","${favouriteRuns.size}")
                     binding.cvFavoriteRun.setOnClickListener {
                         if(favouriteRuns.isEmpty()){
                             findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
@@ -70,6 +77,24 @@ class ProfileFragment : Fragment() {
                 }
             }
         }
+//        runSessionViewModel.fetchRunSessions()
+//        runSessionViewModel.runSessions.observe(viewLifecycleOwner){sessions->
+//            var favouritesRun = 0
+//            for (session in sessions){
+//                if(session.isFavorite){
+//                    favouritesRun++
+//                }
+//            }
+//            Log.d("Favourite","${favouritesRun}")
+//            binding.textFavouriteRun.text = favouritesRun.toString()
+//            binding.cvFavoriteRun.setOnClickListener {
+//                if(favouritesRun == 0){
+//                    findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
+//                }else{
+//                    findNavController().navigate(R.id.action_profileFragment_to_favouriteRuns)
+//                }
+//            }
+//        }
     }
 
     private fun setupBarChart() {

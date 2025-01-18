@@ -30,6 +30,6 @@ interface TrainingPlanDao {
     @Query("UPDATE TrainingPlan SET goalProgress = :goalProgress WHERE planId = :planId")
     suspend fun updateGoalProgress(planId: Int, goalProgress: Double)
 
-    @Upsert
-    suspend fun upsertTrainingPlan(trainingPlan: TrainingPlan)
+    @Query("UPDATE TrainingPlan SET planSessionId = :sessionId WHERE planId = :planId")
+    suspend fun assignSessionToPlan(planId: Int, sessionId: Int)
 }

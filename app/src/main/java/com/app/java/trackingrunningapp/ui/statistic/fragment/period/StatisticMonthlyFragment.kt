@@ -16,6 +16,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModelFactory
+import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.db.williamchart.view.BarChartView
 import com.google.android.material.tabs.TabLayout
 
@@ -37,33 +38,25 @@ class StatisticMonthlyFragment : Fragment() {
     }
 
     private fun setupViewmodel() {
-//        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
-//        runSessionViewModel =
-//            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
-//        val startDate = "20241123"
-//        val endDate = "20241222"
-//
-//        runSessionViewModel.filterSessionsByDateRange(startDate, endDate)
         val statsFactory = StatsViewModelFactory(InitDatabase.statsRepository)
         statsViewModel =
             ViewModelProvider(requireActivity(), statsFactory)[StatsViewModel::class.java]
-//        val weekData: MutableList<Double> = mutableListOf()
-//        val days: List<String> = getPreviousDays(6).reversed()
-//        val daySums: MutableList<Double> = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        statsViewModel.refreshStats()
         statsViewModel.currentMonthStats.observe(viewLifecycleOwner) { sessions ->
-            Log.d("current_month","${sessions}")
+            Log.d("current_month", "${sessions}")
             setupBarChart(sessions)
         }
-        statsViewModel.refreshStats()
+//        statsViewModel.refreshStats()
     }
 
 
     private fun setupBarChart(monthData: List<MonthlyStats>) {
         val barSet = listOf(
-            "1" to monthData[0].totalDistance!!.toFloat(),
-            "2" to monthData[1].totalDistance!!.toFloat(),
-            "3" to monthData[2].totalDistance!!.toFloat(),
-            "4" to monthData[3].totalDistance!!.toFloat()
+            DateTimeUtils.formatDate(monthData[0].monthStatsKey) to monthData[0].totalDistance!!.toFloat(),
+            DateTimeUtils.formatDate(monthData[1].monthStatsKey) to monthData[1].totalDistance!!.toFloat(),
+            DateTimeUtils.formatDate(monthData[2].monthStatsKey) to monthData[2].totalDistance!!.toFloat(),
+            DateTimeUtils.formatDate(monthData[3].monthStatsKey) to monthData[3].totalDistance!!.toFloat(),
+            DateTimeUtils.formatDate(monthData[4].monthStatsKey) to monthData[4].totalDistance!!.toFloat()
         )
         val barChart = binding.barchart
         barChart.animate(barSet)

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -18,14 +19,19 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.User
+import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentRunGoalBinding
-import com.app.java.trackingrunningapp.databinding.FragmentRunPlanBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSPointViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -53,6 +59,8 @@ class RunGoalFragment : Fragment() {
     private lateinit var runSessionViewModel: RunSessionViewModel
     private lateinit var gpsTrackViewModel: GPSTrackViewModel
     private lateinit var gpsPointViewModel: GPSPointViewModel
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var personalGoalViewModel: PersonalGoalViewModel
 
     private var mutex = Mutex()
 
@@ -91,16 +99,40 @@ class RunGoalFragment : Fragment() {
         gpsPointViewModel =
             ViewModelProvider(this, gpsPointFactory).get(GPSPointViewModel::class.java)
 
+        val userRepository = UserRepository()
+        val userFactory = UserViewModelFactory(userRepository)
+        userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
+
+        val personalGoalFactory = PersonalGoalViewModelFactory(
+            InitDatabase.personalGoalRepository,
+            InitDatabase.runSessionRepository
+        )
+        personalGoalViewModel = ViewModelProvider(
+            requireActivity(),
+            personalGoalFactory
+        )[PersonalGoalViewModel::class.java]
         binding = FragmentRunGoalBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = getString(R.string.personal_goal)
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
         setupPermission()
         setupActionRun()
         initArrowAction()
+        initProgress()
+    }
+
+    private fun initProgress() {
+        val goalId = arguments?.getInt(EXTRA_GOAL_ID, 0)
+        // TODO: setup progress  
+        personalGoalViewModel.goalProgress.observe(viewLifecycleOwner) { progress ->
+            binding.progressBarGoal.progress = progress?.toInt() ?: 0
+            binding.textRunPercent.text = progress.toString()
+            Log.d("RunGoalFragment", "${progress}")
+        }
     }
 
     private fun setupActionRun() {
@@ -109,17 +141,24 @@ class RunGoalFragment : Fragment() {
             binding.btnPause.visibility = View.VISIBLE
             binding.btnStop.visibility = View.VISIBLE
             requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = false
-
             // TODO: START
             lifecycleScope.launch {
                 mutex.withLock {
                     runSessionViewModel.initiateRunSession()
+                    Log.d("PersonalGoal", "1")
                     gpsTrackViewModel.initiateGPSTrack()
                     runSessionViewModel.setRunSessionStartTime()
+
                     // TODO: insert start tracking and sending gps function
                     startTracking()
+                    Log.d("PersonalGoal", "2")
                     runSessionViewModel.fetchAndUpdateStats()
-
+                    Log.d("PersonalGoal", "3")
+                    val goalId = arguments?.getInt(EXTRA_GOAL_ID, 0)!!
+                    personalGoalViewModel.initiatePersonalGoal(goalId = goalId)
+                    personalGoalViewModel.fetchAndUpdateGoalProgress()
+                    Log.d("PersonalGoal", "2")
+                    // TODO: observe
                 }
             }
         }
@@ -131,10 +170,10 @@ class RunGoalFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: do something when pause
-                    runSessionViewModel.fetchAndUpdateStats()
                     runSessionViewModel.pauseRunSession()
                     pauseTracking()
                     gpsTrackViewModel.stopGPSTrack()
+                    personalGoalViewModel.stopUpdatingFetchingProgress()
                 }
             }
         }
@@ -146,10 +185,25 @@ class RunGoalFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: do something when resume
-                    runSessionViewModel.setRunSessionStartTime()
-                    runSessionViewModel.fetchAndUpdateStats()
-                    resumeTracking()
-                    gpsTrackViewModel.resumeGPSTrack()
+                    try {
+                        Log.d("RunGoalFragment Resume", "1: Setting Run Session Start Time")
+                        runSessionViewModel.setRunSessionStartTime()
+
+                        Log.d("RunGoalFragment Resume", "2: Fetching and Updating Stats")
+                        runSessionViewModel.fetchAndUpdateStats()
+
+                        Log.d("RunGoalFragment Resume", "3: Resuming Tracking")
+                        resumeTracking()
+
+                        Log.d("RunGoalFragment Resume", "4: Resuming GPS Tracking")
+                        gpsTrackViewModel.resumeGPSTrack()
+                        personalGoalViewModel.fetchAndUpdateGoalProgress()
+
+                        Log.d("RunGoalFragment Resume", "All Resume Actions Completed")
+                    } catch (e: Exception) {
+                        Log.e("RunGoalFragment Resume", "Error occurred: ${e.message}", e)
+                    }
+
                 }
             }
         }
@@ -160,9 +214,9 @@ class RunGoalFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: stop gps tracking
-                    runSessionViewModel.fetchAndUpdateStats()
                     gpsTrackViewModel.stopGPSTrack()
                     stopTracking()
+                    personalGoalViewModel.stopUpdatingFetchingProgress()
                     runSessionViewModel.finishRunSession()
                 }
             }
@@ -193,11 +247,11 @@ class RunGoalFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun initArrowAction() {
-        binding.icArrowUp.setOnClickListener {
-            binding.containerArrowDown.visibility = View.VISIBLE
-            binding.containerArrowUp.visibility = View.GONE
-            binding.containerMetric.visibility = View.GONE
-        }
+//        binding.icArrowUp.setOnClickListener {
+//            binding.containerArrowDown.visibility = View.VISIBLE
+//            binding.containerArrowUp.visibility = View.GONE
+//            binding.containerMetric.visibility = View.GONE
+//        }
         binding.icArrowDown.setOnClickListener {
             binding.containerArrowUp.visibility = View.VISIBLE
             binding.containerArrowDown.visibility = View.GONE
@@ -209,11 +263,19 @@ class RunGoalFragment : Fragment() {
         val runCalo = binding.layoutMetric.textRunCaloMetric
 
         runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
-            runDuration.text = getString(R.string.text_duration_metric,it?.duration)
-            Log.d("run_time", "${it?.duration}")
-            runDistance.text = getString(R.string.text_distance_metric,it?.distance)
-            runPace.text = getString(R.string.text_pace_metric,it?.pace)
-            runCalo.text = getString(R.string.text_calorie_metric,it?.caloriesBurned)
+            runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
+            userViewModel.fetchUserInfo()
+            userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
+                if (user?.unit == User.UNIT_KM) {
+                    runDistance.text = getString(R.string.text_distance_metric, it?.distance ?: 0.0)
+                } else if (user?.unit == User.UNIT_MILE) {
+                    runDistance.text =
+                        getString(R.string.text_distance_metric_mile, it?.distance ?: 0.0)
+                }
+            }
+
+            runPace.text = getString(R.string.text_pace_metric, it?.pace ?: 0.0)
+            runCalo.text = getString(R.string.text_calorie_metric, it?.caloriesBurned ?: 0.0)
         }
     }
 
@@ -364,5 +426,9 @@ class RunGoalFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).isVisible = true
+    }
+
+    companion object {
+        const val EXTRA_GOAL_ID = "EXTRA_GOAL_ID"
     }
 }

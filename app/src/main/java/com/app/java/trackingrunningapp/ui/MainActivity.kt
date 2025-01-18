@@ -10,6 +10,7 @@ import androidx.activity.OnBackPressedCallback
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -18,8 +19,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.ActivityMainBinding
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
+import com.app.java.trackingrunningapp.ui.setting.SettingFragment
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -35,7 +40,6 @@ class MainActivity : AppCompatActivity() {
         val language = LocaleUtils.getLanguagePreference(this)
         LocaleUtils.setLocale(this, language)
         errorNoti = false
-
         setContentView(binding.root)
         initNavHost()
         setUpNetwork()
@@ -104,6 +108,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.profileFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     tvTitle.text = getString(R.string.text_profile)
                     icEdit.isVisible = true
                     icEdit.setOnMenuItemClickListener {
@@ -114,18 +119,21 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.runFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_run)
                     binding.bottomNav.isVisible = true
                 }
 
                 R.id.statisticFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     icSettings.isVisible = false
                     tvTitle.text = getString(R.string.text_statistics)
                     binding.bottomNav.isVisible = true
                 }
 
                 R.id.historyFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     tvTitle.text = getString(R.string.text_history)
                     icFilter.isVisible = true
                     binding.bottomNav.isVisible = true

@@ -18,11 +18,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 class RunSessionViewModel(
     private val runSessionRepository: RunSessionRepository,
-): ViewModel() {
+) : ViewModel() {
     private val _filteredSessions = MutableStateFlow<List<RunSession>>(emptyList())
     val filteredSession = _filteredSessions.asLiveData()
 
@@ -33,10 +34,10 @@ class RunSessionViewModel(
     val hasMoreData = _hasMoreData.asLiveData()
 
     private val _favoriteRunSessions = MutableStateFlow<List<RunSession?>>(emptyList())
-    val favoriteRunSessions : StateFlow<List<RunSession?>> = _favoriteRunSessions
+    val favoriteRunSessions: StateFlow<List<RunSession?>> = _favoriteRunSessions
 
     private val _statsFlow = MutableStateFlow<StatsSession?>(null)
-    val statsFlow= _statsFlow.asLiveData()
+    val statsFlow = _statsFlow.asLiveData()
 
     private var statsUpdateJob: Job? = null
     private var fetchStatsJob: Job? = null
@@ -51,9 +52,9 @@ class RunSessionViewModel(
     fun filterSessionsByDateRange(startDate: String, endDate: String) {
         viewModelScope.launch {
             try {
-                val sessions= runSessionRepository.filterRunningSessionByDay(startDate, endDate)
+                val sessions = runSessionRepository.filterRunningSessionByDay(startDate, endDate)
                 _filteredSessions.value = sessions
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 println("Error filtering sessions: ${e.message}")
             }
         }
@@ -83,13 +84,13 @@ class RunSessionViewModel(
         try {
             runSessionRepository.resetStatsValue()
             runSessionRepository.startRunSession()
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             println("Error starting session: ${e.message}")
         }
     }
 
     fun setRunSessionStartTime() {
-        viewModelScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             runSessionRepository.setRunSessionStartTime()
         }
     }
@@ -107,7 +108,7 @@ class RunSessionViewModel(
     }
 
     fun finishRunSession() {
-        CoroutineScope(Dispatchers.IO).launch() {
+        CoroutineScope(Dispatchers.IO).launch {
             jobMutex.withLock {
                 Log.d("RunSessionVM", "1")
                 runSessionRepository.stopUpdatingStats()
@@ -116,10 +117,7 @@ class RunSessionViewModel(
                 Log.d("RunSessionVM", "3")
                 fetchStatsJob?.cancelAndJoin()
                 Log.d("RunSessionVM", "4")
-                runSessionRepository.resetStatsValue()
-                Log.d("RunSessionVM", "5")
                 runSessionRepository.setRunSessionInactive()
-                Log.d("RunSessionVM", "6")
                 Log.d("StatsUpdate", "Stats update finished in finishRunSession")
             }
         }
@@ -152,10 +150,16 @@ class RunSessionViewModel(
                 try {
                     val stats = runSessionRepository.fetchStatsSession()
                     _statsFlow.emit(stats)
-                    Log.d("Run Session VM", "Pace: ${stats.pace}, Duration: ${stats.duration}, Distance: ${stats.distance}, Calories ${stats.caloriesBurned}")
+                    Log.d(
+                        "Run Session VM",
+                        "Pace: ${stats.pace}, Duration: ${stats.duration}, Distance: ${stats.distance}, Calories ${stats.caloriesBurned}"
+                    )
                     delay(1000)
                 } catch (e: CancellationException) {
-                    Log.d("fetchStatsCurrentSession()", "Job canceled during execution ${e.message}")
+                    Log.d(
+                        "fetchStatsCurrentSession()",
+                        "Job canceled during execution ${e.message}"
+                    )
                     throw e
                 } catch (e: Exception) {
                     println("Error updating stats: ${e.message}")
@@ -166,7 +170,7 @@ class RunSessionViewModel(
 
     private suspend fun updateStats() {
         statsUpdateJob?.cancelAndJoin()
-        statsUpdateJob = viewModelScope.launch(Dispatchers.IO) {
+        statsUpdateJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 try {
                     runSessionRepository.calcDuration()

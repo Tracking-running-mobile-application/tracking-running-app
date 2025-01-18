@@ -19,7 +19,7 @@ class GPSTrackViewModel (
     }
 
     fun resumeGPSTrack() {
-        viewModelScope.launch(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             gpsTrackRepository.resumeGPSTrack()
         }
     }

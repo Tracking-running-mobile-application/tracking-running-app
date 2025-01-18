@@ -20,6 +20,8 @@ import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
 import com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalAdapter
+import com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalFragment
+import com.app.java.trackingrunningapp.ui.home.personalGoal.RunGoalFragment
 import com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment
 import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModelFactory
@@ -112,17 +114,31 @@ class HomeFragment : Fragment() {
                 )
                 personalGoals.add(personalGoal)
             }
-            personalGoalAdapter = PersonalGoalAdapter(personalGoals, requireContext(),
-                object : PersonalGoalAdapter.OnItemPersonalGoalListener {
-                    override fun onClick(personalGoal: PersonalGoal) {
-                        // TODO: Bundle  
-                        findNavController().navigate(R.id.action_homeFragment_to_runGoalFragment)
+            userViewModel.fetchUserInfo()
+            userViewModel.userLiveData.observe(viewLifecycleOwner){user->
+                personalGoalAdapter = PersonalGoalAdapter(personalGoals,user, requireContext(),
+                    object : PersonalGoalAdapter.OnItemPersonalGoalListener {
+                        override fun onClick(personalGoal: PersonalGoal) {
+                            // TODO: Bundle
+                            val bundle = Bundle().apply {
+                                putInt(RunGoalFragment.EXTRA_GOAL_ID,personalGoal.goalId)
+                            }
+                            findNavController().navigate(R.id.action_homeFragment_to_runGoalFragment,bundle)
+                        }
+
+                        override fun onEditClick(personalGoal: PersonalGoal) {
+                            val bundle = Bundle().apply {
+                                putInt(PersonalGoalFragment.EXTRA_PERSONAL_GOAL_ID,personalGoal.goalId)
+                            }
+                            findNavController()
+                                .navigate(R.id.action_homeFragment_to_personalGoalFragment,bundle)
+                        }
                     }
-                }
-            )
-            personalGoalAdapter.updatePersonalGoal(goals)
-            binding.rvPersonalGoal.adapter = personalGoalAdapter
-            setUpSwipeActions()
+                )
+                personalGoalAdapter.updatePersonalGoal(goals)
+                binding.rvPersonalGoal.adapter = personalGoalAdapter
+                setUpSwipeActions()
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,6 +11,8 @@ import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.data.repository.TrainingPlanRepository
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,10 +37,6 @@ class TrainingPlanViewModel(
 
     private var goalProgressJob: Job? = null
 
-    init {
-        fetchRecommendedPlans()
-    }
-
     fun fetchRecommendedPlans() {
         viewModelScope.launch {
             val beginnerPlans = trainingPlanRepository.getTrainingPlanByDifficulty(exerciseType = "Beginner")
@@ -59,7 +58,7 @@ class TrainingPlanViewModel(
 
     fun fetchGoalProgress() {
         goalProgressJob?.cancel()
-        goalProgressJob = viewModelScope.launch {
+        goalProgressJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 try {
                     val progress = trainingPlanRepository.getGoalProgress()
@@ -78,26 +77,27 @@ class TrainingPlanViewModel(
         }
     }
 
-    /*trigger runSession start before this!!*/
-    fun initiateTrainingPlan() {
-        viewModelScope.launch {
-            trainingPlanRepository.assignSessionToTrainingPlan()
-            observeRunSession()
-        }
+    fun stopUpdatingFetchingProgress() {
+        goalProgressJob?.cancel()
+        trainingPlanRepository.stopUpdatingGoalProgress()
     }
 
-    private fun observeRunSession() {
-        viewModelScope.launch {
-            runSessionRepository.currentRunSession.collect { session ->
-                if (session == null) {
-                    trainingPlanRepository.updateGoalProgress()
-                    val progress = trainingPlanRepository.getGoalProgress()
-                    _goalProgress.value = progress
-                    trainingPlanRepository.stopUpdatingGoalProgress()
-                    goalProgressJob?.cancel()
-                } else {
+    /*trigger runSession start before this!!*/
+    suspend fun initiateTrainingPlan(planId: Int) {
+        Log.d("TrainingPlanVM", "1")
+        trainingPlanRepository.assignSessionToTrainingPlan(planId)
+        _goalProgress.value = 0.0
+    }
+
+    fun fetchAndUpdateGoalProgress() {
+        goalProgressJob?.cancel()
+        goalProgressJob = CoroutineScope(Dispatchers.IO).launch {
+            while (isActive) {
+                try {
                     trainingPlanRepository.startUpdatingGoalProgress()
                     fetchGoalProgress()
+                } catch (e: Exception) {
+                    println("Error updating and fetching goal: ${e.message}")
                 }
             }
         }

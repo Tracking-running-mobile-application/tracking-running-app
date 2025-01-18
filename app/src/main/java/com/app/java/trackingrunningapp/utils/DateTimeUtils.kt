@@ -17,18 +17,36 @@ import java.time.format.DateTimeFormatter
 
 object DateTimeUtils {
     private const val DATE_FORMAT = "dd/MM/yyyy"
-
     fun formatDateString(value: String): String {
-        val inputDate = DateTimeFormatter.ofPattern("yyyyMMdd")
-        val date = java.time.LocalDate.parse(value,inputDate)
+        val formats = listOf(
+            DateTimeFormatter.ofPattern("yyyyMMdd"),
+            DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        )
+
+        val date = formats.asSequence()
+            .mapNotNull { formatter ->
+                try {
+                    java.time.LocalDate.parse(value, formatter)
+                } catch (e: Exception) {
+                    null
+                }
+            }
+            .firstOrNull() ?: throw IllegalArgumentException("Invalid date format: $value")
+
         val outputDate = DateTimeFormatter.ofPattern(DATE_FORMAT)
         return date.format(outputDate)
+    }
+
+    fun formatDate(inputDate: String): String {
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val outputFormatter = DateTimeFormatter.ofPattern("dd/MM")
+        val date = java.time.LocalDate.parse(inputDate, inputFormatter)
+        return date.format(outputFormatter)
     }
 
     fun formatDateStringRemoveHyphen(date: String): String {
         return date.replace("-", "")
     }
-
 
     fun getCurrentDate(): LocalDate {
         val currentInstant = System.now()

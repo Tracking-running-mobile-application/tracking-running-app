@@ -8,17 +8,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
-import com.app.java.trackingrunningapp.data.model.dataclass.location.Location
+import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
 import com.app.java.trackingrunningapp.databinding.FragmentRunResultBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.utils.StatsUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
@@ -29,8 +31,6 @@ import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
-import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
-import com.mapbox.maps.plugin.locationcomponent.location
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,11 +38,13 @@ import kotlinx.coroutines.withContext
 
 class RunResultFragment : Fragment() {
     private lateinit var binding:FragmentRunResultBinding
+    private lateinit var runSessionViewModel: RunSessionViewModel
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var gpsTrackViewModel: GPSTrackViewModel
+    private lateinit var runSessionRepository: RunSessionRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,24 +55,38 @@ class RunResultFragment : Fragment() {
             ViewModelProvider(this, gpsTrackFactory).get(GPSTrackViewModel::class.java)
         binding = FragmentRunResultBinding.inflate(inflater,container,false)
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+        runSessionViewModel =
+            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+
+        runSessionRepository = InitDatabase.runSessionRepository
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupView()
         //initMap()
         setUpToolbar()
         setUpAction()
     }
 
-    private fun setUpAction() {
-        binding.btnRunSave.setOnClickListener {
-            it.findNavController().popBackStack(R.id.action_global_homeFragment,false)
-            Toast.makeText(requireContext(),"Added Successful",Toast.LENGTH_SHORT).show()
+    private fun setupView() {
+        lifecycleScope.launch {
+                binding.layoutResult.textDistanceMetric.text =
+                    getString(R.string.text_distance_metric, runSessionRepository.distance.value)
+                binding.layoutResult.textDurationMetric.text =
+                    StatsUtils.formatDuration(runSessionRepository.duration.value)
+                binding.layoutResult.textPaceMetric.text =
+                    getString(R.string.text_pace_metric, runSessionRepository.pace.value)
+                binding.layoutResult.textCalorieMetric.text =
+                    getString(R.string.text_calorie_metric, runSessionRepository.caloriesBurned.value)
         }
-        binding.btnDiscard.setOnClickListener {
+    }
+
+    private fun setUpAction() {
+        binding.btnRunConfirm.setOnClickListener {
             it.findNavController().navigate(R.id.action_global_runFragment)
-            Toast.makeText(requireContext(),"Added Failure",Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -90,10 +106,12 @@ class RunResultFragment : Fragment() {
         mapView = binding.mapView
         annotationApi = mapView.annotations
         polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
+        val runId = arguments?.getInt(EXTRA_RUN_ID_RESULT,0) ?: 0
+
 //        TODO: Load points of this session with proper sessionId
         lifecycleScope.launch {
              withContext(Dispatchers.IO) {
-                 val locations =  gpsTrackViewModel.fetchGPSPoints(77)
+                 val locations =  gpsTrackViewModel.fetchGPSPoints(runId)
                  for (location in locations) {
                      routeCoordinates.add(Point.fromLngLat(location.longitude, location.latitude))
                  }
@@ -119,5 +137,9 @@ class RunResultFragment : Fragment() {
             .withLineColor("#FF0000")
             .withLineWidth(5.0)
         polylineAnnotationManager.create(polylineAnnotationOptions)
+    }
+
+    companion object{
+        const val EXTRA_RUN_ID_RESULT = "EXTRA_RUN_ID_RESULT"
     }
 }
