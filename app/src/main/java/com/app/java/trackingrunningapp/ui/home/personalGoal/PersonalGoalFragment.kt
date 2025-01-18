@@ -56,20 +56,6 @@ class PersonalGoalFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        personalGoalViewModel.personalGoalsLiveData.observe(viewLifecycleOwner){goals->
-//            val currentGoal = goals[goals.size-1]
-//            binding.editCustomNamePlan.setText(currentGoal.name)
-//            if(currentGoal.targetDuration != 0.0){
-//                binding.btnObjectDuration.performClick()
-//                binding.objectiveBox.setText(currentGoal.targetDuration.toString())
-//            }else if(currentGoal.targetDistance != 0.0) {
-//                binding.btnObjectDistance.performClick()
-//                binding.objectiveBox.setText(currentGoal.targetDistance.toString())
-//            }else if(currentGoal.targetCaloriesBurned != 0.0) {
-//                binding.btnObjectCalo.performClick()
-//                binding.objectiveBox.setText(currentGoal.targetCaloriesBurned.toString())
-//            }
-//        }
         setupView()
         handleClickEvent()
     }
@@ -114,6 +100,24 @@ class PersonalGoalFragment : Fragment() {
 
     private fun setupView() {
         val goalId = arguments?.getInt(EXTRA_PERSONAL_GOAL_ID, 0)
+        personalGoalViewModel.loadPersonalGoals()
+        personalGoalViewModel.personalGoalsLiveData.observe(viewLifecycleOwner){goals->
+            for(goal in goals){
+                if(goalId == goal.goalId){
+                    binding.editCustomNamePlan.setText(goal.name)
+                    if (goal.targetDuration != 0.0) {
+                        binding.btnObjectDuration.performClick()
+                        binding.objectiveBox.setText(goal.targetDuration.toString())
+                    } else if (goal.targetDistance != 0.0) {
+                        binding.btnObjectDistance.performClick()
+                        binding.objectiveBox.setText(goal.targetDistance.toString())
+                    } else if (goal.targetCaloriesBurned != 0.0) {
+                        binding.btnObjectCalo.performClick()
+                        binding.objectiveBox.setText(goal.targetCaloriesBurned.toString())
+                    }
+                }
+            }
+        }
         //define section
         val buttonDistance = binding.btnObjectDistance
         val buttonDuration = binding.btnObjectDuration
@@ -140,6 +144,8 @@ class PersonalGoalFragment : Fragment() {
             isDistanceClicked = false
             isDurationClicked = true
             isCaloClicked = false
+            userViewModel.userLiveData.removeObservers(viewLifecycleOwner)
+            binding.unitText.hint = "mins"
             chooseObjective(
                 objectiveBar,
                 unitText,
@@ -152,6 +158,8 @@ class PersonalGoalFragment : Fragment() {
             isDistanceClicked = false
             isDurationClicked = false
             isCaloClicked = true
+            userViewModel.userLiveData.removeObservers(viewLifecycleOwner)
+            binding.unitText.hint = "cal"
             chooseObjective(
                 objectiveBar,
                 unitText,

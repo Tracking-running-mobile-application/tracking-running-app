@@ -130,8 +130,7 @@ class RunGoalFragment : Fragment() {
         // TODO: setup progress  
         personalGoalViewModel.goalProgress.observe(viewLifecycleOwner) { progress ->
             binding.progressBarGoal.progress = progress?.toInt() ?: 0
-            binding.textRunPercent.text = progress.toString()
-            Log.d("RunGoalFragment", "${progress}")
+            binding.textRunPercent.text = getString(R.string.text_goal_progress,progress)
         }
     }
 
@@ -247,11 +246,6 @@ class RunGoalFragment : Fragment() {
 
     @SuppressLint("SetTextI18n")
     private fun initArrowAction() {
-//        binding.icArrowUp.setOnClickListener {
-//            binding.containerArrowDown.visibility = View.VISIBLE
-//            binding.containerArrowUp.visibility = View.GONE
-//            binding.containerMetric.visibility = View.GONE
-//        }
         binding.icArrowDown.setOnClickListener {
             binding.containerArrowUp.visibility = View.VISIBLE
             binding.containerArrowDown.visibility = View.GONE
