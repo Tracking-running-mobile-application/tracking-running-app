@@ -224,6 +224,7 @@ class RunPlanFragment : Fragment() {
         binding.btnStop.setOnClickListener {
             // TODO: STOP
             lifecycleScope.launch {
+
                 mutex.withLock {
                     // TODO: stop gps tracking
                     try {
@@ -240,6 +241,34 @@ class RunPlanFragment : Fragment() {
                     } catch (e: Exception) {
                         Log.e("RunPlanFragment Stop", "Error occurred: ${e.message}", e)
                     }
+                try {
+                    mutex.withLock {
+                        Log.d("RunPlanFragment Stop", "Starting Stop Sequence")
+                        try {
+                            Log.d("RunPlanFragment Stop", "2 - stopGPSTrack")
+                            gpsTrackViewModel.stopGPSTrack()
+                        } catch (e: Exception) {
+                            Log.e("RunPlanFragment Stop", "Error in stopGPSTrack: ${e.message}")
+                        }
+
+                        try {
+                            Log.d("RunPlanFragment Stop", "3 - stopTracking")
+                            stopTracking()
+                        } catch (e: Exception) {
+                            Log.e("RunPlanFragment Stop", "Error in stopTracking: ${e.message}")
+                        }
+
+                        try {
+                            Log.d("RunPlanFragment Stop", "4 - finishRunSession")
+                            runSessionViewModel.finishRunSession()
+                        } catch (e: Exception) {
+                            Log.e("RunPlanFragment Stop", "Error in finishRunSession: ${e.message}")
+                        }
+                        Log.d("RunPlanFragment Stop", "Stop Sequence Complete")
+                    }
+                } catch (e: Exception) {
+                    Log.e("RunPlanFragment Stop", "Error in lifecycleScope: ${e.message}")
+
                 }
             }
             it.findNavController().popBackStack(R.id.trainingPlanFragment, false)

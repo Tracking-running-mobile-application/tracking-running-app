@@ -110,10 +110,15 @@ class RunSessionViewModel(
     fun finishRunSession() {
         CoroutineScope(Dispatchers.IO).launch {
             jobMutex.withLock {
+                Log.d("RunSessionVM", "1")
                 runSessionRepository.stopUpdatingStats()
+                Log.d("RunSessionVM", "2")
                 statsUpdateJob?.cancelAndJoin()
+                Log.d("RunSessionVM", "3")
                 fetchStatsJob?.cancelAndJoin()
+                Log.d("RunSessionVM", "4")
                 runSessionRepository.setRunSessionInactive()
+                Log.d("StatsUpdate", "Stats update finished in finishRunSession")
             }
         }
     }

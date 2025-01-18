@@ -193,7 +193,6 @@ class RunFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     // TODO: stop gps tracking
-                    runSessionViewModel.fetchAndUpdateStats()
                     gpsTrackViewModel.stopGPSTrack()
                     stopTracking()
                     runSessionViewModel.finishRunSession()
@@ -202,8 +201,6 @@ class RunFragment : Fragment() {
             it.findNavController()
                         .navigate(R.id.action_runFragment_to_runResultFragment)
         }
-
-
     }
 
     @SuppressLint("InlinedApi")

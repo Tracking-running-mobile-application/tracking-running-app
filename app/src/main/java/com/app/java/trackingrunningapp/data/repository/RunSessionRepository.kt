@@ -275,6 +275,8 @@ class RunSessionRepository {
                 }
                 _caloriesBurned.value = caloriesBurned
 
+                Log.d("Calories", "${caloriesBurned}")
+
                 delay(100)
             } catch (ce: CancellationException) {
                 println("calc CaloriesBurned runSessionRepo ${ce.message}")
@@ -331,6 +333,12 @@ class RunSessionRepository {
                         val distance = when (userUnitPreference) {
                             User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
                             else -> StatsUtils.haversineFormula(location1, location2) / 1000
+
+                        }
+                        Log.d("RunSessionRepo", "${distance}")
+                        if (distance<0.005) {
+                            return@collect
+                          
                         }
                         val newDistance = _distance.value + distance
                         _distance.emit(newDistance)
