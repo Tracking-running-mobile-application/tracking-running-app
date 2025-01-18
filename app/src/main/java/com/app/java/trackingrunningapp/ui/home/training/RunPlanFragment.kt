@@ -175,7 +175,7 @@ class RunPlanFragment : Fragment() {
                     Log.d("Run Plan Fragment", "4")
                     runSessionViewModel.fetchAndUpdateStats()
                     Log.d("Run Plan Fragment", "5")
-                    val planId = arguments?.getInt(EXTRA_PLAN_ID,0)!!
+                    val planId = arguments?.getInt(EXTRA_PLAN_ID, 0)!!
                     trainingPlanViewModel.initiateTrainingPlan(planId = planId)
                     Log.d("Run Plan Fragment", "6")
                     trainingPlanViewModel.fetchAndUpdateGoalProgress()
@@ -241,37 +241,41 @@ class RunPlanFragment : Fragment() {
                     } catch (e: Exception) {
                         Log.e("RunPlanFragment Stop", "Error occurred: ${e.message}", e)
                     }
-                try {
-                    mutex.withLock {
-                        Log.d("RunPlanFragment Stop", "Starting Stop Sequence")
-                        try {
-                            Log.d("RunPlanFragment Stop", "2 - stopGPSTrack")
-                            gpsTrackViewModel.stopGPSTrack()
-                        } catch (e: Exception) {
-                            Log.e("RunPlanFragment Stop", "Error in stopGPSTrack: ${e.message}")
-                        }
+                    try {
+                        mutex.withLock {
+                            Log.d("RunPlanFragment Stop", "Starting Stop Sequence")
+                            try {
+                                Log.d("RunPlanFragment Stop", "2 - stopGPSTrack")
+                                gpsTrackViewModel.stopGPSTrack()
+                            } catch (e: Exception) {
+                                Log.e("RunPlanFragment Stop", "Error in stopGPSTrack: ${e.message}")
+                            }
 
-                        try {
-                            Log.d("RunPlanFragment Stop", "3 - stopTracking")
-                            stopTracking()
-                        } catch (e: Exception) {
-                            Log.e("RunPlanFragment Stop", "Error in stopTracking: ${e.message}")
-                        }
+                            try {
+                                Log.d("RunPlanFragment Stop", "3 - stopTracking")
+                                stopTracking()
+                            } catch (e: Exception) {
+                                Log.e("RunPlanFragment Stop", "Error in stopTracking: ${e.message}")
+                            }
 
-                        try {
-                            Log.d("RunPlanFragment Stop", "4 - finishRunSession")
-                            runSessionViewModel.finishRunSession()
-                        } catch (e: Exception) {
-                            Log.e("RunPlanFragment Stop", "Error in finishRunSession: ${e.message}")
+                            try {
+                                Log.d("RunPlanFragment Stop", "4 - finishRunSession")
+                                runSessionViewModel.finishRunSession()
+                            } catch (e: Exception) {
+                                Log.e(
+                                    "RunPlanFragment Stop",
+                                    "Error in finishRunSession: ${e.message}"
+                                )
+                            }
+                            Log.d("RunPlanFragment Stop", "Stop Sequence Complete")
                         }
-                        Log.d("RunPlanFragment Stop", "Stop Sequence Complete")
+                    } catch (e: Exception) {
+                        Log.e("RunPlanFragment Stop", "Error in lifecycleScope: ${e.message}")
+
                     }
-                } catch (e: Exception) {
-                    Log.e("RunPlanFragment Stop", "Error in lifecycleScope: ${e.message}")
-
                 }
+                it.findNavController().popBackStack(R.id.trainingPlanFragment, false)
             }
-            it.findNavController().popBackStack(R.id.trainingPlanFragment, false)
         }
     }
 
