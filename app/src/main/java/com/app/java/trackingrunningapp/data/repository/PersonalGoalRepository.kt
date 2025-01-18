@@ -42,6 +42,7 @@ class PersonalGoalRepository {
 
     suspend fun assignSessionToPersonalGoal(goalId: Int) {
         val currentSessionId = runSessionRepository.currentRunSession.value?.sessionId
+        Log.d("AssignSessionToPersonalGoal", "$currentSessionId")
         if (currentSessionId != null) {
             personalGoalDao.setSessionForPersonalGoal(goalId = goalId, sessionId = currentSessionId)
         }

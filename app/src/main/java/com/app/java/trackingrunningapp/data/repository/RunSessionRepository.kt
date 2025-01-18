@@ -66,6 +66,7 @@ class RunSessionRepository {
 
     private suspend fun setCurrentRunSession(): RunSession? {
         val currentRunSession = runSessionDao.getCurrentRunSession()
+        Log.d("setCurrentRunSession", "${currentRunSession?.sessionId}")
         if (currentRunSession != null) {
             _currentRunSession.emit(currentRunSession)
             return currentRunSession

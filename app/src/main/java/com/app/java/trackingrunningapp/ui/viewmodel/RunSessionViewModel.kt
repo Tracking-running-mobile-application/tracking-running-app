@@ -84,6 +84,7 @@ class RunSessionViewModel(
         try {
             runSessionRepository.resetStatsValue()
             runSessionRepository.startRunSession()
+            Log.d("RunSessionVM", "1")
         } catch (e: Exception) {
             println("Error starting session: ${e.message}")
         }

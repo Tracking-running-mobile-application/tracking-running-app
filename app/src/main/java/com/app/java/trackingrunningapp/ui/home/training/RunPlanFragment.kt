@@ -165,13 +165,19 @@ class RunPlanFragment : Fragment() {
             lifecycleScope.launch {
                 mutex.withLock {
                     runSessionViewModel.initiateRunSession()
+                    Log.d("Run Plan Fragment", "1")
                     gpsTrackViewModel.initiateGPSTrack()
-                    //TODO: Insert Training Plan ID in here
-                    //trainingPlanViewModel.initiateTrainingPlan(planId: Int)
+                    Log.d("Run Plan Fragment", "2")
                     runSessionViewModel.setRunSessionStartTime()
+                    Log.d("Run Plan Fragment", "3")
                     // TODO: insert start tracking and sending gps function
                     startTracking()
+                    Log.d("Run Plan Fragment", "4")
                     runSessionViewModel.fetchAndUpdateStats()
+                    Log.d("Run Plan Fragment", "5")
+                    val planId = arguments?.getInt(EXTRA_PLAN_ID,0)!!
+                    trainingPlanViewModel.initiateTrainingPlan(planId = planId)
+                    Log.d("Run Plan Fragment", "6")
                     trainingPlanViewModel.fetchAndUpdateGoalProgress()
 
                 }

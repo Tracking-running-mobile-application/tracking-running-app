@@ -1,5 +1,7 @@
 package com.app.java.trackingrunningapp.data.repository
 
+import android.util.Log
+import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.dao.TrainingPlanDao
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.database.InitDatabase.Companion.notificationRepository
@@ -15,6 +17,7 @@ class TrainingPlanRepository {
     val db = InitDatabase.runningDatabase
 
     private val trainingPlanDao: TrainingPlanDao = db.trainingPlanDao()
+    private val runSessionDao: RunSessionDao = db.runSessionDao()
     private val runSessionRepository: RunSessionRepository = RunSessionRepository()
 
     private var updateJob: Job? = null
@@ -23,7 +26,7 @@ class TrainingPlanRepository {
     private var finishNotiTriggered: Boolean = false
 
     private suspend fun getCurrentTrainingPlanOrThrow(): TrainingPlan {
-        val currentRunSessionId = runSessionRepository.currentRunSession.value?.sessionId
+        val currentRunSessionId = runSessionDao.getCurrentRunSession()?.sessionId
         return currentRunSessionId?.let { trainingPlanDao.getTrainingPlanBySessionId(it) }
             ?: throw IllegalStateException("There is not any training plan attached with this run session ID! (Training Plan Repository)")
     }
@@ -38,7 +41,9 @@ class TrainingPlanRepository {
     }
 
     suspend fun assignSessionToTrainingPlan(planId: Int) {
-        val currentSessionId = runSessionRepository.currentRunSession.value?.sessionId
+        Log.d("AssignSessionToPlan", "1")
+        val currentSessionId = runSessionDao.getCurrentRunSession()?.sessionId
+        Log.d("AssignSessionToPlan", "$currentSessionId")
         if (currentSessionId != null) {
             trainingPlanDao.assignSessionToPlan(planId = planId, sessionId = currentSessionId)
         }

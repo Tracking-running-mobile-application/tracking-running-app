@@ -58,7 +58,7 @@ class TrainingPlanViewModel(
 
     fun fetchGoalProgress() {
         goalProgressJob?.cancel()
-        goalProgressJob = viewModelScope.launch {
+        goalProgressJob = CoroutineScope(Dispatchers.IO).launch {
             while (isActive) {
                 try {
                     val progress = trainingPlanRepository.getGoalProgress()
@@ -83,10 +83,9 @@ class TrainingPlanViewModel(
     }
 
     /*trigger runSession start before this!!*/
-    fun initiateTrainingPlan(planId: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            trainingPlanRepository.assignSessionToTrainingPlan(planId)
-        }
+    suspend fun initiateTrainingPlan(planId: Int) {
+        Log.d("TrainingPlanVM", "1")
+        trainingPlanRepository.assignSessionToTrainingPlan(planId)
     }
 
     fun fetchAndUpdateGoalProgress() {
