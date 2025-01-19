@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -38,6 +39,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val language = LocaleUtils.getLanguagePreference(this)
+        Log.d("lang", language)
         LocaleUtils.setLocale(this, language)
         errorNoti = false
         setContentView(binding.root)
@@ -90,6 +92,7 @@ class MainActivity : AppCompatActivity() {
             val icSettings = binding.toolbarMain.menu.findItem(R.id.item_toolbar_setting)
             val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
             val icEdit = binding.toolbarMain.menu.findItem(R.id.item_toolbar_edit)
+            icSettings.isVisible = true
             when (destination.id) {
                 R.id.homeFragment -> {
                     tvTitle.text = getString(R.string.text_home)

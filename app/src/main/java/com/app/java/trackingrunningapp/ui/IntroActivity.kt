@@ -22,6 +22,9 @@ class IntroActivity : AppCompatActivity() {
     private lateinit var userViewModel: UserViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val language = LocaleUtils.getLanguagePreference(this)
+        Log.d("lang", language)
+        LocaleUtils.setLocale(this, language)
         enableEdgeToEdge()
         setContentView(R.layout.activity_intro)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

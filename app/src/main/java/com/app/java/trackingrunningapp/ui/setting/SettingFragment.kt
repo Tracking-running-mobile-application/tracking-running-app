@@ -19,6 +19,7 @@ import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentSettingBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -117,7 +118,14 @@ class SettingFragment : Fragment() {
                     settingViewModel.updateLanguage(getString(R.string.text_vietnamese))
                 }
             }
+            reloadBottomNavMenu()
+            recreate(requireActivity()) // Reload Activity
         }
+    }
+    private fun reloadBottomNavMenu() {
+        val bottomNav = requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav)
+        bottomNav.menu.clear()
+        bottomNav.inflateMenu(R.menu.bottom_nav) // Load lại menu
     }
 
 
