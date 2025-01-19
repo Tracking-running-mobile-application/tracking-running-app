@@ -231,7 +231,7 @@ class RunSessionRepository {
 
                 val isTooSlow = when (userMetricPreference) {
                     User.UNIT_MILE -> _pace.value > 20.0
-                    else -> _pace.value > 33.0
+                    else -> _pace.value > 13.0
                 }
 
                 if(isTooSlow) {
@@ -318,7 +318,7 @@ class RunSessionRepository {
                         val userUnitPreference = userInfo?.metricPreference
                         val isTooSlow = when (userUnitPreference) {
                             User.UNIT_MILE -> _pace.value > 20.0
-                            else -> _pace.value > 33.0
+                            else -> _pace.value > 13.0
                         }
 
                         if (isTooSlow) {
@@ -331,7 +331,7 @@ class RunSessionRepository {
 
                         }
                         Log.d("RunSessionRepo", "${distance}")
-                        if (distance<0.07) {
+                        if (distance >0.0007 && distance <0.0025) {
                             return@collect
                           
                         }
