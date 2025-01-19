@@ -82,8 +82,8 @@ class EditProfileFragment:Fragment() {
                         age = age,
                         height = userHeight,
                         weight = userWeight ?: 50.0,
-                        metricPreference = "kg",
-                        unit = "km"
+                        metricPreference = "km",
+                        unit = "kg"
                     )
                 }
             }

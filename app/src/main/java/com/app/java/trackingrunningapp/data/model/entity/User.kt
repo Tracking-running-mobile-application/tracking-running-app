@@ -12,8 +12,8 @@ data class User(
     @ColumnInfo(name = "age", defaultValue = "NULL")val age: Int?,
     @ColumnInfo(name = "height", defaultValue = "NULL") val height: Float?,
     @ColumnInfo(name = "weight", defaultValue = "50.0") val weight: Double? = 50.0,
-    @ColumnInfo(name = "metricPreference", defaultValue = "'kg'") val metricPreference: String? = KILOGRAM,
-    @ColumnInfo(name = "unit", defaultValue = "'km'") var unit: String? = UNIT_KM
+    @ColumnInfo(name = "metricPreference", defaultValue = "'km'") val metricPreference: String? = UNIT_KM,
+    @ColumnInfo(name = "unit", defaultValue = "'kg'") var unit: String? = KILOGRAM
 ) {
     companion object {
         const val UNIT_KM = "km"
