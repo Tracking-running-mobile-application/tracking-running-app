@@ -110,4 +110,25 @@
     <string name="text_vietnamese">Vietnamese</string>
     <string name="text_target_calo">%.2f cal</string>
     <string name="text_goal_progress">%.2f%%</string>
+    <string name="text_target_duration">%.2f minute</string>
+    <string name="text_beginner_run">Beginner Run</string>
+    <string name="text_intermediate_run">Intermediate Run</string>
+    <string name="text_advanced_run">Advanced Run</string>
+    <string name="km_lowercase">km</string>
+    <string name="mile_lowercase">mile</string>
+    <string name="text_hours">hours</string>
+    <string name="text_edit_profile">Edit Profile</string>
+    <string name="text_start">Start</string>
+    <string name="text_stop">Stop</string>
+    <string name="text_resume">Resume</string>
+    <string name="text_run_result">Run Result</string>
+    <string name="text_congratulations">CONGRATULATIONS!</string>
+    <string name="text_your_stats">YOUR STATS</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
 </resources>

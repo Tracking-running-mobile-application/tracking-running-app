@@ -26,22 +26,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
-                android:text="Calories"
+                android:text="@string/calories"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_30" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/text_run_calo_metric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginStart="4dp"
                 android:paddingBottom="4dp"
                 android:text="Stat"
                 android:textColor="@color/main_yellow"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -52,7 +52,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         android:backgroundTint="@color/gray_button"
         app:cardCornerRadius="10dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline9"
@@ -70,22 +70,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
-                android:text="Duration"
+                android:text="@string/duration"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_30" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/text_run_duration_metric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginStart="4dp"
                 android:paddingBottom="4dp"
                 android:text="Stat"
                 android:textColor="@color/main_yellow"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -112,22 +112,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
-                android:text="Distance"
+                android:text="@string/distance"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_30" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/text_run_distance_metric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginStart="4dp"
                 android:paddingBottom="4dp"
                 android:text="Stat"
                 android:textColor="@color/main_yellow"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
@@ -152,22 +152,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
-                android:text="Pace"
+                android:text="@string/pace"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_30" />
+                android:textSize="24sp" />
 
             <TextView
                 android:id="@+id/text_run_pace_metric"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="@dimen/margin_8"
+                android:layout_marginStart="4dp"
                 android:paddingBottom="4dp"
                 android:text="Stat"
                 android:textColor="@color/main_yellow"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

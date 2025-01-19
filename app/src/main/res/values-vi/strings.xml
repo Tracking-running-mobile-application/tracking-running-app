@@ -101,11 +101,34 @@
     <string name="weekly">Hàng tuần</string>
     <string name="monthly">Hàng tháng</string>
     <string name="yearly">Hàng năm</string>
-    <string name="km">Ki-lô-mét(km)</string>
-    <string name="mile">Dặm(mile)</string>
+    <string name="km">Ki-lô-mét</string>
+    <string name="mile">Dặm</string>
     <string name="text_settings">Cài đặt</string>
     <string name="text_english">Tiếng Anh</string>
     <string name="text_vietnamese">Tiếng Việt</string>
     <string name="text_target_calo">%.2f calo</string>
     <string name="text_goal_progress">%.2f%%</string>
+    <string name="text_target_duration">%.2f phút</string>
+    <string name="text_beginner_run">Cơ Bản</string>
+    <string name="text_intermediate_run">Trung Cấp</string>
+    <string name="text_advanced_run">Nâng Cao</string>
+    <string name="km_lowercase">km</string>
+    <string name="mile_lowercase">dặm</string>
+    <string name="text_hours">giờ</string>
+    <string name="text_edit_profile">Chỉnh Sửa Hồ Sơ</string>
+    <string name="text_start">Bắt Đầu</string>
+    <string name="text_stop">Dừng</string>
+    <string name="text_resume">Tiếp Tục</string>
+    <string name="text_run_result">Kết Quả Chạy</string>
+    <string name="text_congratulations">CHÚC MỪNG!</string>
+    <string name="text_your_stats">THỐNG KÊ CỦA BẠN</string>
+    <string name="mon">T2</string>
+    <string name="tue">T3</string>
+    <string name="wed">T4</string>
+    <string name="thu">T5</string>
+    <string name="fri">T6</string>
+    <string name="sat">T7</string>
+    <string name="sun">CN</string>
+
+
 </resources>
