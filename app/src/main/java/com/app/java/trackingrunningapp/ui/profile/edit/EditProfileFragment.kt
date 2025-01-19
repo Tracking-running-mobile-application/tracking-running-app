@@ -40,7 +40,8 @@ class EditProfileFragment:Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpToggle()
-        requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = "Edit Profile"
+        requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text =
+            getString(R.string.text_edit_profile)
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
         userViewModel.fetchUserInfo()
         userViewModel.userLiveData.observe(viewLifecycleOwner){user->

@@ -71,7 +71,7 @@
                 android:textStyle="bold"
                 android:layout_marginEnd="@dimen/margin_16"
                 android:gravity="center_vertical"
-                android:text="CONGRATULATIONS!"
+                android:text="@string/text_congratulations"
                 android:textColor="@color/text_shadow_white"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -84,7 +84,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center_vertical"
-        android:text="YOUR STATS"
+        android:text="@string/text_your_stats"
         android:textColor="@color/text_shadow_white"
         android:textSize="24sp"
         app:drawableStartCompat="@drawable/baseline_bar_chart_32"

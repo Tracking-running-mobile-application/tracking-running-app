@@ -94,7 +94,7 @@ class RunResultFragment : Fragment() {
         val toolbarTitle = requireActivity().findViewById<TextView>(R.id.tv_toolbar_title)
         val toolbar = requireActivity().findViewById<Toolbar>(R.id.toolbar_main)
         toolbar.navigationIcon = null
-        toolbarTitle.text = "Run Result"
+        toolbarTitle.text = getString(R.string.text_run_result)
     }
 
     override fun onStop() {

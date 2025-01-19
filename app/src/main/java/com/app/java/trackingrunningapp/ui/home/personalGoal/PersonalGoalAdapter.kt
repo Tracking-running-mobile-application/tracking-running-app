@@ -49,7 +49,11 @@ class PersonalGoalAdapter(
             goalName.text = goal.name
             // target
             if (goal.targetDistance != 0.0 && goal.targetDistance != null) {
-                goalTarget.text = goal.targetDistance.toString() + " " + user?.unit
+                if(user?.unit == "km"){
+                    goalTarget.text = goal.targetDistance.toString() + " " + context.getString(R.string.km_lowercase)
+                }else{
+                    goalTarget.text = goal.targetDistance.toString() + " " + context.getString(R.string.mile_lowercase)
+                }
             } else if (goal.targetDuration != 0.0 && goal.targetDuration != null) {
                 goalTarget.text =
                     context.getString(R.string.text_estimate_time, goal.targetDuration)

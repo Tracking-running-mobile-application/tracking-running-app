@@ -53,13 +53,13 @@ class StatisticWeeklyFragment : Fragment() {
 
     private fun setupBarChart(weekData: List<WeeklyStats>) {
         val barSet = listOf(
-            "Mon" to weekData[0].totalDistance!!.toFloat(),
-            "Tue" to weekData[1].totalDistance!!.toFloat(),
-            "Wed" to weekData[2].totalDistance!!.toFloat(),
-            "Thu" to weekData[3].totalDistance!!.toFloat(),
-            "Fri" to weekData[4].totalDistance!!.toFloat(),
-            "Sat" to weekData[5].totalDistance!!.toFloat(),
-            "Sun" to weekData[6].totalDistance!!.toFloat(),
+            getString(R.string.mon) to weekData[0].totalDistance!!.toFloat(),
+            getString(R.string.tue) to weekData[1].totalDistance!!.toFloat(),
+            getString(R.string.wed) to weekData[2].totalDistance!!.toFloat(),
+            getString(R.string.thu) to weekData[3].totalDistance!!.toFloat(),
+            getString(R.string.fri) to weekData[4].totalDistance!!.toFloat(),
+            getString(R.string.sat) to weekData[5].totalDistance!!.toFloat(),
+            getString(R.string.sun) to weekData[6].totalDistance!!.toFloat(),
         )
         val barChart = binding.barchart
         barChart.animate(barSet)

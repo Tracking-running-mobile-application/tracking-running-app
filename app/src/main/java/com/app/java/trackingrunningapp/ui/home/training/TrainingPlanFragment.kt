@@ -51,82 +51,109 @@ class TrainingPlanFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun setUpView() {
         val planTitle = arguments?.getString(EXTRA_TITLE_TRAINING_PLAN)!!
-        val imageResId = arguments?.getInt(EXTRA_IMAGE_RES_ID,-1)!!
+        val imageResId = arguments?.getInt(EXTRA_IMAGE_RES_ID, -1)!!
         // toolbar
         val toolbarTitle = arguments?.getString(EXTRA_PLAN_LEVEL) + "'s Guide"
         requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text = toolbarTitle
         setupImageSlider(imageResId)
-        trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner){beginnerPlans ->
-            for (plan in beginnerPlans){
-                if(plan.title.trim().compareTo(planTitle.trim()) == 0){
+        trainingPlanViewModel.recommendedPlansBeginner.observe(viewLifecycleOwner) { beginnerPlans ->
+            for (plan in beginnerPlans) {
+                if (plan.title.trim().compareTo(planTitle.trim()) == 0) {
                     binding.planTitle.text = plan.title
                     binding.textPlanDescription.text = plan.description
-                    binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
-                    if(plan.targetDistance == null){ // calo
+                    binding.textPlanEstimateTime.text =
+                        getString(R.string.text_estimate_time, plan.estimatedTime)
+                    if (plan.targetDistance == null && plan.targetDuration == null) { // calo
                         binding.textPlanTarget.text = "Calories"
-                        binding.textPlanTargetMetric.text = getString(R.string.text_target_calo,plan.targetCaloriesBurned)
-                    }else if(plan.targetCaloriesBurned == null){ // distance
+                        binding.textPlanTargetMetric.text =
+                            getString(R.string.text_target_calo, plan.targetCaloriesBurned)
+                    } else if (plan.targetCaloriesBurned == null && plan.targetDuration == null) { // distance
                         binding.textPlanTarget.text = "Distance"
-                        binding.textPlanTargetMetric.text = getString(R.string.text_target_distance,plan.targetDistance)
+                        binding.textPlanTargetMetric.text =
+                            getString(R.string.text_target_distance, plan.targetDistance)
+                    }else if(plan.targetDistance == null && plan.targetCaloriesBurned == null){ // duration
+                        binding.textPlanTarget.text = "Duration"
+                        binding.textPlanTargetMetric.text =
+                            getString(R.string.text_target_duration,plan.targetDuration)
                     }
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
-                    binding.tvPercentage.text = getString(R.string.text_goal_progress,plan.goalProgress)
+                    binding.tvPercentage.text =
+                        getString(R.string.text_goal_progress, plan.goalProgress)
                     binding.btnLiveStats.setOnClickListener {
                         // TODO:
                         val bundle = Bundle().apply {
-                            putInt(RunPlanFragment.EXTRA_PLAN_ID,plan.planId)
+                            putInt(RunPlanFragment.EXTRA_PLAN_ID, plan.planId)
                         }
-                        it.findNavController().navigate(R.id.action_trainingPlanFragment_to_runPlanFragment,bundle)
+                        it.findNavController()
+                            .navigate(R.id.action_trainingPlanFragment_to_runPlanFragment, bundle)
                     }
                 }
             }
         }
-        trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner){intermediatePlans ->
-            for (plan in intermediatePlans){
-                if(plan.title.trim().compareTo(planTitle.trim()) == 0){
+        trainingPlanViewModel.recommendedPlansIntermediate.observe(viewLifecycleOwner) { intermediatePlans ->
+            for (plan in intermediatePlans) {
+                if (plan.title.trim().compareTo(planTitle.trim()) == 0) {
                     binding.planTitle.text = plan.title
                     binding.textPlanDescription.text = plan.description
-                    binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
-                    if(plan.targetDistance == null){ // calo
+                    binding.textPlanEstimateTime.text =
+                        getString(R.string.text_estimate_time, plan.estimatedTime)
+                    if (plan.targetDistance == null && plan.targetDuration == null) { // calo
                         binding.textPlanTarget.text = "Calories"
-                        binding.textPlanTargetMetric.text = getString(R.string.text_target_calo,plan.targetCaloriesBurned)
-                    }else if(plan.targetCaloriesBurned == null){ // distance
+                        binding.textPlanTargetMetric.text =
+                            getString(R.string.text_target_calo, plan.targetCaloriesBurned)
+                    } else if (plan.targetCaloriesBurned == null && plan.targetDuration == null) { // distance
                         binding.textPlanTarget.text = "Distance"
-                        binding.textPlanTargetMetric.text = getString(R.string.text_target_distance,plan.targetDistance)
+                        binding.textPlanTargetMetric.text =
+                            getString(R.string.text_target_distance, plan.targetDistance)
+                    }else if(plan.targetDistance == null && plan.targetCaloriesBurned == null){ // duration
+                        binding.textPlanTarget.text = "Duration"
+                        binding.textPlanTargetMetric.text =
+                            getString(R.string.text_target_duration,plan.targetDuration)
                     }
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
-                    binding.tvPercentage.text = getString(R.string.text_goal_progress,plan.goalProgress)
+                    binding.tvPercentage.text =
+                        getString(R.string.text_goal_progress, plan.goalProgress)
                     binding.btnLiveStats.setOnClickListener {
                         // TODO:
                         val bundle = Bundle().apply {
-                            putInt(RunPlanFragment.EXTRA_PLAN_ID,plan.planId)
+                            putInt(RunPlanFragment.EXTRA_PLAN_ID, plan.planId)
                         }
-                        it.findNavController().navigate(R.id.action_trainingPlanFragment_to_runPlanFragment,bundle)
+                        it.findNavController()
+                            .navigate(R.id.action_trainingPlanFragment_to_runPlanFragment, bundle)
                     }
                 }
             }
         }
-        trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner){advancedPlans ->
-            for (plan in advancedPlans){
-                if(plan.title.trim().compareTo(planTitle.trim()) == 0){
+        trainingPlanViewModel.recommendedPlansAdvanced.observe(viewLifecycleOwner) { advancedPlans ->
+            for (plan in advancedPlans) {
+                if (plan.title.trim().compareTo(planTitle.trim()) == 0) {
                     binding.planTitle.text = plan.title
                     binding.textPlanDescription.text = plan.description
-                    binding.textPlanEstimateTime.text = getString(R.string.text_estimate_time,plan.estimatedTime)
-                    if(plan.targetDistance == null){ // calo
+                    binding.textPlanEstimateTime.text =
+                        getString(R.string.text_estimate_time, plan.estimatedTime)
+                    if (plan.targetDistance == null && plan.targetDuration == null) { // calo
                         binding.textPlanTarget.text = "Calories"
-                        binding.textPlanTargetMetric.text = getString(R.string.text_target_calo,plan.targetCaloriesBurned)
-                    }else if(plan.targetCaloriesBurned == null){ // distance
+                        binding.textPlanTargetMetric.text =
+                            getString(R.string.text_target_calo, plan.targetCaloriesBurned)
+                    } else if (plan.targetCaloriesBurned == null && plan.targetDuration == null) { // distance
                         binding.textPlanTarget.text = "Distance"
-                        binding.textPlanTargetMetric.text = getString(R.string.text_target_distance,plan.targetDistance)
+                        binding.textPlanTargetMetric.text =
+                            getString(R.string.text_target_distance, plan.targetDistance)
+                    }else if(plan.targetDistance == null && plan.targetCaloriesBurned == null){ // duration
+                        binding.textPlanTarget.text = "Duration"
+                        binding.textPlanTargetMetric.text =
+                            getString(R.string.text_target_duration,plan.targetDuration)
                     }
                     binding.progressBar.progress = plan.goalProgress?.toInt() ?: 0
-                    binding.tvPercentage.text = getString(R.string.text_goal_progress,plan.goalProgress)
+                    binding.tvPercentage.text =
+                        getString(R.string.text_goal_progress, plan.goalProgress)
                     binding.btnLiveStats.setOnClickListener {
                         // TODO:
                         val bundle = Bundle().apply {
-                            putInt(RunPlanFragment.EXTRA_PLAN_ID,plan.planId)
+                            putInt(RunPlanFragment.EXTRA_PLAN_ID, plan.planId)
                         }
-                        it.findNavController().navigate(R.id.action_trainingPlanFragment_to_runPlanFragment,bundle)
+                        it.findNavController()
+                            .navigate(R.id.action_trainingPlanFragment_to_runPlanFragment, bundle)
                     }
                 }
             }

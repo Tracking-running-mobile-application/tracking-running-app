@@ -178,9 +178,9 @@ class HomeFragment : Fragment() {
 
     private fun setUpTrainingPlanRecycler() {
         val trainingPlans = listOf(
-            TrainingPlan("Beginner Run", R.drawable.img_beginner),
-            TrainingPlan("Intermediate Run", R.drawable.img_intermediate),
-            TrainingPlan("Advanced Run", R.drawable.img_advanced)
+            TrainingPlan(getString(R.string.text_beginner_run), R.drawable.img_beginner),
+            TrainingPlan(getString(R.string.text_intermediate_run), R.drawable.img_intermediate),
+            TrainingPlan(getString(R.string.text_advanced_run), R.drawable.img_advanced)
         )
 //        val trainingPlans = mutableListOf<TrainingPlan>()
         // beginner
