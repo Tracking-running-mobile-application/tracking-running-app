@@ -222,11 +222,6 @@ class RunSessionRepository {
         }
     }
 
-    /*add in the viewmodel in the future to see run session detail*/
-    suspend fun getRunSessionById(sessionId: Int): RunSession? {
-        return runSessionDao.getRunSessionById(sessionId)
-    }
-
     suspend fun calcCaloriesBurned() {
         ensureRepoScope()
         repoScope.launch {

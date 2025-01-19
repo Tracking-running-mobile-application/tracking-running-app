@@ -71,18 +71,11 @@ class TrainingPlanViewModel(
         }
     }
 
-    fun deleteTrainingPlan(planId: Int) {
-        viewModelScope.launch {
-            trainingPlanRepository.deleteTrainingPlan(planId)
-        }
-    }
-
     fun stopUpdatingFetchingProgress() {
         goalProgressJob?.cancel()
         trainingPlanRepository.stopUpdatingGoalProgress()
     }
 
-    /*trigger runSession start before this!!*/
     suspend fun initiateTrainingPlan(planId: Int) {
         Log.d("TrainingPlanVM", "1")
         trainingPlanRepository.assignSessionToTrainingPlan(planId)

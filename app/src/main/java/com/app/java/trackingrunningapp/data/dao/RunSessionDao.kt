@@ -73,23 +73,6 @@ interface RunSessionDao {
         WHERE sessionId = :sessionId
     """)
     suspend fun fetchStatsSession(sessionId: Int): StatsSession
-
-    @Query("""
-        SELECT * FROM RunSession AS rs    
-        JOIN GPSTrack AS gt ON rs.sessionId = gt.gpsSessionId
-        JOIN GPSPoint AS gp ON gt.gpsTrackId = gp.gpsPointId
-        WHERE rs.sessionId = :sessionId
-    """)
-    suspend fun getCompleteSessionData(sessionId: Int): List<CompleteSessionData>
-
-    @Query("SELECT COUNT(*) FROM RunSession")
-    suspend fun getNumberOfSessions(): Int
-
-    data class CompleteSessionData (
-        @Embedded val runSession: RunSession,
-        @Embedded val gpsTrack: GPSTrack,
-        @Embedded val gpsPoint: GPSPoint
-    )
 }
 
 

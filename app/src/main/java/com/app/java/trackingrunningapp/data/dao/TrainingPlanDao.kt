@@ -7,9 +7,6 @@ import com.app.java.trackingrunningapp.data.model.entity.TrainingPlan
 
 @Dao
 interface TrainingPlanDao {
-    @Query("DELETE FROM TrainingPlan WHERE planId = :planId")
-    suspend fun deleteTrainingPlan(planId: Int)
-
     @Query("SELECT goalProgress FROM TrainingPlan WHERE planId = :planId")
     suspend fun getGoalProgress(planId: Int): Double
 

@@ -35,9 +35,7 @@ class GPSPointRepository(
     private suspend fun getCurrentGPSTrackIDOrThrow(): Int {
         return withContext(Dispatchers.IO) {
             val currentRunSession = getCurrentSessionOrThrow()
-            Log.d("GPS Point", "${currentRunSession.sessionId}, ${currentRunSession.isActive}")
-            val trackId = gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
-            Log.d("GPS Point Repo", "Fetched Track ID: $trackId")
+
             gpsTrackDao.getGPSTrackIdBySessionId(currentRunSession.sessionId)
                 ?: throw IllegalStateException("No GPS Track ID is attached with the current run session! (GPS Point)")
         }
