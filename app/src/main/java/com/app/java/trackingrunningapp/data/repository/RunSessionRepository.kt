@@ -331,7 +331,7 @@ class RunSessionRepository {
 
                         }
                         Log.d("RunSessionRepo", "${distance}")
-                        if (distance<0.007) {
+                        if (distance<0.07) {
                             return@collect
                           
                         }
