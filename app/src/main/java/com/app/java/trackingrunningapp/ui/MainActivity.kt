@@ -114,7 +114,9 @@ class MainActivity : AppCompatActivity() {
                     binding.toolbarMain.navigationIcon = null
                     tvTitle.text = getString(R.string.text_profile)
                     icEdit.isVisible = true
+                    icSettings.isVisible = false
                     icEdit.setOnMenuItemClickListener {
+
                         navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
                         true
                     }

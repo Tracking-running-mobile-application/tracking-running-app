@@ -52,7 +52,9 @@ class ProfileFragment : Fragment() {
             binding.textProfileName.text = it?.name
             binding.textProfileAge.text = it?.age.toString()
             binding.textProfileWeight.text = getString(R.string.profile_weight, it?.weight)
-            binding.textProfileHeight.text = getString(R.string.profile_height, it?.height?.times(0.01))
+            binding.textProfileHeight.text = getString(R.string.profile_height, it?.height)
+            binding.textUserWeightMetric.text = it?.metricPreference.toString()
+            binding.textUserHeightMetric.text = it?.unit.toString()
         }
         setupBarChart()
         navigateToFavourite()

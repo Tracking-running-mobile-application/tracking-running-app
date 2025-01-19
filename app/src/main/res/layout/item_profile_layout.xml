@@ -77,7 +77,7 @@
             app:layout_constraintTop_toTopOf="@+id/text_profile_age" />
 
         <TextView
-            android:id="@+id/textView17"
+            android:id="@+id/text_user_weight_metric"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Weight"
@@ -101,15 +101,15 @@
             app:layout_constraintTop_toTopOf="@+id/text_profile_weight" />
 
         <TextView
-            android:id="@+id/textView20"
+            android:id="@+id/text_user_height_metric"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Metres"
             android:textColor="@color/main_gray"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView17"
+            app:layout_constraintBottom_toBottomOf="@+id/text_user_weight_metric"
             app:layout_constraintStart_toStartOf="@+id/text_profile_height"
-            app:layout_constraintTop_toTopOf="@+id/textView17" />
+            app:layout_constraintTop_toTopOf="@+id/text_user_weight_metric" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
