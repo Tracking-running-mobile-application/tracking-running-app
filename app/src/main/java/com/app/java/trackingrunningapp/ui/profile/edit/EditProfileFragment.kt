@@ -58,11 +58,8 @@ class EditProfileFragment : Fragment() {
             binding.edtAge.setText(user?.age.toString())
             binding.edtHeight.setText(getString(R.string.profile_height, user?.height))
             binding.edtWeight.setText(getString(R.string.edit_weight, user?.weight))
-            if (user?.metricPreference == User.POUNDS) {
+            if (user?.unit == User.POUNDS) {
                 binding.btnLbs.performClick()
-            }
-            if (user?.unit == "ft") {
-                binding.btnFt.performClick()
             }
         }
         binding.btnSave.setOnClickListener {
@@ -81,20 +78,18 @@ class EditProfileFragment : Fragment() {
                     val heightFt = heightStr.toFloatOrNull()
 //                    userHeight = (heightFt?.times(30.48))?.toFloat()
                     user.height = heightFt
-                    user.unit = "ft"
                 } else {
                     user.height = userHeight
-                    user.unit = "cm"
                 }
 
                 if (isLbsClicked) {
                     val weightLbs = weightStr.toDoubleOrNull()
 //                userWeight = weightLbs?.times(0.453592)
                     user.weight = weightLbs
-                    user.metricPreference = User.POUNDS
+                    user.unit = User.POUNDS
                 } else {
                     user.weight = userWeight
-                    user.metricPreference = User.KILOGRAM
+                    user.unit = User.KILOGRAM
                 }
                 lifecycleScope.launch {
                     userViewModel.upsertUserInfo(
@@ -111,20 +106,18 @@ class EditProfileFragment : Fragment() {
                     val heightFt = heightStr.toFloatOrNull()
 //                    userHeight = (heightFt?.times(30.48))?.toFloat()
                     user.height = heightFt
-                    user.unit = "ft"
                 } else {
                     user.height = userHeight
-                    user.unit = "cm"
                 }
 
                 if (isLbsClicked) {
                     val weightLbs = weightStr.toDoubleOrNull()
 //                userWeight = weightLbs?.times(0.453592)
                     user.weight = weightLbs
-                    user.metricPreference = User.POUNDS
+                    user.unit = User.POUNDS
                 } else {
                     user.weight = userWeight
-                    user.metricPreference = User.KILOGRAM
+                    user.unit = User.KILOGRAM
                 }
 //                userViewModel.fetchUserInfo()
                 Log.d("user_pound", "$user.metricPreference")
@@ -137,7 +130,6 @@ class EditProfileFragment : Fragment() {
                                 age = it?.age,
                                 height = userHeight,
                                 weight = it?.weight ?: 50.0,
-                                metricPreference = user.metricPreference,
                                 unit = user.unit
                             )
                         }
@@ -149,7 +141,6 @@ class EditProfileFragment : Fragment() {
                                 age = it?.age,
                                 height = it?.height,
                                 weight = userWeight,
-                                metricPreference = user.metricPreference,
                                 unit = user.unit
                             )
                         }
@@ -180,7 +171,6 @@ class EditProfileFragment : Fragment() {
         btnCm.setOnClickListener {
             isFtClicked = false
             hintHeight.text = getString(R.string.text_cm)
-            user.unit = "cm"
             binding.edtHeight.setText("")
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_gray))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
@@ -189,7 +179,7 @@ class EditProfileFragment : Fragment() {
         btnKg.setOnClickListener {
             isLbsClicked = false
             hintWeight.text = getString(R.string.text_kg)
-            user.metricPreference = User.KILOGRAM
+            user.unit = User.KILOGRAM
             binding.edtWeight.setText("")
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_gray))
@@ -198,7 +188,7 @@ class EditProfileFragment : Fragment() {
         btnLbs.setOnClickListener {
             isLbsClicked = true
             hintWeight.text = getString(R.string.text_lbs)
-            user.metricPreference = User.POUNDS
+            user.unit = User.POUNDS
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
