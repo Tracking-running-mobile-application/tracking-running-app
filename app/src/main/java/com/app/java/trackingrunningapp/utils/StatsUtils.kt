@@ -1,6 +1,7 @@
 package com.app.java.trackingrunningapp.utils
 
 import com.app.java.trackingrunningapp.data.model.dataclass.location.Location
+import com.app.java.trackingrunningapp.data.model.entity.User
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.math.atan2
@@ -55,5 +56,23 @@ object StatsUtils {
         return R * c
     }
 
+    fun convertToPace(speed: Double, unit: String): String {
+        if (speed <= 0) {
+            return "Invalid speed"
+        }
+
+        val paceInMinutes = 60.0 / speed
+
+        val minutes = paceInMinutes.toInt()
+        val seconds = ((paceInMinutes - minutes) * 60).toInt()
+
+        return if (unit == User.UNIT_KM) {
+            "%d:%02d min/km".format(minutes, seconds)
+        } else if (unit == User.UNIT_MILE) {
+            "%d:%02d min/mi".format(minutes, seconds)
+        } else {
+            "Invalid unit"
+        }
+    }
 
 }
