@@ -6,6 +6,7 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.math.atan2
 import kotlin.math.cos
+import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
@@ -45,11 +46,8 @@ object StatsUtils {
         val deltaPhi = Math.toRadians(location2.latitude - location1.latitude)
         val deltaLambda = Math.toRadians(location2.longitude - location1.longitude)
 
-        val sinDeltaPhi = sin(deltaPhi / 2)
-        val sinDeltaLambda = sin(deltaLambda / 2)
-
-        val a = sinDeltaPhi * sinDeltaPhi +
-                cos(phi1) * cos(phi2) * sinDeltaLambda * sinDeltaLambda
+        val a = sin(deltaPhi / 2).pow(2.0) +
+                cos(phi1) * cos(phi2) * sin(deltaLambda / 2).pow(2.0)
 
         val c = 2 * atan2(sqrt(a), sqrt(1 - a))
 
