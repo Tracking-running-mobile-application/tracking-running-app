@@ -59,7 +59,7 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        runSessionViewModel.fetchRunSessions(fetchMore = false)
+        runSessionViewModel.fetchRunSessions()
         runSessionViewModel.runSessions.observe(viewLifecycleOwner) { sessions ->
             val mutableList: MutableList<RunSession> = sessions.toMutableList()
             binding.textShowMore.setOnClickListener{

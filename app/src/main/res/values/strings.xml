@@ -73,7 +73,7 @@
     <string name="objective">Objective</string>
     <string name="text_pause">Pause</string>
     <string name="user_name">Hi, %s</string>
-    <string name="profile_weight">%.2f</string>
+    <string name="profile_weight">%.1f</string>
     <string name="edit_weight">%.2f</string>
     <string name="profile_height">%.2f</string>
     <string name="goal_progress">%.1f%%</string>

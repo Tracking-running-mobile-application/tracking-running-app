@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentStatusBinding
 import com.app.java.trackingrunningapp.ui.MainActivity
@@ -47,18 +48,10 @@ class StatusFragment : Fragment() {
             val ageStr = binding.edtAge.text.toString()
             val heightStr = binding.edtHeight.text.toString()
             val weightStr = binding.edtWeight.text.toString()
-            
+
             val age = ageStr.toIntOrNull()
             var userHeight = heightStr.toFloatOrNull()
             var userWeight = weightStr.toDoubleOrNull()
-            if (isFtClicked) {
-                val heightFt = heightStr.toFloatOrNull()
-                userHeight = (heightFt?.times(30.48))?.toFloat()
-            }
-            if (isLbsClicked) {
-                val weightLbs = weightStr.toDoubleOrNull()
-                userWeight = weightLbs?.times(0.453592)
-            }
             if (userHeight == 0.0f || userWeight == 0.0) {
                 Toast.makeText(
                     requireContext(),
@@ -68,13 +61,20 @@ class StatusFragment : Fragment() {
                 return@setOnClickListener
             } else {
                 lifecycleScope.launch {
+                    var unit = User.KILOGRAM
+                    if(isLbsClicked){
+                        unit = User.POUNDS
+                    }
+                    if(isFtClicked){
+                        userHeight = userHeight?.times(30.48)?.toFloat()
+                    }
                     userViewModel.upsertUserInfo(
                         name = userName,
                         age = age,
                         height = userHeight,
                         weight = userWeight ?: 50.0,
-                        metricPreference = "kg",
-                        unit = "km"
+                        unit = unit,
+                        metricPreference = User.UNIT_KM
                     )
                 }
             }
@@ -90,18 +90,18 @@ class StatusFragment : Fragment() {
         val hintHeight = binding.textHintHeightUnit
         val hintWeight = binding.textHintWeightUnit
 
-
         //ft
         btnFt.setOnClickListener {
-            hintHeight.text = getString(R.string.text_ft)
             isFtClicked = true
+            hintHeight.text = getString(R.string.text_ft)
+            binding.edtHeight.setText("")
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
         //cm
         btnCm.setOnClickListener {
-            hintHeight.text = getString(R.string.text_cm)
             isFtClicked = false
+            hintHeight.text = getString(R.string.text_cm)
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_gray))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
         }
@@ -109,6 +109,7 @@ class StatusFragment : Fragment() {
         btnKg.setOnClickListener {
             isLbsClicked = false
             hintWeight.text = getString(R.string.text_kg)
+            binding.edtWeight.setText("")
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }

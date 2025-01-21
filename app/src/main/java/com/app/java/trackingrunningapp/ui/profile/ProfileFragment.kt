@@ -12,7 +12,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
@@ -22,8 +21,6 @@ import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -41,7 +38,6 @@ class ProfileFragment : Fragment() {
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
-
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -53,6 +49,7 @@ class ProfileFragment : Fragment() {
             binding.textProfileAge.text = it?.age.toString()
             binding.textProfileWeight.text = getString(R.string.profile_weight, it?.weight)
             binding.textProfileHeight.text = getString(R.string.profile_height, it?.height?.times(0.01))
+            binding.textUserWeightMetric.text = it?.unit.toString()
         }
         setupBarChart()
         navigateToFavourite()

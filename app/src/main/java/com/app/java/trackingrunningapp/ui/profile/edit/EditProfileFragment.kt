@@ -12,14 +12,16 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentEditProfileBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.launch
 
-class EditProfileFragment:Fragment() {
+class EditProfileFragment : Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
     private lateinit var userViewModel: UserViewModel
     private var isFtClicked = false
@@ -32,7 +34,9 @@ class EditProfileFragment:Fragment() {
         val userRepository = UserRepository()
         val userFactory = UserViewModelFactory(userRepository)
         userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
-        binding = FragmentEditProfileBinding.inflate(inflater,container,false)
+        binding = FragmentEditProfileBinding.inflate(inflater, container, false)
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_setting).isVisible =
+            false
         return binding.root
     }
 
@@ -43,13 +47,17 @@ class EditProfileFragment:Fragment() {
         requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text =
             getString(R.string.text_edit_profile)
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+
         userViewModel.fetchUserInfo()
-        userViewModel.userLiveData.observe(viewLifecycleOwner){user->
+        userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
             Log.d("Edit Profile Fragment", "$user")
             binding.edtName.setText(user?.name.toString())
             binding.edtAge.setText(user?.age.toString())
-            binding.edtHeight.setText(getString(R.string.profile_height,user?.height))
-            binding.edtWeight.setText(getString(R.string.edit_weight,user?.weight))
+            binding.edtHeight.setText(getString(R.string.profile_height, user?.height))
+            binding.edtWeight.setText(getString(R.string.edit_weight, user?.weight))
+            if(user?.unit == User.POUNDS){
+                binding.btnLbs.performClick()
+            }
         }
 
         binding.btnSave.setOnClickListener {
@@ -61,14 +69,6 @@ class EditProfileFragment:Fragment() {
             val age = ageStr.toIntOrNull()
             var userHeight = heightStr.toFloatOrNull()
             var userWeight = weightStr.toDoubleOrNull()
-            if (isFtClicked) {
-                val heightFt = heightStr.toFloatOrNull()
-                userHeight = (heightFt?.times(30.48))?.toFloat()
-            }
-            if (isLbsClicked) {
-                val weightLbs = weightStr.toDoubleOrNull()
-                userWeight = weightLbs?.times(0.453592)
-            }
             if (userHeight == 0.0f || userWeight == 0.0) {
                 Toast.makeText(
                     requireContext(),
@@ -78,13 +78,20 @@ class EditProfileFragment:Fragment() {
                 return@setOnClickListener
             } else {
                 lifecycleScope.launch {
+                    var unit = User.KILOGRAM
+                    if(isLbsClicked){
+                        unit = User.POUNDS
+                    }
+                    if(isFtClicked){
+                        userHeight = userHeight?.times(30.48)?.toFloat()
+                    }
                     userViewModel.upsertUserInfo(
                         name = userName,
                         age = age,
                         height = userHeight,
                         weight = userWeight ?: 50.0,
-                        metricPreference = "km",
-                        unit = "kg"
+                        unit = unit,
+                        metricPreference = User.UNIT_KM
                     )
                 }
             }
@@ -104,6 +111,7 @@ class EditProfileFragment:Fragment() {
         btnFt.setOnClickListener {
             isFtClicked = true
             hintHeight.text = getString(R.string.text_ft)
+            binding.edtHeight.setText("")
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
@@ -118,6 +126,7 @@ class EditProfileFragment:Fragment() {
         btnKg.setOnClickListener {
             isLbsClicked = false
             hintWeight.text = getString(R.string.text_kg)
+            binding.edtWeight.setText("")
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
@@ -128,11 +137,11 @@ class EditProfileFragment:Fragment() {
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
-
     }
 
     override fun onStop() {
         super.onStop()
-        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.VISIBLE
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
+            View.VISIBLE
     }
 }
