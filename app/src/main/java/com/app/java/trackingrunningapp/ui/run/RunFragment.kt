@@ -247,9 +247,9 @@ class RunFragment : Fragment() {
                 runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
                 runPace.text = getString(R.string.text_pace_metric, it?.pace ?: 0.0)
                 runCalo.text = getString(R.string.text_calorie_metric, it?.caloriesBurned ?: 0.0)
-                if (user?.unit == User.UNIT_KM) {
+                if (user?.metricPreference == User.UNIT_KM) {
                     runDistance.text = getString(R.string.text_distance_metric, it?.distance ?: 0.0)
-                } else if (user?.unit == User.UNIT_MILE) {
+                } else if (user?.metricPreference == User.UNIT_MILE) {
                     runDistance.text =
                         getString(R.string.text_distance_metric_mile, it?.distance ?: 0.0)
                 }
