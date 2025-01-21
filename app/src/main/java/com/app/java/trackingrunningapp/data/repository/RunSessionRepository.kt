@@ -319,24 +319,24 @@ class RunSessionRepository {
                 latestLocationsFlow.collect { latestLocations ->
                     if (latestLocations.size == 2) {
                         val (location1, location2) = latestLocations
-                            Log.d("calc distance", "location 1: $location1, location 2: $location2")
+                        Log.d("calc distance", "location 1: $location1, location 2: $location2")
 
-                            val userUnitPreference = userInfo?.metricPreference
+                        val userUnitPreference = userInfo?.metricPreference
 
-                            val distance = when (userUnitPreference) {
-                                User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
-                                else -> StatsUtils.haversineFormula(location1, location2) / 1000
-                            }
-                            Log.d("RunSessionRepo", "${distance}")
-                            if (distance <0.0001 || distance >0.0027) {
-                                return@collect
-                            }
-                            val newDistance = _distance.value + distance
-                            _distance.emit(newDistance)
-
-                            delay(100)
+                        val distance = when (userUnitPreference) {
+                            User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
+                            else -> StatsUtils.haversineFormula(location1, location2) / 1000
                         }
+                        Log.d("RunSessionRepo", "${distance}")
+                        if (distance <0.001 || distance >0.0027) {
+                            return@collect
+                        }
+                        val newDistance = _distance.value + distance
+                        _distance.emit(newDistance)
+
+                        delay(100)
                     }
+                }
             } catch (ce: CancellationException) {
                 println("calcDistance runSessionRepo ${ce.message}")
             }
