@@ -199,14 +199,14 @@ class RunSessionRepository {
                 }
 
                 val pace: Double = if (adjustedDistance > 0) {
-                    durationInMinutes.div(adjustedDistance)
+                    adjustedDistance.div(durationInMinutes)
                 } else {
                     0.0
                 }
 
                 val excessivePace = when (userUnitPreference) {
-                    User.UNIT_MILE -> pace > 2.2
-                    else -> pace > 1.5
+                    User.UNIT_MILE -> pace > 30
+                    else -> pace > 45
                 }
 
                 if (excessivePace && !paceNotification) {
@@ -229,14 +229,14 @@ class RunSessionRepository {
                 val userMetricPreference: String? = userInfo?.metricPreference
                 val unit: String? = userInfo?.unit
 
-                val isTooSlow = when (userMetricPreference) {
-                    User.UNIT_MILE -> _pace.value > 20.0
-                    else -> _pace.value > 13.0
-                }
+                //val isTooSlow = when (userMetricPreference) {
+                //    User.UNIT_MILE -> _pace.value > 20.0
+                //    else -> _pace.value < 3.0
+                //}
 
-                if(isTooSlow) {
-                    return@launch
-                }
+                //if(isTooSlow) {
+                //    return@launch
+                //}
 
                 val adjustedWeight = when (userMetricPreference) {
                     User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
@@ -316,14 +316,14 @@ class RunSessionRepository {
                         Log.d("calc distance", "location 1: $location1, location 2: $location2")
 
                         val userUnitPreference = userInfo?.metricPreference
-                        val isTooSlow = when (userUnitPreference) {
-                            User.UNIT_MILE -> _pace.value > 20.0
-                            else -> _pace.value > 13.0
-                        }
+                        //val isTooSlow = when (userUnitPreference) {
+                        //    User.UNIT_MILE -> _pace.value < 20.0
+                        //    else -> _pace.value < 4.0
+                        //}
 
-                        if (isTooSlow) {
-                            return@collect
-                        }
+                        //if (isTooSlow) {
+                        //    return@collect
+                        //}
 
                         val distance = when (userUnitPreference) {
                             User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
@@ -331,9 +331,9 @@ class RunSessionRepository {
 
                         }
                         Log.d("RunSessionRepo", "${distance}")
-                        if (distance >0.0007 && distance <0.0025) {
+                        if (distance <0.00006 || distance >0.0027) {
                             return@collect
-                          
+
                         }
                         val newDistance = _distance.value + distance
                         _distance.emit(newDistance)
