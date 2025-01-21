@@ -57,8 +57,6 @@ class RunSessionRepository {
     private val _distance = MutableStateFlow<Double>(0.0)
     val distance: StateFlow<Double> = _distance
 
-    private var newDistance = 0.0
-
     private lateinit var runSessionStartTime: Instant
 
     private var repoScope = CoroutineScope(Job() + Dispatchers.IO)
@@ -92,7 +90,6 @@ class RunSessionRepository {
         _caloriesBurned.value = 0.0
         cumulativeDurationSeconds = 0L
         totalDurationSeconds = 0L
-        newDistance = 0.0
         durationNotification = false
         paceNotification = false
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
@@ -331,10 +328,10 @@ class RunSessionRepository {
                                 else -> StatsUtils.haversineFormula(location1, location2) / 1000
                             }
                             Log.d("RunSessionRepo", "${distance}")
-                            if (distance <0.00006 || distance >0.0027) {
+                            if (distance <0.0001 || distance >0.0027) {
                                 return@collect
                             }
-                            newDistance = _distance.value + distance
+                            val newDistance = _distance.value + distance
                             _distance.emit(newDistance)
 
                             delay(100)
