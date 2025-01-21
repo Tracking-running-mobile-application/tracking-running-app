@@ -55,9 +55,6 @@ class EditProfileFragment : Fragment() {
             binding.edtAge.setText(user?.age.toString())
             binding.edtHeight.setText(getString(R.string.profile_height, user?.height))
             binding.edtWeight.setText(getString(R.string.edit_weight, user?.weight))
-            if(user?.unit == "ft"){
-              binding.btnFt.performClick()
-            }
             if(user?.metricPreference == User.POUNDS){
                 binding.btnLbs.performClick()
             }
@@ -72,14 +69,6 @@ class EditProfileFragment : Fragment() {
             val age = ageStr.toIntOrNull()
             var userHeight = heightStr.toFloatOrNull()
             var userWeight = weightStr.toDoubleOrNull()
-            if (isFtClicked) {
-                val heightFt = heightStr.toFloatOrNull()
-//                userHeight = (heightFt?.times(30.48))?.toFloat()
-            }
-            if (isLbsClicked) {
-                val weightLbs = weightStr.toDoubleOrNull()
-//                userWeight = weightLbs?.times(0.453592)
-            }
             if (userHeight == 0.0f || userWeight == 0.0) {
                 Toast.makeText(
                     requireContext(),
@@ -90,20 +79,18 @@ class EditProfileFragment : Fragment() {
             } else {
                 lifecycleScope.launch {
                     var metric = User.KILOGRAM
-                    var unit = "cm"
                     if(isLbsClicked){
                         metric = User.POUNDS
                     }
                     if(isFtClicked){
-                        unit = "ft"
+                        userHeight = userHeight?.times(30.48)?.toFloat()
                     }
                     userViewModel.upsertUserInfo(
                         name = userName,
                         age = age,
                         height = userHeight,
                         weight = userWeight ?: 50.0,
-                        metricPreference = metric,
-                        unit = unit
+                        metricPreference = metric
                     )
                 }
             }
@@ -123,6 +110,7 @@ class EditProfileFragment : Fragment() {
         btnFt.setOnClickListener {
             isFtClicked = true
             hintHeight.text = getString(R.string.text_ft)
+            binding.edtHeight.setText("")
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
