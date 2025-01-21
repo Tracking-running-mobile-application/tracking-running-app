@@ -77,8 +77,8 @@ class SettingFragment : Fragment() {
                                 age = it?.age,
                                 height = it?.height,
                                 weight = it?.weight!!,
-                                metricPreference = User.KILOGRAM,
-                                unit = User.UNIT_KM
+                                metricPreference = User.UNIT_KM,
+                                unit = it.unit
                             )
                         }
                     }
@@ -93,8 +93,8 @@ class SettingFragment : Fragment() {
                                 age = it?.age,
                                 height = it?.height,
                                 weight = it?.weight!!,
-                                metricPreference = User.KILOGRAM,
-                                unit = User.UNIT_MILE
+                                metricPreference = User.UNIT_MILE,
+                                unit = it.unit
                             )
                         }
                     }

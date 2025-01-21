@@ -55,7 +55,7 @@ class EditProfileFragment : Fragment() {
             binding.edtAge.setText(user?.age.toString())
             binding.edtHeight.setText(getString(R.string.profile_height, user?.height))
             binding.edtWeight.setText(getString(R.string.edit_weight, user?.weight))
-            if(user?.metricPreference == User.POUNDS){
+            if(user?.unit == User.POUNDS){
                 binding.btnLbs.performClick()
             }
         }
@@ -78,9 +78,9 @@ class EditProfileFragment : Fragment() {
                 return@setOnClickListener
             } else {
                 lifecycleScope.launch {
-                    var metric = User.KILOGRAM
+                    var unit = User.KILOGRAM
                     if(isLbsClicked){
-                        metric = User.POUNDS
+                        unit = User.POUNDS
                     }
                     if(isFtClicked){
                         userHeight = userHeight?.times(30.48)?.toFloat()
@@ -90,7 +90,7 @@ class EditProfileFragment : Fragment() {
                         age = age,
                         height = userHeight,
                         weight = userWeight ?: 50.0,
-                        metricPreference = metric
+                        unit = unit
                     )
                 }
             }
@@ -118,7 +118,6 @@ class EditProfileFragment : Fragment() {
         btnCm.setOnClickListener {
             isFtClicked = false
             hintHeight.text = getString(R.string.text_cm)
-            binding.edtHeight.setText("")
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_gray))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
         }
