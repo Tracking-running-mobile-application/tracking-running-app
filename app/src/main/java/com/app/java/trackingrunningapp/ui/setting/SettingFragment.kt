@@ -94,7 +94,7 @@ class SettingFragment : Fragment() {
                                 height = it?.height,
                                 weight = it?.weight!!,
                                 metricPreference = User.UNIT_MILE,
-                                unit = it.unit
+                                unit = it.unit,
                             )
                         }
                     }

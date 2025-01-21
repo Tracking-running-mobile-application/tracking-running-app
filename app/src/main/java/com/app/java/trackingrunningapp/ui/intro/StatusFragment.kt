@@ -73,7 +73,8 @@ class StatusFragment : Fragment() {
                         age = age,
                         height = userHeight,
                         weight = userWeight ?: 50.0,
-                        unit = unit
+                        unit = unit,
+                        metricPreference = User.UNIT_KM
                     )
                 }
             }
