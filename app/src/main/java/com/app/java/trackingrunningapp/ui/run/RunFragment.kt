@@ -241,11 +241,12 @@ class RunFragment : Fragment() {
         val runPace = binding.layoutMetric.textRunPaceMetric
         val runCalo = binding.layoutMetric.textRunCaloMetric
 
-
-        runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
-            runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
-            userViewModel.fetchUserInfo()
-            userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
+        userViewModel.fetchUserInfo()
+        userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
+            runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
+                runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
+                runPace.text = getString(R.string.text_pace_metric, it?.pace ?: 0.0)
+                runCalo.text = getString(R.string.text_calorie_metric, it?.caloriesBurned ?: 0.0)
                 if (user?.unit == User.UNIT_KM) {
                     runDistance.text = getString(R.string.text_distance_metric, it?.distance ?: 0.0)
                 } else if (user?.unit == User.UNIT_MILE) {
@@ -253,9 +254,6 @@ class RunFragment : Fragment() {
                         getString(R.string.text_distance_metric_mile, it?.distance ?: 0.0)
                 }
             }
-
-            runPace.text = getString(R.string.text_pace_metric, it?.pace ?: 0.0)
-            runCalo.text = getString(R.string.text_calorie_metric, it?.caloriesBurned ?: 0.0)
         }
     }
 
