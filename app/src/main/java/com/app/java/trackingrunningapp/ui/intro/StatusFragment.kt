@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentStatusBinding
 import com.app.java.trackingrunningapp.ui.MainActivity
@@ -68,13 +69,21 @@ class StatusFragment : Fragment() {
                 return@setOnClickListener
             } else {
                 lifecycleScope.launch {
+                    var metric = User.KILOGRAM
+                    var unit = "cm"
+                    if(isLbsClicked){
+                        metric = User.POUNDS
+                    }
+                    if(isFtClicked){
+                        unit = "ft"
+                    }
                     userViewModel.upsertUserInfo(
                         name = userName,
                         age = age,
                         height = userHeight,
                         weight = userWeight ?: 50.0,
-                        metricPreference = "kg",
-                        unit = "km"
+                        metricPreference = metric,
+                        unit = unit
                     )
                 }
             }

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +24,6 @@ import kotlinx.coroutines.launch
 class EditProfileFragment : Fragment() {
     private lateinit var binding: FragmentEditProfileBinding
     private lateinit var userViewModel: UserViewModel
-    private lateinit var user: User
     private var isFtClicked = false
     private var isLbsClicked = false
     override fun onCreateView(
@@ -45,7 +43,6 @@ class EditProfileFragment : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        user = User(userId = 1)
         setUpToggle()
         requireActivity().findViewById<TextView>(R.id.tv_toolbar_title).text =
             getString(R.string.text_edit_profile)
@@ -58,10 +55,14 @@ class EditProfileFragment : Fragment() {
             binding.edtAge.setText(user?.age.toString())
             binding.edtHeight.setText(getString(R.string.profile_height, user?.height))
             binding.edtWeight.setText(getString(R.string.edit_weight, user?.weight))
-            if (user?.unit == User.POUNDS) {
+            if(user?.unit == "ft"){
+              binding.btnFt.performClick()
+            }
+            if(user?.metricPreference == User.POUNDS){
                 binding.btnLbs.performClick()
             }
         }
+
         binding.btnSave.setOnClickListener {
             val userName = binding.edtName.text.toString()
             val ageStr = binding.edtAge.text.toString()
@@ -69,82 +70,41 @@ class EditProfileFragment : Fragment() {
             val weightStr = binding.edtWeight.text.toString()
 
             val age = ageStr.toIntOrNull()
-            user.name = userName
-            user.age = age
             var userHeight = heightStr.toFloatOrNull()
             var userWeight = weightStr.toDoubleOrNull()
-            if (userWeight != null && userHeight != null) {
-                if (isFtClicked) {
-                    val heightFt = heightStr.toFloatOrNull()
-//                    userHeight = (heightFt?.times(30.48))?.toFloat()
-                    user.height = heightFt
-                } else {
-                    user.height = userHeight
-                }
-
-                if (isLbsClicked) {
-                    val weightLbs = weightStr.toDoubleOrNull()
+            if (isFtClicked) {
+                val heightFt = heightStr.toFloatOrNull()
+//                userHeight = (heightFt?.times(30.48))?.toFloat()
+            }
+            if (isLbsClicked) {
+                val weightLbs = weightStr.toDoubleOrNull()
 //                userWeight = weightLbs?.times(0.453592)
-                    user.weight = weightLbs
-                    user.unit = User.POUNDS
-                } else {
-                    user.weight = userWeight
-                    user.unit = User.KILOGRAM
-                }
-                lifecycleScope.launch {
-                    userViewModel.upsertUserInfo(
-                        name = user.name,
-                        age = user.age,
-                        height = user.height,
-                        weight = user.weight ?: 50.0,
-                        metricPreference = user.metricPreference,
-                        unit = user.unit
-                    )
-                }
+            }
+            if (userHeight == 0.0f || userWeight == 0.0) {
+                Toast.makeText(
+                    requireContext(),
+                    "Invalid height or weight entered",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return@setOnClickListener
             } else {
-                if (isFtClicked) {
-                    val heightFt = heightStr.toFloatOrNull()
-//                    userHeight = (heightFt?.times(30.48))?.toFloat()
-                    user.height = heightFt
-                } else {
-                    user.height = userHeight
-                }
-
-                if (isLbsClicked) {
-                    val weightLbs = weightStr.toDoubleOrNull()
-//                userWeight = weightLbs?.times(0.453592)
-                    user.weight = weightLbs
-                    user.unit = User.POUNDS
-                } else {
-                    user.weight = userWeight
-                    user.unit = User.KILOGRAM
-                }
-//                userViewModel.fetchUserInfo()
-                Log.d("user_pound", "$user.metricPreference")
-                userViewModel.userLiveData.observe(viewLifecycleOwner) {
-                    Log.d("userrrrr", "$user")
-                    if (userHeight != null) {
-                        lifecycleScope.launch {
-                            userViewModel.upsertUserInfo(
-                                name = it?.name,
-                                age = it?.age,
-                                height = userHeight,
-                                weight = it?.weight ?: 50.0,
-                                unit = user.unit
-                            )
-                        }
+                lifecycleScope.launch {
+                    var metric = User.KILOGRAM
+                    var unit = "cm"
+                    if(isLbsClicked){
+                        metric = User.POUNDS
                     }
-                    if (userWeight != null) {
-                        lifecycleScope.launch {
-                            userViewModel.upsertUserInfo(
-                                name = it?.name,
-                                age = it?.age,
-                                height = it?.height,
-                                weight = userWeight,
-                                unit = user.unit
-                            )
-                        }
+                    if(isFtClicked){
+                        unit = "ft"
                     }
+                    userViewModel.upsertUserInfo(
+                        name = userName,
+                        age = age,
+                        height = userHeight,
+                        weight = userWeight ?: 50.0,
+                        metricPreference = metric,
+                        unit = unit
+                    )
                 }
             }
             requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -163,7 +123,6 @@ class EditProfileFragment : Fragment() {
         btnFt.setOnClickListener {
             isFtClicked = true
             hintHeight.text = getString(R.string.text_ft)
-            user.unit = "ft"
             btnFt.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnCm.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }
@@ -179,7 +138,6 @@ class EditProfileFragment : Fragment() {
         btnKg.setOnClickListener {
             isLbsClicked = false
             hintWeight.text = getString(R.string.text_kg)
-            user.unit = User.KILOGRAM
             binding.edtWeight.setText("")
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_gray))
@@ -188,7 +146,6 @@ class EditProfileFragment : Fragment() {
         btnLbs.setOnClickListener {
             isLbsClicked = true
             hintWeight.text = getString(R.string.text_lbs)
-            user.unit = User.POUNDS
             btnLbs.setBackgroundColor(requireContext().getColor(R.color.main_yellow))
             btnKg.setBackgroundColor(requireContext().getColor(R.color.main_gray))
         }

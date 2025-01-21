@@ -9,11 +9,11 @@ data class User(
     @PrimaryKey(autoGenerate = true)
     val userId: Int = 1,
     @ColumnInfo(name = "name", defaultValue = "NULL") val name: String? = null,
-    @ColumnInfo(name = "age", defaultValue = "NULL")var age: Int? = null,
-    @ColumnInfo(name = "height", defaultValue = "NULL") var height: Float? = null,
-    @ColumnInfo(name = "weight", defaultValue = "50.0") var weight: Double? = 50.0,
-    @ColumnInfo(name = "metricPreference", defaultValue = "'kg'") var metricPreference: String? = KILOGRAM,
-    @ColumnInfo(name = "unit", defaultValue = "'km'") var unit: String? = UNIT_KM
+    @ColumnInfo(name = "age", defaultValue = "NULL")val age: Int? = null,
+    @ColumnInfo(name = "height", defaultValue = "NULL") val height: Float? = null,
+    @ColumnInfo(name = "weight", defaultValue = "50.0") val weight: Double? = 50.0,
+    @ColumnInfo(name = "metricPreference", defaultValue = "'kg'") val metricPreference: String? = KILOGRAM,
+    @ColumnInfo(name = "unit", defaultValue = "'km'") val unit: String? = UNIT_KM
 ) {
     companion object {
         const val UNIT_KM = "km"

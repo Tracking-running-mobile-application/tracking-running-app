@@ -20,7 +20,7 @@ class UserViewModel(
     fun upsertUserInfo(
         name: String? = "",
         age: Int? = 0,
-        height: Float? = 0.0f,
+        height: Float? = null,
         weight: Double = 50.0,
         metricPreference: String? = User.KILOGRAM,
         unit: String? = User.UNIT_KM
