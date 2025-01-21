@@ -38,8 +38,6 @@ class GPSTrackRepository {
             )
             gpsTrackDao.createGPSTrack(newGPSTrack)
             delay(100)
-            val gpsTrackId = gpsTrackDao.getGPSTrackIdBySessionId(newGPSTrack.gpsSessionId)
-                ?: throw IllegalStateException("GPS Track insertion was not successful.")
         }
     }
 

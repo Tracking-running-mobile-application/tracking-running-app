@@ -14,7 +14,6 @@ class GPSTrackViewModel (
 ): ViewModel() {
 
     suspend fun initiateGPSTrack() {
-        Log.d("GPS Track View Model", "Initiating session and GPS tracking")
         gpsTrackRepository.createGPSTrack()
     }
 

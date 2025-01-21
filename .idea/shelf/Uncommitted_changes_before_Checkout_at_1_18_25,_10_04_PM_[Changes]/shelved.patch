@@ -1,0 +1,47 @@
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n    alias(libs.plugins.android.application)\n    alias(libs.plugins.jetbrains.kotlin.android)\n    // room, ksp\n    alias(libs.plugins.room)\n    alias(libs.plugins.ksp)\n}\n\nandroid {\n    namespace = \"com.app.java.trackingrunningapp\"\n    compileSdk = 34\n\n    testOptions {\n        unitTests.isIncludeAndroidResources = true\n    }\n\n    defaultConfig {\n        applicationId = \"com.app.java.trackingrunningapp\"\n        minSdk = 30\n        targetSdk = 34\n        versionCode = 1\n        versionName = \"1.0\"\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\n\n    }\n    // schema\n    room {\n        schemaDirectory(\"$projectDir/schemas\")\n    }\n\n    buildTypes {\n        release {\n            isMinifyEnabled = false\n            proguardFiles(\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                \"proguard-rules.pro\"\n            )\n        }\n    }\n    compileOptions {\n        sourceCompatibility = JavaVersion.VERSION_1_8\n        targetCompatibility = JavaVersion.VERSION_1_8\n    }\n    kotlinOptions {\n        jvmTarget = \"1.8\"\n    }\n\n    buildFeatures{\n        viewBinding = true\n    }\n}\n\ndependencies {\n    implementation(libs.barchart)\n    implementation(libs.circle.image)\n    implementation(libs.image.slider)\n    implementation(libs.glide)\n    // room database\n    implementation(libs.room.kotlin)\n    implementation(libs.room.runtime)\n    implementation(libs.androidx.junit.ktx)\n    // ksp\n    ksp(libs.room.compiler)\n    // lifecycle ktx\n    implementation(libs.androidx.lifecycle.livedata.ktx)\n    implementation(libs.androidx.lifecycle.viewmodel.ktx)\n    // map\n    implementation(libs.mapbox)\n    implementation(libs.androidx.swiperefreshlayout)\n    implementation(libs.services.map)\n    implementation(\"org.jetbrains.kotlinx:kotlinx-datetime:0.6.1\")\n    implementation(libs.navigation.ui)\n    implementation(libs.navigation.fragment)\n    implementation(libs.navigation.runtime)\n    implementation(libs.androidx.core.ktx)\n    implementation(libs.androidx.appcompat)\n    implementation(libs.material)\n    implementation(libs.androidx.activity)\n    implementation(libs.androidx.constraintlayout)\n    testImplementation(libs.junit)\n    androidTestImplementation(libs.androidx.junit)\n    androidTestImplementation(libs.androidx.espresso.core)\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	
++++ b/app/build.gradle.kts	
+@@ -21,7 +21,6 @@
+         versionCode = 1
+         versionName = "1.0"
+         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+-
+     }
+     // schema
+     room {
+@@ -80,4 +79,8 @@
+     testImplementation(libs.junit)
+     androidTestImplementation(libs.androidx.junit)
+     androidTestImplementation(libs.androidx.espresso.core)
++    testImplementation("junit:junit:4.13.2")
++    androidTestImplementation("androidx.test.ext:junit:1.2.1")
++    androidTestImplementation("androidx.test:runner:1.5.2")
++    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.2")
+ }
+\ No newline at end of file
+Index: .idea/deploymentTargetSelector.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project version=\"4\">\n  <component name=\"deploymentTargetSelector\">\n    <selectionStates>\n      <SelectionState runConfigName=\"app\">\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\n        <DropdownSelection timestamp=\"2025-01-07T04:29:30.153177200Z\">\n          <Target type=\"DEFAULT_BOOT\">\n            <handle>\n              <DeviceId pluginId=\"LocalEmulator\" identifier=\"path=C:\\Users\\admin\\.android\\avd\\Pixel_9_Pro_API_34.avd\" />\n            </handle>\n          </Target>\n        </DropdownSelection>\n        <DialogSelection />\n      </SelectionState>\n      <SelectionState runConfigName=\"UserEntityTest\">\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\n      </SelectionState>\n      <SelectionState runConfigName=\"testDefaultValueUser()\">\n        <option name=\"selectionMode\" value=\"DROPDOWN\" />\n      </SelectionState>\n    </selectionStates>\n  </component>\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/deploymentTargetSelector.xml b/.idea/deploymentTargetSelector.xml
+--- a/.idea/deploymentTargetSelector.xml	
++++ b/.idea/deploymentTargetSelector.xml	
+@@ -16,7 +16,7 @@
+       <SelectionState runConfigName="UserEntityTest">
+         <option name="selectionMode" value="DROPDOWN" />
+       </SelectionState>
+-      <SelectionState runConfigName="testDefaultValueUser()">
++      <SelectionState runConfigName="ExampleInstrumentedTest">
+         <option name="selectionMode" value="DROPDOWN" />
+       </SelectionState>
+     </selectionStates>

@@ -50,10 +50,6 @@ class TrainingPlanRepository {
         finishNotiTriggered = false
     }
 
-    suspend fun deleteTrainingPlan(planId: Int) {
-        trainingPlanDao.deleteTrainingPlan(planId)
-    }
-
     private suspend fun calcGoalProgress(plan: TrainingPlan): Double {
         val currentRunSessionId = runSessionDao.getCurrentRunSession()?.sessionId
         val stats = currentRunSessionId?.let { runSessionDao.fetchStatsSession(it) }

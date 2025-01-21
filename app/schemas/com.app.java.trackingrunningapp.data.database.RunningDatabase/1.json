@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e1c8d208067c699f6294a4ed99f1eb92",
+    "identityHash": "d1cff331835ac252defeac5d7142ca4a",
     "entities": [
       {
         "tableName": "User",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT DEFAULT NULL, `age` INTEGER DEFAULT NULL, `height` REAL DEFAULT NULL, `weight` REAL DEFAULT 50.0, `metricPreference` TEXT DEFAULT 'kg', `unit` TEXT DEFAULT 'km')",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT DEFAULT NULL, `age` INTEGER DEFAULT NULL, `height` REAL DEFAULT NULL, `weight` REAL DEFAULT 50.0, `metricPreference` TEXT DEFAULT 'km', `unit` TEXT DEFAULT 'kg')",
         "fields": [
           {
             "fieldPath": "userId",
@@ -47,14 +47,14 @@
             "columnName": "metricPreference",
             "affinity": "TEXT",
             "notNull": false,
-            "defaultValue": "'kg'"
+            "defaultValue": "'km'"
           },
           {
             "fieldPath": "unit",
             "columnName": "unit",
             "affinity": "TEXT",
             "notNull": false,
-            "defaultValue": "'km'"
+            "defaultValue": "'kg'"
           }
         ],
         "primaryKey": {
@@ -376,7 +376,7 @@
       },
       {
         "tableName": "TrainingPlan",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`planId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `planSessionId` INTEGER, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `estimatedTime` REAL NOT NULL, `targetDistance` REAL DEFAULT 0.0, `targetDuration` REAL DEFAULT 0.0, `targetCaloriesBurned` REAL DEFAULT 0.0, `goalProgress` REAL DEFAULT 0.0, `exerciseType` TEXT NOT NULL, `difficulty` TEXT NOT NULL, FOREIGN KEY(`planSessionId`) REFERENCES `RunSession`(`sessionId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`planId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `planSessionId` INTEGER, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `estimatedTime` REAL NOT NULL, `targetDistance` REAL DEFAULT 0.0, `targetDuration` REAL DEFAULT 0.0, `targetCaloriesBurned` REAL DEFAULT 0.0, `goalProgress` REAL DEFAULT 0.0, `difficulty` TEXT NOT NULL, FOREIGN KEY(`planSessionId`) REFERENCES `RunSession`(`sessionId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "planId",
@@ -435,12 +435,6 @@
             "affinity": "REAL",
             "notNull": false,
             "defaultValue": "0.0"
-          },
-          {
-            "fieldPath": "exerciseType",
-            "columnName": "exerciseType",
-            "affinity": "TEXT",
-            "notNull": true
           },
           {
             "fieldPath": "difficulty",
@@ -643,7 +637,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e1c8d208067c699f6294a4ed99f1eb92')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd1cff331835ac252defeac5d7142ca4a')"
     ]
   }
 }
