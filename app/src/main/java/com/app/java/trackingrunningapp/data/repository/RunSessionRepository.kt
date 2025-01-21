@@ -57,7 +57,6 @@ class RunSessionRepository {
     private val _distance = MutableStateFlow<Double>(0.0)
     val distance: StateFlow<Double> = _distance
 
-    private var totalCaloriesBurned = 0.0
     private var newDistance = 0.0
 
     private lateinit var runSessionStartTime: Instant
@@ -91,7 +90,6 @@ class RunSessionRepository {
         _distance.value = 0.0
         _pace.value = 0.0
         _caloriesBurned.value = 0.0
-        totalCaloriesBurned = 0.0
         cumulativeDurationSeconds = 0L
         totalDurationSeconds = 0L
         newDistance = 0.0
@@ -279,8 +277,7 @@ class RunSessionRepository {
                     0.0
                 }
 
-                totalCaloriesBurned += caloriesBurned
-                _caloriesBurned.value = totalCaloriesBurned
+                _caloriesBurned.value = caloriesBurned
 
                 Log.d("Calories", "${caloriesBurned}")
 
@@ -337,7 +334,7 @@ class RunSessionRepository {
                             if (distance <0.00006 || distance >0.0027) {
                                 return@collect
                             }
-                            newDistance += distance
+                            newDistance = _distance.value + distance
                             _distance.emit(newDistance)
 
                             delay(100)
