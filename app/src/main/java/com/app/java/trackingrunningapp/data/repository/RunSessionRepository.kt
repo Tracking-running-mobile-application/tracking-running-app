@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
+import kotlin.properties.Delegates
 
 class RunSessionRepository {
     val db = InitDatabase.runningDatabase
@@ -57,6 +58,7 @@ class RunSessionRepository {
     val distance: StateFlow<Double> = _distance
 
     private var totalCaloriesBurned = 0.0
+    private var newDistance = 0.0
 
     private lateinit var runSessionStartTime: Instant
 
@@ -92,6 +94,7 @@ class RunSessionRepository {
         totalCaloriesBurned = 0.0
         cumulativeDurationSeconds = 0L
         totalDurationSeconds = 0L
+        newDistance = 0.0
         durationNotification = false
         paceNotification = false
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
@@ -196,13 +199,9 @@ class RunSessionRepository {
                 val userMetricPreference = userInfo?.metricPreference
 
                 val durationInHours = _duration.value.div(3600.0)
-                val adjustedDistance: Double = when (userMetricPreference) {
-                    User.UNIT_MILE -> _distance.value.times(0.621371)
-                    else -> _distance.value
-                }
 
-                val pace: Double = if (adjustedDistance > 0) {
-                    adjustedDistance.div(durationInHours)
+                val pace: Double = if (_distance.value > 0) {
+                    _distance.value.div(durationInHours)
                 } else {
                     0.0
                 }
@@ -326,24 +325,22 @@ class RunSessionRepository {
                 latestLocationsFlow.collect { latestLocations ->
                     if (latestLocations.size == 2) {
                         val (location1, location2) = latestLocations
-                        Log.d("calc distance", "location 1: $location1, location 2: $location2")
+                            Log.d("calc distance", "location 1: $location1, location 2: $location2")
 
-                        val userUnitPreference = userInfo?.metricPreference
+                            val userUnitPreference = userInfo?.metricPreference
 
-                        val distance = when (userUnitPreference) {
-                            User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
-                            else -> StatsUtils.haversineFormula(location1, location2) / 1000
+                            val distance = when (userUnitPreference) {
+                                User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
+                                else -> StatsUtils.haversineFormula(location1, location2) / 1000
+                            }
+                            Log.d("RunSessionRepo", "${distance}")
+                            if (distance <0.00006 || distance >0.0027) {
+                                return@collect
+                            }
+                            newDistance += distance
+                            _distance.emit(newDistance)
 
-                        }
-                        Log.d("RunSessionRepo", "${distance}")
-                        if (distance <0.00006 || distance >0.0027) {
-                            return@collect
-
-                        }
-                        val newDistance = _distance.value + distance
-                        _distance.emit(newDistance)
-
-                        delay(100)
+                            delay(100)
                         }
                     }
             } catch (ce: CancellationException) {
