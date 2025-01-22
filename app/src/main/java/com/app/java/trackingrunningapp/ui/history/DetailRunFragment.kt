@@ -48,6 +48,7 @@ class DetailRunFragment : Fragment() {
                         StatsUtils.formatDuration(session.duration!!)
                     userViewModel.fetchUserInfo()
                     userViewModel.userLiveData.observe(viewLifecycleOwner){
+                        binding.historyRunProfile.textHistoryProfileName.text = it?.name
                         if(it?.metricPreference == User.UNIT_MILE){
                             binding.historyRunDetail.textPaceMetric.text =
                                 getString(R.string.text_speed_metric_mile,session.pace)
