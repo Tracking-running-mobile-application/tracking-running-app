@@ -1,6 +1,5 @@
 package com.app.java.trackingrunningapp.data.repository
 
-import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.GPSPointDao
 import com.app.java.trackingrunningapp.data.dao.GPSTrackDao
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
@@ -10,7 +9,6 @@ import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.dataclass.location.Location
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,8 +16,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import java.lang.IllegalStateException
 
-class GPSPointRepository(
-) {
+class GPSPointRepository {
     val db = InitDatabase.runningDatabase
 
     private val gpsPointDao: GPSPointDao = db.GPSPointDao()
@@ -58,7 +55,7 @@ class GPSPointRepository(
         gpsPointDao.insertGPSPoint(newGPSPoint)
     }
 
-    suspend fun fetchTwoLatestLocation(): Flow<List<Location>> = flow {
+    /*suspend fun fetchTwoLatestLocation(): Flow<List<Location>> = flow {
         val gpsTrackID = getCurrentGPSTrackIDOrThrow()
         while (!gpsTrackDao.pauseOrContinueGPSTrack(gpsTrackID)) {
             try {
@@ -67,10 +64,43 @@ class GPSPointRepository(
             } catch (e: Exception) {
                 println("Error fetching location (GPS Point) ${e.message}")
             }
-            delay(3000)
+            delay(100)
         }
 
+    }.flowOn(Dispatchers.IO)*/
+
+    suspend fun fetchTwoLatestLocation(): Flow<Pair<Location, Location>> = flow {
+        val gpsTrackID = getCurrentGPSTrackIDOrThrow()
+        val locationBuffer = mutableListOf<Location>()
+        var lastTimeStamp: Long = 0
+
+        while (!gpsTrackDao.pauseOrContinueGPSTrack(gpsTrackID)) {
+            try {
+                val newLocations = gpsPointDao.getNewLocations(gpsTrackID, lastTimeStamp)
+
+                if (newLocations.isEmpty()) {
+                    delay(100)
+                    continue
+                }
+
+                newLocations.forEach { location ->
+                    locationBuffer.add(location)
+                    lastTimeStamp = maxOf(lastTimeStamp, location.timeStamp)
+
+                    if (locationBuffer.size > 2) {
+                        locationBuffer.removeAt(0)
+                    }
+
+                    if (locationBuffer.size == 2) {
+                        emit(Pair(locationBuffer[0], locationBuffer[1]))
+                    }
+                }
+            } catch (e: Exception) {
+                println("Error fetching location (GPS Point): ${e.message}")
+            }
+        }
     }.flowOn(Dispatchers.IO)
+
 
     suspend fun fetchGPSPointList(trackId: Int): List<Location> {
         return gpsPointDao.getGPSPointByTrackId(trackId = trackId)
