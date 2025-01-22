@@ -150,7 +150,7 @@ class RunSessionRepository {
 
 
     suspend fun startRunSession() {
-        val runDate = DateTimeUtils.getCurrentDate().toString()
+        val runDate = DateTimeUtils.formatDateStringRemoveHyphen(DateTimeUtils.getCurrentDate().toString())
 
         val newRunSession = RunSession(
             runDate = runDate,
@@ -331,7 +331,8 @@ class RunSessionRepository {
                         return@collect
                     }
                     newDistance += distance
-                    _distance.emit(newDistance)
+                    Log.d("RunSessionRepo", "$newDistance")
+                    _distance.value = newDistance
 
                     delay(100)
                 }

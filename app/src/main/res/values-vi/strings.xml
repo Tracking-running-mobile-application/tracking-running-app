@@ -59,7 +59,7 @@
     <string name="add_more"><u>Thêm nữa!</u></string>
     <string name="text_favourite_run">Chặng Chạy Yêu Thích</string>
     <string name="text_distance">Quãng Đường</string>
-    <string name="text_distance_metric">%.2f km</string>
+    <string name="text_distance_metric">%.3f km</string>
     <string name="text_pace">Tốc Độ Trung Bình</string>
     <string name="text_pace_metric">%.2f phút/km</string>
     <string name="text_duration">Thời Gian</string>

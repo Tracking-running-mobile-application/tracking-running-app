@@ -59,7 +59,7 @@
     <string name="add_more"><u>Add more!</u></string>
     <string name="text_favourite_run">Favourite Run</string>
     <string name="text_distance">Distance</string>
-    <string name="text_distance_metric">%.2f km</string>
+    <string name="text_distance_metric">%.3f km</string>
     <string name="text_pace">Avg Pace</string>
     <string name="text_pace_metric">%.2f min/km</string>
     <string name="text_duration">Duration</string>
