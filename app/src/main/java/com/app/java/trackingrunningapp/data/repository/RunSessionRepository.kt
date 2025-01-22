@@ -59,6 +59,8 @@ class RunSessionRepository {
     private lateinit var runSessionStartTime: Instant
     private var newDistance: Double = 0.0
 
+    private var currentGPSPointId: Int = 0
+
     private var repoScope = CoroutineScope(Job() + Dispatchers.IO)
 
     private fun getCurrentSessionOrThrow(): RunSession {
@@ -91,6 +93,7 @@ class RunSessionRepository {
         cumulativeDurationSeconds = 0L
         totalDurationSeconds = 0L
         newDistance = 0.0
+        currentGPSPointId = 0
         durationNotification = false
         paceNotification = false
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
@@ -326,14 +329,15 @@ class RunSessionRepository {
                         User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
                         else -> StatsUtils.haversineFormula(location1, location2) / 1000
                     }
-                    Log.d("RunSessionRepo", "$distance")
-                    if (distance <0.00005 || distance >0.012) {
+                    Log.d("RunSessionRepo", "Computed: $distance")
+                    if (distance <0.00005 || distance >0.012 || (currentGPSPointId != location1.gpsPointId && currentGPSPointId >= location2.gpsPointId)) {
                         return@collect
                     }
                     newDistance += distance
-                    Log.d("RunSessionRepo", "$newDistance")
+                    Log.d("RunSessionRepo", "New distance: $newDistance")
                     _distance.value = newDistance
 
+                    currentGPSPointId = location2.gpsPointId
                     delay(100)
                 }
             } catch (ce: CancellationException) {

@@ -72,11 +72,11 @@ class GPSPointRepository {
     suspend fun fetchTwoLatestLocation(): Flow<Pair<Location, Location>> = flow {
         val gpsTrackID = getCurrentGPSTrackIDOrThrow()
         val locationBuffer = mutableListOf<Location>()
-        var lastTimeStamp: Long = 0
+        var currentGPSPointId: Int = 0
 
         while (!gpsTrackDao.pauseOrContinueGPSTrack(gpsTrackID)) {
             try {
-                val newLocations = gpsPointDao.getNewLocations(gpsTrackID, lastTimeStamp)
+                val newLocations = gpsPointDao.getNewLocations(gpsTrackID, currentGPSPointId)
 
                 if (newLocations.isEmpty()) {
                     delay(100)
@@ -85,7 +85,7 @@ class GPSPointRepository {
 
                 newLocations.forEach { location ->
                     locationBuffer.add(location)
-                    lastTimeStamp = maxOf(lastTimeStamp, location.timeStamp)
+                    currentGPSPointId = maxOf(currentGPSPointId, location.gpsPointId)
 
                     if (locationBuffer.size > 2) {
                         locationBuffer.removeAt(0)
