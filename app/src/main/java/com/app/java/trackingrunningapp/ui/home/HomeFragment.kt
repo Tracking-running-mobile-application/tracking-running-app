@@ -29,6 +29,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -92,6 +93,10 @@ class HomeFragment : Fragment() {
         setUpPersonalGoal()
     }
 
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_setting).isVisible = true
+    }
     private fun setUpPersonalGoal() {
         binding.icAddGoal.setOnClickListener {
             it.findNavController().navigate(R.id.action_homeFragment_to_personalGoalFragment)

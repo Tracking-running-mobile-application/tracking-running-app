@@ -25,6 +25,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.app.java.trackingrunningapp.utils.StatsUtils
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -44,6 +45,8 @@ class FavouriteRuns : Fragment() {
         val toolbarTitle = requireActivity().findViewById<TextView>(R.id.tv_toolbar_title)
         toolbarTitle.text = getString(R.string.text_favourite_run)
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_filter).isVisible =
+            false
         return binding.root
     }
 
@@ -81,5 +84,7 @@ class FavouriteRuns : Fragment() {
         super.onStop()
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
             View.VISIBLE
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_filter).isVisible =
+            true
     }
 }

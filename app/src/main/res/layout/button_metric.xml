@@ -39,7 +39,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="4dp"
                 android:paddingBottom="4dp"
-                android:text="Stat"
+                android:text="@string/text_calorie_metric"
                 android:textColor="@color/main_yellow"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -83,7 +83,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="4dp"
                 android:paddingBottom="4dp"
-                android:text="Stat"
+                android:text="@string/text_duration_metric"
                 android:textColor="@color/main_yellow"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -125,7 +125,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="4dp"
                 android:paddingBottom="4dp"
-                android:text="Stat"
+                android:text="@string/text_distance_metric"
                 android:textColor="@color/main_yellow"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -154,7 +154,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="4dp"
                 android:layout_marginTop="4dp"
-                android:text="@string/pace"
+                android:text="@string/speed"
                 android:textColor="@color/white"
                 android:textSize="24sp" />
 
@@ -165,7 +165,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="4dp"
                 android:paddingBottom="4dp"
-                android:text="Stat"
+                android:text="@string/text_speed_metric"
                 android:textColor="@color/main_yellow"
                 android:textSize="20sp" />
         </LinearLayout>

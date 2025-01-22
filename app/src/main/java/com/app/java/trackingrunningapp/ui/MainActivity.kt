@@ -92,7 +92,6 @@ class MainActivity : AppCompatActivity() {
             val icSettings = binding.toolbarMain.menu.findItem(R.id.item_toolbar_setting)
             val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
             val icEdit = binding.toolbarMain.menu.findItem(R.id.item_toolbar_edit)
-
             when (destination.id) {
                 R.id.homeFragment -> {
                     tvTitle.text = getString(R.string.text_home)

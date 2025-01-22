@@ -47,7 +47,7 @@
             app:layout_constraintTop_toTopOf="@+id/circleImageView" />
 
         <TextView
-            android:id="@+id/textView35"
+            android:id="@+id/text_history_detail_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
