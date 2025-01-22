@@ -330,7 +330,7 @@ class RunSessionRepository {
                         else -> StatsUtils.haversineFormula(location1, location2) / 1000
                     }
                     Log.d("RunSessionRepo", "Computed: $distance")
-                    if (distance <0.0005 || distance >0.012 || (currentGPSPointId >= location1.gpsPointId && currentGPSPointId >= location2.gpsPointId)) {
+                    if (distance <0.0008 || distance >0.012 || (currentGPSPointId >= location1.gpsPointId && currentGPSPointId >= location2.gpsPointId)) {
                         return@collect
                     }
                     newDistance += distance
