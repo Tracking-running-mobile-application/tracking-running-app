@@ -111,12 +111,4 @@ class ProfileFragment : Fragment() {
             labelsFormatter = { it.toInt().toString() }
         }
     }
-
-    override fun onStop() {
-        super.onStop()
-        val toolbar = requireActivity()
-            .findViewById<Toolbar>(R.id.toolbar_main)
-        val icEdit = toolbar.menu.findItem(R.id.item_toolbar_edit)
-        icEdit.isVisible = false
-    }
 }

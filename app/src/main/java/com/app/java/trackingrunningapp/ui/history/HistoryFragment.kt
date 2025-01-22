@@ -44,16 +44,16 @@ class HistoryFragment : Fragment() {
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
 
-        runSessionViewModel.hasMoreData.observe(viewLifecycleOwner) { hasMoreData ->
-            if (hasMoreData) {
-                Log.d(
-                    "History Fragment Log hasMoreData",
-                    "if $hasMoreData then there is still more run sessions in the database"
-                )
-            } else {
-                Log.e("Error", "No run sessions found in the database (hasMoreData)")
-            }
-        }
+//        runSessionViewModel.hasMoreData.observe(viewLifecycleOwner) { hasMoreData ->
+//            if (hasMoreData) {
+//                Log.d(
+//                    "History Fragment Log hasMoreData",
+//                    "if $hasMoreData then there is still more run sessions in the database"
+//                )
+//            } else {
+//                Log.e("Error", "No run sessions found in the database (hasMoreData)")
+//            }
+//        }
         return binding.root
     }
 
@@ -183,14 +183,5 @@ class HistoryFragment : Fragment() {
             View.VISIBLE
 //        runDateAdapter.updateRunDate(runDates)
         binding.rvHistoryDate.adapter = runAdapter
-    }
-
-    override fun onStop() {
-        super.onStop()
-        val toolbar = requireActivity()
-            .findViewById<Toolbar>(R.id.toolbar_main)
-        // hide filter
-        val itemFilter = toolbar.menu.findItem(R.id.item_toolbar_filter)
-        itemFilter.isVisible = false
     }
 }
