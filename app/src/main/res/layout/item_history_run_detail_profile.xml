@@ -31,7 +31,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textView36"
+            android:id="@+id/text_history_profile_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -57,7 +57,7 @@
             android:textColor="@color/text_shadow_white"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/textView36"
+            app:layout_constraintStart_toStartOf="@+id/text_history_profile_name"
             app:layout_constraintTop_toTopOf="@+id/guideline12" />
 
         <androidx.constraintlayout.widget.Guideline
