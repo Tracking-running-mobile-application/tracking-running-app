@@ -92,11 +92,13 @@ class MainActivity : AppCompatActivity() {
             val icSettings = binding.toolbarMain.menu.findItem(R.id.item_toolbar_setting)
             val icFilter = binding.toolbarMain.menu.findItem(R.id.item_toolbar_filter)
             val icEdit = binding.toolbarMain.menu.findItem(R.id.item_toolbar_edit)
-            icSettings.isVisible = true
+
             when (destination.id) {
                 R.id.homeFragment -> {
                     tvTitle.text = getString(R.string.text_home)
                     icSettings.isVisible = true
+                    icFilter.isVisible = false
+                    icEdit.isVisible = false
                     binding.toolbarMain.setNavigationIcon(R.drawable.ic_notification)
                     binding.toolbarMain.setNavigationOnClickListener {
                         // TODO: do something with notification
@@ -115,6 +117,7 @@ class MainActivity : AppCompatActivity() {
                     tvTitle.text = getString(R.string.text_profile)
                     icEdit.isVisible = true
                     icSettings.isVisible = false
+                    icFilter.isVisible = false
                     icEdit.setOnMenuItemClickListener {
 
                         navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
@@ -126,6 +129,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.runFragment -> {
                     binding.toolbarMain.navigationIcon = null
                     icSettings.isVisible = false
+                    icFilter.isVisible = false
+                    icEdit.isVisible = false
                     tvTitle.text = getString(R.string.text_run)
                     binding.bottomNav.isVisible = true
                 }
@@ -133,6 +138,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.statisticFragment -> {
                     binding.toolbarMain.navigationIcon = null
                     icSettings.isVisible = false
+                    icFilter.isVisible = false
+                    icEdit.isVisible = false
                     tvTitle.text = getString(R.string.text_statistics)
                     binding.bottomNav.isVisible = true
                 }
@@ -141,6 +148,8 @@ class MainActivity : AppCompatActivity() {
                     binding.toolbarMain.navigationIcon = null
                     tvTitle.text = getString(R.string.text_history)
                     icFilter.isVisible = true
+                    icSettings.isVisible = false
+                    icEdit.isVisible = false
                     binding.bottomNav.isVisible = true
                 }
             }
