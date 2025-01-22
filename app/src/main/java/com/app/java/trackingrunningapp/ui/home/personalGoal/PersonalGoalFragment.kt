@@ -3,6 +3,7 @@ package com.app.java.trackingrunningapp.ui.home.personalGoal
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -69,28 +70,40 @@ class PersonalGoalFragment : Fragment() {
             // TODO: Save plan
             val goalId = arguments?.getInt(EXTRA_PERSONAL_GOAL_ID, 0)
             if (isDistanceClicked) {
+                var distance = 0.0
+                if(binding.objectiveBox.text.toString().isNotEmpty()){
+                     distance =  binding.objectiveBox.text.toString().toDouble()
+                }
                 personalGoalViewModel.upsertPersonalGoal(
                     goalId = goalId,
                     name = binding.editCustomNamePlan.text.toString(),
-                    targetDistance = binding.objectiveBox.text.toString().toDouble(),
+                    targetDistance = distance,
                     targetDuration = 0.0,
                     targetCaloriesBurned = 0.0
                 )
             } else if (isDurationClicked) {
+                var duration = 0.0
+                if(binding.objectiveBox.text.toString().isNotEmpty()){
+                    duration =  binding.objectiveBox.text.toString().toDouble()
+                }
                 personalGoalViewModel.upsertPersonalGoal(
                     goalId = goalId,
                     name = binding.editCustomNamePlan.text.toString(),
                     targetDistance = 0.0,
-                    targetDuration = binding.objectiveBox.text.toString().toDouble(),
+                    targetDuration = duration,
                     targetCaloriesBurned = 0.0
                 )
             } else if (isCaloClicked) {
+                var calo = 0.0
+                if(binding.objectiveBox.text.toString().isNotEmpty()){
+                    calo =  binding.objectiveBox.text.toString().toDouble()
+                }
                 personalGoalViewModel.upsertPersonalGoal(
                     goalId = goalId,
                     name = binding.editCustomNamePlan.text.toString(),
                     targetDistance = 0.0,
                     targetDuration = 0.0,
-                    targetCaloriesBurned = binding.objectiveBox.text.toString().toDouble()
+                    targetCaloriesBurned = calo
                 )
             }
             // back to home
