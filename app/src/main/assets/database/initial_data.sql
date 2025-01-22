@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "RunSession" (
 	"runDate"	TEXT NOT NULL,
 	"distance"	REAL DEFAULT 0.0,
 	"duration"	INTEGER DEFAULT 0,
-	"pace"	REAL DEFAULT 0.0,
+	"speed"	REAL DEFAULT 0.0,
 	"caloriesBurned"	REAL DEFAULT 0.0,
 	"isActive"	INTEGER DEFAULT 0,
 	"dateAddInFavorite"	TEXT DEFAULT NULL,

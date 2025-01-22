@@ -47,8 +47,8 @@ class RunSessionRepository {
     private var cumulativeDurationSeconds: Long = 0L
     private var totalDurationSeconds: Long = 0L
 
-    private val _pace = MutableStateFlow(0.0)
-    val pace: StateFlow<Double> = _pace
+    private val _speed = MutableStateFlow(0.0)
+    val speed: StateFlow<Double> = _speed
 
     private val _caloriesBurned = MutableStateFlow(0.0)
     val caloriesBurned: StateFlow<Double> = _caloriesBurned
@@ -88,7 +88,7 @@ class RunSessionRepository {
     fun resetStatsValue() {
         _duration.value = 0L
         _distance.value = 0.0
-        _pace.value = 0.0
+        _speed.value = 0.0
         _caloriesBurned.value = 0.0
         cumulativeDurationSeconds = 0L
         totalDurationSeconds = 0L
@@ -159,7 +159,7 @@ class RunSessionRepository {
             runDate = runDate,
             distance = 0.0,
             duration = 0L,
-            pace = 0.0,
+            speed = 0.0,
             caloriesBurned = 0.0,
             isActive = true,
             dateAddInFavorite = null,
@@ -216,7 +216,7 @@ class RunSessionRepository {
                     paceNotification = true
                 }
 
-                _pace.emit(pace)
+                _speed.emit(pace)
                 delay(100)
             } catch (ce: CancellationException) {
                 println("calcPace runSessionRepo: ${ce.message} ")
@@ -233,8 +233,8 @@ class RunSessionRepository {
                 val unit: String? = userInfo?.unit
 
                 val isTooSlow = when (userMetricPreference) {
-                    User.UNIT_MILE -> _pace.value < 3.5
-                    else -> _pace.value < 4.0
+                    User.UNIT_MILE -> _speed.value < 3.5
+                    else -> _speed.value < 4.0
                 }
 
                 if(isTooSlow) {
@@ -250,24 +250,24 @@ class RunSessionRepository {
 
                 val MET = if (userMetricPreference == User.UNIT_KM) {
                     when {
-                        _pace.value == 0.0 -> 0.0
-                        _pace.value < 6.4 -> 2.0
-                        _pace.value in 6.4..8.0 -> 3.9
-                        _pace.value in 8.0..10.8 -> 6.0
-                        _pace.value in 10.8..12.9 -> 8.0
-                        _pace.value in 12.9..14.5 -> 10.0
-                        _pace.value in 14.5..16.1 -> 11.0
+                        _speed.value == 0.0 -> 0.0
+                        _speed.value < 6.4 -> 2.0
+                        _speed.value in 6.4..8.0 -> 3.9
+                        _speed.value in 8.0..10.8 -> 6.0
+                        _speed.value in 10.8..12.9 -> 8.0
+                        _speed.value in 12.9..14.5 -> 10.0
+                        _speed.value in 14.5..16.1 -> 11.0
                         else -> 12.0
                     }
                 } else {
                     when {
-                        _pace.value == 0.0 -> 0.0
-                        _pace.value < 4.0 -> 2.0
-                        _pace.value in 4.0..5.0 -> 3.9
-                        _pace.value in 5.0..6.7 -> 6.0
-                        _pace.value in 6.7..8.0 -> 8.0
-                        _pace.value in 8.0..9.0 -> 10.0
-                        _pace.value in 9.0..10.0 -> 11.0
+                        _speed.value == 0.0 -> 0.0
+                        _speed.value < 4.0 -> 2.0
+                        _speed.value in 4.0..5.0 -> 3.9
+                        _speed.value in 5.0..6.7 -> 6.0
+                        _speed.value in 6.7..8.0 -> 8.0
+                        _speed.value in 8.0..9.0 -> 10.0
+                        _speed.value in 9.0..10.0 -> 11.0
                         else -> 12.0
                     }
                 }
