@@ -21,6 +21,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import com.app.java.trackingrunningapp.utils.StatsUtils
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mapbox.geojson.Point
@@ -62,7 +63,8 @@ class RunResultFragment : Fragment() {
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
 
         runSessionRepository = InitDatabase.runSessionRepository
-        userViewModel = UserViewModel(UserRepository())
+        val userFactory = UserViewModelFactory(InitDatabase.userRepository)
+        userViewModel = ViewModelProvider(this,userFactory)[UserViewModel::class.java]
         return binding.root
     }
 

@@ -8,8 +8,6 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
-import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
@@ -46,7 +44,7 @@ object DateTimeUtils {
         return date.format(outputFormatter)
     }
 
-    fun formatDatePretty(inputDate: String): String {
+    fun formatDateHistoryDetailFormat(inputDate: String): String {
         val inputFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
         val date = inputFormatter.parse(inputDate)
         val outputFormatter = SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH)

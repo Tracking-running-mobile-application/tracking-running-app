@@ -103,9 +103,8 @@ class RunFragment : Fragment() {
         gpsPointViewModel =
             ViewModelProvider(this, gpsPointFactory).get(GPSPointViewModel::class.java)
 
-        val userRepository = UserRepository()
-        val userFactory = UserViewModelFactory(userRepository)
-        userViewModel = ViewModelProvider(this, userFactory)[UserViewModel::class.java]
+        val userFactory = UserViewModelFactory(InitDatabase.userRepository)
+        userViewModel = ViewModelProvider(this,userFactory)[UserViewModel::class.java]
         binding = FragmentRunBinding.inflate(inflater, container, false)
         return binding.root
     }

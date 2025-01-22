@@ -9,11 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.User
-import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentDetailRunBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.app.java.trackingrunningapp.utils.StatsUtils
 
@@ -30,7 +30,9 @@ class DetailRunFragment : Fragment() {
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
-        userViewModel = UserViewModel(UserRepository())
+
+        val userFactory = UserViewModelFactory(InitDatabase.userRepository)
+        userViewModel = ViewModelProvider(this,userFactory)[UserViewModel::class.java]
         return binding.root
     }
 
@@ -56,7 +58,7 @@ class DetailRunFragment : Fragment() {
                     }
                     binding.historyRunDetail.textCalorieMetric.text =
                         getString(R.string.text_calorie_metric,session.caloriesBurned)
-                    binding.historyRunProfile.textHistoryDetailDate.text = DateTimeUtils.formatDatePretty(session.runDate)
+                    binding.historyRunProfile.textHistoryDetailDate.text = DateTimeUtils.formatDateHistoryDetailFormat(session.runDate)
                 }
             }
         }
