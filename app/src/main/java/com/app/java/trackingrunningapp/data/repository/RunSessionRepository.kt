@@ -195,6 +195,7 @@ class RunSessionRepository {
         ensureRepoScope()
         repoScope.launch {
             try {
+                Log.d("RunSessionRepo", "calc Pace")
                 val userMetricPreference = userInfo?.metricPreference
 
                 val durationInHours = _duration.value.div(3600.0)
@@ -211,7 +212,7 @@ class RunSessionRepository {
                 }
 
                 if (excessivePace && !paceNotification) {
-                    notificationRepository.triggerNotification("EXCESSIVE_PACE")
+                    notificationRepository.triggerNotification("EXCESSIVE_SPEED")
                     paceNotification = true
                 }
 
@@ -227,6 +228,7 @@ class RunSessionRepository {
         ensureRepoScope()
         repoScope.launch {
             try {
+                Log.d("RunSessionRepo", "calc calories burend")
                 val userMetricPreference: String? = userInfo?.metricPreference
                 val unit: String? = userInfo?.unit
 
@@ -293,6 +295,7 @@ class RunSessionRepository {
         repoScope.launch {
             while (isActive) {
                 try {
+                    Log.d("RunSessionRepo", "calc duration")
                     val currentTime = DateTimeUtils.getCurrentInstant()
                     val currentDuration =
                         StatsUtils.calculateDuration(runSessionStartTime, currentTime)
@@ -330,7 +333,7 @@ class RunSessionRepository {
                         else -> StatsUtils.haversineFormula(location1, location2) / 1000
                     }
                     Log.d("RunSessionRepo", "Computed: $distance")
-                    if (distance <0.0008 || distance >0.012 || (currentGPSPointId >= location1.gpsPointId && currentGPSPointId >= location2.gpsPointId)) {
+                    if (distance <0.0008 || distance >0.0012 || (currentGPSPointId >= location1.gpsPointId && currentGPSPointId >= location2.gpsPointId)) {
                         return@collect
                     }
                     newDistance += distance

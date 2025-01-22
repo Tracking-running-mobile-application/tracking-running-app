@@ -91,8 +91,8 @@ class StatsRepository {
                 val totalDistance = sessions.sumOf { it.distance ?: 0.0 }
                 val totalDuration = sessions.sumOf { it.duration ?: 0L }
                 val totalCaloriesBurned = sessions.sumOf { it.caloriesBurned ?: 0.0 }
-                val totalAvgPace = if (totalDistance > 0) {
-                    (totalDuration / 60.0) / totalDistance
+                val totalAvgSpeed = if (totalDistance > 0) {
+                    totalDistance / (totalDuration / 3600)
                 } else {
                     0.0
                 }
@@ -103,7 +103,7 @@ class StatsRepository {
                         totalDistance = totalDistance,
                         totalDuration = totalDuration,
                         totalCaloriesBurned = totalCaloriesBurned,
-                        totalAvgPace = totalAvgPace
+                        totalAvgSpeed = totalAvgSpeed
                     )
                 )
             }
@@ -125,8 +125,8 @@ class StatsRepository {
                 val totalDistance = sessions.sumOf { it.distance ?: 0.0 }
                 val totalDuration = sessions.sumOf { it.duration ?: 0L }
                 val totalCaloriesBurned = sessions.sumOf { it.caloriesBurned ?: 0.0 }
-                val totalAvgPace = if (totalDistance > 0) {
-                    (totalDuration / 60.0) / totalDistance
+                val totalAvgSpeed = if (totalDuration > 0) {
+                    totalDistance / (totalDuration / 3600)
                 } else {
                     0.0
                 }
@@ -137,7 +137,7 @@ class StatsRepository {
                         totalDistance = totalDistance,
                         totalDuration = totalDuration,
                         totalCaloriesBurned = totalCaloriesBurned,
-                        totalAvgPace = totalAvgPace
+                        totalAvgSpeed = totalAvgSpeed
                     )
                 )
             }
@@ -155,8 +155,8 @@ class StatsRepository {
                 val totalDistance = sessions.sumOf { it.distance ?: 0.0 }
                 val totalDuration = sessions.sumOf { it.duration ?: 0L }
                 val totalCaloriesBurned = sessions.sumOf { it.caloriesBurned ?: 0.0 }
-                val totalAvgPace = if (totalDistance > 0) {
-                    (totalDuration / 60.0) / totalDistance
+                val totalAvgSpeed = if (totalDistance > 0) {
+                    totalDistance / (totalDuration / 3600)
                 } else {
                     0.0
                 }
@@ -167,7 +167,7 @@ class StatsRepository {
                         totalDistance = totalDistance,
                         totalDuration = totalDuration,
                         totalCaloriesBurned = totalCaloriesBurned,
-                        totalAvgPace = totalAvgPace
+                        totalAvgSpeed = totalAvgSpeed
                     )
                 )
             }
