@@ -200,15 +200,15 @@ class RunSessionRepository {
 
                 val durationInHours = _duration.value.div(3600.0)
 
-                val pace: Double = if (_distance.value > 0) {
+                val speed: Double = if (_distance.value > 0) {
                     _distance.value.div(durationInHours)
                 } else {
                     0.0
                 }
 
                 val excessivePace = when (userMetricPreference) {
-                    User.UNIT_MILE -> pace > 30.0
-                    else -> pace > 45.0
+                    User.UNIT_MILE -> speed > 30.0
+                    else -> speed > 45.0
                 }
 
                 if (excessivePace && !paceNotification) {
@@ -216,7 +216,7 @@ class RunSessionRepository {
                     paceNotification = true
                 }
 
-                _speed.emit(pace)
+                _speed.emit(speed)
                 delay(100)
             } catch (ce: CancellationException) {
                 println("calcPace runSessionRepo: ${ce.message} ")
@@ -251,24 +251,32 @@ class RunSessionRepository {
                 val MET = if (userMetricPreference == User.UNIT_KM) {
                     when {
                         _speed.value == 0.0 -> 0.0
-                        _speed.value < 6.4 -> 2.0
-                        _speed.value in 6.4..8.0 -> 3.9
-                        _speed.value in 8.0..10.8 -> 6.0
-                        _speed.value in 10.8..12.9 -> 8.0
-                        _speed.value in 12.9..14.5 -> 10.0
-                        _speed.value in 14.5..16.1 -> 11.0
-                        else -> 12.0
+                        _speed.value < 4.8 -> 4.5
+                        _speed.value in 4.8..6.4 -> 6.2
+                        _speed.value in 6.4..8.0 -> 8.5
+                        _speed.value in 8.0..9.7 -> 10.0
+                        _speed.value in 9.7..11.3 -> 11.2
+                        _speed.value in 11.3..12.9 -> 12.0
+                        _speed.value in 12.9..14.5 -> 13.0
+                        _speed.value in 14.5..16.1 -> 14.7
+                        _speed.value in 16.1..17.7 -> 16.4
+                        _speed.value in 17.7..19.3 -> 19.2
+                        else -> 20.0
                     }
                 } else {
                     when {
                         _speed.value == 0.0 -> 0.0
-                        _speed.value < 4.0 -> 2.0
-                        _speed.value in 4.0..5.0 -> 3.9
-                        _speed.value in 5.0..6.7 -> 6.0
-                        _speed.value in 6.7..8.0 -> 8.0
-                        _speed.value in 8.0..9.0 -> 10.0
-                        _speed.value in 9.0..10.0 -> 11.0
-                        else -> 12.0
+                        _speed.value < 3.0 -> 4.5
+                        _speed.value in 3.0..4.0 -> 6.2
+                        _speed.value in 4.0..5.0 -> 8.5
+                        _speed.value in 5.0..6.0 -> 10.0
+                        _speed.value in 6.0..7.0 -> 11.2
+                        _speed.value in 7.0..8.0 -> 12.0
+                        _speed.value in 8.0..9.0 -> 13.0
+                        _speed.value in 9.0..10.0 -> 14.7
+                        _speed.value in 10.0..11.0 -> 16.4
+                        _speed.value in 11.0..12.0 -> 19.2
+                        else -> 20.0
                     }
                 }
 
@@ -280,7 +288,9 @@ class RunSessionRepository {
                     0.0
                 }
 
-                _caloriesBurned.value = caloriesBurned
+                if (caloriesBurned > _caloriesBurned.value) {
+                    _caloriesBurned.value = caloriesBurned
+                }
 
 
                 delay(100)
@@ -333,7 +343,7 @@ class RunSessionRepository {
                         else -> StatsUtils.haversineFormula(location1, location2) / 1000
                     }
                     Log.d("RunSessionRepo", "Computed: $distance")
-                    if (distance <0.0008 || distance >0.0012 || (currentGPSPointId >= location1.gpsPointId && currentGPSPointId >= location2.gpsPointId)) {
+                    if (distance <0.001 || distance >0.012 || (currentGPSPointId >= location1.gpsPointId && currentGPSPointId >= location2.gpsPointId)) {
                         return@collect
                     }
                     newDistance += distance
