@@ -260,7 +260,11 @@ class RunGoalFragment : Fragment() {
         userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
             runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
                 runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
-                runPace.text = getString(R.string.text_speed_metric, it?.pace ?: 0.0)
+                if(user?.metricPreference == User.UNIT_MILE){
+                    runPace.text = getString(R.string.text_speed_metric_mile, it?.pace ?: 0.0)
+                }else{
+                    runPace.text = getString(R.string.text_speed_metric, it?.pace ?: 0.0)
+                }
                 runCalo.text = getString(R.string.text_calorie_metric, it?.caloriesBurned ?: 0.0)
                 if (user?.metricPreference == User.UNIT_KM) {
                     runDistance.text = getString(R.string.text_distance_metric, it?.distance ?: 0.0)

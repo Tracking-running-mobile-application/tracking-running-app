@@ -8,9 +8,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.User
+import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentDetailRunBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.app.java.trackingrunningapp.utils.StatsUtils
 
@@ -18,6 +21,7 @@ import com.app.java.trackingrunningapp.utils.StatsUtils
 class DetailRunFragment : Fragment() {
     private lateinit var binding: FragmentDetailRunBinding
     private lateinit var runSessionViewModel: RunSessionViewModel
+    private lateinit var userViewModel: UserViewModel
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,6 +30,7 @@ class DetailRunFragment : Fragment() {
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+        userViewModel = UserViewModel(UserRepository())
         return binding.root
     }
 
@@ -39,8 +44,16 @@ class DetailRunFragment : Fragment() {
                         getString(R.string.text_distance_metric, session.distance)
                     binding.historyRunDetail.textDurationMetric.text =
                         StatsUtils.formatDuration(session.duration!!)
-                    binding.historyRunDetail.textPaceMetric.text =
-                        getString(R.string.text_speed_metric,session.pace)
+                    userViewModel.fetchUserInfo()
+                    userViewModel.userLiveData.observe(viewLifecycleOwner){
+                        if(it?.metricPreference == User.UNIT_MILE){
+                            binding.historyRunDetail.textPaceMetric.text =
+                                getString(R.string.text_speed_metric_mile,session.pace)
+                        }else{
+                            binding.historyRunDetail.textPaceMetric.text =
+                                getString(R.string.text_speed_metric,session.pace)
+                        }
+                    }
                     binding.historyRunDetail.textCalorieMetric.text =
                         getString(R.string.text_calorie_metric,session.caloriesBurned)
                     binding.historyRunProfile.textHistoryDetailDate.text = DateTimeUtils.formatDatePretty(session.runDate)

@@ -131,4 +131,5 @@
     <string name="fri">Fri</string>
     <string name="sat">Sat</string>
     <string name="sun">Sun</string>
+    <string name="text_speed_metric_mile">%.2f mph</string>
 </resources>
