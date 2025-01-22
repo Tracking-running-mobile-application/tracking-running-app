@@ -38,14 +38,14 @@ object DateTimeUtils {
     }
 
     fun formatDate(inputDate: String): String {
-        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
         val outputFormatter = DateTimeFormatter.ofPattern("dd/MM")
         val date = java.time.LocalDate.parse(inputDate, inputFormatter)
         return date.format(outputFormatter)
     }
 
     fun formatDateHistoryDetailFormat(inputDate: String): String {
-        val inputFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        val inputFormatter = SimpleDateFormat("yyyyMMdd", Locale.ENGLISH)
         val date = inputFormatter.parse(inputDate)
         val outputFormatter = SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH)
         return outputFormatter.format(date!!)
