@@ -130,7 +130,7 @@ class PersonalGoalFragment : Fragment() {
             isDurationClicked = false
             isCaloClicked = false
             userViewModel.userLiveData.observe(viewLifecycleOwner){
-                binding.unitText.text = it?.unit
+                binding.unitText.text = it?.metricPreference
             }
             chooseObjective(
                 objectiveBar,

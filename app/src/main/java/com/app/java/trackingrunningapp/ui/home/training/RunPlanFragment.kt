@@ -46,11 +46,16 @@ import com.mapbox.maps.plugin.locationcomponent.location
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-
-
+enum class TrackingStatePlan {
+    RUNNING,
+    PAUSED,
+    STOPPED,
+}
 class RunPlanFragment : Fragment() {
     private lateinit var binding: FragmentRunPlanBinding
-    private var isTracking: Boolean = false
+    private var trackingStatePlan: TrackingStatePlan = TrackingStatePlan.STOPPED
+    private var lastUpdateTime: Long = 0L
+    private val updateInterval: Long = 1000L
     private lateinit var mapView: MapView
     private val routeCoordinates = mutableListOf<Point>()
     private lateinit var annotationApi: AnnotationPlugin
@@ -115,6 +120,26 @@ class RunPlanFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupPermission()
+        indicatorListener = OnIndicatorPositionChangedListener { point ->
+            val currentTime = System.currentTimeMillis()
+
+            if (trackingStatePlan == TrackingStatePlan.RUNNING && currentTime - lastUpdateTime >= updateInterval) {
+                lastUpdateTime = currentTime
+                routeCoordinates.add(point)
+
+                // Save the point to the database
+                Log.d("Longitude", point.longitude().toString())
+                Log.d("Latitude", point.latitude().toString())
+                lifecycleScope.launch {
+                    gpsPointViewModel.insertGPSPoint(point.longitude(), point.latitude())
+                }
+
+                // Draw the route
+                drawRoute()
+            } else if (trackingStatePlan == TrackingStatePlan.PAUSED) {
+                Log.d("Tracking", "Paused. Ignoring location updates.")
+            }
+        }
         setupActionRun()
         initArrowAction()
         setupProgress()
@@ -363,106 +388,45 @@ class RunPlanFragment : Fragment() {
     }
 
     private fun startTracking() {
-        lifecycleScope.launch {
-            if (!isTracking) {
-                isTracking = true
-                // Clear previous route coordinates if restarting
-                routeCoordinates.clear()
+        if (trackingStatePlan == TrackingStatePlan.STOPPED) {
+            trackingStatePlan = TrackingStatePlan.RUNNING
 
-                // Set up the location listener for tracking
-                val locationComponentPlugin = mapView.location
-                locationComponentPlugin.updateSettings {
-                    this.enabled = true // Enable location updates
-                }
-                indicatorListener = OnIndicatorPositionChangedListener { point ->
-                    // TODO: Implement pause mechanism
-                    routeCoordinates.add(point)
-
-                    // TODO: Save <<point>> to database
-                    Log.d("Longitude", point.longitude().toString())
-                    Log.d("Latitude", point.latitude().toString())
-                    // Draw the route
-                    lifecycleScope.launch {
-                        gpsPointViewModel.insertGPSPoint(point.longitude(), point.latitude())
-                    }
-                    drawRoute()
-                }
-                // Add the listener to start tracking
-                indicatorListener?.let {
-                    locationComponentPlugin.addOnIndicatorPositionChangedListener(
-                        it
-                    )
-                }
-            }
-        }
-    }
-
-    private fun resumeTracking() {
-        if (!isTracking) {
-            isTracking = true
-
-            // Set up the location listener for tracking
+            routeCoordinates.clear() // Clear old route if restarting
             val locationComponentPlugin = mapView.location
             locationComponentPlugin.updateSettings {
                 this.enabled = true // Enable location updates
             }
-            indicatorListener = OnIndicatorPositionChangedListener { point ->
-                // TODO: Implement pause mechanism
-                routeCoordinates.add(point)
 
-                // TODO: Save <<point>> to database
-                Log.d("Longitude", point.longitude().toString())
-                Log.d("Latitude", point.latitude().toString())
-                // Draw the route
-                lifecycleScope.launch {
-                    gpsPointViewModel.insertGPSPoint(point.longitude(), point.latitude())
-                }
-                drawRoute()
-            }
-            // Add the listener to start tracking
             indicatorListener?.let {
-                locationComponentPlugin.addOnIndicatorPositionChangedListener(
-                    it
-                )
+                locationComponentPlugin.addOnIndicatorPositionChangedListener(it)
             }
+            Log.d("Tracking", "Started.")
         }
     }
-
+    private fun resumeTracking() {
+        trackingStatePlan = TrackingStatePlan.RUNNING
+        Log.d("Tracking", "Resumed.")
+    }
     private fun stopTracking() {
-        if (isTracking) {
-            isTracking = false
+        if (trackingStatePlan != TrackingStatePlan.STOPPED) {
+            trackingStatePlan = TrackingStatePlan.STOPPED
 
-            // Remove the location listener
+            // Remove the listener
             val locationComponentPlugin = mapView.location
-
             indicatorListener?.let {
                 locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
             }
-            indicatorListener = null // Clear the reference
+            indicatorListener = null
 
-            // Clear the route from the map
+            routeCoordinates.clear() // Clear route data
             polylineAnnotationManager.deleteAll()
-
-            // Clear the routeCoordinates list
-            routeCoordinates.clear()
+            Log.d("Tracking", "Stopped.")
         }
     }
 
     private fun pauseTracking() {
-        if (isTracking) {
-            isTracking = false
-
-            // Remove the location listener
-            val locationComponentPlugin = mapView.location
-
-            indicatorListener?.let {
-                locationComponentPlugin.removeOnIndicatorPositionChangedListener(it)
-            }
-            indicatorListener = null // Clear the reference
-
-            // Clear the routeCoordinates list
-            routeCoordinates.clear()
-        }
+        trackingStatePlan = TrackingStatePlan.PAUSED
+        Log.d("Tracking", "Paused.")
     }
 
     private fun drawRoute() {
