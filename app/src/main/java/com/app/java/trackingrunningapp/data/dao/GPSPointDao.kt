@@ -21,11 +21,11 @@ interface GPSPointDao {
     //""")
     //suspend fun getTwoLatestLocation(trackId: Int): List<Location>
 
-    @Query("SELECT longitude, latitude, timeStamp FROM GPSPoint WHERE trackId = :trackId AND timeStamp > :lastTimeStamp ORDER BY timeStamp ASC")
-    suspend fun getNewLocations(trackId: Int, lastTimeStamp: Long): List<Location>
+    @Query("SELECT gpsPointId, longitude, latitude FROM GPSPoint WHERE trackId = :trackId AND gpsPointId > :gpsPointId")
+    suspend fun getNewLocations(trackId: Int, gpsPointId: Int): List<Location>
 
     @Query("""
-        SELECT longitude, latitude, timeStamp
+        SELECT gpsPointId, longitude, latitude
         FROM GPSPoint
         WHERE trackId = :trackId
         ORDER BY timeStamp DESC
