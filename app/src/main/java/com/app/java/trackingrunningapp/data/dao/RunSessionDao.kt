@@ -59,7 +59,7 @@ interface RunSessionDao {
         """
         SELECT *
         FROM RunSession
-        WHERE runDate BETWEEN :startDate AND :endDate
+        WHERE runDate BETWEEN :startDate AND :endDate ORDER BY sessionId DESC
         """
     )
     suspend fun filterRunningSessionByDay(
