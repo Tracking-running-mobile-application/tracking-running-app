@@ -43,7 +43,6 @@ import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
 import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
 import com.mapbox.maps.plugin.locationcomponent.location
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -316,7 +315,7 @@ class RunPlanFragment : Fragment() {
         userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
             runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
                 runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
-                runPace.text = getString(R.string.text_pace_metric, it?.pace ?: 0.0)
+                runPace.text = getString(R.string.text_speed_metric, it?.pace ?: 0.0)
                 runCalo.text = getString(R.string.text_calorie_metric, it?.caloriesBurned ?: 0.0)
                 if (user?.metricPreference == User.UNIT_KM) {
                     runDistance.text = getString(R.string.text_distance_metric, it?.distance ?: 0.0)

@@ -5,13 +5,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.lifecycle.ViewModelProvider
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.databinding.FragmentDetailRunBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.app.java.trackingrunningapp.utils.StatsUtils
 
 
@@ -40,9 +40,10 @@ class DetailRunFragment : Fragment() {
                     binding.historyRunDetail.textDurationMetric.text =
                         StatsUtils.formatDuration(session.duration!!)
                     binding.historyRunDetail.textPaceMetric.text =
-                        getString(R.string.text_pace_metric,session.pace)
+                        getString(R.string.text_speed_metric,session.pace)
                     binding.historyRunDetail.textCalorieMetric.text =
                         getString(R.string.text_calorie_metric,session.caloriesBurned)
+                    binding.historyRunProfile.textHistoryDetailDate.text = DateTimeUtils.formatDatePretty(session.runDate)
                 }
             }
         }

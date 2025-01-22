@@ -61,7 +61,7 @@
     <string name="text_distance">Quãng Đường</string>
     <string name="text_distance_metric">%.2f km</string>
     <string name="text_pace">Tốc Độ Trung Bình</string>
-    <string name="text_pace_metric">%.2f phút/km</string>
+    <string name="text_speed_metric">%.2f km/giờ</string>
     <string name="text_duration">Thời Gian</string>
     <string name="text_duration_metric">%.0f giây</string>
     <string name="text_calories_burned">Lượng Calo Đã Tiêu Hao</string>
@@ -96,7 +96,7 @@
     <string name="favourite_runs_upper_case">CHẠY ƯA THÍCH</string>
     <string name="duration">Thời lượng</string>
     <string name="distance">Quãng đường</string>
-    <string name="pace">Tốc độ</string>
+    <string name="speed">Tốc độ</string>
     <string name="calories">Calo</string>
     <string name="weekly">Hàng tuần</string>
     <string name="monthly">Hàng tháng</string>

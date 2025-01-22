@@ -16,7 +16,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.User
@@ -28,7 +27,6 @@ import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
-import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -245,7 +243,7 @@ class RunFragment : Fragment() {
         userViewModel.userLiveData.observe(viewLifecycleOwner) { user ->
             runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
                 runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
-                runPace.text = getString(R.string.text_pace_metric, it?.pace ?: 0.0)
+                runPace.text = getString(R.string.text_speed_metric, it?.pace ?: 0.0)
                 runCalo.text = getString(R.string.text_calorie_metric, it?.caloriesBurned ?: 0.0)
                 if (user?.metricPreference == User.UNIT_KM) {
                     runDistance.text = getString(R.string.text_distance_metric, it?.distance ?: 0.0)

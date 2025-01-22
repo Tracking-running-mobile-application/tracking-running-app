@@ -13,7 +13,9 @@ import kotlinx.datetime.format.DateTimeFormat
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 object DateTimeUtils {
     private const val DATE_FORMAT = "dd/MM/yyyy"
@@ -42,6 +44,13 @@ object DateTimeUtils {
         val outputFormatter = DateTimeFormatter.ofPattern("dd/MM")
         val date = java.time.LocalDate.parse(inputDate, inputFormatter)
         return date.format(outputFormatter)
+    }
+
+    fun formatDatePretty(inputDate: String): String {
+        val inputFormatter = SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH)
+        val date = inputFormatter.parse(inputDate)
+        val outputFormatter = SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH)
+        return outputFormatter.format(date!!)
     }
 
     fun formatDateStringRemoveHyphen(date: String): String {
@@ -114,7 +123,8 @@ object DateTimeUtils {
     fun getLastDaysOfMonth(): List<String> {
         val currentDate = getCurrentDate()
         return (1..12).map { month ->
-            val lastDay = LocalDate(currentDate.year, month, 1).plus(1, DateTimeUnit.MONTH).minus(1, DateTimeUnit.DAY)
+            val lastDay = LocalDate(currentDate.year, month, 1).plus(1, DateTimeUnit.MONTH)
+                .minus(1, DateTimeUnit.DAY)
             lastDay.toString().replace("-", "")
         }
     }
