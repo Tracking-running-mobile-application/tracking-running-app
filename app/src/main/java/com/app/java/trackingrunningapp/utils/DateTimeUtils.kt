@@ -38,7 +38,7 @@ object DateTimeUtils {
     }
 
     fun formatDate(inputDate: String): String {
-        val inputFormatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+        val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
         val outputFormatter = DateTimeFormatter.ofPattern("dd/MM")
         val date = java.time.LocalDate.parse(inputDate, inputFormatter)
         return date.format(outputFormatter)
