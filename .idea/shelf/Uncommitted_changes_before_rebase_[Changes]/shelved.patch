@@ -1,0 +1,18 @@
+Index: app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.app.java.trackingrunningapp.model.entities\n\nimport androidx.room.ColumnInfo\nimport androidx.room.Entity\nimport androidx.room.ForeignKey\nimport androidx.room.Index\nimport androidx.room.PrimaryKey\n\n@Entity(\n    foreignKeys = [\n        ForeignKey(\n            entity = RunSession::class,\n            parentColumns = [\"sessionId\"],\n            childColumns = [\"goalSessionId\"]\n        )\n    ],\n    indices = [Index(value = [\"goalSessionId\"])]\n)\ndata class PersonalGoal(\n    @PrimaryKey(autoGenerate = true)\n    val goalId: Int = 0,\n    val goalSessionId : Int? = null,\n    @ColumnInfo(name = \"targetDistance\", defaultValue = \"0.0\") var targetDistance: Double? = 0.0,\n    @ColumnInfo(name = \"targetDuration\", defaultValue = \"0.0\") var targetDuration: Double? = 0.0,\n    @ColumnInfo(name = \"targetCaloriesBurned\", defaultValue = \"0.0\") var targetCaloriesBurned: Double? = 0.0,\n    @ColumnInfo(name = \"goalProgress\", defaultValue = \"0.0\") var goalProgress: Double? = 0.0,\n    @ColumnInfo(name = \"isAchieved\", defaultValue = \"0\") var isAchieved: Boolean = false,\n    var frequency: String,\n    var dateCreated: String\n)\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt b/app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt
+--- a/app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt	(revision c3edcfebb1a7b465fd76d0f334d9d037e5ab2056)
++++ b/app/src/main/java/com/app/java/trackingrunningapp/model/entities/PersonalGoal.kt	(date 1732871480660)
+@@ -20,6 +20,7 @@
+     @PrimaryKey(autoGenerate = true)
+     val goalId: Int = 0,
+     val goalSessionId : Int? = null,
++    @ColumnInfo(name = "name", defaultValue = "NULL") val name: String? = null,
+     @ColumnInfo(name = "targetDistance", defaultValue = "0.0") var targetDistance: Double? = 0.0,
+     @ColumnInfo(name = "targetDuration", defaultValue = "0.0") var targetDuration: Double? = 0.0,
+     @ColumnInfo(name = "targetCaloriesBurned", defaultValue = "0.0") var targetCaloriesBurned: Double? = 0.0,

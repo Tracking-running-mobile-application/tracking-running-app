@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="false"
+    android:foreground="?attr/selectableItemBackground"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="8dp"
+    android:layout_marginTop="8dp"
+    android:backgroundTint="@color/primary_gray">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/runTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="18dp"
+            android:text="00:30:10"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/runDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_16"
+            android:text="12KM"
+            android:textColor="#EEFF01"
+            android:textSize="32sp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/runTime"
+            app:layout_constraintTop_toBottomOf="@id/runTime" />
+
+        <ImageButton
+            android:id="@+id/ic_star"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/runDistance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/runTime"
+            app:srcCompat="@drawable/ic_history_star" />
+        <ImageButton
+            android:id="@+id/ic_star_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            android:background="@color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/runDistance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/runTime"
+            app:srcCompat="@drawable/ic_history_star_selected" />
+
+        <TextView
+            android:id="@+id/text_rundate_history"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:text="01/02/2025"
+            android:textColor="@color/text_shadow_white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/ic_star"
+            app:layout_constraintEnd_toStartOf="@+id/ic_star"
+            app:layout_constraintTop_toTopOf="@+id/ic_star" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

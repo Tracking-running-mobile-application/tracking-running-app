@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_home"
+    app:startDestination="@id/homeFragment">
+
+    <!--   home fragment can be global -->
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_settingFragment2"
+            app:destination="@id/settingFragment2" />
+        <action
+            android:id="@+id/action_homeFragment_to_listTrainingPlanFragment"
+            app:destination="@id/listTrainingPlanFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_personalGoalFragment"
+            app:destination="@id/personalGoalFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_runGoalFragment"
+            app:destination="@id/runGoalFragment" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/settingFragment2"
+        android:name="com.app.java.trackingrunningapp.ui.setting.SettingFragment"
+        android:label="fragment_setting"
+        tools:layout="@layout/fragment_setting" />
+    <fragment
+        android:id="@+id/listTrainingPlanFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment"
+        android:label="fragment_list_training_plan"
+        tools:layout="@layout/fragment_list_training_plan">
+        <action
+            android:id="@+id/action_listTrainingPlanFragment_to_trainingPlanFragment"
+            app:destination="@id/trainingPlanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/trainingPlanFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.training.TrainingPlanFragment"
+        android:label="TrainingPlanFragment"
+        tools:layout="@layout/fragment_training_plans">
+        <action
+            android:id="@+id/action_trainingPlanFragment_to_runPlanFragment"
+            app:destination="@id/runPlanFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/personalGoalFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalFragment"
+        android:label="PersonalGoalFragment"
+        tools:layout="@layout/fragment_personal_goal" />
+    <action
+        android:id="@+id/action_global_homeFragment"
+        app:destination="@id/homeFragment" />
+    <fragment
+        android:id="@+id/runPlanFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.training.RunPlanFragment"
+        android:label="fragment_run_plan"
+        tools:layout="@layout/fragment_run_plan" >
+        <action
+            android:id="@+id/action_runPlanFragment_to_runPlanResultFragment"
+            app:destination="@id/runPlanResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/runGoalFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.personalGoal.RunGoalFragment"
+        android:label="fragment_run_goal"
+        tools:layout="@layout/fragment_run_goal" >
+        <action
+            android:id="@+id/action_runGoalFragment_to_runGoalResultFragment"
+            app:destination="@id/runGoalResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/runPlanResultFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.training.RunPlanResultFragment"
+        android:label="fragment_run_plan_result"
+        tools:layout="@layout/fragment_run_plan_result" />
+    <fragment
+        android:id="@+id/runGoalResultFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.personalGoal.RunGoalResultFragment"
+        android:label="fragment_run_goal_result"
+        tools:layout="@layout/fragment_run_goal_result" />
+
+
+</navigation>

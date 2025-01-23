@@ -1,3 +1,136 @@
 <resources>
     <string name="app_name">Tracking Running App</string>
+    <string name="intro_title">Running\nApplication</string>
+    <string name="text_get_started">GET STARTED\t</string>
+    <string name="text_your_details">YOUR DETAILS</string>
+    <string name="image_male">image_male</string>
+    <string name="input_user_name">Name</string>
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string-array name="theme_options">
+        <item>Dark Theme</item>
+        <item>Light Theme</item>
+    </string-array>
+    <string-array name="unit_options">
+        <item>Kilometers (km)</item>
+        <item>Miles (ml)</item>
+    </string-array>
+    <string-array name="language_options">
+        <item>English</item>
+        <item>Vietnamese</item>
+    </string-array>
+    <string name="text_cm">cm</string>
+    <string name="text_ft">ft</string>
+    <string name="text_kg">kg</string>
+    <string name="text_lbs">lbs</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="text_home">Home</string>
+    <string name="text_profile">Profile</string>
+    <string name="text_run">Run</string>
+    <string name="text_statistics">STATISTICS</string>
+    <string name="text_history">History</string>
+    <string name="favourite_runs">Favourite Runs</string>
+    <string name="no_favourite_text">You are currently having\nno favorite runs</string>
+    <string name="toggle_overlay">Toggle Overlay</string>
+    <string name="run">Run</string>
+    <string name="back_button">backButton</string>
+    <string name="training_plans">Training Plan</string>
+    <string name="daily_tasks">Daily Tasks</string>
+    <string name="beginner_guide">BEGINNER’S GUIDE</string>
+    <string name="training_duration">1 week</string>
+    <string name="training_diff">Beginner</string>
+    <string name="training_button">GET STARTED</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="text_statistic_week">4th Week</string>
+    <string name="text_statistic_today">Today, Nov 3</string>
+    <string name="text_statistic_month">November</string>
+    <string name="icon_week">Icon Week</string>
+    <string name="hint_gender">Gender</string>
+    <string name="text_info_title">Information</string>
+    <string name="hint_age">Age</string>
+    <string name="hint_height">Height</string>
+    <string name="hint_weight">Weight</string>
+    <string name="text_confirm">Confirm</string>
+    <string name="text_btn_save">Save</string>
+    <string name="text_live_stats">Live Stats\nHere</string>
+    <string name="add_more"><u>Add more!</u></string>
+    <string name="text_favourite_run">Favourite Run</string>
+    <string name="text_distance">Distance</string>
+    <string name="text_distance_metric">%.3f km</string>
+    <string name="text_pace">Avg Speed</string>
+    <string name="text_speed_metric">%.2f km/h</string>
+    <string name="text_duration">Duration</string>
+    <string name="text_duration_metric">%.0f s</string>
+    <string name="text_calories_burned">Calories Burned</string>
+    <string name="text_calorie_metric">%.2f cal</string>
+    <string name="objective_amount">%s • %s</string>
+    <string name="text_estimate_time">%.2f minute</string>
+    <string name="text_target_distance">%.2f km</string>
+    <string name="enter_plan_here">Plan here</string>
+    <string name="objective">Objective</string>
+    <string name="text_pause">Pause</string>
+    <string name="user_name">Hi, %s</string>
+    <string name="profile_weight">%.1f</string>
+    <string name="edit_weight">%.2f</string>
+    <string name="profile_height">%.2f</string>
+    <string name="goal_progress">%.1f%%</string>
+    <string name="goal_removed">%s was removed</string>
+    <string name="action_undo">Undo</string>
+
+
+    <string name="theme_header">App theme</string>
+    <string name="dark_mode_title">Dark mode</string>
+    <string name="languages_header">Language</string>
+    <string name="language_title">Application language</string>
+    <string name="text_unit">Unit of Measurements</string>
+    <string name="text_language">Language</string>
+    <string name="text_distance_metric_mile">%.2f mile</string>
+    <string name="text_show_more">Show More</string>
+    <string name="personal_goal">Personal Goal</string>
+    <string name="personal_goals_upper_case">PERSONAL GOALS</string>
+    <string name="training_plans_upper_case">TRAINING PLANS</string>
+    <string name="text_total_time">Total time</string>
+    <string name="text_total_distance">Distance</string>
+    <string name="this_week_upper_case">THIS WEEK</string>
+    <string name="favourite_runs_upper_case">FAVOURITE RUNS</string>
+    <string name="duration">Duration</string>
+    <string name="distance">Distance</string>
+    <string name="speed">Speed</string>
+    <string name="calories">Calories</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="km">Km</string>
+    <string name="mile">Mile</string>
+    <string name="text_settings">Settings</string>
+    <string name="text_english">English</string>
+    <string name="text_vietnamese">Vietnamese</string>
+    <string name="text_target_calo">%.2f cal</string>
+    <string name="text_goal_progress">%.2f%%</string>
+    <string name="text_target_duration">%.2f minute</string>
+    <string name="text_beginner_run">Beginner Run</string>
+    <string name="text_intermediate_run">Intermediate Run</string>
+    <string name="text_advanced_run">Advanced Run</string>
+    <string name="km_lowercase">km</string>
+    <string name="mile_lowercase">mile</string>
+    <string name="text_hours">hours</string>
+    <string name="text_edit_profile">Edit Profile</string>
+    <string name="text_start">Start</string>
+    <string name="text_stop">Stop</string>
+    <string name="text_resume">Resume</string>
+    <string name="text_run_result">Run Result</string>
+    <string name="text_congratulations">CONGRATULATIONS!</string>
+    <string name="text_your_stats">YOUR STATS</string>
+    <string name="mon">Mon</string>
+    <string name="tue">Tue</string>
+    <string name="wed">Wed</string>
+    <string name="thu">Thu</string>
+    <string name="fri">Fri</string>
+    <string name="sat">Sat</string>
+    <string name="sun">Sun</string>
+    <string name="text_speed_metric_mile">%.2f mph</string>
+    <string name="text_profile_speed_metric">%.2f</string>
 </resources>

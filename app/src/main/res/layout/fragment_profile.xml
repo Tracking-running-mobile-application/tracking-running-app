@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_layout_profile"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    tools:context=".ui.profile.ProfileFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/primary_gray"
+        app:cardCornerRadius="@dimen/margin_16"
+        app:layout_constraintBottom_toBottomOf="@+id/cardView4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline6"
+        app:layout_constraintTop_toTopOf="@+id/cardView4">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/margin_8">
+
+            <ImageView
+                android:id="@+id/img2"
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_distance_profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/tv24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/text_total_distance"
+                android:textColor="@color/text_shadow_white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/img2"
+                app:layout_constraintStart_toStartOf="@+id/img2"
+                app:layout_constraintTop_toBottomOf="@+id/img2"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/tv_total_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="13.49"
+                android:textColor="@color/main_yellow"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/tv24"
+                app:layout_constraintStart_toStartOf="@+id/tv24"
+                app:layout_constraintTop_toBottomOf="@+id/tv24"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/tev26"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="-27dp"
+                android:layout_marginBottom="2dp"
+                android:text="km"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_total_distance"
+                app:layout_constraintEnd_toEndOf="@+id/tv_total_distance"
+                tools:ignore="HardcodedText" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView7"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:cardCornerRadius="@dimen/margin_8"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView14">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#6AD400">
+
+            <!--suppress AndroidUnresolvableTag -->
+            <TextView
+                android:id="@+id/text_user_height_metric2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Metres"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/text_user_weight_metric"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_height"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_height"
+                app:layout_constraintTop_toTopOf="@+id/text_user_weight_metric"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/circleImageView"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:src="@drawable/img_avatar"
+                app:civ_border_color="@color/white"
+                app:civ_border_width="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="MissingClass" />
+
+            <TextView
+                android:id="@+id/text_profile_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="Thang Tran"
+                android:textColor="@color/text_shadow_white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/circleImageView"
+                app:layout_constraintTop_toTopOf="@+id/circleImageView"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
+            <TextView
+                android:id="@+id/text_profile_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="20"
+                android:textColor="@color/text_shadow_white"
+                android:textSize="@dimen/text_size_profile"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_name"
+                app:layout_constraintTop_toBottomOf="@+id/text_profile_name"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
+            <TextView
+                android:id="@+id/textView7"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Age"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_age"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_age"
+                app:layout_constraintTop_toBottomOf="@+id/text_profile_age"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
+            <TextView
+                android:id="@+id/text_profile_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="70"
+                android:textColor="@color/text_shadow_white"
+                android:textSize="@dimen/text_size_profile"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/text_profile_age"
+                app:layout_constraintStart_toEndOf="@+id/text_profile_age"
+                app:layout_constraintTop_toTopOf="@+id/text_profile_age"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
+            <TextView
+                android:id="@+id/text_user_weight_metric"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Kg"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/textView7"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_weight"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_weight"
+                app:layout_constraintTop_toTopOf="@+id/textView7"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
+            <TextView
+                android:id="@+id/text_profile_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="1.75"
+                android:textColor="@color/text_shadow_white"
+                android:textSize="@dimen/text_size_profile"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/text_profile_weight"
+                app:layout_constraintStart_toEndOf="@+id/text_profile_weight"
+                app:layout_constraintTop_toTopOf="@+id/text_profile_weight"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
+            <TextView
+                android:id="@+id/text_user_height_metric"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Metres"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/text_user_weight_metric"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_height"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_height"
+                app:layout_constraintTop_toTopOf="@+id/text_user_weight_metric"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
+            <TextView
+                android:id="@+id/text_profile_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="15"
+                android:textColor="@color/text_shadow_white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/text_profile_height"
+                app:layout_constraintStart_toEndOf="@+id/text_profile_height"
+                app:layout_constraintTop_toTopOf="@+id/text_profile_height" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="pace"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_speed"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_speed"
+                app:layout_constraintTop_toBottomOf="@+id/text_profile_speed" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/text_statistics"
+        android:textColor="@color/text_shadow_white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
+        android:backgroundTint="@color/primary_gray"
+        app:cardCornerRadius="@dimen/margin_16"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardView7">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/margin_8">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="24sp"
+                android:layout_height="24sp"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/ic_clock_profile"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/textView24"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/text_total_time"
+                android:textColor="@color/text_shadow_white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/imageView2"
+                app:layout_constraintStart_toStartOf="@+id/imageView2"
+                app:layout_constraintTop_toBottomOf="@+id/imageView2"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/tv_total_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="48dp"
+                android:text="65"
+                android:textColor="@color/main_yellow"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/textView24"
+                app:layout_constraintStart_toStartOf="@+id/textView24"
+                app:layout_constraintTop_toBottomOf="@+id/textView24"
+                tools:ignore="HardcodedText" />
+
+            <TextView
+                android:id="@+id/textView26"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginBottom="2dp"
+                android:text="@string/text_hours"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_total_time"
+                app:layout_constraintEnd_toEndOf="@+id/textView24"
+                app:layout_constraintStart_toEndOf="@+id/tv_total_time"
+                tools:ignore="HardcodedText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+    <TextView
+        android:id="@+id/tv_time_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/this_week_upper_case"
+        android:textColor="@color/text_shadow_white"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="@+id/textView14"
+        app:layout_constraintTop_toBottomOf="@+id/cardView4"
+        tools:ignore="HardcodedText" />
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_favorite_run"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/primary_gray"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:foreground="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_8"
+                android:layout_marginTop="8dp"
+                android:text="@string/favourite_runs_upper_case"
+                android:textColor="@color/text_shadow_white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText"
+                tools:layout_editor_absoluteX="8dp" />
+
+            <TextView
+                android:id="@+id/text_favourite_run"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_8"
+                android:layout_marginTop="8dp"
+                android:text="10"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView28"
+                tools:ignore="HardcodedText"
+                tools:layout_editor_absoluteX="8dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.db.williamchart.view.BarChartView
+        android:id="@+id/barchart"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/background_barchart"
+        android:padding="16dp"
+        app:chart_barsColor="#353331"
+        app:chart_barsRadius="8dp"
+        app:chart_labelsSize="14sp"
+        app:chart_lineColor="@color/black"
+        app:chart_spacing="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/cv_favorite_run"
+        app:layout_constraintEnd_toEndOf="@+id/cardView5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_time_title" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

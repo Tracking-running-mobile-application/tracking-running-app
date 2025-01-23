@@ -2,4 +2,7 @@
 plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.jetbrains.kotlin.android) apply false
+    // room, ksp
+    alias(libs.plugins.room) apply false
+    alias(libs.plugins.ksp) apply false
 }

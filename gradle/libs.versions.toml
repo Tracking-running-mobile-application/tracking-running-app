@@ -7,9 +7,21 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
 material = "1.12.0"
-activity = "1.9.2"
-constraintlayout = "2.1.4"
+activity = "1.9.3"
+constraintlayout = "2.2.0"
 
+navigation = "2.8.5"
+barchart = "3.10.1"
+image-slider = "0.1.2"
+playServicesMaps = "19.0.0"
+mapbox = "11.8.0"
+swiperefreshlayout = "1.1.0"
+circle-image = "3.1.0"
+glide = "4.16.0"
+#
+roomdatabase = "2.6.1"
+lifecycle-ktx = "2.8.7"
+ksp = "1.9.0-1.0.13"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -19,8 +31,33 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-
+#navigation
+navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime-ktx", version.ref = "navigation" }
+#barchart
+barchart = { group = "com.diogobernardino", name = "williamchart", version.ref = "barchart" }
+#image slider
+image-slider = { group = "com.github.denzcoskun", name = "ImageSlideshow", version.ref = "image-slider" }
+#glide
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+#map
+services-map = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+mapbox = {group = "com.mapbox.maps",name = "android",version.ref = "mapbox"}
+#swipe layout
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
+#circle-image
+circle-image = {group = "de.hdodenhof",name="circleimageview",version.ref="circle-image"}
+# room
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomdatabase" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomdatabase" }
+room-kotlin = { group = "androidx.room", name = "room-ktx", version.ref = "roomdatabase" }
+# viewmodel,livedata
+androidx-lifecycle-viewmodel-ktx = {group = "androidx.lifecycle",name="lifecycle-viewmodel-ktx",version.ref="lifecycle-ktx"}
+androidx-lifecycle-livedata-ktx = {group = "androidx.lifecycle",name="lifecycle-livedata-ktx",version.ref="lifecycle-ktx"}
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+# room ,ksp
+room = { id = "androidx.room", version.ref = "roomdatabase" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
