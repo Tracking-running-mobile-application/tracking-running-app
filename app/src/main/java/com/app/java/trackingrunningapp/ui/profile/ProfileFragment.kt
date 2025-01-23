@@ -69,7 +69,7 @@ class ProfileFragment : Fragment() {
         statsViewModel.currentYearStats.observe(viewLifecycleOwner) { sessions->
             for(session in sessions){
                 if(DateTimeUtils.getMonthNameFromYearMonth(session.yearlyStatsKey) == currentMonth.toString()){
-                    binding.textProfileSpeed.text = getString(R.string.text_profile_speed_metric,session.totalAvgPace)
+                    binding.textProfileSpeed.text = getString(R.string.text_profile_speed_metric,session.totalAvgSpeed)
                 }
             }
         }
