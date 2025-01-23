@@ -25,6 +25,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
+import com.app.java.trackingrunningapp.utils.StatsUtils
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -56,23 +57,26 @@ class ProfileFragment : Fragment() {
             binding.textProfileName.text = it?.name
             binding.textProfileAge.text = it?.age.toString()
             binding.textProfileWeight.text = getString(R.string.profile_weight, it?.weight)
-            binding.textProfileHeight.text = getString(R.string.profile_height, it?.height?.times(0.01))
+            binding.textProfileHeight.text =
+                getString(R.string.profile_height, it?.height?.times(0.01))
             binding.textUserWeightMetric.text = it?.unit.toString()
-            if(it?.metricPreference == User.UNIT_MILE){
-                binding.textProfileSpeedMetricPref.text = "mph"
-            }else{
-                binding.textProfileSpeedMetricPref.text = "km/h"
-            }
-        }
-        val currentMonth = DateTimeUtils.getCurrentDate().month
-        statsViewModel.refreshStats()
-        statsViewModel.currentYearStats.observe(viewLifecycleOwner) { sessions->
-            for(session in sessions){
-                if(DateTimeUtils.getMonthNameFromYearMonth(session.yearlyStatsKey) == currentMonth.toString()){
-                    binding.textProfileSpeed.text = getString(R.string.text_profile_speed_metric,session.totalAvgSpeed)
+
+            val currentMonth = DateTimeUtils.getCurrentDate().month
+            statsViewModel.refreshStats()
+            statsViewModel.currentYearStats.observe(viewLifecycleOwner) { sessions ->
+                for (session in sessions) {
+                    if (DateTimeUtils.getMonthNameFromYearMonth(session.yearlyStatsKey) == currentMonth.toString()) {
+                        binding.textProfileSpeed.text =
+                            StatsUtils.convertToPace(
+                                session.totalAvgSpeed!!,
+                                it?.metricPreference!!
+                            )
+
+                    }
                 }
             }
         }
+
         setupBarChart()
         navigateToFavourite()
     }
@@ -81,15 +85,15 @@ class ProfileFragment : Fragment() {
     private fun navigateToFavourite() {
         runSessionViewModel.loadFavoriteSessions()
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 runSessionViewModel.fetchRunSessions()
-                runSessionViewModel.favoriteRunSessions.collect{favouriteRuns->
+                runSessionViewModel.favoriteRunSessions.collect { favouriteRuns ->
                     binding.textFavouriteRun.text = favouriteRuns.size.toString()
-                    Log.d("Favourite","${favouriteRuns.size}")
+                    Log.d("Favourite", "${favouriteRuns.size}")
                     binding.cvFavoriteRun.setOnClickListener {
-                        if(favouriteRuns.isEmpty()){
+                        if (favouriteRuns.isEmpty()) {
                             findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
-                        }else{
+                        } else {
                             findNavController().navigate(R.id.action_profileFragment_to_favouriteRuns)
                         }
                     }
