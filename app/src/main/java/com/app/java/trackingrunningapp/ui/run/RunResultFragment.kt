@@ -1,6 +1,7 @@
 package com.app.java.trackingrunningapp.ui.run
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,11 +28,14 @@ import com.mapbox.geojson.Point
 import com.mapbox.maps.CameraOptions
 import com.mapbox.maps.MapView
 import com.mapbox.maps.Style
+import com.mapbox.maps.plugin.LocationPuck2D
 import com.mapbox.maps.plugin.annotation.AnnotationPlugin
 import com.mapbox.maps.plugin.annotation.annotations
 import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationManager
 import com.mapbox.maps.plugin.annotation.generated.PolylineAnnotationOptions
 import com.mapbox.maps.plugin.annotation.generated.createPolylineAnnotationManager
+import com.mapbox.maps.plugin.locationcomponent.OnIndicatorPositionChangedListener
+import com.mapbox.maps.plugin.locationcomponent.location
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -70,7 +74,7 @@ class RunResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        //initMap()
+        initMap()
         setUpToolbar()
         setUpAction()
     }
@@ -120,8 +124,7 @@ class RunResultFragment : Fragment() {
         annotationApi = mapView.annotations
         polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
         val runId = arguments?.getInt(EXTRA_RUN_ID_RESULT,0) ?: 0
-
-//        TODO: Load points of this session with proper sessionId
+        Log.d("RunID", runId.toString())
         lifecycleScope.launch {
              withContext(Dispatchers.IO) {
                  val locations =  gpsTrackViewModel.fetchGPSPoints(runId)
@@ -132,14 +135,34 @@ class RunResultFragment : Fragment() {
             drawRoute()
         }
 
+        lateinit var targetPoint: Point
         mapView.mapboxMap.loadStyle(Style.STANDARD) {
-            val targetPoint = routeCoordinates.last()
-            mapView.mapboxMap.setCamera(
-                CameraOptions.Builder()
-                    .center(targetPoint)
-                    .zoom(15.0)
-                    .build()
+            val locationComponentPlugin = mapView.location
+            locationComponentPlugin.updateSettings {
+                this.enabled = true
+            }
+            mapView.location.locationPuck = LocationPuck2D(
+                topImage = null,
+                bearingImage = null,
+                shadowImage = null
             )
+            locationComponentPlugin.addOnIndicatorPositionChangedListener(object :
+                OnIndicatorPositionChangedListener {
+                override fun onIndicatorPositionChanged(point: Point) {
+                    targetPoint = point
+                    if (routeCoordinates.isNotEmpty()) {
+                        targetPoint = routeCoordinates.last()
+                    }
+                    mapView.mapboxMap.setCamera(
+                        CameraOptions.Builder()
+                            .center(targetPoint)
+                            .zoom(15.0)
+                            .build()
+                    )
+
+                    locationComponentPlugin.removeOnIndicatorPositionChangedListener(this)
+                }
+            })
         }
     }
 
