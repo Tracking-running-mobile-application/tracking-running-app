@@ -15,18 +15,24 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentProfileBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
+import com.app.java.trackingrunningapp.utils.DateTimeUtils
+import com.app.java.trackingrunningapp.utils.StatsUtils
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var userViewModel: UserViewModel
     private lateinit var runSessionViewModel: RunSessionViewModel
+    private lateinit var statsViewModel: StatsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,6 +44,9 @@ class ProfileFragment : Fragment() {
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+        val statsFactory = StatsViewModelFactory(InitDatabase.statsRepository)
+        statsViewModel =
+            ViewModelProvider(requireActivity(), statsFactory)[StatsViewModel::class.java]
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -48,9 +57,26 @@ class ProfileFragment : Fragment() {
             binding.textProfileName.text = it?.name
             binding.textProfileAge.text = it?.age.toString()
             binding.textProfileWeight.text = getString(R.string.profile_weight, it?.weight)
-            binding.textProfileHeight.text = getString(R.string.profile_height, it?.height?.times(0.01))
+            binding.textProfileHeight.text =
+                getString(R.string.profile_height, it?.height?.times(0.01))
             binding.textUserWeightMetric.text = it?.unit.toString()
+
+            val currentMonth = DateTimeUtils.getCurrentDate().month
+            statsViewModel.refreshStats()
+            statsViewModel.currentYearStats.observe(viewLifecycleOwner) { sessions ->
+                for (session in sessions) {
+                    if (DateTimeUtils.getMonthNameFromYearMonth(session.yearlyStatsKey) == currentMonth.toString()) {
+                        binding.textProfileSpeed.text =
+                            StatsUtils.convertToPace(
+                                session.totalAvgSpeed!!,
+                                it?.metricPreference!!
+                            )
+
+                    }
+                }
+            }
         }
+
         setupBarChart()
         navigateToFavourite()
     }
@@ -59,15 +85,15 @@ class ProfileFragment : Fragment() {
     private fun navigateToFavourite() {
         runSessionViewModel.loadFavoriteSessions()
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED){
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 runSessionViewModel.fetchRunSessions()
-                runSessionViewModel.favoriteRunSessions.collect{favouriteRuns->
+                runSessionViewModel.favoriteRunSessions.collect { favouriteRuns ->
                     binding.textFavouriteRun.text = favouriteRuns.size.toString()
-                    Log.d("Favourite","${favouriteRuns.size}")
+                    Log.d("Favourite", "${favouriteRuns.size}")
                     binding.cvFavoriteRun.setOnClickListener {
-                        if(favouriteRuns.isEmpty()){
+                        if (favouriteRuns.isEmpty()) {
                             findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
-                        }else{
+                        } else {
                             findNavController().navigate(R.id.action_profileFragment_to_favouriteRuns)
                         }
                     }

@@ -100,6 +100,19 @@
             android:background="#6AD400">
 
             <!--suppress AndroidUnresolvableTag -->
+            <TextView
+                android:id="@+id/text_user_height_metric2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Metres"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/text_user_weight_metric"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_height"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_height"
+                app:layout_constraintTop_toTopOf="@+id/text_user_weight_metric"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/circleImageView"
                 android:layout_width="90dp"
@@ -119,7 +132,7 @@
                 android:id="@+id/text_profile_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="Thang Tran"
                 android:textColor="@color/text_shadow_white"
@@ -159,7 +172,7 @@
                 android:id="@+id/text_profile_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="16dp"
                 android:text="70"
                 android:textColor="@color/text_shadow_white"
                 android:textSize="@dimen/text_size_profile"
@@ -186,7 +199,7 @@
                 android:id="@+id/text_profile_height"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="16dp"
                 android:text="1.75"
                 android:textColor="@color/text_shadow_white"
                 android:textSize="@dimen/text_size_profile"
@@ -213,26 +226,25 @@
                 android:id="@+id/text_profile_speed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
+                android:layout_marginStart="16dp"
                 android:text="15"
                 android:textColor="@color/text_shadow_white"
-                android:textSize="@dimen/text_size_profile"
+                android:textSize="24sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_profile_height"
                 app:layout_constraintStart_toEndOf="@+id/text_profile_height"
                 app:layout_constraintTop_toTopOf="@+id/text_profile_height" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="km/h"
+                android:text="pace"
                 android:textColor="@color/main_gray"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/text_user_height_metric"
                 app:layout_constraintEnd_toEndOf="@+id/text_profile_speed"
                 app:layout_constraintStart_toStartOf="@+id/text_profile_speed"
-                app:layout_constraintTop_toBottomOf="@+id/text_profile_height" />
+                app:layout_constraintTop_toBottomOf="@+id/text_profile_speed" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
