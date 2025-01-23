@@ -12,6 +12,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import java.text.SimpleDateFormat
+import java.time.YearMonth
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
@@ -51,6 +52,11 @@ object DateTimeUtils {
         return outputFormatter.format(date!!)
     }
 
+    fun getMonthNameFromYearMonth(input: String): String {
+        val formatter = DateTimeFormatter.ofPattern("MM-yyyy", Locale.ENGLISH)
+        val yearMonth = YearMonth.parse(input, formatter)
+        return yearMonth.month.name
+    }
     fun formatDateStringRemoveHyphen(date: String): String {
         return date.replace("-", "")
     }

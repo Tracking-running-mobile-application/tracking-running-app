@@ -223,7 +223,7 @@
                 app:layout_constraintTop_toTopOf="@+id/text_profile_height" />
 
             <TextView
-                android:id="@+id/textView15"
+                android:id="@+id/text_profile_speed_metric_pref"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="km/h"
