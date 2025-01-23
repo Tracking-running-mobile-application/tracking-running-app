@@ -41,9 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:mapbox_locationComponentEnabled="true"
-        app:mapbox_locationComponentPuckBearing="heading">
+        app:layout_constraintTop_toTopOf="parent">
 
     </com.mapbox.maps.MapView>
 
