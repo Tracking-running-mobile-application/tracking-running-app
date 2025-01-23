@@ -14,7 +14,6 @@ import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.RunSessionRepository
-import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentRunResultBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.GPSTrackViewModelFactory
@@ -86,10 +85,10 @@ class RunResultFragment : Fragment() {
                     StatsUtils.formatDuration(runSessionRepository.duration.value)
                 if(it?.metricPreference == User.UNIT_MILE){
                     binding.layoutResult.textPaceMetric.text =
-                        getString(R.string.text_speed_metric_mile, runSessionRepository.pace.value)
+                        getString(R.string.text_speed_metric_mile, runSessionRepository.speed.value)
                 }else{
                     binding.layoutResult.textPaceMetric.text =
-                        getString(R.string.text_speed_metric, runSessionRepository.pace.value)
+                        getString(R.string.text_speed_metric, runSessionRepository.speed.value)
                 }
                 binding.layoutResult.textCalorieMetric.text =
                     getString(R.string.text_calorie_metric, runSessionRepository.caloriesBurned.value)

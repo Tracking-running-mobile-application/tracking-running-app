@@ -51,10 +51,10 @@ class DetailRunFragment : Fragment() {
                         binding.historyRunProfile.textHistoryProfileName.text = it?.name
                         if(it?.metricPreference == User.UNIT_MILE){
                             binding.historyRunDetail.textPaceMetric.text =
-                                getString(R.string.text_speed_metric_mile,session.pace)
+                                getString(R.string.text_speed_metric_mile,session.speed)
                         }else{
                             binding.historyRunDetail.textPaceMetric.text =
-                                getString(R.string.text_speed_metric,session.pace)
+                                getString(R.string.text_speed_metric,session.speed)
                         }
                     }
                     binding.historyRunDetail.textCalorieMetric.text =

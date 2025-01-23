@@ -18,7 +18,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlinx.coroutines.withContext
 import kotlin.coroutines.cancellation.CancellationException
 
 class RunSessionViewModel(
@@ -152,7 +151,7 @@ class RunSessionViewModel(
                     _statsFlow.emit(stats)
                     Log.d(
                         "Run Session VM",
-                        "Pace: ${stats.pace}, Duration: ${stats.duration}, Distance: ${stats.distance}, Calories ${stats.caloriesBurned}"
+                        "Pace: ${stats.speed}, Duration: ${stats.duration}, Distance: ${stats.distance}, Calories ${stats.caloriesBurned}"
                     )
                     delay(1000)
                 } catch (e: CancellationException) {
@@ -178,7 +177,7 @@ class RunSessionViewModel(
                     runSessionRepository.calcCaloriesBurned()
                     runSessionRepository.calcDistance()
 
-                    val newPace = runSessionRepository.pace.value
+                    val newPace = runSessionRepository.speed.value
                     val newCaloriesBurned = runSessionRepository.caloriesBurned.value
                     val newDistance = runSessionRepository.distance.value
                     val newDuration = runSessionRepository.duration.value

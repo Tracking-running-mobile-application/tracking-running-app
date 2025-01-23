@@ -40,8 +40,8 @@ interface RunSessionDao {
     @Query("SELECT * FROM RUNSESSION WHERE sessionId = :sessionId")
     suspend fun getRunSessionById(sessionId: Int): RunSession?
 
-    @Query("UPDATE RunSession SET distance = :distance, duration = :duration, caloriesBurned = :caloriesBurned, pace = :pace WHERE sessionId = :sessionId")
-    suspend fun updateStatsSession(sessionId: Int, distance: Double, duration: Long, caloriesBurned: Double, pace: Double)
+    @Query("UPDATE RunSession SET distance = :distance, duration = :duration, caloriesBurned = :caloriesBurned, speed = :speed WHERE sessionId = :sessionId")
+    suspend fun updateStatsSession(sessionId: Int, distance: Double, duration: Long, caloriesBurned: Double, speed: Double)
 
     @Insert
     suspend fun initiateRunSession(runSession: RunSession)
@@ -68,7 +68,7 @@ interface RunSessionDao {
     ): List<RunSession>
 
     @Query("""
-        SELECT duration, distance, pace, caloriesBurned
+        SELECT duration, distance, speed, caloriesBurned
         FROM runsession
         WHERE sessionId = :sessionId
     """)

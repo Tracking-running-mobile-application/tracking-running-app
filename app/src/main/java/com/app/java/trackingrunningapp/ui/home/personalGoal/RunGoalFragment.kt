@@ -151,8 +151,7 @@ class RunGoalFragment : Fragment() {
     }
 
     private fun initProgress() {
-        val goalId = arguments?.getInt(EXTRA_GOAL_ID, 0)
-        // TODO: setup progress  
+        // TODO: setup progress
         personalGoalViewModel.goalProgress.observe(viewLifecycleOwner) { progress ->
             binding.progressBarGoal.progress = progress?.toInt() ?: 0
             binding.textRunPercent.text = getString(R.string.text_goal_progress,progress)
@@ -286,9 +285,9 @@ class RunGoalFragment : Fragment() {
             runSessionViewModel.statsFlow.observe(viewLifecycleOwner) {
                 runDuration.text = getString(R.string.text_duration_metric, it?.duration ?: 0.0)
                 if(user?.metricPreference == User.UNIT_MILE){
-                    runPace.text = getString(R.string.text_speed_metric_mile, it?.pace ?: 0.0)
+                    runPace.text = getString(R.string.text_speed_metric_mile, it?.speed ?: 0.0)
                 }else{
-                    runPace.text = getString(R.string.text_speed_metric, it?.pace ?: 0.0)
+                    runPace.text = getString(R.string.text_speed_metric, it?.speed ?: 0.0)
                 }
                 runCalo.text = getString(R.string.text_calorie_metric, it?.caloriesBurned ?: 0.0)
                 if (user?.metricPreference == User.UNIT_KM) {

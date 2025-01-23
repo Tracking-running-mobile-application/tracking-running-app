@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS "RunSession" (
 	"runDate"	TEXT NOT NULL,
 	"distance"	REAL DEFAULT 0.0,
 	"duration"	INTEGER DEFAULT 0,
-	"pace"	REAL DEFAULT 0.0,
+	"speed"	REAL DEFAULT 0.0,
 	"caloriesBurned"	REAL DEFAULT 0.0,
 	"isActive"	INTEGER DEFAULT 0,
 	"dateAddInFavorite"	TEXT DEFAULT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS "MonthlyStats" (
 	"totalDistance"	REAL DEFAULT 0.0,
 	"totalDuration"	INTEGER DEFAULT 0,
 	"totalCaloriesBurned"	REAL DEFAULT 0.0,
-	"totalAvgPace"	REAL DEFAULT 0.0,
+	"totalAvgSpeed"	REAL DEFAULT 0.0,
 	PRIMARY KEY("monthStatsKey")
 );
 CREATE TABLE IF NOT EXISTS "Notification" (
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS "WeeklyStats" (
 	"totalDistance"	REAL DEFAULT 0.0,
 	"totalDuration"	INTEGER DEFAULT 0,
 	"totalCaloriesBurned"	REAL DEFAULT 0.0,
-	"totalAvgPace"	REAL DEFAULT 0.0,
+	"totalAvgSpeed"	REAL DEFAULT 0.0,
 	PRIMARY KEY("weeklyStatsKey")
 );
 CREATE TABLE IF NOT EXISTS "YearlyStats" (
@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS "YearlyStats" (
 	"totalDistance"	REAL DEFAULT 0.0,
 	"totalDuration"	INTEGER DEFAULT 0,
 	"totalCaloriesBurned"	REAL DEFAULT 0.0,
-	"totalAvgPace"	REAL DEFAULT 0.0,
+	"totalAvgSpeed"	REAL DEFAULT 0.0,
 	PRIMARY KEY("yearlyStatsKey")
 );
 INSERT INTO "TrainingPlan" VALUES (1,NULL,'Running for Beginners','This plan helps new runners build a solid foundation of endurance and stamina while gradually increasing their distances.',30.0,5.0,NULL,NULL,0.0,'Beginner');
@@ -154,7 +154,7 @@ INSERT INTO "Notification" VALUES (27,'Recharge!','Take a moment to rest and rej
 INSERT INTO "Notification" VALUES (28,'Breathe!','Catch your breath. It’s break time.','BREAK');
 INSERT INTO "Notification" VALUES (29,'Refresh!','Time to relax. You’ve earned it.','BREAK');
 INSERT INTO "Notification" VALUES (30,'Recover!','Take a well-deserved break and get ready to go again.','BREAK');
-INSERT INTO "Notification" VALUES (31,'Caution!','Your speed is unusually high! Proceed at your own risk!','EXCESSIVE_PACE');
+INSERT INTO "Notification" VALUES (31,'Caution!','Your speed is unusually high! Proceed at your own risk!','EXCESSIVE_SPEED');
 INSERT INTO "Notification" VALUES (32,'Enable Internet for Better Tracking', 'For accurate location tracking and route drawing, please turn on your internet.', 'NO_NETWORK');
 INSERT INTO "Notification" VALUES (33,'Internet Needed for Route Map', 'Ensure your internet is enabled to get the best route drawing experience for your running sessions.', 'NO_NETWORK');
 
