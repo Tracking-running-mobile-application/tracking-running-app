@@ -16,7 +16,6 @@ import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModelFactory
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
-import com.app.java.trackingrunningapp.utils.LocalTimeConverter
 import com.google.android.material.tabs.TabLayout
 import com.mapbox.maps.extension.style.expressions.dsl.generated.sum
 import java.time.LocalDate
@@ -40,37 +39,27 @@ class StatisticWeeklyFragment : Fragment() {
     }
 
     private fun setupViewmodel() {
-//        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
-//        runSessionViewModel =
-//            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
-//        val startDate = "20241123"
-//        val endDate = "20241222"
-//
-//        runSessionViewModel.filterSessionsByDateRange(startDate, endDate)
         val statsFactory = StatsViewModelFactory(InitDatabase.statsRepository)
         statsViewModel =
             ViewModelProvider(requireActivity(), statsFactory)[StatsViewModel::class.java]
-//        val weekData: MutableList<Double> = mutableListOf()
-//        val days: List<String> = getPreviousDays(6).reversed()
-//        val daySums: MutableList<Double> = mutableListOf(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         statsViewModel.currentWeekStats.observe(viewLifecycleOwner) { sessions ->
             Log.d("current_week","${sessions}")
             setupBarChart(sessions)
+            statsViewModel.refreshStats()
         }
-        statsViewModel.refreshStats()
     }
 
 
 
     private fun setupBarChart(weekData: List<WeeklyStats>) {
         val barSet = listOf(
-            "Mon" to weekData[0].totalDistance!!.toFloat(),
-            "Tue" to weekData[1].totalDistance!!.toFloat(),
-            "Wed" to weekData[2].totalDistance!!.toFloat(),
-            "Thu" to weekData[3].totalDistance!!.toFloat(),
-            "Fri" to weekData[4].totalDistance!!.toFloat(),
-            "Sat" to weekData[5].totalDistance!!.toFloat(),
-            "Sun" to weekData[6].totalDistance!!.toFloat(),
+            getString(R.string.mon) to weekData[0].totalDistance!!.toFloat(),
+            getString(R.string.tue) to weekData[1].totalDistance!!.toFloat(),
+            getString(R.string.wed) to weekData[2].totalDistance!!.toFloat(),
+            getString(R.string.thu) to weekData[3].totalDistance!!.toFloat(),
+            getString(R.string.fri) to weekData[4].totalDistance!!.toFloat(),
+            getString(R.string.sat) to weekData[5].totalDistance!!.toFloat(),
+            getString(R.string.sun) to weekData[6].totalDistance!!.toFloat(),
         )
         val barChart = binding.barchart
         barChart.animate(barSet)

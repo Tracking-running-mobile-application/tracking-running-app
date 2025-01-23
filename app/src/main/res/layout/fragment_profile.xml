@@ -42,11 +42,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Distance"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/text_total_distance"
                 android:textColor="@color/text_shadow_white"
                 android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/img2"
+                app:layout_constraintStart_toStartOf="@+id/img2"
                 app:layout_constraintTop_toBottomOf="@+id/img2"
                 tools:ignore="HardcodedText" />
 
@@ -66,15 +68,15 @@
 
             <TextView
                 android:id="@+id/tev26"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_marginEnd="-27dp"
+                android:layout_marginBottom="2dp"
                 android:text="km"
                 android:textColor="@color/main_gray"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_total_distance"
-                app:layout_constraintStart_toEndOf="@+id/tv_total_distance"
-                app:layout_constraintTop_toTopOf="@+id/tv_total_distance"
+                app:layout_constraintEnd_toEndOf="@+id/tv_total_distance"
                 tools:ignore="HardcodedText" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -98,13 +100,26 @@
             android:background="#6AD400">
 
             <!--suppress AndroidUnresolvableTag -->
+            <TextView
+                android:id="@+id/text_user_height_metric2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Metres"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="@+id/text_user_weight_metric"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_height"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_height"
+                app:layout_constraintTop_toTopOf="@+id/text_user_weight_metric"
+                tools:ignore="HardcodedText,TextContrastCheck" />
+
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/circleImageView"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="@dimen/margin_16"
-                android:layout_marginBottom="@dimen/margin_16"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:src="@drawable/img_avatar"
                 app:civ_border_color="@color/white"
                 app:civ_border_width="4dp"
@@ -117,7 +132,7 @@
                 android:id="@+id/text_profile_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginEnd="16dp"
                 android:text="Thang Tran"
                 android:textColor="@color/text_shadow_white"
@@ -157,18 +172,18 @@
                 android:id="@+id/text_profile_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:text="70"
                 android:textColor="@color/text_shadow_white"
                 android:textSize="@dimen/text_size_profile"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_profile_age"
-                app:layout_constraintEnd_toStartOf="@+id/text_profile_height"
                 app:layout_constraintStart_toEndOf="@+id/text_profile_age"
                 app:layout_constraintTop_toTopOf="@+id/text_profile_age"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
-                android:id="@+id/textView17"
+                android:id="@+id/text_user_weight_metric"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Kg"
@@ -184,27 +199,52 @@
                 android:id="@+id/text_profile_height"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:text="1.75"
                 android:textColor="@color/text_shadow_white"
                 android:textSize="@dimen/text_size_profile"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/text_profile_weight"
-                app:layout_constraintEnd_toEndOf="@+id/text_profile_name"
+                app:layout_constraintStart_toEndOf="@+id/text_profile_weight"
                 app:layout_constraintTop_toTopOf="@+id/text_profile_weight"
                 tools:ignore="HardcodedText,TextContrastCheck" />
 
             <TextView
-                android:id="@+id/textView20"
+                android:id="@+id/text_user_height_metric"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Metres"
                 android:textColor="@color/main_gray"
                 android:textSize="16sp"
-                app:layout_constraintBottom_toBottomOf="@+id/textView17"
+                app:layout_constraintBottom_toBottomOf="@+id/text_user_weight_metric"
                 app:layout_constraintEnd_toEndOf="@+id/text_profile_height"
                 app:layout_constraintStart_toStartOf="@+id/text_profile_height"
-                app:layout_constraintTop_toTopOf="@+id/textView17"
+                app:layout_constraintTop_toTopOf="@+id/text_user_weight_metric"
                 tools:ignore="HardcodedText,TextContrastCheck" />
+
+            <TextView
+                android:id="@+id/text_profile_speed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="15"
+                android:textColor="@color/text_shadow_white"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/text_profile_height"
+                app:layout_constraintStart_toEndOf="@+id/text_profile_height"
+                app:layout_constraintTop_toTopOf="@+id/text_profile_height" />
+
+            <TextView
+                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="pace"
+                android:textColor="@color/main_gray"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="@+id/text_profile_speed"
+                app:layout_constraintStart_toStartOf="@+id/text_profile_speed"
+                app:layout_constraintTop_toBottomOf="@+id/text_profile_speed" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -257,7 +297,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Total time"
+                android:text="@string/text_total_time"
                 android:textColor="@color/text_shadow_white"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="@+id/imageView2"
@@ -269,27 +309,30 @@
                 android:id="@+id/tv_total_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="48dp"
                 android:text="65"
                 android:textColor="@color/main_yellow"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/textView24"
                 app:layout_constraintStart_toStartOf="@+id/textView24"
                 app:layout_constraintTop_toBottomOf="@+id/textView24"
                 tools:ignore="HardcodedText" />
 
             <TextView
                 android:id="@+id/textView26"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_marginBottom="2dp"
-                android:text="hours"
+                android:text="@string/text_hours"
                 android:textColor="@color/main_gray"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_total_time"
                 app:layout_constraintEnd_toEndOf="@+id/textView24"
                 app:layout_constraintStart_toEndOf="@+id/tv_total_time"
                 tools:ignore="HardcodedText" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
@@ -305,7 +348,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="THIS WEEK"
+        android:text="@string/this_week_upper_case"
         android:textColor="@color/text_shadow_white"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -340,7 +383,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_8"
                 android:layout_marginTop="8dp"
-                android:text="FAVOURITE RUNS"
+                android:text="@string/favourite_runs_upper_case"
                 android:textColor="@color/text_shadow_white"
                 android:textSize="20sp"
                 android:textStyle="bold"

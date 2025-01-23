@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e1c8d208067c699f6294a4ed99f1eb92",
+    "identityHash": "5d3d4c5a84fc8a346769ed695fe995c9",
     "entities": [
       {
         "tableName": "User",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT DEFAULT NULL, `age` INTEGER DEFAULT NULL, `height` REAL DEFAULT NULL, `weight` REAL DEFAULT 50.0, `metricPreference` TEXT DEFAULT 'kg', `unit` TEXT DEFAULT 'km')",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`userId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT DEFAULT NULL, `age` INTEGER DEFAULT NULL, `height` REAL DEFAULT NULL, `weight` REAL DEFAULT 50.0, `metricPreference` TEXT DEFAULT 'km', `unit` TEXT DEFAULT 'kg')",
         "fields": [
           {
             "fieldPath": "userId",
@@ -47,14 +47,14 @@
             "columnName": "metricPreference",
             "affinity": "TEXT",
             "notNull": false,
-            "defaultValue": "'kg'"
+            "defaultValue": "'km'"
           },
           {
             "fieldPath": "unit",
             "columnName": "unit",
             "affinity": "TEXT",
             "notNull": false,
-            "defaultValue": "'km'"
+            "defaultValue": "'kg'"
           }
         ],
         "primaryKey": {
@@ -157,7 +157,7 @@
       },
       {
         "tableName": "WeeklyStats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`weeklyStatsKey` TEXT NOT NULL, `totalDistance` REAL DEFAULT 0.0, `totalDuration` INTEGER DEFAULT 0, `totalCaloriesBurned` REAL DEFAULT 0.0, `totalAvgPace` REAL DEFAULT 0.0, PRIMARY KEY(`weeklyStatsKey`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`weeklyStatsKey` TEXT NOT NULL, `totalDistance` REAL DEFAULT 0.0, `totalDuration` INTEGER DEFAULT 0, `totalCaloriesBurned` REAL DEFAULT 0.0, `totalAvgSpeed` REAL DEFAULT 0.0, PRIMARY KEY(`weeklyStatsKey`))",
         "fields": [
           {
             "fieldPath": "weeklyStatsKey",
@@ -187,8 +187,8 @@
             "defaultValue": "0.0"
           },
           {
-            "fieldPath": "totalAvgPace",
-            "columnName": "totalAvgPace",
+            "fieldPath": "totalAvgSpeed",
+            "columnName": "totalAvgSpeed",
             "affinity": "REAL",
             "notNull": false,
             "defaultValue": "0.0"
@@ -205,7 +205,7 @@
       },
       {
         "tableName": "MonthlyStats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`monthStatsKey` TEXT NOT NULL, `totalDistance` REAL DEFAULT 0.0, `totalDuration` INTEGER DEFAULT 0, `totalCaloriesBurned` REAL DEFAULT 0.0, `totalAvgPace` REAL DEFAULT 0.0, PRIMARY KEY(`monthStatsKey`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`monthStatsKey` TEXT NOT NULL, `totalDistance` REAL DEFAULT 0.0, `totalDuration` INTEGER DEFAULT 0, `totalCaloriesBurned` REAL DEFAULT 0.0, `totalAvgSpeed` REAL DEFAULT 0.0, PRIMARY KEY(`monthStatsKey`))",
         "fields": [
           {
             "fieldPath": "monthStatsKey",
@@ -235,8 +235,8 @@
             "defaultValue": "0.0"
           },
           {
-            "fieldPath": "totalAvgPace",
-            "columnName": "totalAvgPace",
+            "fieldPath": "totalAvgSpeed",
+            "columnName": "totalAvgSpeed",
             "affinity": "REAL",
             "notNull": false,
             "defaultValue": "0.0"
@@ -253,7 +253,7 @@
       },
       {
         "tableName": "YearlyStats",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`yearlyStatsKey` TEXT NOT NULL, `totalDistance` REAL DEFAULT 0.0, `totalDuration` INTEGER DEFAULT 0, `totalCaloriesBurned` REAL DEFAULT 0.0, `totalAvgPace` REAL DEFAULT 0.0, PRIMARY KEY(`yearlyStatsKey`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`yearlyStatsKey` TEXT NOT NULL, `totalDistance` REAL DEFAULT 0.0, `totalDuration` INTEGER DEFAULT 0, `totalCaloriesBurned` REAL DEFAULT 0.0, `totalAvgSpeed` REAL DEFAULT 0.0, PRIMARY KEY(`yearlyStatsKey`))",
         "fields": [
           {
             "fieldPath": "yearlyStatsKey",
@@ -283,8 +283,8 @@
             "defaultValue": "0.0"
           },
           {
-            "fieldPath": "totalAvgPace",
-            "columnName": "totalAvgPace",
+            "fieldPath": "totalAvgSpeed",
+            "columnName": "totalAvgSpeed",
             "affinity": "REAL",
             "notNull": false,
             "defaultValue": "0.0"
@@ -301,7 +301,7 @@
       },
       {
         "tableName": "RunSession",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `runDate` TEXT NOT NULL, `distance` REAL DEFAULT 0.0, `duration` INTEGER DEFAULT 0, `pace` REAL DEFAULT 0.0, `caloriesBurned` REAL DEFAULT 0.0, `isActive` INTEGER DEFAULT 0, `dateAddInFavorite` TEXT DEFAULT NULL, `isFavorite` INTEGER NOT NULL DEFAULT 0)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`sessionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `runDate` TEXT NOT NULL, `distance` REAL DEFAULT 0.0, `duration` INTEGER DEFAULT 0, `speed` REAL DEFAULT 0.0, `caloriesBurned` REAL DEFAULT 0.0, `isActive` INTEGER DEFAULT 0, `dateAddInFavorite` TEXT DEFAULT NULL, `isFavorite` INTEGER NOT NULL DEFAULT 0)",
         "fields": [
           {
             "fieldPath": "sessionId",
@@ -330,8 +330,8 @@
             "defaultValue": "0"
           },
           {
-            "fieldPath": "pace",
-            "columnName": "pace",
+            "fieldPath": "speed",
+            "columnName": "speed",
             "affinity": "REAL",
             "notNull": false,
             "defaultValue": "0.0"
@@ -376,7 +376,7 @@
       },
       {
         "tableName": "TrainingPlan",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`planId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `planSessionId` INTEGER, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `estimatedTime` REAL NOT NULL, `targetDistance` REAL DEFAULT 0.0, `targetDuration` REAL DEFAULT 0.0, `targetCaloriesBurned` REAL DEFAULT 0.0, `goalProgress` REAL DEFAULT 0.0, `exerciseType` TEXT NOT NULL, `difficulty` TEXT NOT NULL, FOREIGN KEY(`planSessionId`) REFERENCES `RunSession`(`sessionId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`planId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `planSessionId` INTEGER, `title` TEXT NOT NULL, `description` TEXT NOT NULL, `estimatedTime` REAL NOT NULL, `targetDistance` REAL DEFAULT 0.0, `targetDuration` REAL DEFAULT 0.0, `targetCaloriesBurned` REAL DEFAULT 0.0, `goalProgress` REAL DEFAULT 0.0, `difficulty` TEXT NOT NULL, FOREIGN KEY(`planSessionId`) REFERENCES `RunSession`(`sessionId`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
           {
             "fieldPath": "planId",
@@ -435,12 +435,6 @@
             "affinity": "REAL",
             "notNull": false,
             "defaultValue": "0.0"
-          },
-          {
-            "fieldPath": "exerciseType",
-            "columnName": "exerciseType",
-            "affinity": "TEXT",
-            "notNull": true
           },
           {
             "fieldPath": "difficulty",
@@ -643,7 +637,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e1c8d208067c699f6294a4ed99f1eb92')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5d3d4c5a84fc8a346769ed695fe995c9')"
     ]
   }
 }

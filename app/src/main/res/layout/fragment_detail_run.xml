@@ -9,6 +9,7 @@
 
 
     <include
+        android:id="@+id/history_run_detail"
         layout="@layout/item_history_run_detail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

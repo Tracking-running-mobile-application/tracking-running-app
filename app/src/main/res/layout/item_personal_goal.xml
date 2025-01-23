@@ -41,7 +41,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="22%"
+                    android:text="0.0%"
                     android:textColor="@color/main_yellow"
                     android:textSize="20sp"
                     android:textStyle="bold" />
@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:gravity="center_vertical"
-                    android:text="Duration"
+                    android:text="---"
                     android:textColor="@color/white"
                     android:textSize="20sp"
                     tools:ignore="HardcodedText" />
@@ -84,16 +84,15 @@
                 android:id="@+id/taskCheckbox"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_gravity="center_vertical"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_check_circle"
+                android:layout_gravity="center|center_vertical"
+                android:visibility="invisible"
+                app:srcCompat="@drawable/baseline_check_circle_24"
                 tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/ic_edit_goal"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_weight="1"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground"
                 app:srcCompat="@drawable/ic_edit_plan_24"

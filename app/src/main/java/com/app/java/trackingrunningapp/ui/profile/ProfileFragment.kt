@@ -1,6 +1,8 @@
 package com.app.java.trackingrunningapp.ui.profile
 
+import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,24 +12,27 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.User
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentProfileBinding
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.StatsViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import com.app.java.trackingrunningapp.utils.DateTimeUtils
+import com.app.java.trackingrunningapp.utils.StatsUtils
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var userViewModel: UserViewModel
     private lateinit var runSessionViewModel: RunSessionViewModel
+    private lateinit var statsViewModel: StatsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +44,9 @@ class ProfileFragment : Fragment() {
         val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
         runSessionViewModel =
             ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
-
+        val statsFactory = StatsViewModelFactory(InitDatabase.statsRepository)
+        statsViewModel =
+            ViewModelProvider(requireActivity(), statsFactory)[StatsViewModel::class.java]
         binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -50,26 +57,67 @@ class ProfileFragment : Fragment() {
             binding.textProfileName.text = it?.name
             binding.textProfileAge.text = it?.age.toString()
             binding.textProfileWeight.text = getString(R.string.profile_weight, it?.weight)
-            binding.textProfileHeight.text = getString(R.string.profile_height, it?.height?.times(0.01))
+            binding.textProfileHeight.text =
+                getString(R.string.profile_height, it?.height?.times(0.01))
+            binding.textUserWeightMetric.text = it?.unit.toString()
+
+            val currentMonth = DateTimeUtils.getCurrentDate().month
+            statsViewModel.refreshStats()
+            statsViewModel.currentYearStats.observe(viewLifecycleOwner) { sessions ->
+                for (session in sessions) {
+                    if (DateTimeUtils.getMonthNameFromYearMonth(session.yearlyStatsKey) == currentMonth.toString()) {
+                        binding.textProfileSpeed.text =
+                            StatsUtils.convertToPace(
+                                session.totalAvgSpeed!!,
+                                it?.metricPreference!!
+                            )
+
+                    }
+                }
+            }
         }
+
         setupBarChart()
         navigateToFavourite()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun navigateToFavourite() {
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.CREATED){
-                runSessionViewModel.favoriteRunSessions.collect{favouriteRuns->
+        runSessionViewModel.loadFavoriteSessions()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                runSessionViewModel.fetchRunSessions()
+                runSessionViewModel.favoriteRunSessions.collect { favouriteRuns ->
+                    binding.textFavouriteRun.text = favouriteRuns.size.toString()
+                    Log.d("Favourite", "${favouriteRuns.size}")
                     binding.cvFavoriteRun.setOnClickListener {
-                        if(favouriteRuns.isEmpty()){
+                        if (favouriteRuns.isEmpty()) {
                             findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
-                        }else{
+                        } else {
                             findNavController().navigate(R.id.action_profileFragment_to_favouriteRuns)
                         }
                     }
                 }
             }
         }
+//        runSessionViewModel.fetchRunSessions()
+//        runSessionViewModel.runSessions.observe(viewLifecycleOwner){sessions->
+//            var favouritesRun = 0
+//            for (session in sessions){
+//                if(session.isFavorite){
+//                    favouritesRun++
+//                }
+//            }
+//            Log.d("Favourite","${favouritesRun}")
+//            binding.textFavouriteRun.text = favouritesRun.toString()
+//            binding.cvFavoriteRun.setOnClickListener {
+//                if(favouritesRun == 0){
+//                    findNavController().navigate(R.id.action_profileFragment_to_noFavouriteFragment)
+//                }else{
+//                    findNavController().navigate(R.id.action_profileFragment_to_favouriteRuns)
+//                }
+//            }
+//        }
     }
 
     private fun setupBarChart() {
@@ -88,13 +136,5 @@ class ProfileFragment : Fragment() {
             animation.duration = 1000L
             labelsFormatter = { it.toInt().toString() }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        val toolbar = requireActivity()
-            .findViewById<Toolbar>(R.id.toolbar_main)
-        val icEdit = toolbar.menu.findItem(R.id.item_toolbar_edit)
-        icEdit.isVisible = false
     }
 }

@@ -1,5 +1,6 @@
 package com.app.java.trackingrunningapp.ui.home.plan_list
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -49,16 +50,17 @@ class ListTrainingPlanFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val title = arguments?.getString(EXTRA_TITLE_PLAN)
-        if (title == "Beginner Run") {
+        Log.d("tiele0","$title")
+        if (title == "Beginner Run" || title == getString(R.string.text_beginner_run)) {
             binding.textTitleExercise.text = "Beginner Run List"
             binding.imgPlanTitle.setImageResource(R.drawable.img_begginer_list)
             setUpBeginner()
-        } else if (title == "Intermediate Run") {
+        } else if (title == "Intermediate Run" || title == getString(R.string.text_intermediate_run)) {
             binding.imgPlanTitle.setImageResource(R.drawable.img_intermediate_list)
             binding.textTitleExercise.text = "Intermediate Run List"
             setUpIntermediate()
 
-        } else if (title == "Advanced Run") {
+        } else if (title == "Advanced Run" || title == getString(R.string.text_advanced_run)) {
             binding.imgPlanTitle.setImageResource(R.drawable.img_advance_list)
             binding.textTitleExercise.text = "Advanced Run List"
              setUpAdvance()

@@ -60,12 +60,30 @@
         android:id="@+id/runPlanFragment"
         android:name="com.app.java.trackingrunningapp.ui.home.training.RunPlanFragment"
         android:label="fragment_run_plan"
-        tools:layout="@layout/fragment_run_plan" />
+        tools:layout="@layout/fragment_run_plan" >
+        <action
+            android:id="@+id/action_runPlanFragment_to_runPlanResultFragment"
+            app:destination="@id/runPlanResultFragment" />
+    </fragment>
     <fragment
         android:id="@+id/runGoalFragment"
         android:name="com.app.java.trackingrunningapp.ui.home.personalGoal.RunGoalFragment"
         android:label="fragment_run_goal"
-        tools:layout="@layout/fragment_run_goal" />
+        tools:layout="@layout/fragment_run_goal" >
+        <action
+            android:id="@+id/action_runGoalFragment_to_runGoalResultFragment"
+            app:destination="@id/runGoalResultFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/runPlanResultFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.training.RunPlanResultFragment"
+        android:label="fragment_run_plan_result"
+        tools:layout="@layout/fragment_run_plan_result" />
+    <fragment
+        android:id="@+id/runGoalResultFragment"
+        android:name="com.app.java.trackingrunningapp.ui.home.personalGoal.RunGoalResultFragment"
+        android:label="fragment_run_goal_result"
+        tools:layout="@layout/fragment_run_goal_result" />
 
 
 </navigation>

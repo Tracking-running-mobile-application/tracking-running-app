@@ -34,14 +34,14 @@ interface RunSessionDao {
     )
     suspend fun getAllFavoriteRunSessions(): List<RunSession>
 
-    @Query("SELECT * FROM RunSession WHERE isActive = TRUE ORDER BY runDate DESC LIMIT 1")
+    @Query("SELECT * FROM RunSession WHERE isActive = TRUE ORDER BY sessionId DESC LIMIT 1")
     suspend fun getCurrentRunSession(): RunSession?
 
     @Query("SELECT * FROM RUNSESSION WHERE sessionId = :sessionId")
     suspend fun getRunSessionById(sessionId: Int): RunSession?
 
-    @Query("UPDATE RunSession SET distance = :distance, duration = :duration, caloriesBurned = :caloriesBurned, pace = :pace WHERE sessionId = :sessionId")
-    suspend fun updateStatsSession(sessionId: Int, distance: Double, duration: Long, caloriesBurned: Double, pace: Double)
+    @Query("UPDATE RunSession SET distance = :distance, duration = :duration, caloriesBurned = :caloriesBurned, speed = :speed WHERE sessionId = :sessionId")
+    suspend fun updateStatsSession(sessionId: Int, distance: Double, duration: Long, caloriesBurned: Double, speed: Double)
 
     @Insert
     suspend fun initiateRunSession(runSession: RunSession)
@@ -59,7 +59,7 @@ interface RunSessionDao {
         """
         SELECT *
         FROM RunSession
-        WHERE runDate BETWEEN :startDate AND :endDate
+        WHERE runDate BETWEEN :startDate AND :endDate ORDER BY sessionId DESC
         """
     )
     suspend fun filterRunningSessionByDay(
@@ -68,28 +68,11 @@ interface RunSessionDao {
     ): List<RunSession>
 
     @Query("""
-        SELECT duration, distance, pace, caloriesBurned
+        SELECT duration, distance, speed, caloriesBurned
         FROM runsession
         WHERE sessionId = :sessionId
     """)
     suspend fun fetchStatsSession(sessionId: Int): StatsSession
-
-    @Query("""
-        SELECT * FROM RunSession AS rs    
-        JOIN GPSTrack AS gt ON rs.sessionId = gt.gpsSessionId
-        JOIN GPSPoint AS gp ON gt.gpsTrackId = gp.gpsPointId
-        WHERE rs.sessionId = :sessionId
-    """)
-    suspend fun getCompleteSessionData(sessionId: Int): List<CompleteSessionData>
-
-    @Query("SELECT COUNT(*) FROM RunSession")
-    suspend fun getNumberOfSessions(): Int
-
-    data class CompleteSessionData (
-        @Embedded val runSession: RunSession,
-        @Embedded val gpsTrack: GPSTrack,
-        @Embedded val gpsPoint: GPSPoint
-    )
 }
 
 

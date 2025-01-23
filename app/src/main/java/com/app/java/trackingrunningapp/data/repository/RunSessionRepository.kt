@@ -3,7 +3,6 @@ package com.app.java.trackingrunningapp.data.repository
 import android.util.Log
 import com.app.java.trackingrunningapp.data.dao.RunSessionDao
 import com.app.java.trackingrunningapp.data.dao.UserDao
-import com.app.java.trackingrunningapp.utils.LocalTimeConverter
 import com.app.java.trackingrunningapp.data.database.InitDatabase
 import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.data.model.entity.User
@@ -32,8 +31,6 @@ class RunSessionRepository {
     private val gpsPointRepository: GPSPointRepository = InitDatabase.gpsPointRepository
     private val notificationRepository: NotificationRepository = InitDatabase.notificationRepository
 
-    private val convert = LocalTimeConverter()
-
     private val userInfo = userDao.getUserInfo()
 
     private val _currentRunSession = MutableStateFlow<RunSession?>(null)
@@ -41,14 +38,17 @@ class RunSessionRepository {
 
     private var offset: Int = 0
 
+    private var durationNotification: Boolean = false
+    private var paceNotification: Boolean = false
+
     private val _duration = MutableStateFlow(0L)
     val duration: StateFlow<Long> = _duration
 
     private var cumulativeDurationSeconds: Long = 0L
     private var totalDurationSeconds: Long = 0L
 
-    private val _pace = MutableStateFlow(0.0)
-    val pace: StateFlow<Double> = _pace
+    private val _speed = MutableStateFlow(0.0)
+    val speed: StateFlow<Double> = _speed
 
     private val _caloriesBurned = MutableStateFlow(0.0)
     val caloriesBurned: StateFlow<Double> = _caloriesBurned
@@ -57,6 +57,9 @@ class RunSessionRepository {
     val distance: StateFlow<Double> = _distance
 
     private lateinit var runSessionStartTime: Instant
+    private var newDistance: Double = 0.0
+
+    private var currentGPSPointId: Int = 0
 
     private var repoScope = CoroutineScope(Job() + Dispatchers.IO)
 
@@ -66,6 +69,7 @@ class RunSessionRepository {
 
     private suspend fun setCurrentRunSession(): RunSession? {
         val currentRunSession = runSessionDao.getCurrentRunSession()
+        Log.d("setCurrentRunSession", "${currentRunSession?.sessionId}")
         if (currentRunSession != null) {
             _currentRunSession.emit(currentRunSession)
             return currentRunSession
@@ -84,10 +88,14 @@ class RunSessionRepository {
     fun resetStatsValue() {
         _duration.value = 0L
         _distance.value = 0.0
-        _pace.value = 0.0
+        _speed.value = 0.0
         _caloriesBurned.value = 0.0
         cumulativeDurationSeconds = 0L
         totalDurationSeconds = 0L
+        newDistance = 0.0
+        currentGPSPointId = 0
+        durationNotification = false
+        paceNotification = false
         runSessionStartTime = DateTimeUtils.getCurrentInstant()
     }
 
@@ -145,13 +153,13 @@ class RunSessionRepository {
 
 
     suspend fun startRunSession() {
-        val runDate = convert.fromLocalDate(DateTimeUtils.getCurrentDate())
+        val runDate = DateTimeUtils.formatDateStringRemoveHyphen(DateTimeUtils.getCurrentDate().toString())
 
         val newRunSession = RunSession(
             runDate = runDate,
             distance = 0.0,
             duration = 0L,
-            pace = 0.0,
+            speed = 0.0,
             caloriesBurned = 0.0,
             isActive = true,
             dateAddInFavorite = null,
@@ -163,8 +171,8 @@ class RunSessionRepository {
     }
 
     suspend fun setRunSessionInactive() {
-        val currentSession = getCurrentSessionOrThrow()
-        runSessionDao.setRunSessionInactive(currentSession.sessionId)
+        Log.d("RunSessionRepo", "Set Run Session Inactive")
+        _currentRunSession.value?.let { runSessionDao.setRunSessionInactive(it.sessionId) }
 
         _currentRunSession.emit(null)
     }
@@ -187,30 +195,28 @@ class RunSessionRepository {
         ensureRepoScope()
         repoScope.launch {
             try {
-                val userUnitPreference = userInfo?.unit
+                Log.d("RunSessionRepo", "calc Pace")
+                val userMetricPreference = userInfo?.metricPreference
 
-                val durationInHour = _duration.value.div(60.0)
-                val adjustedDistance: Double = when (userUnitPreference) {
-                    User.UNIT_MILE -> _distance.value.times(0.621371)
-                    else -> _distance.value
-                }
+                val durationInHours = _duration.value.div(3600.0)
 
-                val pace: Double = if (durationInHour > 0) {
-                    adjustedDistance.div(durationInHour)
+                val speed: Double = if (_distance.value > 0) {
+                    _distance.value.div(durationInHours)
                 } else {
                     0.0
                 }
 
-                val excessivePace = when (userUnitPreference) {
-                    User.UNIT_MILE -> pace > 25.0
-                    else -> pace > 45.0
+                val excessivePace = when (userMetricPreference) {
+                    User.UNIT_MILE -> speed > 30.0
+                    else -> speed > 45.0
                 }
 
-                if (excessivePace) {
-                    notificationRepository.triggerNotification("EXCESSIVE_PACE")
+                if (excessivePace && !paceNotification) {
+                    notificationRepository.triggerNotification("EXCESSIVE_SPEED")
+                    paceNotification = true
                 }
 
-                _pace.emit(pace)
+                _speed.emit(speed)
                 delay(100)
             } catch (ce: CancellationException) {
                 println("calcPace runSessionRepo: ${ce.message} ")
@@ -218,41 +224,60 @@ class RunSessionRepository {
         }
     }
 
-    /*add in the viewmodel in the future to see run session detail*/
-    suspend fun getRunSessionById(sessionId: Int): RunSession? {
-        return runSessionDao.getRunSessionById(sessionId)
-    }
-
     suspend fun calcCaloriesBurned() {
         ensureRepoScope()
         repoScope.launch {
             try {
+                Log.d("RunSessionRepo", "calc calories burend")
                 val userMetricPreference: String? = userInfo?.metricPreference
                 val unit: String? = userInfo?.unit
 
-                val adjustedWeight = when (userMetricPreference) {
+                val isTooSlow = when (userMetricPreference) {
+                    User.UNIT_MILE -> _speed.value < 3.5
+                    else -> _speed.value < 4.0
+                }
+
+                if(isTooSlow) {
+                    return@launch
+                }
+
+                val adjustedWeight = when (unit) {
                     User.POUNDS -> userInfo?.weight?.times(0.45359237) ?: (50.0 * 0.45359237)
                     else -> userInfo?.weight ?: 50.0
                 }
 
-                val adjustedPace: Double = when (unit) {
-                    User.UNIT_MILE -> _pace.value.div(1.609344)
-                    else -> _pace.value
-                }
-
-                val speedMetersPerSec: Double = if (adjustedPace > 0) {
-                    1000.0 / (adjustedPace * 60.0)
-                } else {
-                    0.0
-                }
-
                 val durationInHours = _duration.value.div(3600.0)
 
-                val MET = when {
-                    speedMetersPerSec == 0.0 -> 0.0
-                    speedMetersPerSec < 2.0 -> 0.5 + (speedMetersPerSec * 0.3)
-                    speedMetersPerSec >= 2.0 -> 1.0 + (speedMetersPerSec * 0.9)
-                    else -> 0.0
+                val MET = if (userMetricPreference == User.UNIT_KM) {
+                    when {
+                        _speed.value == 0.0 -> 0.0
+                        _speed.value < 4.8 -> 4.5
+                        _speed.value in 4.8..6.4 -> 6.2
+                        _speed.value in 6.4..8.0 -> 8.5
+                        _speed.value in 8.0..9.7 -> 10.0
+                        _speed.value in 9.7..11.3 -> 11.2
+                        _speed.value in 11.3..12.9 -> 12.0
+                        _speed.value in 12.9..14.5 -> 13.0
+                        _speed.value in 14.5..16.1 -> 14.7
+                        _speed.value in 16.1..17.7 -> 16.4
+                        _speed.value in 17.7..19.3 -> 19.2
+                        else -> 20.0
+                    }
+                } else {
+                    when {
+                        _speed.value == 0.0 -> 0.0
+                        _speed.value < 3.0 -> 4.5
+                        _speed.value in 3.0..4.0 -> 6.2
+                        _speed.value in 4.0..5.0 -> 8.5
+                        _speed.value in 5.0..6.0 -> 10.0
+                        _speed.value in 6.0..7.0 -> 11.2
+                        _speed.value in 7.0..8.0 -> 12.0
+                        _speed.value in 8.0..9.0 -> 13.0
+                        _speed.value in 9.0..10.0 -> 14.7
+                        _speed.value in 10.0..11.0 -> 16.4
+                        _speed.value in 11.0..12.0 -> 19.2
+                        else -> 20.0
+                    }
                 }
 
                 val caloriesBurnedPerHour = MET * adjustedWeight
@@ -262,7 +287,11 @@ class RunSessionRepository {
                 } else {
                     0.0
                 }
-                _caloriesBurned.value = caloriesBurned
+
+                if (caloriesBurned > _caloriesBurned.value) {
+                    _caloriesBurned.value = caloriesBurned
+                }
+
 
                 delay(100)
             } catch (ce: CancellationException) {
@@ -276,14 +305,16 @@ class RunSessionRepository {
         repoScope.launch {
             while (isActive) {
                 try {
+                    Log.d("RunSessionRepo", "calc duration")
                     val currentTime = DateTimeUtils.getCurrentInstant()
                     val currentDuration =
                         StatsUtils.calculateDuration(runSessionStartTime, currentTime)
                     totalDurationSeconds = cumulativeDurationSeconds + currentDuration
                     _duration.emit(totalDurationSeconds)
 
-                    if (totalDurationSeconds > 2*60*60) {
+                    if (totalDurationSeconds > 2*60*60 && !durationNotification) {
                         notificationRepository.triggerNotification("BREAK")
+                        durationNotification = true
                     }
                     delay(1000)
                 } catch (ce: CancellationException) {
@@ -302,29 +333,26 @@ class RunSessionRepository {
                 val latestLocationsFlow = gpsPointRepository.fetchTwoLatestLocation()
 
                 latestLocationsFlow.collect { latestLocations ->
-                    if (latestLocations.size == 2) {
-                        val (location1, location2) = latestLocations
-                        Log.d("calc distance", "location 1: $location1, location 2: $location2")
+                    val (location1, location2) = latestLocations
+                    Log.d("calc distance", "location 1: $location1, location 2: $location2")
 
-                        val userUnitPreference = userInfo?.metricPreference
-                        val isTooSlow = when (userUnitPreference) {
-                            User.UNIT_MILE -> _pace.value < 1.0
-                            else -> _pace.value < 2.0
-                        }
+                    val userUnitPreference = userInfo?.metricPreference
 
-                        if (isTooSlow) {
-                            return@collect
-                        }
-
-                        val distance = when (userUnitPreference) {
-                            User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
-                            else -> StatsUtils.haversineFormula(location1, location2) / 1609.34
-                        }
-                        _distance.emit(distance)
-
-                        delay(100)
-                        }
+                    val distance = when (userUnitPreference) {
+                        User.UNIT_MILE -> StatsUtils.haversineFormula(location1, location2) / 1609.34
+                        else -> StatsUtils.haversineFormula(location1, location2) / 1000
                     }
+                    Log.d("RunSessionRepo", "Computed: $distance")
+                    if (distance <0.001 || distance >0.012 || (currentGPSPointId >= location1.gpsPointId && currentGPSPointId >= location2.gpsPointId)) {
+                        return@collect
+                    }
+                    newDistance += distance
+                    Log.d("RunSessionRepo", "New distance: $newDistance")
+                    _distance.value = newDistance
+
+                    currentGPSPointId = location2.gpsPointId
+                    delay(100)
+                }
             } catch (ce: CancellationException) {
                 println("calcDistance runSessionRepo ${ce.message}")
             }

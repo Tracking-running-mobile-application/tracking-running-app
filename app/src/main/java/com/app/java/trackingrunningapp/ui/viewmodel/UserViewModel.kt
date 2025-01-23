@@ -18,12 +18,12 @@ class UserViewModel(
     private val _userLiveData = MutableLiveData<User?>()
     val userLiveData: LiveData<User?> = _userLiveData
     fun upsertUserInfo(
-        name: String?,
-        age: Int?,
-        height: Float?,
+        name: String? = "",
+        age: Int? = 0,
+        height: Float? = null,
         weight: Double = 50.0,
-        metricPreference: String? = User.KILOGRAM,
-        unit: String? = User.UNIT_KM
+        metricPreference: String? = User.UNIT_KM,
+        unit: String? = User.KILOGRAM
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             val user = User(

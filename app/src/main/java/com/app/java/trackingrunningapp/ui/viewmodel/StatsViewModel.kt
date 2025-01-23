@@ -33,7 +33,7 @@ class StatsViewModel(
                 totalDistance = 0.0,
                 totalDuration = 0L,
                 totalCaloriesBurned = 0.0,
-                totalAvgPace = 0.0
+                totalAvgSpeed = 0.0
             )
         }
     }
@@ -46,7 +46,7 @@ class StatsViewModel(
                 totalDistance = 0.0,
                 totalDuration = 0L,
                 totalCaloriesBurned = 0.0,
-                totalAvgPace = 0.0
+                totalAvgSpeed = 0.0
             )
         }
     }
@@ -54,13 +54,13 @@ class StatsViewModel(
     val currentYearStats: LiveData<List<YearlyStats>> = yearlyStats.map { map ->
         val currentYear = DateTimeUtils.getCurrentDate().year.toString()
         (1..12).map { month ->
-            val monthYearKey = String.format(Locale.US, "%02d%s", month, currentYear)
+            val monthYearKey = String.format(Locale.US, "%02d-%s", month, currentYear)
             map[monthYearKey] ?: YearlyStats(
                 yearlyStatsKey = monthYearKey,
                 totalDistance = 0.0,
                 totalDuration = 0L,
                 totalCaloriesBurned = 0.0,
-                totalAvgPace = 0.0
+                totalAvgSpeed = 0.0
             )
         }
     }

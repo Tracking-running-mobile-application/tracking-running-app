@@ -22,7 +22,7 @@
             android:layout_alignParentEnd="true"
             android:layout_marginTop="6dp"
             android:layout_marginEnd="11dp"
-            android:src="@drawable/ic_history_star" />
+            android:src="@drawable/ic_history_star_selected" />
 
         <TextView
             android:id="@+id/titleText"

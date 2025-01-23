@@ -4,12 +4,14 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -18,8 +20,12 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.app.java.trackingrunningapp.R
 import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.ActivityMainBinding
 import com.app.java.trackingrunningapp.model.repositories.NotificationRepository
+import com.app.java.trackingrunningapp.ui.setting.SettingFragment
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -27,13 +33,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var navController: NavController
     private lateinit var appBarConfiguration: AppBarConfiguration
     private var notificationRepository: NotificationRepository = InitDatabase.notificationRepository
+    private var errorNoti: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val language = LocaleUtils.getLanguagePreference(this)
+        Log.d("lang", language)
         LocaleUtils.setLocale(this, language)
-
+        errorNoti = false
         setContentView(binding.root)
         initNavHost()
         setUpNetwork()
@@ -41,8 +49,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun setUpNetwork() {
         lifecycleScope.launch {
-            if (!isOnline()) {
+            if (!isOnline() && !errorNoti) {
                 notificationRepository.triggerNotification(type = "NO_NETWORK")
+                errorNoti = true
             }
         }
     }
@@ -87,6 +96,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.homeFragment -> {
                     tvTitle.text = getString(R.string.text_home)
                     icSettings.isVisible = true
+                    icFilter.isVisible = false
+                    icEdit.isVisible = false
                     binding.toolbarMain.setNavigationIcon(R.drawable.ic_notification)
                     binding.toolbarMain.setNavigationOnClickListener {
                         // TODO: do something with notification
@@ -101,9 +112,13 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.profileFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     tvTitle.text = getString(R.string.text_profile)
                     icEdit.isVisible = true
+                    icSettings.isVisible = false
+                    icFilter.isVisible = false
                     icEdit.setOnMenuItemClickListener {
+
                         navController.navigate(R.id.action_profileFragment_to_editProfileFragment)
                         true
                     }
@@ -111,20 +126,29 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 R.id.runFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     icSettings.isVisible = false
+                    icFilter.isVisible = false
+                    icEdit.isVisible = false
                     tvTitle.text = getString(R.string.text_run)
                     binding.bottomNav.isVisible = true
                 }
 
                 R.id.statisticFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     icSettings.isVisible = false
+                    icFilter.isVisible = false
+                    icEdit.isVisible = false
                     tvTitle.text = getString(R.string.text_statistics)
                     binding.bottomNav.isVisible = true
                 }
 
                 R.id.historyFragment -> {
+                    binding.toolbarMain.navigationIcon = null
                     tvTitle.text = getString(R.string.text_history)
                     icFilter.isVisible = true
+                    icSettings.isVisible = false
+                    icEdit.isVisible = false
                     binding.bottomNav.isVisible = true
                 }
             }

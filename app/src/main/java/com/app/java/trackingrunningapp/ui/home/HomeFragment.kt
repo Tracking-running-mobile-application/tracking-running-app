@@ -20,6 +20,8 @@ import com.app.java.trackingrunningapp.data.model.entity.PersonalGoal
 import com.app.java.trackingrunningapp.data.repository.UserRepository
 import com.app.java.trackingrunningapp.databinding.FragmentHomeBinding
 import com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalAdapter
+import com.app.java.trackingrunningapp.ui.home.personalGoal.PersonalGoalFragment
+import com.app.java.trackingrunningapp.ui.home.personalGoal.RunGoalFragment
 import com.app.java.trackingrunningapp.ui.home.plan_list.ListTrainingPlanFragment
 import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.PersonalGoalViewModelFactory
@@ -27,6 +29,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.TrainingPlanViewModelFactory
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -90,6 +93,10 @@ class HomeFragment : Fragment() {
         setUpPersonalGoal()
     }
 
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_setting).isVisible = true
+    }
     private fun setUpPersonalGoal() {
         binding.icAddGoal.setOnClickListener {
             it.findNavController().navigate(R.id.action_homeFragment_to_personalGoalFragment)
@@ -112,17 +119,31 @@ class HomeFragment : Fragment() {
                 )
                 personalGoals.add(personalGoal)
             }
-            personalGoalAdapter = PersonalGoalAdapter(personalGoals, requireContext(),
-                object : PersonalGoalAdapter.OnItemPersonalGoalListener {
-                    override fun onClick(personalGoal: PersonalGoal) {
-                        // TODO: Bundle  
-                        findNavController().navigate(R.id.action_homeFragment_to_runGoalFragment)
+            userViewModel.fetchUserInfo()
+            userViewModel.userLiveData.observe(viewLifecycleOwner){user->
+                personalGoalAdapter = PersonalGoalAdapter(personalGoals,user, requireContext(),
+                    object : PersonalGoalAdapter.OnItemPersonalGoalListener {
+                        override fun onClick(personalGoal: PersonalGoal) {
+                            // TODO: Bundle
+                            val bundle = Bundle().apply {
+                                putInt(RunGoalFragment.EXTRA_GOAL_ID,personalGoal.goalId)
+                            }
+                            findNavController().navigate(R.id.action_homeFragment_to_runGoalFragment,bundle)
+                        }
+
+                        override fun onEditClick(personalGoal: PersonalGoal) {
+                            val bundle = Bundle().apply {
+                                putInt(PersonalGoalFragment.EXTRA_PERSONAL_GOAL_ID,personalGoal.goalId)
+                            }
+                            findNavController()
+                                .navigate(R.id.action_homeFragment_to_personalGoalFragment,bundle)
+                        }
                     }
-                }
-            )
-            personalGoalAdapter.updatePersonalGoal(goals)
-            binding.rvPersonalGoal.adapter = personalGoalAdapter
-            setUpSwipeActions()
+                )
+                personalGoalAdapter.updatePersonalGoal(goals)
+                binding.rvPersonalGoal.adapter = personalGoalAdapter
+                setUpSwipeActions()
+            }
         }
     }
 
@@ -162,9 +183,9 @@ class HomeFragment : Fragment() {
 
     private fun setUpTrainingPlanRecycler() {
         val trainingPlans = listOf(
-            TrainingPlan("Beginner Run", R.drawable.img_beginner),
-            TrainingPlan("Intermediate Run", R.drawable.img_intermediate),
-            TrainingPlan("Advanced Run", R.drawable.img_advanced)
+            TrainingPlan(getString(R.string.text_beginner_run), R.drawable.img_beginner),
+            TrainingPlan(getString(R.string.text_intermediate_run), R.drawable.img_intermediate),
+            TrainingPlan(getString(R.string.text_advanced_run), R.drawable.img_advanced)
         )
 //        val trainingPlans = mutableListOf<TrainingPlan>()
         // beginner

@@ -29,4 +29,7 @@ interface PersonalGoalDao {
 
     @Query("DELETE FROM PersonalGoal WHERE goalId = :goalId")
     suspend fun deletePersonalGoal(goalId: Int)
+
+    @Query("UPDATE PersonalGoal SET goalSessionId = :sessionId WHERE goalId = :goalId")
+    suspend fun setSessionForPersonalGoal(goalId: Int, sessionId: Int)
 }

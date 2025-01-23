@@ -1,53 +1,90 @@
 package com.app.java.trackingrunningapp.ui.profile.favorite
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.app.java.trackingrunningapp.R
+import com.app.java.trackingrunningapp.data.database.InitDatabase
+import com.app.java.trackingrunningapp.data.model.entity.RunSession
 import com.app.java.trackingrunningapp.databinding.FragmentFavouriteRunsBinding
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModel
+import com.app.java.trackingrunningapp.ui.viewmodel.RunSessionViewModelFactory
+import com.app.java.trackingrunningapp.utils.DateTimeUtils
+import com.app.java.trackingrunningapp.utils.StatsUtils
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class FavouriteRuns : Fragment() {
-    private lateinit var binding:FragmentFavouriteRunsBinding
+    private lateinit var binding: FragmentFavouriteRunsBinding
+    private lateinit var runSessionViewModel: RunSessionViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_favourite_runs, container, false)
+    ): View {
+        binding = FragmentFavouriteRunsBinding.inflate(inflater, container, false)
+        val runFactory = RunSessionViewModelFactory(InitDatabase.runSessionRepository)
+        runSessionViewModel =
+            ViewModelProvider(this, runFactory).get(RunSessionViewModel::class.java)
+        val toolbarTitle = requireActivity().findViewById<TextView>(R.id.tv_toolbar_title)
+        toolbarTitle.text = getString(R.string.text_favourite_run)
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_filter).isVisible =
+            false
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setUpFavouriteRun()
+    }
 
-        val runList = mutableListOf(
-            RunItem("Normal Run", "12KM", "22/10/2024"),
-            RunItem("Normal Run", "12KM", "2/9/2024"),
-            RunItem("Morning Run", "8KM", "1/8/2024"),
-            RunItem("Evening Sprint", "5KM", "15/7/2024"),
-            RunItem("Marathon Prep", "20KM", "10/7/2024"),
-            RunItem("Trail Adventure", "15KM", "5/6/2024"),
-            RunItem("Casual Jog", "6KM", "1/5/2024"),
-            RunItem("City Run", "10KM", "25/4/2024"),
-            RunItem("Weekend Dash", "7KM", "20/4/2024"),
-            RunItem("Quick Run", "3KM", "18/4/2024"),
-            RunItem("Challenge Run", "13KM", "15/4/2024"),
-            RunItem("Sunset Run", "9KM", "10/4/2024"),
-            RunItem("Morning Run", "8KM", "1/8/2024"),
-            RunItem("Trail Adventure", "14KM", "22/3/2024"),
-            RunItem("Hill Run", "10KM", "10/3/2024"),
-            RunItem("Fitness Run", "11KM", "1/3/2024"),
-            RunItem("Fun Run", "5KM", "20/2/2024"),
-            RunItem("Marathon Race", "42KM", "15/2/2024"),
-            RunItem("Light Jog", "4KM", "5/2/2024"),
-            RunItem("Intense Sprint", "2KM", "25/1/2024")
-        )
+    private fun setUpFavouriteRun() {
+        runSessionViewModel.loadFavoriteSessions()
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                runSessionViewModel.fetchRunSessions()
+                runSessionViewModel.favoriteRunSessions.collect { sessions ->
+                    val mutableList: MutableList<RunSession?> = sessions.toMutableList()
+                    binding.rvFavouriteRun.adapter =
+                        FavouriteRunAdapter(mutableList, requireContext(),
+                            object : FavouriteRunAdapter.OnStarClickListener {
+                                override fun onDeleteFavourite(itemRun: RunSession?) {
+                                    runSessionViewModel.addAndRemoveFavoriteSession(itemRun!!)
+                                    Toast.makeText(
+                                        requireContext(),
+                                        "Successfully removed from favourite",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        )
+                }
+            }
+        }
+    }
 
-        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        recyclerView.adapter = FavouriteRunAdapter(runList)
+    override fun onStop() {
+        super.onStop()
+        requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
+            View.VISIBLE
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_filter).isVisible =
+            true
     }
 }

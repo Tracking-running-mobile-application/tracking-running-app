@@ -28,7 +28,9 @@
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="1.0"
+        app:mapbox_locationComponentEnabled="true"
+        app:mapbox_locationComponentPuckBearing="heading" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline14"
@@ -71,7 +73,7 @@
                 android:textStyle="bold"
                 android:layout_marginEnd="@dimen/margin_16"
                 android:gravity="center_vertical"
-                android:text="@string/text_congratulations"
+                android:text="CONGRATULATIONS!"
                 android:textColor="@color/text_shadow_white"
                 android:textSize="20sp" />
         </LinearLayout>
@@ -84,7 +86,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center_vertical"
-        android:text="@string/text_your_stats"
+        android:text="YOUR STATS"
         android:textColor="@color/text_shadow_white"
         android:textSize="24sp"
         app:drawableStartCompat="@drawable/baseline_bar_chart_32"
