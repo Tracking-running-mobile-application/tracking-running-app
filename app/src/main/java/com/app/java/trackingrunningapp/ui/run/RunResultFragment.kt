@@ -123,7 +123,6 @@ class RunResultFragment : Fragment() {
         mapView = binding.mapView
         annotationApi = mapView.annotations
         polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
-        //val runId = arguments?.getInt(EXTRA_RUN_ID_RESULT,0) ?: 0
         val runId = runSessionRepository.currentRunSession.value?.sessionId ?: 0
         Log.d("RunID", runId.toString())
         lifecycleScope.launch {
