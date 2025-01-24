@@ -26,6 +26,7 @@ import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModel
 import com.app.java.trackingrunningapp.ui.viewmodel.UserViewModelFactory
 import com.app.java.trackingrunningapp.utils.DateTimeUtils
 import com.app.java.trackingrunningapp.utils.StatsUtils
+import com.google.android.material.appbar.MaterialToolbar
 import kotlinx.coroutines.launch
 
 class ProfileFragment : Fragment() {
@@ -65,6 +66,7 @@ class ProfileFragment : Fragment() {
             statsViewModel.refreshStats()
             statsViewModel.currentYearStats.observe(viewLifecycleOwner) { sessions ->
                 for (session in sessions) {
+                    statsViewModel.refreshStats()
                     if (DateTimeUtils.getMonthNameFromYearMonth(session.yearlyStatsKey) == currentMonth.toString()) {
                         binding.textProfileSpeed.text =
                             StatsUtils.convertToPace(
@@ -136,5 +138,11 @@ class ProfileFragment : Fragment() {
             animation.duration = 1000L
             labelsFormatter = { it.toInt().toString() }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_edit).isVisible =
+            false
     }
 }

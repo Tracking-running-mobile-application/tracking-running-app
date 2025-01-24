@@ -133,4 +133,5 @@
     <string name="sun">Sun</string>
     <string name="text_speed_metric_mile">%.2f mph</string>
     <string name="text_profile_speed_metric">%.2f</string>
+    <string name="chart_label">%.2f</string>
 </resources>

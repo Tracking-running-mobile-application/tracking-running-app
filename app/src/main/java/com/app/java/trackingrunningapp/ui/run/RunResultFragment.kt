@@ -49,8 +49,8 @@ class RunResultFragment : Fragment() {
     private lateinit var annotationApi: AnnotationPlugin
     private lateinit var polylineAnnotationManager: PolylineAnnotationManager
     private lateinit var gpsTrackViewModel: GPSTrackViewModel
-    private lateinit var runSessionRepository: RunSessionRepository
     private lateinit var userViewModel: UserViewModel
+    private lateinit var runSessionRepository: RunSessionRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -123,7 +123,7 @@ class RunResultFragment : Fragment() {
         mapView = binding.mapView
         annotationApi = mapView.annotations
         polylineAnnotationManager = annotationApi.createPolylineAnnotationManager()
-        val runId = arguments?.getInt(EXTRA_RUN_ID_RESULT,0) ?: 0
+        val runId = runSessionRepository.currentRunSession.value?.sessionId ?: 0
         Log.d("RunID", runId.toString())
         lifecycleScope.launch {
              withContext(Dispatchers.IO) {
@@ -151,7 +151,7 @@ class RunResultFragment : Fragment() {
                 override fun onIndicatorPositionChanged(point: Point) {
                     targetPoint = point
                     if (routeCoordinates.isNotEmpty()) {
-                        targetPoint = routeCoordinates.last()
+                        targetPoint = routeCoordinates.first()
                     }
                     mapView.mapboxMap.setCamera(
                         CameraOptions.Builder()
