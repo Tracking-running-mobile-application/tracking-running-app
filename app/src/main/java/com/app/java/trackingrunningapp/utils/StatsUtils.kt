@@ -56,7 +56,7 @@ object StatsUtils {
 
     fun convertToPace(speed: Double, unit: String): String {
         if (speed <= 0) {
-            return "Invalid speed"
+            return "00:00"
         }
 
         val paceInMinutes = 60.0 / speed
@@ -72,7 +72,7 @@ object StatsUtils {
                 "%d:%02d min/mi".format(minutes, seconds)
             }
             else -> {
-                "Invalid unit"
+                "00:00"
             }
         }
     }
