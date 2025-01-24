@@ -152,7 +152,7 @@ class RunResultFragment : Fragment() {
                 override fun onIndicatorPositionChanged(point: Point) {
                     targetPoint = point
                     if (routeCoordinates.isNotEmpty()) {
-                        targetPoint = routeCoordinates.last()
+                        targetPoint = routeCoordinates.first()
                     }
                     mapView.mapboxMap.setCamera(
                         CameraOptions.Builder()
