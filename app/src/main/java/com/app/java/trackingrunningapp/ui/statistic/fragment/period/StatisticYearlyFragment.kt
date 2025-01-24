@@ -68,7 +68,7 @@ class StatisticYearlyFragment : Fragment() {
         barChart.animate(barSet)
         barChart.apply {
             animation.duration = 1000L
-            labelsFormatter = { it.toInt().toString() }
+            labelsFormatter = { getString(R.string.chart_label,it.toDouble())}
         }
         requireActivity().findViewById<TabLayout>(R.id.tab_layout_statistic)
             .addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {

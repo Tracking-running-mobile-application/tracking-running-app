@@ -42,6 +42,7 @@ class StatisticWeeklyFragment : Fragment() {
         val statsFactory = StatsViewModelFactory(InitDatabase.statsRepository)
         statsViewModel =
             ViewModelProvider(requireActivity(), statsFactory)[StatsViewModel::class.java]
+        statsViewModel.refreshStats()
         statsViewModel.currentWeekStats.observe(viewLifecycleOwner) { sessions ->
             Log.d("current_week","${sessions}")
             setupBarChart(sessions)
@@ -65,7 +66,7 @@ class StatisticWeeklyFragment : Fragment() {
         barChart.animate(barSet)
         barChart.apply {
             animation.duration = 1000L
-            labelsFormatter = { it.toInt().toString() }
+            labelsFormatter = { getString(R.string.chart_label,it.toDouble())}
         }
         requireActivity().findViewById<TabLayout>(R.id.tab_layout_statistic)
             .addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
