@@ -65,6 +65,7 @@ class ProfileFragment : Fragment() {
             statsViewModel.refreshStats()
             statsViewModel.currentYearStats.observe(viewLifecycleOwner) { sessions ->
                 for (session in sessions) {
+                    statsViewModel.refreshStats()
                     if (DateTimeUtils.getMonthNameFromYearMonth(session.yearlyStatsKey) == currentMonth.toString()) {
                         binding.textProfileSpeed.text =
                             StatsUtils.convertToPace(
