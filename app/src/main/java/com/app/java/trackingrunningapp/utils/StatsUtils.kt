@@ -64,12 +64,16 @@ object StatsUtils {
         val minutes = paceInMinutes.toInt()
         val seconds = ((paceInMinutes - minutes) * 60).toInt()
 
-        return if (unit == User.UNIT_KM) {
-            "%d:%02d min/km".format(minutes, seconds)
-        } else if (unit == User.UNIT_MILE) {
-            "%d:%02d min/mi".format(minutes, seconds)
-        } else {
-            "Invalid unit"
+        return when (unit) {
+            User.UNIT_KM -> {
+                "%d:%02d min/km".format(minutes, seconds)
+            }
+            User.UNIT_MILE -> {
+                "%d:%02d min/mi".format(minutes, seconds)
+            }
+            else -> {
+                "Invalid unit"
+            }
         }
     }
 
