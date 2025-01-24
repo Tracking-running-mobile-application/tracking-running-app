@@ -45,7 +45,10 @@ class FavouriteRuns : Fragment() {
         val toolbarTitle = requireActivity().findViewById<TextView>(R.id.tv_toolbar_title)
         toolbarTitle.text = getString(R.string.text_favourite_run)
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility = View.GONE
-        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_filter).isVisible =
+        val toolbar =   requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main)
+        toolbar.menu.findItem(R.id.item_toolbar_filter).isVisible =
+            false
+        toolbar.menu.findItem(R.id.item_toolbar_edit).isVisible =
             false
         return binding.root
     }
@@ -84,7 +87,5 @@ class FavouriteRuns : Fragment() {
         super.onStop()
         requireActivity().findViewById<BottomNavigationView>(R.id.bottom_nav).visibility =
             View.VISIBLE
-        requireActivity().findViewById<MaterialToolbar>(R.id.toolbar_main).menu.findItem(R.id.item_toolbar_filter).isVisible =
-            true
     }
 }
