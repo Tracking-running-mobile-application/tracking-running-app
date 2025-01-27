@@ -30,9 +30,9 @@ We are excited to announce the official release of **v1.0.0**! This marks the fi
 
 
 ### How to Get Started
-1. **Head to the tags** section in the repository.
-2. Locate the **APK file** for version v1.0.0.
-3. **Download and install** the APK on your device.
+1. **Head to the tags or release** section of the repository.
+2. Locate the **APK file** for version v1.1.0.
+3. **Download and install** the APK on your Android's device.
 
 We'd love your feedback! Report any issues or suggestions via this Github repository or email me at thaison1939@gmail.com
 
